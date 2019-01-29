@@ -1,0 +1,13 @@
+{
+    "name": "speech-framework",
+    "version": "0.5.4",
+    "description": "Speech-Framework",
+    "author": "LinguaLogic Team",
+    "license": "MIT",
+    "private": true,
+    "main": "index.js",
+    "typings": "index.d.ts",
+    "scripts": {},
+    "dependencies": {},
+    "devDependencies": {}
+}
