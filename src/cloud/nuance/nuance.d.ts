@@ -1,13 +1,13 @@
 /**
- * Nuance-Modul
+ * Nuance zur Verwaltung des NuancePort
  *
- * Hier wird die Modul-Schnittstelle von Nuance definiert, um Nuance zu
+ * Hier wird die Manager-Schnittstelle von Nuance definiert, um Nuance zu
  * initialisieren und als Port zu oeffnen.
  *
- * API-Version: 1.0
- * Datum:       16.12.2018
+ * API-Version: 1.1
+ * Datum:       06.02.2019
  *
- * Letzte Aenderung: 16.12.2018
+ * Letzte Aenderung: 06.02.2019
  * Status: rot
  *
  * @module cloud/nuance
@@ -16,7 +16,7 @@
 import { SpeechErrorFunc } from './../../interface/speech-function.type';
 import { NuanceOptionInterface } from './nuance-option.interface';
 /**
- * statische Nuance Modul-Klasse zur Erzeugung des NuancePorts
+ * statische Nuance-Klasse zur Erzeugung des NuancePorts
  */
 export declare class Nuance {
     private static mInitFlag;

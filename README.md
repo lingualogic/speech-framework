@@ -14,9 +14,10 @@ Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) u
 
 ## Letzte Version
 
-* 0.5.4.0043 Alpha vom 29.01.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.5.0044 Alpha vom 07.02.2019 [Release Notizen](./CHANGELOG.md)
 
-Das Speech-Framework ist noch in einem frühen Entwicklungsstadium und sollte noch nicht für den produktiven Einsatz verwendet werden.
+Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
+Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
 
 
 ## Voraussetzungen
@@ -69,10 +70,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist/ Ordner erzeugte npm-Paket 'speech-framework-0.5.4.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist/ Ordner erzeugte npm-Paket 'speech-framework-0.5.5.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install --save speech-framework-0.5.4.tgz
+    $ npm install --save speech-framework-0.5.5.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -86,15 +87,23 @@ Das Speech-Framework kann mit folgendem Befehl wieder deinstalliert werden:
 
 ## Bekannte Probleme
 
-* Unter Safari MacOS/iOS funktioniert die Nuance-TTS in Speak zur Zeit nicht
-
 
 ## Dokumentation
 
-Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
-Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
 
-Die Dokumentation des Speech-Frameworks folgt in Kürze.
+[**Architektur**](./docs/design/Design.md)
+
+[**Framework**](./docs/framework/Framework.md)
+
+[**Cloud-Dienste**](./docs/cloud/Cloud.md)
+
+[**Plattformen**](./docs/platform/README.md)
+
+[**API-Referenz**](https://lingualogic.de/speech-framework/docs/latest/api)
+
+[**Roadmap**](./docs/roadmap/README.md)
+
+[**Release Notizen**](./CHANGELOG.md)
 
 
 ## Projektverantwortliche (LinguaLogic Team)
@@ -107,6 +116,11 @@ Technische Umsetzung: **Stefan Brauer** (stefan@lingualogic.de)
 ## Mitwirkende
 
 
+## In Projekten verwendet
+
+* [**whoelse-Prototyp**](https://whoelse.xyz) - Beispiel für den IntentService von [uns.ai](https://uns.ai)
+
+
 ## Danksagung
 
 Wir haben das Entstehen und die Entwicklung des Projektes vielen Personen zu danken, vor allem dem gesamten Team der [Nepos GmbH](https://nepos.de).
@@ -115,4 +129,4 @@ Wir haben das Entstehen und die Entwicklung des Projektes vielen Personen zu dan
 
 ## Lizenz
 
-Das Speech-Framework wurde als Open Source unter der [MIT-Lizenz](./LICENSE) veröffentlicht.
+Das Speech-Framework wurde als Open Source unter der [MIT-Lizenz](./docs/LICENSE.md) veröffentlicht.

@@ -4,6 +4,7 @@
 
 'use strict';
 
+
 // Module definieren
 
 const gulp = require('gulp');
@@ -11,6 +12,8 @@ const shell = require('gulp-shell');
 const runSequence = require('run-sequence');
 const typedoc = require('gulp-typedoc');
 const del = require('del');
+const fs = require('fs');
+const rename = require('gulp-rename');
 
 
 // Dokumentations-Funktionen
@@ -204,6 +207,7 @@ gulp.task('copy-audio', function() {
     return gulp.src([
         'build/src/audio/audio-const.d.ts',
         'build/src/audio/audio-factory.d.ts',
+        'build/src/audio/audio-function.type.d.ts',
         'build/src/audio/audio.interface.d.ts',
     ])
         .pipe( gulp.dest('dist/src/audio'));
@@ -365,96 +369,54 @@ gulp.task('dist-copy-src', (callback) => {
 });
 
 
-// Kopiert Dokumentation
+/**
+ * Kopiert die Credentials
+ */
+
+gulp.task('install-nuance-credentials-ts', function() {
+    try {
+        // pruefen auf vorhandene Nuance-Credentials Datei
+        fs.accessSync( './config/nuance-credentials.ts' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src( './config/nuance-credentials.default.ts' )
+            .pipe( rename( 'nuance-credentials.ts' ))
+            .pipe( gulp.dest( './config' ));
+    }
+    return gulp.src([]); // empty stream
+});
 
 
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
+/**
+ * Kopiert die Credentials
+ */
 
-gulp.task('copy-docs-readme', function() {
-    return gulp.src([
-        'docs/*'
-    ])
-        .pipe( gulp.dest('dist/docs'));
-}); 
-
-
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
-
-gulp.task('copy-docs-blog', function() {
-    return gulp.src([
-        'docs/blog/*'
-    ])
-        .pipe( gulp.dest('dist/docs/blog'));
-}); 
+gulp.task('install-nuance-credentials-js', function() {
+    try {
+        // pruefen auf vorhandene Nuance-Credentials Datei
+        fs.accessSync( './config/nuance-credentials.js' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src( './config/nuance-credentials.default.js' )
+            .pipe( rename('nuance-credentials.js'))
+            .pipe( gulp.dest( './config' ));
+    }
+    return gulp.src([]); // empty stream
+});
 
 
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
+/**
+ * Installiert alle benoetigten Dateien
+ */
 
-gulp.task('copy-docs-design', function() {
-    return gulp.src([
-        'docs/design/*'
-    ])
-        .pipe( gulp.dest('dist/docs/design'));
-}); 
-
-
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
-
-gulp.task('copy-docs-platform', function() {
-    return gulp.src([
-        'docs/platform/*'
-    ])
-        .pipe( gulp.dest('dist/docs/platform'));
-}); 
-
-
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
-
-gulp.task('copy-docs-roadmap', function() {
-    return gulp.src([
-        'docs/roadmap/*'
-    ])
-        .pipe( gulp.dest('dist/docs/roadmap'));
-}); 
-
-
-/** 
- * Kopiert die Docsdateien aus docs/ nach dist/docs
- */ 
-
-gulp.task('copy-docs-tutorial', function() {
-    return gulp.src([
-        'docs/tutorial/*'
-    ])
-        .pipe( gulp.dest('dist/docs/tutorial'));
-}); 
-
-
-/** 
- * Kopiert alle benoetigten Dateien aus docs/ nach dist/
- */ 
-
-gulp.task('dist-copy-docs', (callback) => {
+gulp.task('install', (callback) => {
     runSequence(
-        'copy-docs-readme',
-        'copy-docs-blog',
-        'copy-docs-design',
-        'copy-docs-platform',
-        'copy-docs-roadmap',
-        'copy-docs-tutorial',
+        'install-nuance-credentials-ts',
+        'install-nuance-credentials-js',
         callback
     );
 });
+
 
 
 /** 
@@ -463,10 +425,8 @@ gulp.task('dist-copy-docs', (callback) => {
 
 gulp.task('build-clean', function () {
     return del([
-        'build/**/*',
-        'dist/**/*',
-        'dist',
-        'build'
+        'build',
+        'dist'
     ]);
 });
 
@@ -510,8 +470,6 @@ gulp.task('build', function(callback) {
         'build-transpile',
         'build-rollup',
         'dist-copy-src',
-        // 'dist-copy-docs',
-        // 'dist-typedoc',
         'dist-pack',
         callback
     );

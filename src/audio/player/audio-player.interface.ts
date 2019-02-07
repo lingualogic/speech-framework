@@ -27,7 +27,7 @@ export type AudioStopFunc = () => number;
 
 export type OnAudioStartFunc = () => number;
 export type OnAudioStopFunc = () => number;
-
+export type OnAudioUnlockFunc = (aState: string) => number;
 
 export interface AudioPlayerInterface extends PluginInterface {
 
@@ -35,10 +35,14 @@ export interface AudioPlayerInterface extends PluginInterface {
 
     onAudioStart: OnAudioStartFunc;
     onAudioStop: OnAudioStopFunc;
+    onAudioUnlock: OnAudioUnlockFunc;
+
 
     // Audio-Funktionen
 
     getAudioContext(): AudioContext;
+    unlockAudio(): void;
+    isUnlockAudio(): boolean;
 
     setAudioFormat( aAudioFormat: string ): number;
     getAudioFormat(): string;

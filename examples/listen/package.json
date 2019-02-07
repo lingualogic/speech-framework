@@ -1,0 +1,20 @@
+{
+    "name": "listenapp",
+    "version": "0.5.5",
+    "description": "ListenApp",
+    "author": "Lingualogic Team",
+    "license": "MIT",
+    "private": true,
+    "main": "src/index.html",
+    "scripts": {
+        "install": "cd cordova && npm install && gulp cordova-install",
+        "start": "gulp dist-run",
+        "electron": "gulp electron-run",
+        "cordova": "gulp cordova-browser",
+        "cordova:android": "gulp cordova-android",
+        "cordova:ios": "gulp cordova-ios",
+        "cordova:osx": "gulp cordova-osx"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}

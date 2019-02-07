@@ -1,6 +1,6 @@
 {
     "name": "speech",
-    "version": "0.5.4",
+    "version": "0.5.5",
     "description": "Speech-Framework",
     "author": "LinguaLogic Team",
     "license": "MIT",
@@ -8,8 +8,12 @@
     "main": "index.ts",
     "directories": {},
     "scripts": {
+        "postinstall": "gulp install",
         "build": "gulp build",
-        "docs": "gulp typedoc"
+        "docs": "gulp typedoc",
+        "intent": "cd examples/intent && npm start",
+        "listen": "cd examples/listen && npm start",
+        "speak": "cd examples/speak && npm start"
     },
     "dependencies": {},
     "devDependencies": {
@@ -18,6 +22,7 @@
         "gulp": "^3.9.1",
         "gulp-inject-string": "^1.1.1",
         "gulp-jasmine": "^4.0.0",
+        "gulp-rename": "^1.4.0",
         "gulp-shell": "^0.6.5",
         "gulp-typedoc": "^2.2.0",
         "rollup": "^0.62.0",

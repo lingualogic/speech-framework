@@ -1,6 +1,14 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.5.0044 Alpha (07.02.2019)
+
+### Bugs
+
+* **Audio:** der Safari Desktop/iOS spielt jetzt Audiodateien ab
+* **Speak:** der Safari Desktop/iOS arbeitet jetzt mit Nuance-TTS und spielt auch Sprachaudiodateien ab
+
+
 ## 0.5.4.0043 Alpha (29.01.2019)
 
 ### Features

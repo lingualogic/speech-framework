@@ -1,10 +1,10 @@
 /**
  * Speech-Nuance
  * 
- * Version: 0.1.0
- * Build:   0001
+ * Version: 0.1.1
+ * Build:   0002
  * TYPE:    ALPHA
- * Datum:   29.01.2019
+ * Datum:   30.01.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -98,7 +98,7 @@ var Factory = function(t) {
             return this._exception('create', t), null;
         }
     }, e;
-}(Factory), NUANCE_VERSION_NUMBER = '0.1.0', NUANCE_VERSION_BUILD = '0001', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '29.01.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
+}(Factory), NUANCE_VERSION_NUMBER = '0.1.1', NUANCE_VERSION_BUILD = '0002', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '30.01.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
     function t(e, n) {
         void 0 === e && (e = ''), void 0 === n && (n = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = n, 
@@ -709,27 +709,65 @@ var Factory = function(t) {
             e._sendQueryParameterMessage(e.mTransaction.transactionId, n.text), e._sendQueryEndMessage(e.mTransaction.transactionId);
         }, this.mConnect.connect(n);
     }, e;
-}(NuanceDevice), NuanceAudioPlayer = function(t) {
+}(NuanceDevice), AUDIO_MIN_SAMPLERATE = 22500, NuanceAudioPlayer = function(t) {
     function e(e) {
         var n = t.call(this, 'NuanceAudioPlayer') || this;
-        return n.mAudioContext = null, n.mAudioCodec = null, n.mOnAudioEndFunc = null, n.mAudioSource = null, 
-        n.mAudioArray = [], n.mQueue = [], n.mBeginSpeakFlag = !0, n.mAudioStopFlag = !1, 
-        n.mAudioContext = e, n.mAudioCodec = new NuanceAudioCodec(), n;
+        return n.mAudioContext = null, n.mAudioCodec = null, n.mResampler = null, n.mOnAudioEndFunc = null, 
+        n.mAudioSource = null, n.mAudioArray = [], n.mQueue = [], n.mBeginSpeakFlag = !0, 
+        n.mAudioStopFlag = !1, n.mAudioContext = e, n.mAudioCodec = new NuanceAudioCodec(), 
+        n;
     }
     return __extends(e, t), e.prototype.start = function() {
         this.mOnAudioEndFunc = null, this.mAudioSource = null, this.mAudioArray = [], this.mQueue = [], 
         this.mBeginSpeakFlag = !0, this.mAudioStopFlag = !1;
+    }, e.prototype._getAudioBufferFirst = function(t) {
+        var e = null;
+        try {
+            var n = new Float32Array(t.length);
+            n.set(t), console.log('NuanceAudioPlayer.playByStream: buffer direkt erzeugen:', n.length), 
+            (e = new AudioBuffer({
+                length: n.length,
+                numberOfChannels: 1,
+                sampleRate: NUANCE_AUDIOSAMPLE_RATE
+            })).getChannelData(0).set(n);
+        } catch (t) {
+            e = null, console.log('NuanceAudioPlayer._getAudioBufferFirst: Exception', t);
+        }
+        return e;
+    }, e.prototype._getAudioBufferSecond = function(t) {
+        var e = null;
+        try {
+            var n = new Float32Array(t.length);
+            n.set(t), console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 16000 Samplerate:', n.length), 
+            (e = this.mAudioContext.createBuffer(1, n.length, NUANCE_AUDIOSAMPLE_RATE)).getChannelData(0).set(n);
+        } catch (t) {
+            e = null, console.log('NuanceAudioPlayer._getAudioBufferSecond: Exception', t);
+        }
+        return e;
+    }, e.prototype._getAudioBufferResample = function(t) {
+        var e = null;
+        try {
+            var n = new Float32Array(1.4 * t.length);
+            n.set(t), this.mResampler = new NuanceResampler(NUANCE_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, n.length, void 0);
+            var r = this.mResampler.resampler(n);
+            console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 22500 Samplerate:', r.length), 
+            (e = this.mAudioContext.createBuffer(1, r.length, AUDIO_MIN_SAMPLERATE)).getChannelData(0).set(r);
+        } catch (t) {
+            e = null, console.log('NuanceAudioPlayer._getAudioBufferResample: Exception', t);
+        }
+        return e;
     }, e.prototype.playByStream = function(t, e) {
         var n = this;
         try {
             if (this.mOnAudioEndFunc = t.onaudioend, 0 === e.length || this.mAudioStopFlag) return this.mBeginSpeakFlag = !0, 
             t.onaudioend(), this.mOnAudioEndFunc = null, void (this.mAudioSource = null);
-            var r = e.shift(), o = r.length, i = new Float32Array(o);
-            i.set(r), this.mAudioSource = this.mAudioContext.createBufferSource(), this.mAudioSource.onended = function() {
+            this.mAudioSource = this.mAudioContext.createBufferSource(), this.mAudioSource.onended = function() {
                 return n.playByStream(t, e);
             };
-            var a = NUANCE_AUDIOSAMPLE_RATE, s = this.mAudioContext.createBuffer(1, i.length, a);
-            s.getChannelData(0).set(i), this.mAudioSource.buffer = s, this.mAudioSource.connect(this.mAudioContext.destination), 
+            var r = e.shift(), o = this._getAudioBufferFirst(r);
+            if (o || (o = this._getAudioBufferSecond(r)), o || (o = this._getAudioBufferResample(r)), 
+            !o) return void this._error('playByStream', 'kein Audiobuffer erzeugt');
+            this.mAudioSource.buffer = o, this.mAudioSource.connect(this.mAudioContext.destination), 
             this.mAudioSource.start ? this.mAudioSource.start(0) : this.mAudioSource.noteOn(0), 
             t.onaudiostart();
         } catch (e) {

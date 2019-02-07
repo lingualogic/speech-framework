@@ -1,8 +1,8 @@
 /**
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 11.12.2018
- * Status: gelb
+ * Letzte Aenderung: 30.01.2019
+ * Status: rot
  *
  * @module audio/player
  * @author SB
@@ -26,7 +26,7 @@ import { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from './../../comm
 // audio
 
 import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT, AUDIO_DEFAULT_FORMAT } from '../audio-const';
-import { AudioPlayerInterface, AudioPlayFunc, AudioStopFunc, OnAudioStartFunc, OnAudioStopFunc } from './audio-player.interface';
+import { AudioPlayerInterface, AudioPlayFunc, AudioStopFunc, OnAudioStartFunc, OnAudioStopFunc, OnAudioUnlockFunc } from './audio-player.interface';
 
 
 /**
@@ -110,6 +110,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     mOnAudioStartFunc: OnAudioStartFunc = null;
     mOnAudioStopFunc: OnAudioStopFunc = null;
+    mOnAudioUnlockFunc: OnAudioUnlockFunc = null;
 
 
     /**
@@ -275,6 +276,18 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             }
         }
 
+        // AudioContext Aenderungsevent eintragen
+
+        try {
+            if ( this.mAudioContext ) {
+                this.mAudioContext.onstatechange = () => {
+                    this._onAudioUnlock();
+                }
+            }
+        } catch ( aException ) {
+            this._exception( 'init', aException );
+        }
+
         // Audio initialisiert
 
         return 0;
@@ -304,6 +317,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         this.mAudioCancelFlag = false;
         this.mOnAudioStartFunc = null;
         this.mOnAudioStopFunc = null;
+        this.mOnAudioUnlockFunc = null;
         return super.done();
     }
 
@@ -351,6 +365,9 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         //      darf er auch freigegeben werden. Dies wird durch die Initialsierung
         //      von AudioContext angezeigt.
 
+        if ( this.mAudioContext ) {
+            this.mAudioContext.onstatechange = undefined;
+        }
         // pruefen auf eigenen Audiokontext
         if ( this.mAudioContextClass ) {
             // Audio-Kontext muss freigegeben werden
@@ -362,7 +379,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
                 }
             }
             this.mAudioContext = null;
-        }
+        } 
     }
 
 
@@ -399,6 +416,21 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
     }
 
 
+    _onAudioUnlock(): number {
+        // console.log('AudioPlayer._onAudioUnlock');
+        if ( typeof this.mOnAudioUnlockFunc === 'function' ) {
+            try {
+                // console.log('AudioPlayer._onAudioUnlock: funktion ausfuehren', this.mOnAudioUnlockFunc);
+                return this.mOnAudioUnlockFunc( this.mAudioContext.state );
+            } catch ( aException ) {
+                this._exception( '_onAudioUnlock', aException );
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+
     set onAudioStart( aOnAudioStartFunc: OnAudioStartFunc ) {
         this.mOnAudioStartFunc = aOnAudioStartFunc;
     }
@@ -406,6 +438,11 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     set onAudioStop( aOnAudioStopFunc: OnAudioStopFunc ) {
         this.mOnAudioStopFunc = aOnAudioStopFunc;
+    }
+
+
+    set onAudioUnlock( aOnAudioUnlockFunc: OnAudioUnlockFunc ) {
+        this.mOnAudioUnlockFunc = aOnAudioUnlockFunc;
     }
 
 
@@ -420,6 +457,40 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     getAudioContext(): AudioContext {
         return this.mAudioContext;
+    }
+
+
+    /**
+     * Versuch, AudioContext zu entsperren
+     */
+
+    unlockAudio(): void {
+        if ( this.mAudioContext ) {
+            if ( this.mAudioContext.state === 'suspended' ) {
+                this.mAudioContext.resume().then(() => {
+                    this._onAudioUnlock();
+                }, (aError: any) => {
+                    console.log('AudioPlayer.unlockAudioContext:', aError)
+                    this._onAudioUnlock();
+                });
+            }
+        }
+    }
+
+
+    /**
+     * Pruefen, ob AudioContext entsperrt ist
+     */
+
+    isUnlockAudio(): boolean {
+        console.log('AudioPlayer.isUnlockAudio:', this.mAudioContext);
+        if ( this.mAudioContext ) {
+            console.log('AudioPlayer.isUnlockAudio: state = ', this.mAudioContext.state);
+            if ( this.mAudioContext.state === 'running' ) {
+                return true;
+            } 
+        }
+        return false;
     }
 
 
@@ -507,7 +578,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _loadAudioFile( aUrl: string ): number {
-        // console.log('AudioPlayer._loadAudioFile:', aUrl);
+        console.log('AudioPlayer._loadAudioFile:', aUrl);
         if ( !this.mXMLHttpRequestClass ) {
             this._error( '_loadAudioFile', 'keine XMLHttpRequest Klasse' );
             return -1;
@@ -566,7 +637,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _decodeAudio(): number {
-        // console.log('AudioPlayer._decodeAudio');
+        console.log('AudioPlayer._decodeAudio');
         if ( !this.isInit()) {
             this._error( '_decodeAudio', 'nicht initialisiert' );
             return -1;
@@ -582,7 +653,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         }
         try {
             this.mAudioContext.decodeAudioData( this.mRequest.response, (aBuffer: AudioBuffer) => {
-                // console.log('AudioPlayer._decodeAudio: decodeAudioData start');
+                console.log('AudioPlayer._decodeAudio: decodeAudioData start', aBuffer);
                 this.mAudioBuffer = aBuffer;
                 this._playStart();
                 // console.log('AudioPlayer._decodeAudio: decodeAudioData end');
@@ -609,7 +680,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _playStart(): number {
-        // console.log('AudioPlayer._playStart');
+        console.log('AudioPlayer._playStart');
         if ( !this.mAudioBuffer ) {
             return -1;
         }
@@ -631,7 +702,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             // Ende-Event
             this.mSource.onended = () => {
                 // TODO: hier muss ein Ende-Event fuer Audio-Ende eingebaut werden
-                // console.log('AudioPlayer._playStart: onended');
+                console.log('AudioPlayer._playStart: onended');
                 if ( this.isPlay()) {
                     this.mAudioPlayFlag = false;
                     this._onAudioStop();
@@ -639,7 +710,12 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             };
             this.mSource.buffer = this.mAudioBuffer;
             this.mSource.connect( this.mAudioContext.destination );
-            this.mSource.start( 0 );
+            console.log('AudioPlayer._playStart: ', this.mSource, this.mAudioContext.state);
+            if ( this.mSource.start ) {
+                this.mSource.start( 0 );
+            } else {
+                this.mSource.noteOn( 0 );
+            }
             this._onAudioStart();
             return 0;
         } catch (aException) {
@@ -659,6 +735,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     play( aAudioFilePath: string, aAudioId: string ): number {
+        this.unlockAudio();
         // console.log('AudioPlayer.play:', aAudioFilePath, aAudioId);
         if ( !this.isActive()) {
             // kein Fehler
@@ -683,6 +760,12 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             const fileName = filePath + aAudioId + '.' + this.mAudioFormat;
             this.mSource = null;
             this.mAudioBuffer = null;
+            // pruefen, ob AudioContext nicht gespeert ist
+            if ( this.mAudioContext.state === 'suspended' ) {
+                this._error( 'playFile', 'AudioContext ist nicht entsperrt' );
+                this._onAudioStop();
+                return -1;
+            }
             return this._loadAudioFile( fileName );
         } catch (aException) {
             this._exception( 'play', aException );
@@ -699,7 +782,8 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     playFile( aFileName: string ): number {
-        // console.log('AudioPlayer.playFile:', aFileName);
+        console.log('AudioPlayer.playFile:', aFileName);
+        this.unlockAudio();
         if ( !this.isActive()) {
             // kein Fehler
             if ( this.isErrorOutput()) {
@@ -718,6 +802,13 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         try {
             this.mSource = null;
             this.mAudioBuffer = null;
+            console.log('AudioPlayer.playFile: Context.state = ', this.mAudioContext.state);
+            // pruefen, ob AudioContext nicht gespeert ist
+            if ( this.mAudioContext.state === 'suspended' ) {
+                this._error( 'playFile', 'AudioContext ist nicht entsperrt' );
+                this._onAudioStop();
+                return -1;
+            }
             return this._loadAudioFile( aFileName );
         } catch (aException) {
             this._exception( 'playFile', aException );
@@ -753,8 +844,12 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         if ( this.mSource ) {
             try {
                 this.mAudioPlayFlag = false;
-                this.mSource.stop(0);
-                this.mSource.disconnect(0);
+                if ( this.mSource.stop ) {
+                    this.mSource.stop( 0 );
+                } else {
+                    this.mSource.noteOff( 0 );
+                }
+                this.mSource.disconnect( 0 );
             } catch (aException) {
                 this._exception( 'stop', aException );
             }

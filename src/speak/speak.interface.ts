@@ -1,11 +1,11 @@
 /**
  * Oeffentliche Speak Schnittstelle als Teil des Speak-API
  *
- * API-Version: 1.2
- * Datum:       27.01.2019
+ * API-Version: 1.3
+ * Datum:       07.02.2019
  *
- * Letzte Aenderung: 27.01.2019
- * Status: gruen
+ * Letzte Aenderung: 07.02.2019
+ * Status: gelb
  *
  * @module speak
  * @author SB
@@ -28,6 +28,20 @@ export interface SpeakInterface extends BaseInterface {
 
 
     // Audio-Funktionen
+
+
+    /**
+     * AudioContext entsperren
+     */
+
+    unlockAudio(): number;
+
+
+    /**
+     * pruefen auf entsperrten AudioContext
+     */
+
+    isUnlockAudio(): boolean;
 
 
     /**

@@ -2,8 +2,8 @@
 /**
  * Globale Export-Datei fuer Speech-Nuance
  *
- * Version: 1.0
- * Datum:   16.12.2018
+ * Version: 1.1
+ * Datum:   06.02.2019
  *
  * Definiert das gesamte Speech-Nuance-API:
  *

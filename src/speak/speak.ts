@@ -2,7 +2,7 @@
  * Speak API fuer SpeakComponent, einmalige Initialisierung, alle anderen Initialisierungen
  * laufen auf der gleichen SpeakComponent.
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 07.02.2019
  * Status: gelb
  *
  * @module speak
@@ -62,9 +62,20 @@ export class Speak extends Base implements SpeakInterface {
     // Audio-Funktionen
 
 
+    unlockAudio(): number {
+        return this.mSpeakComponent.unlockAudio();
+    }
+
+
+    isUnlockAudio(): boolean {
+        return this.mSpeakComponent.isUnlockAudio();
+    }
+
+
     isAudio(): boolean {
         return this.mSpeakComponent.isAudio();
     }
+
 
     setAudioOn(): number {
         return this.mSpeakComponent.setAudioOn();
