@@ -1,7 +1,7 @@
 /**
  * TTSPlugin definiert die Basisklasse aller TTS
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 13.02.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -370,7 +370,7 @@ export class TTSPlugin extends Plugin implements TTSInterface {
         try {
             // TODO: muss noch in normale Fehlerbehandlung uebertragen werden
             // console.log( 'TTSPlugin.startSpeak: onerror ', aEvent.error );
-            let result = this._onError( aEvent.error );
+            let result = this._onError( new Error( aEvent.error ));
             if ( this.isSpeakRunning()) {
                 this.mSpeakRunningFlag = false;
                 if ( this._onSpeakStop() !== 0 ) {
@@ -498,6 +498,7 @@ export class TTSPlugin extends Plugin implements TTSInterface {
                 break;
 
             default:
+                this._error( 'setLanguage', 'keine gueltige Sprache uebergeben' );
                 result = -1;
                 break;
         }

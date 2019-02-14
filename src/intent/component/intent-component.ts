@@ -1,7 +1,7 @@
 /**
  * IntentComponent zur Verwaltung von NLU-Plugins. Sie erbt von der BaseComponent.
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 13.02.2019
  * Status: rot
  *
  * @module intent/component
@@ -420,10 +420,14 @@ export class IntentComponent extends BaseComponent implements IntentComponentInt
     }
 
     removeAllEvent( aPluginName ): number {
-        super.removeAllEvent( aPluginName );
-        this.removeListenResultEvent( aPluginName );
-        this.removeIntentResultEvent( aPluginName );
-        return 0;
+        let result = super.removeAllEvent( aPluginName );
+        if ( this.removeListenResultEvent( aPluginName ) !== 0 ) {
+            result = -1;
+        }
+        if ( this.removeIntentResultEvent( aPluginName ) !== 0 ) {
+            result = -1;
+        }
+        return result;
     }
 
 

@@ -399,9 +399,11 @@ export class ListenComponent extends BaseComponent implements ListenComponentInt
     }
 
     removeAllEvent( aPluginName ): number {
-        super.removeAllEvent( aPluginName );
-        this.removeListenResultEvent( aPluginName );
-        return 0;
+        let result = super.removeAllEvent( aPluginName );
+        if ( this.removeListenResultEvent( aPluginName ) !== 0 ) {
+            result = -1;
+        }
+        return result;
     }
 
 

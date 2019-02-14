@@ -2,7 +2,7 @@
  * Oeffentliche Speak Schnittstelle als Teil des Speak-API
  *
  * API-Version: 1.3
- * Datum:       07.02.2019
+ * Datum:       12.02.2019
  *
  * Letzte Aenderung: 07.02.2019
  * Status: gelb
@@ -15,6 +15,15 @@
 // base
 
 import { BaseInterface } from './../base/base.interface';
+
+
+// audio
+
+import {
+    OnAudioStartFunc,
+    OnAudioStopFunc,
+    OnAudioUnlockFunc
+} from './../audio/audio-function.type';
 
 
 // Global API

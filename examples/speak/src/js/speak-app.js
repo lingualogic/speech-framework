@@ -399,12 +399,18 @@ function SpeakApp() {
             errorOutputFlag: false
         };
         // erzeugt das Nuance-Modul
-        speech.Nuance.init( option );
-        speech.Nuance.open((aError, aPortName, aPortResult) => {
-            console.log('SpeakApp.init: Nuance', aPortResult);
+        if ( speech.Nuance ) {
+            speech.Nuance.init( option );
+            speech.Nuance.open((aError, aPortName, aPortResult) => {
+                console.log('SpeakApp.init: Nuance', aPortResult);
+                initSpeak();
+                console.log('SpeakApp.init: nach initSpeak');
+            });
+        } else {
+            console.log('SpeakApp.init: Nuance nicht vorhanden');
             initSpeak();
             console.log('SpeakApp.init: nach initSpeak');
-        });
+        }
     } catch ( aException ) {
         console.log('SpeakApp.init: Exception', aException.message);
         return;

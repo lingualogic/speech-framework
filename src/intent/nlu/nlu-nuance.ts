@@ -2,7 +2,7 @@
  * Diese Komponente dient der Spracherkennung mit Hilfe von Nuance NLU
  * sowohl mit Audio wie auch Text.
  *
- * Letzte Aenderung: 18.01.2019
+ * Letzte Aenderung: 13.02.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -131,6 +131,7 @@ export class NLUNuance extends NLUPlugin {
                 break;
 
             default:
+                this._error( 'setLanguage', 'keine gueltige Sprache uebergeben' );
                 result = -1;
                 break;
         }

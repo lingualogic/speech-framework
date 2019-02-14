@@ -1,18 +1,22 @@
 /**
+ * Automatisch erzeugte globale speech-main.ts Datei fuer Speech-Framework
+ * 
  * Hauptbuilder des gesamten Speech-Frameworks. Hier werden alle Builder eingetragen,
  * die in den Komponenten verwendet werden duerfen. Muss vor allen Komponenten ausgefuehrt
  * einmal zur Initialisierung des Speech-Frameworks ausgefuehrt werden !
  *
+ * Konfiguration: stable
+ * Version: 0.5.5.0045 (Alpha) vom 14.02.2019
+ *
  * Komponenten:
  *
- *          action      - Aktionsausfuehrung
- *          speak       - Sprachausgabe
- *          listen      - Spracheingabe
- *          intent      - Intentinterpreter
- *          inference   - Inferenzinterpreter
- *          dialog      - Dialogsteuerung
- *          bot         - Assistent
- * 
+ *              Action    - Aktionsausfuehrung
+ *              Speak     - Sprachausgabe
+ *              Listen    - Spracheingabe
+ *              intent    - Sprachanalyse
+ *              Dialog    - Dialoginterpreter
+ *              Bot       - Sprachassistent
+ *
  * @module main
  * @author SB
  */
@@ -45,12 +49,6 @@ import { ListenComponentBuilder } from './listen/component/listen-component-buil
 
 import { INTENT_TYPE_NAME } from './intent/intent-const';
 import { IntentComponentBuilder } from './intent/component/intent-component-builder';
-
-
-// inference
-
-// inference-const
-// inference-component-builder
 
 
 // dialog
@@ -106,24 +104,25 @@ export class SpeechMain {
         // console.log('SpeechMain._createAllBuilder: start');
         let result = 0;
         // Hier werden die Builder aller Komponenten erzeugt
+
         if ( SystemManager.insertBuilder( ACTION_TYPE_NAME, new ActionComponentBuilder( '', false )) !== 0 ) { result = -1; }
         if ( SystemManager.insertBuilder( SPEAK_TYPE_NAME, new SpeakComponentBuilder( '', false )) !== 0 ) { result = -1; }
         if ( SystemManager.insertBuilder( LISTEN_TYPE_NAME, new ListenComponentBuilder( '', false )) !== 0 ) { result = -1; }
         if ( SystemManager.insertBuilder( INTENT_TYPE_NAME, new IntentComponentBuilder( '', false )) !== 0 ) { result = -1; }
-        // inference entfernt
         if ( SystemManager.insertBuilder( DIALOG_TYPE_NAME, new DialogComponentBuilder( '', false )) !== 0 ) { result = -1; }
         if ( SystemManager.insertBuilder( BOT_TYPE_NAME, new BotComponentBuilder( '', false )) !== 0 ) { result = -1; }
+
         // console.log('SpeechMain.init: _createAllBuilder', result);
         return result;
     }
 
 
     /*
-     * Initialisiert alle Builder und Ports
-     *
-     * @static
-     * @return {number} Fehlercode 0 oder -1
-     */
+    * Initialisiert alle Builder und Ports
+    *
+    * @static
+    * @return {number} Fehlercode 0 oder -1
+    */
 
     static init(): number {
         if ( SpeechMain.initFlag ) {
@@ -139,17 +138,18 @@ export class SpeechMain {
         return 0;
     }
 
+
     static isInit(): boolean {
         return SpeechMain.initFlag;
     }
 
 
     /**
-     * Freigabe des Systems
-     *
-     * @static
-     * @return {number} Fehlercode 0 oder -1
-     */
+    * Freigabe des Systems
+    *
+    * @static
+    * @return {number} Fehlercode 0 oder -1
+    */
 
     static done(): number {
         SystemManager.clear();

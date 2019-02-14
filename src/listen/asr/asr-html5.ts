@@ -180,7 +180,7 @@ export class ASRHtml5 extends ASRPlugin {
 
 
     _setBreakTimeout(): void {
-        this.mBreakTimeout = setTimeout(() => this._breakRecognition(), ASR_BREAK_TIMEOUT );
+        this.mBreakTimeout = window.setTimeout(() => this._breakRecognition(), ASR_BREAK_TIMEOUT );
         // console.log('ASRHtml5._setBreakTimeout:', this.mBreakTimeout);
     }
 

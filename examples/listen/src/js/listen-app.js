@@ -237,11 +237,16 @@ function ListenApp() {
             nuanceNluTag: NLU_TAG
         };
         // erzeugt das Nuance-Modul
-        speech.Nuance.init( option );
-        speech.Nuance.open((aError, aPortName, aPortResult) => {
-            console.log('ListenApp.init: Nuance', aPortResult);
+        if ( speech.Nuance ) {
+            speech.Nuance.init( option );
+            speech.Nuance.open((aError, aPortName, aPortResult) => {
+                console.log('ListenApp.init: Nuance', aPortResult);
+                initListen();
+            });
+        } else {
+            console.log('ListenApp.init: kein Nuance vorhanden');
             initListen();
-        });
+        }
     } catch ( aException ) {
         console.log('ListenApp.init: Exception', aException.message);
         return;

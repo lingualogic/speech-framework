@@ -1,0 +1,352 @@
+# TestDialog 
+
+DIALOG ShortHelpNoWait
+
+	STATE home
+		SPEAK 4, Hallo! Ich helfe Ihnen bei der Bedienung.
+		ACTION setFocus, ButtonOnly, help
+		SPEAK 5, Mit der Rettungsring taste aktivieren und deaktivieren Sie die Sprachhilfe.
+		ACTION setFocus, ContainerOnly, nepos
+		SPEAK 8, Über das Nepos menü können Sie Einstellungen vornehmen.
+		ACTION setFocus, ContainerOnly, communication
+		SPEAK 8, Über das Kommunizieren menü können Sie Nachrichten lesen, schreiben oder Video anrufe tätigen.
+		ACTION setFocus, ContainerOnly, organize
+		SPEAK 7, Im organisieren menü können Sie Fotos, Dokumente, Daat ten oder das Gerät verwalten.
+		ACTION setFocus, ContainerOnly, shopping
+		SPEAK 7, Über das einkaufen menü können sie verschiedene Online Shops auswählen.
+		ACTION setFocus, ContainerOnly, entertainment
+		SPEAK 7, Über das unterhalten menü erreichen Sie Hörbücher, Videos oder Neuigkeiten.
+		ACTION setFocus, ContainerOnly, search
+		SPEAK 7, Mit dem suchen menü können sie im Internet stöbern.
+
+  STATE nepos
+		ACTION setFocus, ButtonOnly, device
+		SPEAK 7, Mit der Pfeil taste bei mein Gerät können Sie Informationen zu ihrem Gerät einsehen.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE communication
+		ACTION setFocus, ButtonOnly, messenger
+		SPEAK 7, Über die Pfeil taste bei E-Mail können sie ihre Nachrichten verwalten.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+	STATE organize
+		ACTION setFocus, ButtonOnly, document
+		SPEAK 7, Über die Pfeil taste bei Dokumente gelangen Sie zu Ihren emfangen nen Dokumenten.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+	STATE shopping
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE entertainment
+		ACTION setFocus, ButtonOnly, read
+		SPEAK 7, Über die Pfeil taste bei lesen gelangen Sie zu ihren Leseanwendungen.
+		ACTION setFocus, ButtonOnly, listen
+		SPEAK 7, Über die Pfeil taste bei hören gelangen Sie zu ihren Audioanwendungen.
+		ACTION setFocus, ButtonOnly, watch
+		SPEAK 7, Über die Pfeil taste bei sehen gelangen Sie zu ihren Photos und Videos.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE search
+		ACTION setFocus, ButtonOnly, internet
+		SPEAK 7, Über die Pfeil taste bei Internetbrowser gelangen sie ins Internet.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE entertainment-read
+		ACTION setFocus, ButtonOnly, newsfeed
+		SPEAK 8, Über die Pfeil taste bei Neuigkeiten können sie neueste Nachrichten aus aller Welt lesen.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE entertainment-listen
+		ACTION setFocus, ButtonOnly, audiobook
+		SPEAK 8, Über die Pfeil taste bei Hörbücher können sie ihre neuesten Hörbücher anhören.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+  STATE entertainment-watch
+		ACTION setFocus, ButtonOnly, photo
+		SPEAK 7, Über die Pfeil taste bei Fotos erreichen Sie Ihre Bilder und die Kamera.
+		ACTION setFocus, ButtonOnly, video
+		SPEAK 7, Über die Pfeil taste bei YouTube können sie Videos ansehen.
+		ACTION setFocus, ContainerGroupTop, homeMenu
+		SPEAK 7, Im oberen Menübereich können Sie die Hauptkategorie wechseln.
+
+	STATE pictureList
+		ACTION setFocus, ButtonOnly, edit
+		SPEAK 7, Mit der Werkzeug taste können Sie Bilder löschen.
+		ACTION setFocus, ButtonGroupSimilar, pictureList
+		SPEAK 7, Mit einer der Pfeil tasten öffnen Sie die Einzelansicht des jeweiligen Bildes.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links verlassen Sie die Bilder Anwendung.
+    GROUP scrollable
+		  ACTION setFocus, Arrow, pictureList
+		  SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+    GROUPEND
+    GROUP optional
+		  ACTION setFocus, ContainerGroupLeft, leftContextMenu
+		  SPEAK 7, Im linken Bereich können Sie die angezeigten Bilder filtern.
+    GROUPEND
+
+	STATE picturesDelete
+		ACTION setFocus, ButtonGroupSimilar, picture
+		SPEAK 9, Mit den Mülleimertasten wählen Sie die Bilder die Sie entfernen möchten, oder machen Sie die Auswahl im Anschluss mit der runden Pfeiltaste rückgängig.
+		ACTION setFocus, ButtonOnly, done
+		SPEAK 7, Mit der Hähkchen taste schließen Sie den Lösch vorgang ab.
+		ACTION setFocus, ButtonOnly, cancel
+		SPEAK 7, Über die Kreuz taste oben links können Sie den Lösch vorgang abbrechen.
+
+	STATE picture
+		ACTION setFocus, ButtonOnly, cursorLeft
+		ACTION setFocus, ButtonOnly, cursorRight
+		SPEAK 7, Über die Pfeiltasten unten navigieren Sie zum nächsten oder vorigen Bild.
+		ACTION setFocus, ContainerOnly, contextMenu
+		SPEAK 7, Mit der Pfeiltaste bei weitere Funktionen finden Sie zusätzliche Aktionsmöglichkeiten
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links erreichen Sie die Bilderübersicht.
+		ACTION setFocus, ButtonOnly, fullScreen
+		SPEAK 7, Mit der Doppelpfeil taste unten rechts können Sie das Bild vergrößern.
+
+	STATE documentList
+		ACTION setFocus, ButtonGroupSimilar, documentList
+		SPEAK 7, Mit einer der Pfeil tasten öffnen Sie die Einzelansicht des jeweiligen Dokumentes
+    GROUP optional
+		  ACTION setFocus, ContainerGroupLeft, leftContextMenu
+		  SPEAK 7, Im linken Bereich können Sie die angezeigten Dokumente filtern.
+    GROUPEND
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links verlassen Sie die Dokumenten Anwendung.
+    GROUP scrollable
+		  ACTION setFocus, Arrow, documentList
+		  SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+    GROUPEND
+
+	STATE document
+		ACTION setFocus, ButtonOnly, cursorLeft
+		ACTION setFocus, ButtonOnly, cursorRight
+		ACTION setFocus, ButtonOnly, cursorUp
+		ACTION setFocus, ButtonOnly, cursorDown
+		SPEAK 7, Mit den Pfeil tasten können Sie den angezeigten Ausschnitt des Dokumentes verschieben.
+		ACTION setFocus, ButtonOnly, zoomIn
+		ACTION setFocus, ButtonOnly, zoomOut
+		SPEAK 7, Mit den Plus und Minus Tasten können Sie den angezeigten Ausschnitt vergrößern oder verkleinern.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links erreichen Sie die Dokumentenübersicht.
+		ACTION setFocus, ButtonOnly, fullScreen
+		SPEAK 7, Mit der Doppelpfeil taste unten rechts können Sie die gesamte Ansicht vergrößern.
+
+	STATE email
+		ACTION setFocus, ButtonOnly, edit
+		SPEAK 7, Mit der Stift taste bei: Neue E-Mail schreiben – können Sie eine Nachricht verfassen.
+		ACTION setFocus, ButtonOnly, inbox
+		SPEAK 7, Mit der Pfeil taste bei: Postfach – gelangen Sie zu Ihren Nachrichten.
+		ACTION setFocus, ButtonOnly, drafts
+		SPEAK 7, Mit der Pfeil taste bei: Entwürfe – gelangen Sie zu Ihren E-Mail Entwürfen.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links verlassen Sie die E-Mail Anwendung.
+
+	STATE email-inbox
+		ACTION setFocus, ButtonOnly, main
+		SPEAK 7, Mit der Stift taste bei: Neue E-Mail schreiben – können Sie eine Nachricht verfassen.
+		ACTION setFocus, ButtonOnly, edit
+		SPEAK 7, Mit der: Werkzeug taste – können Sie beispielsweise Nachrichten löschen.
+ 		ACTION setFocus, ButtonGroupSimilar, inboxList
+		SPEAK 7, Mit einer Pfeil taste – öffnen Sie eine versante oder empfange ne Nachricht.
+		ACTION setFocus, ButtonOnly, drafts
+		SPEAK 7, Mit der Pfeil taste – bei Entwürfe gelangen Sie zu Ihren unfertigen Nachrichten.
+ 		ACTION setFocus, ButtonOnly, all
+ 		ACTION setFocus, ButtonOnly, received
+ 		ACTION setFocus, ButtonOnly, sent
+		SPEAK 6, Mit den Pfeil tasten – wählen Sie an dre Inhalte aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste – oben links verlassen Sie die E-Mail Anwendung.
+    GROUP scrollable
+		  ACTION setFocus, Arrow, inboxList
+		  SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+    GROUPEND
+
+	STATE email-read
+		ACTION setFocus, ButtonOnly, writeMail
+		SPEAK 7, Mit der – Stift taste – verfassen Sie eine Nachricht.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste – oben links gelangen Sie zum Postfach.
+
+	STATE email-write-process
+    GROUP optional
+		  ACTION setFocus, ButtonOnly, contact
+		  SPEAK 7, Mit der Eins bei Kontakte wählen Sie den Empfänger aus.
+    GROUPEND
+    GROUP optional
+		  ACTION setFocus, ButtonOnly, subject
+		  SPEAK 7, Mit der Zwei bei Betreff können sie eine Betreffzeile angeben.
+    GROUPEND
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Kreuz taste oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-process.contact
+		ACTION setFocus, ButtonOnly, contact
+		SPEAK 7, Mit der Eins bei Kontakte - wählen Sie den Empfänger aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die x taste - oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-contact
+		ACTION setFocus, ButtonOnly, main
+		SPEAK 7, Über die Tastatur taste - können Sie eine E-Mail Adresse eingeben
+    	ACTION setFocus, ButtonOnly, contactList
+		SPEAK 7, Mit einer Häkchen taste – wählen Sie den Kontakt aus.
+    	ACTION setFocus, ButtonOnly, leftContextMenu
+    	SPEAK 7, Mit den Pfeiltasten wählen Sie an dre Inhalte aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die X taste oben links können Sie das Schreiben der E-Mail abbrechen.
+    GROUP scrollable
+		  ACTION setFocus, Arrow, contactList
+		  SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+    GROUPEND
+
+	STATE email-write-process.subject
+		ACTION setFocus, ButtonOnly, subject
+		SPEAK 7, Mit der Zwei bei Betreff - können Sie Ihrer Nachricht eine Überschrift geben.
+		ACTION setFocus, ButtonGroupContextLeft, contact
+		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die x taste - oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-subject
+		SPEAK 7, Über die Tastatur können Sie schreiben.
+  		ACTION setFocus, ButtonOnly, continue
+		SPEAK 7, Mit der Pfeil taste - gelangen Sie zum nächsten Schritt.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste - oben links gelangen Sie einen Schritt zurück.
+
+	STATE email-write-process.text
+		ACTION setFocus, ButtonOnly, text
+		SPEAK 7, Mit der Drei bei Text - können Sie Ihre Nachricht verfassen.
+		ACTION setFocus, ButtonGroupContextLeft, contact
+		ACTION setFocus, ButtonGroupContextLeft, subject
+		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die x taste - oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-text
+		SPEAK 7, Über die Tastatur können Sie schreiben.
+  		ACTION setFocus, ButtonOnly, continue
+		SPEAK 7, Mit der Pfeil taste gelangen Sie zum nächsten Schritt.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links gelangen Sie einen Schritt zurück.
+		GROUP scrollable
+			ACTION setFocus, Arrow, scrollContent
+			SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+		GROUPEND
+
+	STATE email-write-process.attachments
+		ACTION setFocus, ButtonOnly, attachments
+		SPEAK 7, Mit der Vier bei Bilder anhängen erreichen Sie die Bilderauswahl.
+		ACTION setFocus, ButtonGroupContextLeft, contact
+		ACTION setFocus, ButtonGroupContextLeft, subject
+    	ACTION setFocus, ButtonGroupContextLeft, text
+		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die x taste -- oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-attachments
+    	ACTION setFocus, ButtonGroupSimilar, pictureList
+		SPEAK 7, Mit der Plus taste – wählen sie Bilder aus. Mit der Minustaste – können sie die Auswahl aufheben.
+		ACTION setFocus, ButtonOnly, save
+		SPEAK 7, Mit der Hähkchen taste – speichern Sie Ihre Bilderauswahl.
+		ACTION setFocus, ButtonOnly, skip
+		SPEAK 7, Mit der gebogenen Pfeil taste - können Sie diesen Schritt überspringen.
+		ACTION setFocus, ButtonGroupContextLeft, contact
+		ACTION setFocus, ButtonGroupContextLeft, subject
+    	ACTION setFocus, ButtonGroupContextLeft, text
+		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Kreuz taste oben links können Sie das Schreiben der E-Mail abbrechen.
+		GROUP scrollable
+			ACTION setFocus, Arrow, scrollContent
+			SPEAK 7, Halten Sie den Finger auf den jeweiligen Bereich um den Inhalt zu verschieben.
+		GROUPEND
+
+	STATE email-write-process.summary
+		ACTION setFocus, ButtonOnly, summary
+		SPEAK 7, Mit der Fünf bei Übersicht können Sie Ihre Angaben vor dem Senden überprüfen.
+		ACTION setFocus, ButtonGroupContextLeft, contact
+		ACTION setFocus, ButtonGroupContextLeft, subject
+		ACTION setFocus, ButtonGroupContextLeft, text
+ 		ACTION setFocus, ButtonGroupContextLeft, attachments
+		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die x taste - oben links können Sie das Schreiben der E-Mail abbrechen.
+
+	STATE email-write-summary
+		ACTION setFocus, ButtonOnly, send
+  		SPEAK 7, Mit der Papier flieger taste - versenden Sie Ihre E-Mail.
+  		ACTION setFocus, ButtonGroupContextLeft, contact
+  		ACTION setFocus, ButtonGroupContextLeft, subject
+  		ACTION setFocus, ButtonGroupContextLeft, text
+   		ACTION setFocus, ButtonGroupContextLeft, attachments
+  		SPEAK 7, Zum Ändern wählen Sie den jeweiligen Schritt aus.
+  		ACTION setFocus, ButtonOnly, back
+  		SPEAK 7, Über die x taste - oben links können Sie das Schreiben der E-Mail abbrechen.
+
+
+  STATE onboarding-speechhelp
+	  ACTION changeText, Dummy , dummy
+		SPEAK 4, Hallo! Hören Sie mich gut?
+		SPEAK 7, Durch Drehen des Lautstärkereglers am Gerät können Sie die Lautstärke nach Ihrem Wunsch anpassen.
+		SPEAK 7, Ich bin Ihre Sprachhilfe und unterstütze Sie jederzeit sich zurechtzufinden.
+		ACTION setFocus, ButtonOnly, continue
+		SPEAK 7, Mit der Pfeil taste - gelangen Sie zum nächsten Schritt.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste - oben links gelangen Sie einen Schritt zurück.
+
+	STATE email-input
+		SPEAK 7, Über die Tastatur können Sie schreiben.
+		ACTION setFocus, ButtonOnly, continue
+		SPEAK 7, Mit der Pfeil taste gelangen Sie zum nächsten Schritt.
+		ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links gelangen Sie zurück zu den Kontakten.
+
+  STATE audiobook-player
+    ACTION setFocus, ButtonOnly, play
+    SPEAK 7, Hier können sie ein Hörbuch abspielen oder pausieren
+    ACTION setFocus, ButtonOnly, forward
+    ACTION setFocus, ButtonOnly, backward
+    SPEAK 7, Hier können sie das Hörbuch vor - und zurückspulen
+    GROUP optional
+      ACTION setFocus, ButtonOnly, prev
+      SPEAK 7, Hier gelangen sie zum vorherigen Hörbuch
+    GROUPEND
+    GROUP optional
+      ACTION setFocus, ButtonOnly, next
+      SPEAK 7, Hier gelangen sie zum nächsten Hörbuch
+    GROUPEND
+    ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links erreichen Sie die Hörbücherübersicht.
+		ACTION setFocus, ButtonOnly, fullScreen
+		SPEAK 7, Mit der Doppelpfeil taste unten rechts können Sie das Bild vergrößern.
+
+  STATE video-player
+    ACTION setFocus, ButtonOnly, play
+    SPEAK 7, Hier können sie ein Video abspielen oder pausieren
+    ACTION setFocus, ButtonOnly, forward
+    ACTION setFocus, ButtonOnly, backward
+    SPEAK 7, Hier können sie das Viedeo vor - und zurückspulen
+    GROUP optional
+      ACTION setFocus, ButtonOnly, prev
+      SPEAK 7, Hier gelangen sie zum vorherigen Video
+    GROUPEND
+    GROUP optional
+      ACTION setFocus, ButtonOnly, next
+      SPEAK 7, Hier gelangen sie zum nächsten Video
+    GROUPEND
+    ACTION setFocus, ButtonOnly, back
+		SPEAK 7, Über die Pfeil taste oben links erreichen Sie die Videoübersicht.
+		ACTION setFocus, ButtonOnly, fullScreen
+		SPEAK 7, Mit der Doppelpfeil taste unten rechts können Sie das Bild vergrößern.
+
+

@@ -1,7 +1,7 @@
 /**
  * Action Version und Build Konstanten
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 12.02.2019
  * Status: gelb
  *
  * @module action

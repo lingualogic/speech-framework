@@ -1,6 +1,9 @@
 "use strict";
 /**
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
+ *
+ * Konfiguration: stable
+ * Version: 0.5.5.0045 (Alpha) vom 14.02.2019
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const
@@ -19,6 +22,8 @@ exports.ActionFactory = action_factory_1.ActionFactory;
 // audio
 var audio_const_1 = require("./speech-framework");
 exports.AUDIO_PLUGIN_NAME = audio_const_1.AUDIO_PLUGIN_NAME;
+exports.AUDIO_MP3_FORMAT = audio_const_1.AUDIO_MP3_FORMAT;
+exports.AUDIO_WAV_FORMAT = audio_const_1.AUDIO_WAV_FORMAT;
 var audio_factory_1 = require("./speech-framework");
 exports.AudioFactory = audio_factory_1.AudioFactory;
 // speak
@@ -51,7 +56,6 @@ exports.INTENT_HTML5_NLU = intent_const_1.INTENT_HTML5_NLU;
 exports.INTENT_NUANCE_NLU = intent_const_1.INTENT_NUANCE_NLU;
 var intent_factory_1 = require("./speech-framework");
 exports.IntentFactory = intent_factory_1.IntentFactory;
-// inference nicht eingefuegt
 // dialog
 var dialog_const_1 = require("./speech-framework");
 exports.DIALOG_TYPE_NAME = dialog_const_1.DIALOG_TYPE_NAME;

@@ -465,9 +465,11 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     unlockAudio(): void {
+        // console.log('AudioPlayer.unlockAudio: start');
         if ( this.mAudioContext ) {
             if ( this.mAudioContext.state === 'suspended' ) {
                 this.mAudioContext.resume().then(() => {
+                    // console.log('AudioPlayer.unlockAudio: end');
                     this._onAudioUnlock();
                 }, (aError: any) => {
                     console.log('AudioPlayer.unlockAudioContext:', aError)
@@ -483,9 +485,9 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     isUnlockAudio(): boolean {
-        console.log('AudioPlayer.isUnlockAudio:', this.mAudioContext);
+        // console.log('AudioPlayer.isUnlockAudio:', this.mAudioContext);
         if ( this.mAudioContext ) {
-            console.log('AudioPlayer.isUnlockAudio: state = ', this.mAudioContext.state);
+            // console.log('AudioPlayer.isUnlockAudio: state = ', this.mAudioContext.state);
             if ( this.mAudioContext.state === 'running' ) {
                 return true;
             } 
@@ -503,6 +505,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     setAudioFormat( aAudioFormat: string ): number {
+        // console.log('AudioPlayer.setAudioFormat:', aAudioFormat);
         if ( aAudioFormat !== AUDIO_MP3_FORMAT && aAudioFormat !== AUDIO_WAV_FORMAT ) {
             this._error('setAudioFormat', 'kein gueltiges Audioformat uebergeben: ' + aAudioFormat);
             return -1;
@@ -578,7 +581,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _loadAudioFile( aUrl: string ): number {
-        console.log('AudioPlayer._loadAudioFile:', aUrl);
+        // console.log('AudioPlayer._loadAudioFile:', aUrl);
         if ( !this.mXMLHttpRequestClass ) {
             this._error( '_loadAudioFile', 'keine XMLHttpRequest Klasse' );
             return -1;
@@ -637,7 +640,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _decodeAudio(): number {
-        console.log('AudioPlayer._decodeAudio');
+        // console.log('AudioPlayer._decodeAudio');
         if ( !this.isInit()) {
             this._error( '_decodeAudio', 'nicht initialisiert' );
             return -1;
@@ -653,7 +656,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         }
         try {
             this.mAudioContext.decodeAudioData( this.mRequest.response, (aBuffer: AudioBuffer) => {
-                console.log('AudioPlayer._decodeAudio: decodeAudioData start', aBuffer);
+                // console.log('AudioPlayer._decodeAudio: decodeAudioData start', aBuffer);
                 this.mAudioBuffer = aBuffer;
                 this._playStart();
                 // console.log('AudioPlayer._decodeAudio: decodeAudioData end');
@@ -680,7 +683,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _playStart(): number {
-        console.log('AudioPlayer._playStart');
+        // onsole.log('AudioPlayer._playStart');
         if ( !this.mAudioBuffer ) {
             return -1;
         }
@@ -702,7 +705,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             // Ende-Event
             this.mSource.onended = () => {
                 // TODO: hier muss ein Ende-Event fuer Audio-Ende eingebaut werden
-                console.log('AudioPlayer._playStart: onended');
+                // console.log('AudioPlayer._playStart: onended');
                 if ( this.isPlay()) {
                     this.mAudioPlayFlag = false;
                     this._onAudioStop();
@@ -710,7 +713,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             };
             this.mSource.buffer = this.mAudioBuffer;
             this.mSource.connect( this.mAudioContext.destination );
-            console.log('AudioPlayer._playStart: ', this.mSource, this.mAudioContext.state);
+            // console.log('AudioPlayer._playStart: ', this.mSource, this.mAudioContext.state);
             if ( this.mSource.start ) {
                 this.mSource.start( 0 );
             } else {
@@ -782,7 +785,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     playFile( aFileName: string ): number {
-        console.log('AudioPlayer.playFile:', aFileName);
+        // console.log('AudioPlayer.playFile:', aFileName);
         this.unlockAudio();
         if ( !this.isActive()) {
             // kein Fehler
@@ -791,7 +794,6 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             }
             return 0;
         }
-
         // pruefen ob ein anderes Audio abgespielt wird
         if ( this.isLoad() || this.isPlay()) {
             // laden abbrechen
@@ -799,10 +801,15 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             // Audioausgabe stoppen
             this.stop();
         }
+        // pruefen auf uebergebenen Dateinamen
+        if ( !aFileName ) {
+            this._error( 'playFile', 'kein Dateiname uebergeben' );
+            return -1;
+        }
         try {
             this.mSource = null;
             this.mAudioBuffer = null;
-            console.log('AudioPlayer.playFile: Context.state = ', this.mAudioContext.state);
+            // console.log('AudioPlayer.playFile: Context.state = ', this.mAudioContext.state);
             // pruefen, ob AudioContext nicht gespeert ist
             if ( this.mAudioContext.state === 'suspended' ) {
                 this._error( 'playFile', 'AudioContext ist nicht entsperrt' );

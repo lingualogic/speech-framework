@@ -1,10 +1,10 @@
 /**
  * Speech-Nuance
  * 
- * Version: 0.1.1
- * Build:   0002
+ * Version: 0.1.3
+ * Build:   0004
  * TYPE:    ALPHA
- * Datum:   30.01.2019
+ * Datum:   14.02.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -33,7 +33,7 @@ import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from '../../common/htm
 
 import { PortManager } from '../../core/port/port-manager.ts';
 
-var NUANCE_TYPE_NAME = 'Nuance', NUANCE_PORT_NAME = 'NuancePort', NUANCE_SERVER_URL = 'wss://ws.dev.nuance.com/v2', NUANCE_DEFAULT_URL = NUANCE_SERVER_URL, NUANCE_NLU_ACTION = 'NLU', NUANCE_ASR_ACTION = 'ASR', NUANCE_ASRNLU_ACTION = 'ASRNLU', NUANCE_TTS_ACTION = 'TTS', NUANCE_CONFIG_PATH = 'assets/', NUANCE_CONFIG_FILE = 'nuance.json', NUANCE_CONFIG_LOAD = !1, NUANCE_DE_LANGUAGE = 'deu-DEU', NUANCE_DEFAULT_LANGUAGE = NUANCE_DE_LANGUAGE, NUANCE_TTS_VOICE4 = 'Petra-ML', NUANCE_TTS_VOICE = NUANCE_TTS_VOICE4, NUANCE_DEFAULT_VOICE = NUANCE_TTS_VOICE, NUANCE_AUDIOTTS_ID = 789, NUANCE_PCM_CODEC = 'audio/L16;rate=16000', NUANCE_DEFAULT_CODEC = NUANCE_PCM_CODEC, NUANCE_AUDIOBUFFER_SIZE = 2048, NUANCE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
+var NUANCE_TYPE_NAME = 'Nuance', NUANCE_PORT_NAME = 'NuancePort', NUANCE_MOCK_NAME = 'NuanceMock', NUANCE_SERVER_URL = 'wss://ws.dev.nuance.com/v2', NUANCE_DEFAULT_URL = NUANCE_SERVER_URL, NUANCE_NLU_ACTION = 'NLU', NUANCE_ASR_ACTION = 'ASR', NUANCE_ASRNLU_ACTION = 'ASRNLU', NUANCE_TTS_ACTION = 'TTS', NUANCE_CONFIG_PATH = 'assets/', NUANCE_CONFIG_FILE = 'nuance.json', NUANCE_CONFIG_LOAD = !1, NUANCE_DE_LANGUAGE = 'deu-DEU', NUANCE_DEFAULT_LANGUAGE = NUANCE_DE_LANGUAGE, NUANCE_TTS_VOICE4 = 'Petra-ML', NUANCE_TTS_VOICE = NUANCE_TTS_VOICE4, NUANCE_DEFAULT_VOICE = NUANCE_TTS_VOICE, NUANCE_AUDIOTTS_ID = 789, NUANCE_PCM_CODEC = 'audio/L16;rate=16000', NUANCE_DEFAULT_CODEC = NUANCE_PCM_CODEC, NUANCE_AUDIOBUFFER_SIZE = 2048, NUANCE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
     return (extendStatics = Object.setPrototypeOf || {
         __proto__: []
     } instanceof Array && function(t, e) {
@@ -98,7 +98,7 @@ var Factory = function(t) {
             return this._exception('create', t), null;
         }
     }, e;
-}(Factory), NUANCE_VERSION_NUMBER = '0.1.1', NUANCE_VERSION_BUILD = '0002', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '30.01.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
+}(Factory), NUANCE_VERSION_NUMBER = '0.1.3', NUANCE_VERSION_BUILD = '0004', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '14.02.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
     function t(e, n) {
         void 0 === e && (e = ''), void 0 === n && (n = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = n, 
@@ -640,7 +640,7 @@ var Factory = function(t) {
                         e._exception('_start', t);
                     }
                 }, function(t) {
-                    e._error('_start', 'keine UserMedia erzeugt: ' + t.message), e._onStop();
+                    e._onError(new Error('ASR-Error: kein UserMedia erzeugt')), e._onStop();
                 }), 0;
             } catch (t) {
                 return this._exception('_start', t), -1;
@@ -945,7 +945,7 @@ var Factory = function(t) {
         this.mNuanceASR = null, this.mNuanceNLU = null, this.mTransaction = null, this.mRunningFlag = !1, 
         this.defaultOptions = null, this.codec = '', 0;
     }, e.prototype.reset = function(e) {
-        return this.mTransaction = null, t.prototype.reset.call(this, e);
+        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._setErrorOutput = function(e) {
         t.prototype._setErrorOutput.call(this, e), this.mNuanceConfig && this.mNuanceConfig._setErrorOutput(e), 
         this.mNuanceWebSocket && this.mNuanceWebSocket._setErrorOutput(e), this.mNuanceConnect && this.mNuanceConnect._setErrorOutput(e), 
@@ -1141,6 +1141,179 @@ var Factory = function(t) {
             return this._exception('_stopTTS', t), -1;
         }
     }, e;
+}(Port), NuanceMock = function(t) {
+    function e(e, n) {
+        void 0 === n && (n = !0);
+        var r = t.call(this, e || NUANCE_MOCK_NAME, n) || this;
+        return r.webSocketFlag = !0, r.audioContextFlag = !0, r.getUserMediaFlag = !0, r.optionAppParameter = !0, 
+        r.nuanceNLUFlag = !0, r.nuanceASRFlag = !0, r.nuanceTTSFlag = !0, r.disconnectFlag = !0, 
+        r.isRecording = !1, r.defaultOptions = null, r.codec = '', r.intentName = 'TestIntent', 
+        r.intentConfidence = 1, r.mTransaction = null, r.mRunningFlag = !1, r;
+    }
+    return __extends(e, t), e.prototype.isMock = function() {
+        return !0;
+    }, e.prototype.getType = function() {
+        return NUANCE_TYPE_NAME;
+    }, e.prototype.getClass = function() {
+        return 'NuanceMock';
+    }, e.prototype._checkCredentials = function(t) {
+        return !!t && this.optionAppParameter;
+    }, e.prototype.init = function(e) {
+        return this.mInitFlag ? (this._error('init', 'Init bereits aufgerufen'), 0) : this._checkCredentials(e) ? this.webSocketFlag ? (this.audioContextFlag || (this._error('init', 'kein Audiokontext vorhanden, TTS und ASR werden abgeschaltet'), 
+        this._onInit(-1)), this.nuanceNLUFlag = !0, this.audioContextFlag && (this.nuanceASRFlag = !0, 
+        this.getUserMediaFlag && (this.nuanceTTSFlag = !0)), this.isErrorOutput() && (this.nuanceNLUFlag ? console.log('NuanceMock: NLU ist vorhanden') : console.log('NuanceMock: NLU ist nicht vorhanden'), 
+        this.nuanceTTSFlag ? console.log('NuanceMock: TTS ist vorhanden') : console.log('NuanceMock: TTS ist nicht vorhanden'), 
+        this.nuanceASRFlag ? console.log('NuanceMock: ASR ist vorhanden') : console.log('NuanceMock: ASR ist nicht vorhanden')), 
+        this._onInit(0), t.prototype.init.call(this, e)) : (this._error('init', 'keine WebSocket vorhanden'), 
+        this._onInit(-1), -1) : ((this.isErrorOutput() || e && e.errorOutputFlag) && this._error('init', 'keine AppId und/oder AppKey als Parameter uebergeben'), 
+        -1);
+    }, e.prototype.done = function(e) {
+        return void 0 === e && (e = !1), t.prototype.done.call(this), this.webSocketFlag = !0, 
+        this.audioContextFlag = !0, this.getUserMediaFlag = !0, this.nuanceNLUFlag = !1, 
+        this.nuanceASRFlag = !1, this.nuanceTTSFlag = !1, this.disconnectFlag = !0, this.isRecording = !1, 
+        this.defaultOptions = null, this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 
+        0;
+    }, e.prototype.reset = function(e) {
+        return this.mTransaction = null, t.prototype.reset.call(this, e);
+    }, e.prototype._onStop = function(e, n) {
+        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype._onStop.call(this, e, n);
+    }, e.prototype.isOpen = function() {
+        return !this.disconnectFlag;
+    }, e.prototype.open = function(t) {
+        return this.disconnectFlag ? (this.disconnectFlag = !1, this._onOpen(), 0) : 0;
+    }, e.prototype.close = function() {
+        return this.disconnectFlag = !0, 0;
+    }, e.prototype.isRunning = function() {
+        return this.isRecording;
+    }, e.prototype.isAction = function(t) {
+        var e = !1;
+        switch (t) {
+          case NUANCE_NLU_ACTION:
+            e = this.nuanceNLUFlag;
+            break;
+
+          case NUANCE_ASRNLU_ACTION:
+          case NUANCE_ASR_ACTION:
+            e = this.nuanceASRFlag;
+            break;
+
+          case NUANCE_TTS_ACTION:
+            e = this.nuanceTTSFlag;
+        }
+        return e;
+    }, e.prototype.start = function(t, e, n) {
+        if (this.isRunning()) return this._error('start', 'Aktion laeuft bereits'), -1;
+        if (!this.isOpen()) return this._error('start', 'Port ist nicht geoeffnet'), -1;
+        if (this.mTransaction) return this._error('start', 'andere Transaktion laeuft noch'), 
+        -1;
+        var r = n || {};
+        this.mRunningFlag = !0;
+        var o = 0;
+        switch (e) {
+          case NUANCE_NLU_ACTION:
+            this.mTransaction = new NuanceTransaction(t, NUANCE_NLU_ACTION), o = this._startNLU(this.mTransaction, r.text, r.language || NUANCE_DEFAULT_LANGUAGE);
+            break;
+
+          case NUANCE_ASRNLU_ACTION:
+            this.mTransaction = new NuanceTransaction(t, NUANCE_ASRNLU_ACTION), o = this._startASR(this.mTransaction, r.language || NUANCE_DEFAULT_LANGUAGE, r.audioURL || '', !0, r.useProgressive || !1);
+            break;
+
+          case NUANCE_ASR_ACTION:
+            this.mTransaction = new NuanceTransaction(t, NUANCE_ASR_ACTION), o = this._startASR(this.mTransaction, r.language || NUANCE_DEFAULT_LANGUAGE, r.audioURL || '', !1, r.useProgressive || !1);
+            break;
+
+          case NUANCE_TTS_ACTION:
+            this.mTransaction = new NuanceTransaction(t, NUANCE_TTS_ACTION), o = this._startTTS(this.mTransaction, r.text, r.language || NUANCE_DEFAULT_LANGUAGE, r.voice || NUANCE_DEFAULT_VOICE);
+            break;
+
+          default:
+            this._error('start', 'Keine gueltige Aktion uebergeben ' + e), o = -1;
+        }
+        return o;
+    }, e.prototype.stop = function(t, e, n) {
+        if (!this.isRunning()) return 0;
+        if (!this.isOpen()) return this._error('stop', 'Port ist nicht geoeffnet'), -1;
+        if (!this.mTransaction) return this._error('stop', 'keine Transaktion vorhanden'), 
+        -1;
+        if (t !== this.mTransaction.plugin) return this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + t + ' != ' + this.mTransaction.plugin), 
+        -1;
+        if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
+        -1;
+        var r = 0;
+        switch (e) {
+          case NUANCE_NLU_ACTION:
+            r = this._stopNLU(this.mTransaction);
+            break;
+
+          case NUANCE_ASRNLU_ACTION:
+          case NUANCE_ASR_ACTION:
+            r = this._stopASR(this.mTransaction);
+            break;
+
+          case NUANCE_TTS_ACTION:
+            r = this._stopTTS(this.mTransaction);
+            break;
+
+          default:
+            this._error('stop', 'Keine gueltige Aktion uebergeben ' + e), r = -1;
+        }
+        return this.mRunningFlag = !1, r;
+    }, e.prototype._startNLU = function(t, e, n) {
+        if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
+        if (!this.nuanceNLUFlag) return this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden'), 
+        -1;
+        try {
+            this._onStart(t.plugin, t.type);
+            var r = [ {
+                action: {
+                    intent: {
+                        value: this.intentName,
+                        confidence: this.intentConfidence
+                    }
+                },
+                literal: e
+            } ];
+            return t.result = r, this._onResult(t.result, t.plugin, t.type), this._onStop(t.plugin, t.type), 
+            0;
+        } catch (t) {
+            return this._exception('_startNLU', t), -1;
+        }
+    }, e.prototype._stopNLU = function(t) {
+        return 0;
+    }, e.prototype._startASR = function(t, e, n, r, o) {
+        if (void 0 === r && (r = !1), void 0 === o && (o = !1), !this.nuanceASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+        -1;
+        try {
+            return 0;
+        } catch (t) {
+            return this._exception('_startASR', t), -1;
+        }
+    }, e.prototype._stopASR = function(t) {
+        if (!this.nuanceASRFlag) return this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+        -1;
+        try {
+            return 0;
+        } catch (t) {
+            return this._exception('_stopASR', t), -1;
+        }
+    }, e.prototype._startTTS = function(t, e, n, r) {
+        if (!e) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
+        if (!this.nuanceTTSFlag) return this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
+        -1;
+        try {
+            return 0;
+        } catch (t) {
+            return this._exception('_startTTS', t), -1;
+        }
+    }, e.prototype._stopTTS = function(t) {
+        if (!this.nuanceTTSFlag) return this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
+        -1;
+        try {
+            return 0;
+        } catch (t) {
+            return this._exception('_stopTTS', t), -1;
+        }
+    }, e;
 }(Port), Nuance = function() {
     function t() {}
     return t.setErrorOutputOn = function() {
@@ -1149,20 +1322,38 @@ var Factory = function(t) {
         t.mErrorOutputFlag = !1, PortManager.setErrorOutputOff();
     }, t.setErrorOutputFunc = function(t) {
         PortManager._setErrorOutputFunc(t);
-    }, t._initNuancePort = function(t) {
-        var e = PortManager.get(NUANCE_TYPE_NAME, NuancePort);
-        return e ? 0 !== e.init(t) ? (PortManager.remove(NUANCE_TYPE_NAME), -1) : 0 : -1;
-    }, t.init = function(e) {
-        return t.mInitFlag ? 0 : e ? ('boolean' == typeof e.errorOutputFlag && (e.errorOutputFlag ? t.setErrorOutputOn() : t.setErrorOutputOff()), 
-        0 !== t._initNuancePort(e) ? -1 : (t.mInitFlag = !0, 0)) : (t.mErrorOutputFlag && console.log('Nuance.init: Keine Nuance-Parameter uebergeben'), 
+    }, t._initNuancePort = function(e) {
+        var n = PortManager.get(NUANCE_TYPE_NAME, NuancePort);
+        return n ? 0 !== n.init(e) ? (PortManager.remove(NUANCE_TYPE_NAME), -1) : (t.mCurrentPort = n, 
+        0) : -1;
+    }, t._initNuanceMock = function(e) {
+        var n = PortManager.get(NUANCE_TYPE_NAME, NuanceMock);
+        return n ? 0 !== n.init(e) ? (console.log('Nuance._initNuanceMock: Error NuanceMock wurde nicht initialisiert'), 
+        PortManager.remove(NUANCE_TYPE_NAME), -1) : (t.mCurrentPort = n, 0) : (console.log('Nuance._initNuanceMock: Error NuanceMock wurde nicht erzeugt'), 
         -1);
+    }, t.init = function(e) {
+        if (t.mInitFlag) return 0;
+        if (!e) return t.mErrorOutputFlag && console.log('Nuance.init: Keine Nuance-Parameter uebergeben'), 
+        -1;
+        'boolean' == typeof e.errorOutputFlag && (e.errorOutputFlag ? t.setErrorOutputOn() : t.setErrorOutputOff());
+        var n = 'NuancePort';
+        if (e && 'string' == typeof e.nuancePortName && 'NuanceMock' === e.nuancePortName && (n = 'NuanceMock'), 
+        'NuancePort' === n) {
+            if (0 !== t._initNuancePort(e)) return -1;
+        } else {
+            if ('NuanceMock' !== n) return t.mErrorOutputFlag && console.log('Nuance.init: Kein Nuance PortName vorhanden'), 
+            -1;
+            if (0 !== t._initNuanceMock(e)) return -1;
+        }
+        return t.mInitFlag = !0, 0;
     }, t.isInit = function() {
         return t.mInitFlag;
     }, t.done = function() {
-        var e = PortManager.get(NUANCE_TYPE_NAME);
-        if (!e) return 0;
-        var n = e.done();
-        return PortManager.remove(NUANCE_TYPE_NAME), t.mInitFlag = !1, n;
+        var e = PortManager.find(NUANCE_TYPE_NAME);
+        e || (e = t.mCurrentPort);
+        var n = 0;
+        return e && (n = e.done(), PortManager.remove(NUANCE_TYPE_NAME)), t.mCurrentPort = null, 
+        t.mInitFlag = !1, n;
     }, t._onOpenEvent = function(e, n, r, o) {
         if ('function' == typeof o) try {
             return o(e, n, r), 0;
@@ -1172,8 +1363,8 @@ var Factory = function(t) {
         }
         return 0;
     }, t._openNuancePort = function(e) {
-        var n = PortManager.get(NUANCE_TYPE_NAME);
-        return n ? (n.addOpenEvent(NUANCE_TYPE_NAME, function(r) {
+        var n = PortManager.find(NUANCE_TYPE_NAME);
+        return n || (n = t.mCurrentPort), n ? (n.addOpenEvent(NUANCE_TYPE_NAME, function(r) {
             return n.removeErrorEvent(NUANCE_TYPE_NAME), n.removeOpenEvent(NUANCE_TYPE_NAME), 
             'function' == typeof e && t._onOpenEvent(null, NUANCE_TYPE_NAME, r.result, e), r.result;
         }), n.addErrorEvent(NUANCE_TYPE_NAME, function(r) {
@@ -1186,7 +1377,7 @@ var Factory = function(t) {
         return t.mInitFlag ? t._openNuancePort(e) : (t.mErrorOutputFlag && console.log('Nuance.open: Init wurde nicht aufgerufen'), 
         t._onOpenEvent(new Error('Nuance.open: Init wurde nicht aufgerufen'), NUANCE_TYPE_NAME, -1, e), 
         -1);
-    }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t;
+    }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
 export { NUANCE_TYPE_NAME, NUANCE_TTS_ACTION, NUANCE_ASR_ACTION, NUANCE_ASRNLU_ACTION, NUANCE_NLU_ACTION, Nuance };

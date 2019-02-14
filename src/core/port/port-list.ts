@@ -1,7 +1,7 @@
 /**
  * Port-Liste zur Speicherung von Port-Komponenten
  *
- * Letzte Aenderung: 24.10.2018
+ * Letzte Aenderung: 14.02.2019
  * Status: rot
  *
  * @module core/port
@@ -87,7 +87,9 @@ export class PortList extends ErrorBase {
                 this._error( 'insert', 'Port existiert bereits: ' + aPortName );
                 return -1;
             }
+            // console.log('PortList.insert: Port wird eingetragen', aPortName, aPort);
             this.mPortList.set( aPortName, aPort );
+            // console.log('PortList.insert: Port wurde eingetragen', this.mPortList.get( aPortName ));
             return 0;
         } catch ( aException ) {
             this._exception( 'insert', aException );
@@ -105,6 +107,9 @@ export class PortList extends ErrorBase {
 
     find( aPortName: string ): PortInterface {
         try {
+            // const port = this.mPortList.get( aPortName );
+            // console.log('PortList.find:', aPortName, port);
+            // return port;
             return this.mPortList.get( aPortName );
         } catch ( aException ) {
             this._exception( 'find', aException );
@@ -155,6 +160,7 @@ export class PortList extends ErrorBase {
 
     remove( aPortName: string ): number {
         try {
+            // console.log('PortList.remove:', aPortName);
             this.mPortList.delete( aPortName );
             return 0;
         } catch ( aException ) {

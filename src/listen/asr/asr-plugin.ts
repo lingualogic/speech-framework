@@ -1,7 +1,7 @@
 /**
  *  ASRPlugin definiert die Basisklasse aller ASRs
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 13.02.2019
  * Status: rot
  *
  * @module listen/asr
@@ -380,7 +380,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _setRecognitionTimeout(): void {
         this._clearRecognitionTimeout();
-        this.mListenTimeoutId = setTimeout(() => { this.stopListen(); }, this.mListenTimeoutTime );
+        this.mListenTimeoutId = window.setTimeout(() => { this.stopListen(); }, this.mListenTimeoutTime );
         // console.log('ASRPlugin._setRecognitionTimeout:', this.mListenTimeoutTime, this.mListenTimeoutId );
     }
 
@@ -659,6 +659,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                 break;
 
             default:
+                this._error( 'setLanguage', 'keine gueltige Sprache uebergeben' );
                 result = -1;
                 break;
         }

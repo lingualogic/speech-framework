@@ -1,5 +1,8 @@
 /**
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
+ *
+ * Konfiguration: stable
+ * Version: 0.5.5.0045 (Alpha) vom 14.02.2019
  */
 
 
@@ -26,7 +29,7 @@ export { ActionFactory } from './src/action/action-factory';
 
 // audio
 
-export { AUDIO_PLUGIN_NAME } from './src/audio/audio-const';
+export { AUDIO_PLUGIN_NAME, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT } from './src/audio/audio-const';
 export { AudioInterface } from './src/audio/audio.interface';
 export { AudioFactory } from './src/audio/audio-factory';
 
@@ -54,9 +57,6 @@ export { IntentDataInterface } from './src/intent/intent-data.interface';
 export { IntentOptionInterface } from './src/intent/intent-option.interface';
 export { IntentInterface } from './src/intent/intent.interface';
 export { IntentFactory } from './src/intent/intent-factory';
-
-
-// inference nicht eingefuegt
 
 
 // dialog

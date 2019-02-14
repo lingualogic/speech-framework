@@ -459,6 +459,11 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
     setLanguage( aLanguage: string ): number {
         let result = 0;
         let tts = this.firstPlugin() as TTSInterface;
+        // pruefen, ob eine TTS vorhanden ist
+        if ( !tts ) {
+            this._error( 'setTTS', 'Keine TTS vorhanden' );
+            return -1;
+        }
         while ( tts ) {
             if ( tts.setLanguage( aLanguage ) !== 0 ) {
                 result = -1;

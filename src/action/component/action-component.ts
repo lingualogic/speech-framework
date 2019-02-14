@@ -307,7 +307,7 @@ export class ActionComponent extends BaseComponent implements ActionComponentInt
             }
         }
         // Timeout fuer ActionStop setzen
-        this.mActionTimeoutId = setTimeout(() => this.stop(), this.mActionTimeout );
+        this.mActionTimeoutId = window.setTimeout(() => this.stop(), this.mActionTimeout );
         this._onStart();
         return result;
     }

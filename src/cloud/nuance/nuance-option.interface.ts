@@ -17,7 +17,7 @@
  */
 
 export interface NuanceOptionInterface {
-    /** legt den konkreten Port fest, der geladen werden soll */
+    /** legt den konkreten Port fest, der geladen werden soll, wird hier NuanceMock angegeben, wird der Mock geladen */
     nuancePortName?: string;
     /** legt die URL fuer die Verbindung zum Server fest */
     nuanceServerUrl?: string;

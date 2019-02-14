@@ -1,6 +1,14 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.5.0045 Alpha (14.02.2019)
+
+### Features
+
+* **Examples:** es wurden Examples für Speak, Listen und Intent hinzugefügt
+* **Tests:** es wurden E2E-Tests f+r Speak, Listen, Intent, Bot, Dialog, Action und Audiohinzugefügt
+
+
 ## 0.5.5.0044 Alpha (07.02.2019)
 
 ### Bugs

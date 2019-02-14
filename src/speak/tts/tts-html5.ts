@@ -157,7 +157,7 @@ export class TTSHtml5 extends TTSPlugin {
 
 
     _setBreakTimeout(): void {
-        this.mBreakTimeout = setTimeout(() => this._breakSynthesis(), TTS_BREAK_TIMEOUT );
+        this.mBreakTimeout = window.setTimeout(() => this._breakSynthesis(), TTS_BREAK_TIMEOUT );
         // console.log('TTSHtml5._setBreakTimeout:', this.mBreakTimeout);
     }
 

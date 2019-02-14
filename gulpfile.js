@@ -308,9 +308,9 @@ gulp.task('copy-bot', function() {
 
 gulp.task('copy-nuance', function() {
     return gulp.src([
+        'bundle/nuance.d.ts',
         'build/src/cloud/nuance/nuance-const.d.ts',
-        'build/src/cloud/nuance/nuance-option.interface.d.ts',
-        'src/cloud/nuance/nuance.d.ts',
+        'build/src/cloud/nuance/nuance-option.interface.d.ts'
     ])
         .pipe( gulp.dest('dist/src/cloud/nuance'));
 }); 
@@ -471,6 +471,7 @@ gulp.task('build', function(callback) {
         'build-rollup',
         'dist-copy-src',
         'dist-pack',
+        'test',
         callback
     );
 });

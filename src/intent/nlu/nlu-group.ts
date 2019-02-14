@@ -598,7 +598,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
      */
 
     startIntent( aText: string ): number {
-        console.log('NLUGroup.startIntent');
+        // console.log('NLUGroup.startIntent');
         if ( !this.mCurrentNLU ) {
             this._error( 'startIntent', 'keine NLU vorhanden' );
             return -1;

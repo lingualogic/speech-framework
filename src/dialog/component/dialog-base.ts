@@ -869,19 +869,20 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
     removeAllEvent( aPluginName: string ): number {
         // console.log('DialogBase.removeAllEvent: start', aPluginName);
-        this.removeDialogParseEvent( aPluginName );
-        this.removeDialogSetEvent( aPluginName );
-        this.removeDialogStartEvent( aPluginName );
-        this.removeDialogStopEvent( aPluginName );
-        this.removeDialogStateSetEvent( aPluginName );
-        this.removeDialogActionEvent( aPluginName );
-        this.removeDialogActionStopEvent( aPluginName );
-        this.removeDialogSpeakEvent( aPluginName );
-        this.removeDialogSpeakStartEvent( aPluginName );
-        this.removeDialogSpeakStopEvent( aPluginName );
-        this.removeErrorEvent( aPluginName );
+        let result = super.removeAllEvent( aPluginName );
+        if ( this.removeDialogParseEvent( aPluginName ) !== 0 )      { result = -1; }
+        if ( this.removeDialogSetEvent( aPluginName ) !== 0 )        { result = -1; }
+        if ( this.removeDialogStartEvent( aPluginName ) !== 0 )      { result = -1; }
+        if ( this.removeDialogStopEvent( aPluginName ) !== 0 )       { result = -1; }
+        if ( this.removeDialogStateSetEvent( aPluginName ) !== 0 )   { result = -1; }
+        if ( this.removeDialogActionEvent( aPluginName ) !== 0 )     { result = -1; }
+        if ( this.removeDialogActionStopEvent( aPluginName ) !== 0 ) { result = -1; }
+        if ( this.removeDialogSpeakEvent( aPluginName ) !== 0 )      { result = -1; }
+        if ( this.removeDialogSpeakStartEvent( aPluginName ) !== 0 ) { result = -1; }
+        if ( this.removeDialogSpeakStopEvent( aPluginName ) !== 0 )  { result = -1; }
+        if ( this.removeErrorEvent( aPluginName ) !== 0 )            { result = -1; }
         // console.log('DialogBase.removeAllEvent: ende', aPluginName);
-        return 0;
+        return result;
     }
 
 

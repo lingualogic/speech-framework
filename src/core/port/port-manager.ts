@@ -1,7 +1,7 @@
 /**
  * Verwaltet alle Ports des Systems. Ist eine statische Klasse.
  *
- * Letzte Aenderung: 08.11.2018
+ * Letzte Aenderung: 14.02.2019
  * Status: gruen
  *
  * @module core/port
@@ -110,10 +110,12 @@ export class PortManager {
         if ( port ) {
             return port;
         }
+        // pruefen auf uebegebene Portklasse, wenn Port nicht gefunden wurde
         if ( !aPortClass ) {
             PortManager.mErrorBase._error( 'get', 'keine Portklasse uebergeben' );
             return null;
         }
+        // Port wird neu erzeugt
         try {
             // console.log('PortManager.get: Port neu erzeugt');
             port = new aPortClass( aPortName );
@@ -142,6 +144,7 @@ export class PortManager {
      */
 
     static find( aPortName ): PortInterface {
+        // console.log('PortManager.find:', aPortName);
         const port = PortManager.mPortList.find( aPortName );
         if ( !port ) {
             return null;
@@ -174,6 +177,7 @@ export class PortManager {
      */
 
     static remove( aPortName: string ): number {
+        // console.log('PortManager.remove:', aPortName );
         return PortManager.mPortList.remove( aPortName );
     }
 
@@ -185,6 +189,7 @@ export class PortManager {
      */
 
     static clear(): number {
+        // console.log('PortManager.clear' );
         let port = PortManager.mPortList.first();
         while ( port ) {
             try {

@@ -413,13 +413,16 @@ export class BotComponent extends BaseComponent implements BotComponentInterface
 
     removeAllEvent( aPluginName: string ): number {
         // console.log('BotComponent.removeAllEvent: start', aPluginName);
+        let result = super.removeAllEvent( aPluginName );
         if ( this.mDialog ) {
             // console.log('BotComponent.removeAllEvent: alle Dialog Events loeschen:', aPluginName);
-            this.mDialog.removeAllEvent( aPluginName );
+            if ( this.mDialog.removeAllEvent( aPluginName ) !== 0 ) {
+                result = -1;
+            }
         }
         this.removeErrorEvent( aPluginName );
         // console.log('BotComponent.removeAllEvent: ende', aPluginName);
-        return 0;
+        return result;
     }
 
 

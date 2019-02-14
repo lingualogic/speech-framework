@@ -187,20 +187,6 @@ export interface DialogInterface extends BaseInterface {
 
 
     /**
-     * Traegt eine Ereignisfunktion in das Error Ereignis ein.
-     * Error wird ausgeloest, wenn ein Fehler bei der Ausfuehrung einer Funktion auftrat.
-     * Die Fehlerdaten werden der Ereignisfunktion uebergeben.
-     *
-     * @param {string} aPluginName - Name des Plugins, welches die Funktion eintragt
-     * @param {OnSpeechErrorFunc} aEventFunc - Funktion, die Ereignis verarbeitet
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-
-    addErrorEvent( aPluginName: string, aEventFunc: OnSpeechErrorFunc ): number;
-
-
-    /**
      * Entfernt die Ereignisfunktion aus dem DialogParse Ereignis.
      *
      * @param aPluginName - Name des Plugins, von dem die Funktion entfernt werden soll
@@ -308,28 +294,6 @@ export interface DialogInterface extends BaseInterface {
      */
 
     removeDialogSpeakStopEvent( aPluginName: string ): number;
-
-
-    /**
-     * Entfernt die Ereignisfunktion aus dem Error Ereignis.
-     *
-     * @param aPluginName - Name des Plugins, von dem die Funktion entfernt werden soll
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-
-    removeErrorEvent( aPluginName: string ): number;
-
-
-    /**
-     * Entfernt alle Ereignisfunktionen des Plugins.
-     *
-     * @param aPluginName - Name des Plugins, von dem alle Funktionen entfernt werden soll
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-
-    removeAllEvent( aPluginName: string ): number;
 
 
     // Parser-Funktionen

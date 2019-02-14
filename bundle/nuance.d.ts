@@ -7,7 +7,7 @@
  * API-Version: 1.1
  * Datum:       06.02.2019
  *
- * Letzte Aenderung: 06.02.2019
+ * Letzte Aenderung: 14.02.2019
  * Status: rot
  *
  * @module cloud/nuance
@@ -21,19 +21,25 @@ import { NuanceOptionInterface } from './nuance-option.interface';
 export declare class Nuance {
     private static mInitFlag;
     private static mErrorOutputFlag;
+    private static mCurrentPort;
     private constructor();
     static setErrorOutputOn(): void;
     static setErrorOutputOff(): void;
     static setErrorOutputFunc(aErrorFunc: SpeechErrorFunc): void;
     /**
-     * Initialisiert den NuancePort. Zu Testzwecken koennen Port-Mocks vor
-     * Aufruf von _createAllPorts erzeugt werden. Deshalb wird kein
-     * Fehler zurueckgegeben.
+     * Initialisiert den NuancePort.
      *
      * @static
      * @return {number} Fehlercode 0 oder -1
      */
     static _initNuancePort(aNuanceOption: NuanceOptionInterface): number;
+    /**
+     * Initialisiert den NuanceMock.
+     *
+     * @static
+     * @return {number} Fehlercode 0 oder -1
+     */
+    static _initNuanceMock(aNuanceOption: NuanceOptionInterface): number;
     /**
      * Initialisiert den NuancePorts
      *

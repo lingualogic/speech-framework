@@ -42,6 +42,7 @@ import {
 import { SPEAK_AUDIO_STOPSELECTOR, SPEAK_TTS_STOPSELECTOR } from './speak-component-const';
 import { SpeakOptionInterface } from '../speak-option.interface';
 import { SpeakComponentInterface } from './speak-component.interface';
+import { Speak } from '../speak';
 
 
 const SPEAK_COMPONENT_VERSION = SPEAK_API_VERSION;
@@ -344,10 +345,10 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
 
     unlockAudio(): number {
         if ( !this.mAudioPlayer ) {
-            this.mAudioPlayer.unlockAudio();
-            return 0;
+            return -1;
         }
-        return -1;
+        this.mAudioPlayer.unlockAudio();
+        return 0;
     }
 
 

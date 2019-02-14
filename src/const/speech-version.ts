@@ -7,9 +7,9 @@
 
 
 export const SPEECH_VERSION_NUMBER = '0.5.5';
-export const SPEECH_VERSION_BUILD = '0044';
+export const SPEECH_VERSION_BUILD = '0045';
 export const SPEECH_VERSION_TYPE = 'ALPHA';
-export const SPEECH_VERSION_DATE = '07.02.2019';
+export const SPEECH_VERSION_DATE = '14.02.2019';
 // tslint:disable-next-line
 export const SPEECH_VERSION_STRING = SPEECH_VERSION_NUMBER + '.' + SPEECH_VERSION_BUILD + ' vom ' + SPEECH_VERSION_DATE + ' (' + SPEECH_VERSION_TYPE + ')';
 

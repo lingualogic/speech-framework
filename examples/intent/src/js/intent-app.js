@@ -250,11 +250,16 @@ function IntentApp() {
             nuanceNluTag: NLU_TAG
         };
         // erzeugt das Nuance-Modul
-        speech.Nuance.init( option );
-        speech.Nuance.open((aError, aPortName, aPortResult) => {
-            console.log('IntentApp.init: Nuance', aPortResult);
+        if ( speech.Nuance ) {
+            speech.Nuance.init( option );
+            speech.Nuance.open((aError, aPortName, aPortResult) => {
+                console.log('IntentApp.init: Nuance', aPortResult);
+                initIntent();
+            });
+        } else {
+            console.log('IntentApp.init: kein Nuance vorhanden');
             initIntent();
-        });
+        }
     } catch (aException) {
         console.log('IntentApp.init: Exception', aException.message);
         return;

@@ -2,7 +2,7 @@
  * Hier wird die Nuance-Spracherkennung implementiert. Ist NuancePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 13.02.2019
  * Status: rot
  *
  * @module listen/asr
@@ -130,6 +130,7 @@ export class ASRNuance extends ASRPlugin {
                 break;
 
             default:
+                this._error( 'setLanguage', 'keine gueltige Sprache uebergeben' );
                 result = -1;
                 break;
         }
