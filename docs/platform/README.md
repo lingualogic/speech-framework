@@ -15,7 +15,7 @@ Folgende Betriebssysteme und Browser werden vollständig unterstützt:
 
 ### Besonderheiten
 
-* Firefox unter Linux benötigt eine externe MP3-Bibliothek (GStreamer unter Ubuntu), um MP3-Dateien abspeieln zu Können.
+* Firefox unter Linux benötigt eine externe MP3-Bibliothek (GStreamer unter Ubuntu), um MP3-Dateien abspielen zu können.
 * Firefox unter Linux hat eine sehr schlechte oder keine Speech-Synthesis.
 * Opera unter Linux hat keine Speech-Synthesis.
 * Windows Edge kann nur für Karma-Tests verwendet werden, wenn er online im Netz ist. Muss example.com aufrufen, bevor karma startet.

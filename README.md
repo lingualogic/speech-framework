@@ -60,20 +60,35 @@ danach werden alle NPM-Pakete für das Speech-Framework mit folgendem Befehl ins
 
     $ npm install
 
-anschließend wird das NPM-Paket für das Speech-Framework in dist/ Ordner erzeugt:
+anschließend wird das NPM-Paket für das Speech-Framework im dist Ordner erzeugt und die E2E-Tests ausgeführt:
 
     $ npm run build
 
+
+### E2E-Tests
+
+Die E2E-Tests können mit folgenden Befehl separat ausgeführt werden:
+
+    $ npm test
+
+Zusätzlich können in der Datei karma.conf.js der Browser zum Testen gewechselt und SingleRun=false gesetzt werden.
+Beim Chrome werden nicht alle Tests durchgeführt, da Audio- und Sprachausgabe gesperrt sind. Man kann die Sperrung durch drücken
+auf den Debug-Button oben rechts im Karma-Runner aufheben und die Tests inklusive Audio- und Sprachausgabe wiederholen. Dazu muss SingleRun=false
+in karma.conf.js gesetzt sein, da sonst der Browser nach dem ersten Durchlauf aller Tests wieder verschwindet.
+Alle E2E-Tests sind unter test/e2e zu finden.
+
+
+### API-Dokumentation
 
 Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
 
     $ npm run docs
 
 
-Das im dist/ Ordner erzeugte npm-Paket 'speech-framework-0.5.5.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.5.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install --save speech-framework-0.5.5.tgz
+    $ npm install speech-framework-0.5.5.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -83,9 +98,6 @@ Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript v
 Das Speech-Framework kann mit folgendem Befehl wieder deinstalliert werden:
 
     $ npm uninstall speech-framework
-
-
-## Bekannte Probleme
 
 
 ## Dokumentation
@@ -104,6 +116,30 @@ Das Speech-Framework kann mit folgendem Befehl wieder deinstalliert werden:
 [**Roadmap**](./docs/roadmap/README.md)
 
 [**Release Notizen**](./CHANGELOG.md)
+
+
+## Beispiel-Apps
+
+Im examples Ordner sind mehrere kleine Beispiel-Apps in Javascript für die einzelnen Komponenten von Speech-Framework zu finden.
+Zum Ausführen der Beispiele muss nicht in den Beispielordner gewechselt werden.
+
+Folgender Befehl ist für das Speak-Beispiel einzugeben:
+
+    $ npm run speak
+
+Für das Listen-Beispiel ist folgender Befehl einzugeben:
+
+    $ npm run listen
+
+Für das Intent-Beispiel ist folgender Befehl einzugeben:
+
+    $ npm run intent
+
+
+## Bekannte Probleme
+
+
+* die verschiedenen Browser verhalten sich unterschiedlich, so dass nicht in jedem Browser alle Funktionen des Speech-Frameworks zur Verfügung stehen.
 
 
 ## Projektverantwortliche (LinguaLogic Team)

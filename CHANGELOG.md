@@ -6,7 +6,7 @@
 ### Features
 
 * **Examples:** es wurden Examples für Speak, Listen und Intent hinzugefügt
-* **Tests:** es wurden E2E-Tests f+r Speak, Listen, Intent, Bot, Dialog, Action und Audiohinzugefügt
+* **Tests:** es wurden E2E-Tests für Speak, Listen, Intent, Bot, Dialog, Action und Audiohinzugefügt
 
 
 ## 0.5.5.0044 Alpha (07.02.2019)
