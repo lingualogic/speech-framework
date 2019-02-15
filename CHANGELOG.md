@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.5.0045 Alpha (15.02.2019)
+
+### Features
+
+* **Doku:** es wurde die Dokumentation zum Framework ergänzt
+
+
 ## 0.5.5.0045 Alpha (14.02.2019)
 
 ### Features
