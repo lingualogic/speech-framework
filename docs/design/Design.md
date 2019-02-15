@@ -1,7 +1,7 @@
 # Design des Speech-Frameworks
 
 
-Die Architektur des Speech-Framework umfasst verschiedene Komponenten und Basisdienste, die jeweils das API für ein Feature des Frameworks für Web-Apps zur Verfügung stellen. Das Framework basiert auf einem zentralen Kern-Framework (Core), der Basiskonzepte für die Erzeugung, Struktur und Kommunikation der einzelnen Komponenten beinhaltet.
+Die Architektur des Speech-Framework umfasst verschiedene Komponenten und Basisdienste, die jeweils das API für ein Feature des Frameworks für Web-Apps zur Verfügung stellen. Das Framework basiert auf einem zentralen Kern-Framework (Core), das Basiskonzepte für die Erzeugung, Struktur und Kommunikation der einzelnen Komponenten beinhaltet.
 
 Das Speech-Framework ist vollständig in Typescript geschrieben. Hier wird ein Überblick über die Architektur des Speech-Frameworks gegeben. Die Beschreibung der einzelnen Bestandteile erfolgt [hier](./../framework/Framework.md). 
 
@@ -19,9 +19,12 @@ Die Komponenten basieren auf einer Basiskomponente (Base), die die generischen F
 Die oberste Schicht des Speech-Frameworks bilden die Komponenten mit ihren APIs. Auf eine Komponente kann nur über ihr API zugegriffen werden. Die Komponente selbst ist nicht direkt verwendbar. 
 Für die Erzeugung einer Komponenten-API wird eine Factory-API verwendet. Unterhalb der APIs befindet sich das Komponenten-Framework, bestehend aus Komponenten-Builder, Komponenten-Factory und der eigentlichen Komponente, die ihrerseits von der Base-Komponente erbt. 
 
-Um auf eine Komponente über ihre API zugreifen zu können, wird zuerst die dazugehörige Factory-API verwendet. die Factory-API ist eine statische Klasse und erlabut den direkten Zugriff auf die Funktionen der Klasse, ohne ein Factory-Objekt erzeugen zu müssen. Die Factory erzeugt dann das API-Objekt der Komponente, welches ein Wrapper für die gesamte Komponenten-Funktionalität ist. Das API stellt eine stabile Schnittstelle für den Web-Entwickler zur Verfügung, während die Komponente sich verändern kann. Später ist es möglich, für den Zugriff auf die Funktionen einer Komponente auch verschiedene API-Versionen zu verwenden.
+Um auf eine Komponente über ihre API zugreifen zu können, wird zuerst die dazugehörige Factory-API verwendet. die Factory-API ist eine statische Klasse und erlaubt den direkten Zugriff auf die Funktionen der Klasse, ohne ein Factory-Objekt erzeugen zu müssen. Die Factory erzeugt dann das API-Objekt der Komponente, welches ein Wrapper für die gesamte Komponenten-Funktionalität ist. Das API stellt eine stabile Schnittstelle für den Web-Entwickler zur Verfügung, während die Komponente sich verändern kann. Später ist es möglich, für den Zugriff auf die Funktionen einer Komponente auch verschiedene API-Versionen zu verwenden.
+
+Das der Komponenten-API zugrunde liegende Komponentenmodell ist [hier](./ComponentModel.md) beschrieben.
 
 ![API-Architektur](Design-2.gif)
+
 
 
 

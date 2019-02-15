@@ -17,6 +17,7 @@
 // Basisklassen
 
 export { FileHtml5Reader } from './file-html5-reader';
+export { AudioHtml5Reader } from './audio-html5-reader';
 export { NetHtml5WebSocket } from './net-html5-websocket';
 
 // Fabriken fuer HTML5-Klassen
