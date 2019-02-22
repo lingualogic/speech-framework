@@ -1,7 +1,7 @@
 /**
  * E2E-Tests fuer Bot
  * 
- * Letzte Aenderung: 14.02.2019
+ * Letzte Aenderung: 21.02.2019
  * Status: gelb
  * 
  * Getestet:
@@ -67,8 +67,8 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 // Konstanten fuer Verzeichnisse und Dateien
 
 const TEST_BOTASSETS_PATH = 'assets/';
-const TEST_SPEECH_PATH = TEST_BOTASSETS_PATH + 'speech/';
-const TEST_SPEECH_FILE = 'speech.def';
+const TEST_BOTSPEECH_PATH = TEST_BOTASSETS_PATH + 'speech/';
+const TEST_BOTSPEECH_FILE = 'speech.def';
 
 // Tests
 
@@ -99,7 +99,7 @@ describe('Bot', () => {
 
     afterEach(() => {
         bot.removeAllEvent( TEST_BOT_NAME );
-        expect(bot.reset()).toBe(0);
+        expect( bot.reset()).toBe( 0 );
         if( ERROR_BOT_OUTPUT ) {
             bot.setErrorOutputOn();
         } else {
@@ -887,12 +887,12 @@ describe('Bot', () => {
                 done();
                 return 0;
             })).toBe(0);
-            expect(bot.setDialogFilePath( TEST_SPEECH_PATH )).toBe(0);
-            expect(bot.parseSpeechDefFile()).toBe(-1);
+            expect(bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe( 0 );
+            expect(bot.parseSpeechDefFile( '' )).toBe(-1);
             // console.log('Test 1.2 Ende');
         });
 
-        it('should return -1, if valid dialog file', (done) => {
+        it('should return 0, if valid dialog file', (done) => {
             // console.log('Test 1.3 Start');
             expect(bot.addDialogParseEvent( TEST_BOT_NAME, () => {
                 done.fail('should not call');
@@ -903,8 +903,8 @@ describe('Bot', () => {
                 done();
                 return 0;
             })).toBe(0);
-            expect(bot.setDialogFilePath( TEST_SPEECH_PATH )).toBe(0);
-            expect(bot.parseSpeechDefFile( TEST_SPEECH_FILE )).toBe(0);
+            expect(bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe( 0 );
+            expect(bot.parseSpeechDefFile( TEST_BOTSPEECH_FILE )).toBe( 0 );
             // console.log('Test 1.3 Ende');
         });
 
@@ -964,7 +964,7 @@ describe('Bot', () => {
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 done.fail('Test 6 Error: ' + aError.message);
             })).toBe(0);
-            expect(bot.parseSpeechDefData( dialogData )).toBe(0);
+            expect(bot.parseSpeechDefData( dialogData )).toBe( 0 );
             // console.log('Test 2.4 Ende');
         });
 
@@ -984,11 +984,7 @@ describe('Bot', () => {
 
         it('should return 0, if clear dialog', () => {
             expect(bot.clearDialog()).toBe(0);
-        });
-
-        it('should return 0, if big valid data', () => {
-            expect(bot.start()).toBe(0);
-            expect(bot.stop()).toBe(0);
+   
             expect(bot.clearDialog()).toBe(0);
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
@@ -1006,10 +1002,17 @@ describe('Bot', () => {
     describe('call setDialogFileXXX', () => {
 
         it('should return 0, if valid path and file', (done) => {
-            expect(bot.setDialogFilePath( TEST_SPEECH_PATH )).toBe(0);
-            expect(bot.getDialogFilePath()).toEqual( TEST_SPEECH_PATH );
-            expect(bot.setDialogFileName( TEST_SPEECH_FILE )).toBe(0);
-            expect(bot.getDialogFileName()).toEqual( TEST_SPEECH_FILE );
+            let errorText = '';
+            expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
+                errorText = aError.message;
+                console.log('===> setDialogFileXXX: errorEvent', aError.message);
+                done();
+                return 0;
+            }));
+            expect(bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe(0);
+            expect(bot.getDialogFilePath()).toEqual( TEST_BOTSPEECH_PATH );
+            expect(bot.setDialogFileName( TEST_BOTSPEECH_FILE )).toBe(0);
+            expect(bot.getDialogFileName()).toEqual( TEST_BOTSPEECH_FILE );
             expect(bot.addDialogParseEvent( TEST_BOT_NAME, () => {
                 done();
                 return 0;
@@ -1025,30 +1028,31 @@ describe('Bot', () => {
 
         it('should return 0, if no valid dialog file', (done) => {
             // console.log('Test 1 Start');
-            expect(bot.addDialogParseEvent( TEST_BOT_NAME, () => {
+            expect( bot.addDialogParseEvent( TEST_BOT_NAME, () => {
                 done.fail('should not call');
-            })).toBe(0);
-            expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
-                expect(aError.message).toEqual('ParserPlugin.parseSpeechDefData: ParserFehler');
+            })).toBe( 0 );
+            expect( bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
+                expect(aError.message).toEqual('FileReader._requestDialogFile: Error 404');
                 done();
                 return 0;
-            })).toBe(0);
-            expect(bot.loadDialogFile('invalidFile')).toBe(0);
+            })).toBe( 0 );
+            expect( bot.loadDialogFile('invalidFile')).toBe( 0 );
             // console.log('Test 1 Ende');
         });
 
         it('should return 0, if valid dialog file', (done) => {
             // console.log('Test 2 Start');
-            expect(bot.addDialogParseEvent( TEST_BOT_NAME, () => {
+            expect( bot.addDialogParseEvent( TEST_BOT_NAME, () => {
                 done();
                 return 0;
-            })).toBe(0);
+            })).toBe( 0 );
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 done.fail('Test 2 Error: ' + aError.message);
                 return 0;
             })).toBe(0);
-            expect(bot.setDialogFilePath( TEST_SPEECH_PATH )).toBe(0);
-            expect(bot.loadDialogFile()).toBe(0);
+            expect( bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe(0);
+            console.log('===> getDialogFilePath:', bot.getDialogFilePath());
+            expect( bot.loadDialogFile()).toBe( 0 );
             // console.log('Test 2 Ende');
         });
 

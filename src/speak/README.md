@@ -12,7 +12,7 @@ Das Speak API besteht aus folgenden Dateien:
 * **speak-factory.ts:** Fabrik zur Erzeugung einer Speak Instanz
 * **speak-function.type.ts:** Speak Funktionstypen
 * **speak-option.interface.ts:** Optionale Parameter zur Initialisierung von Speak
-* **speak-version.ts:** Spea Version
+* **speak-version.ts:** Speak Version
 * **speak.interface.ts:** Speak API 
 * **speak.ts:** API Wrapper für die Speak-Komponente
 

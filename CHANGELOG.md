@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.5.0046 Alpha (22.02.2019)
+
+### Fixes
+
+* **Nuance:** es wurden kleinere Fixes durchgeführt
+
+
 ## 0.5.5.0045 Alpha (15.02.2019)
 
 ### Features

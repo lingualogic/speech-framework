@@ -21,6 +21,7 @@ export const SPEECH_FEATUREINFO_EVENT = 'featureInfo';
 export const SPEECH_SPEAK_EVENT = 'speak';
 export const SPEECH_SPEAKSTART_EVENT = 'speakStart';
 export const SPEECH_SPEAKSTOP_EVENT = 'speakStop';
+export const SPEECH_SPEAKAUDIOUNLOCK_EVENT = 'speakAudioUnlock';
 
 
 // listen

@@ -5,7 +5,7 @@ const childProcess = require('child_process');
 // Verzeichnis-Konstanten
 
 const rootDir = path.resolve(__dirname);
-const globalConfigDir = './../../config';
+const globalCredentialsDir = './../../credentials';
 const globalDistDir = './../../dist';
 const distDir = 'dist';
 const srcDir = 'src';
@@ -38,7 +38,7 @@ const settings = {
     gulp,
     exec,
     rootDir,
-    globalConfigDir,
+    globalCredentialsDir,
     globalDistDir,
     distDir,
     srcDir,

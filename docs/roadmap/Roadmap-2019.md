@@ -6,6 +6,16 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### März: Version 0.5.6
+
+beinhaltet:
+
+* **Audio:** erweiterte Audio-Komponente
+
+
+## Veröffentlichte Versionen
+
+
 ### Februar: Version 0.5.5
 
 beinhaltet:
@@ -14,9 +24,6 @@ beinhaltet:
 * **Dokumentation:** beschreibt alle Speech-Framework Komponenten und ihre Verwendung in Typescript/Javascript
 * **Examples:** Beispiele in Javascript zur Verwendung von Speak, Listen, Intent, Action und Bot
 * **Tests:** E2E Komponententests für Speak, Listen, Intent, Action und Bot
-
-
-## Veröffentlichte Versionen
 
 
 ### Januar: Version 0.5.4

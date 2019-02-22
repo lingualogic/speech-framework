@@ -29,6 +29,14 @@ import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT, AUDIO_DEFA
 import { AudioPlayerInterface, AudioPlayFunc, AudioStopFunc, OnAudioStartFunc, OnAudioStopFunc, OnAudioUnlockFunc } from './audio-player.interface';
 
 
+// Konstanten
+
+
+// Zeit die im Unlock-Event auf RESUME gewartet wird
+
+const AUDIO_UNLOCK_TIMEOUT = 2000;
+
+
 /**
  * Die AudioPlayer Klasse kapselt das Audio Web-API von HTML5
  */
@@ -420,8 +428,12 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         // console.log('AudioPlayer._onAudioUnlock');
         if ( typeof this.mOnAudioUnlockFunc === 'function' ) {
             try {
-                // console.log('AudioPlayer._onAudioUnlock: funktion ausfuehren', this.mOnAudioUnlockFunc);
-                return this.mOnAudioUnlockFunc( this.mAudioContext.state );
+                let state = 'undefined';
+                if ( this.mAudioContext ) {
+                    state = this.mAudioContext.state;
+                }                
+                // console.log('AudioPlayer._onAudioUnlock: funktion ausfuehren', state, this.mOnAudioUnlockFunc);
+                return this.mOnAudioUnlockFunc( state );
             } catch ( aException ) {
                 this._exception( '_onAudioUnlock', aException );
                 return -1;
@@ -466,16 +478,24 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     unlockAudio(): void {
         // console.log('AudioPlayer.unlockAudio: start');
+        // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
         if ( this.mAudioContext ) {
             if ( this.mAudioContext.state === 'suspended' ) {
+                let timeoutId = setTimeout( () => this._onAudioUnlock(), AUDIO_UNLOCK_TIMEOUT );
                 this.mAudioContext.resume().then(() => {
                     // console.log('AudioPlayer.unlockAudio: end');
+                    clearTimeout( timeoutId );
                     this._onAudioUnlock();
                 }, (aError: any) => {
                     console.log('AudioPlayer.unlockAudioContext:', aError)
+                    clearTimeout( timeoutId );
                     this._onAudioUnlock();
                 });
+            } else {
+                this._onAudioUnlock();
             }
+        } else {
+            this._onAudioUnlock();
         }
     }
 

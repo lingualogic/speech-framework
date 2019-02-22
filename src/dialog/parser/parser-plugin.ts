@@ -367,6 +367,7 @@ export class ParserPlugin extends Plugin implements ParserInterface {
                         break;
 
                     default:
+                        // console.log('ParserPlugin.parseSpeechDefData: Daten = ', aDefData);
                         this._error( 'parseSpeechDefData', 'ParserFehler' );
                         return -1;
                         // break;

@@ -68,9 +68,9 @@ describe('Speak', () => {
             done();
         } else {
             // eslint-disable-next-line
-            expect( audio.addUnlockEvent( TEST_SPEAK_NAME, (aAudioState) => {
+            expect( speak.addAudioUnlockEvent( TEST_SPEAK_NAME, (aUnlockFlag) => {
                 // eslint-disable-next-line
-                // console.log('===> Speak-E2E AudioContext.state:', aAudioState);
+                // console.log('===> Speak-E2E UnlockFlag:', aUnlockFlag);
                 done();
             })).toBe( 0 );
             speak.unlockAudio();

@@ -14,6 +14,8 @@ const typedoc = require('gulp-typedoc');
 const del = require('del');
 const fs = require('fs');
 const rename = require('gulp-rename');
+const file = require('gulp-file');
+const inject = require('gulp-inject-string');
 
 
 // Dokumentations-Funktionen
@@ -31,6 +33,7 @@ gulp.task('dist-typedoc', (cb) => {
             'src/base/*.ts',
             'src/bot/*.ts',
             'src/dialog/*.ts',
+            'src/inference/*.ts',
             'src/intent/*.ts',
             'src/listen/*.ts',
             'src/speak/*.ts'
@@ -53,8 +56,9 @@ gulp.task('dist-typedoc', (cb) => {
                 '**/audio/audio.ts',
                 '**/base/base.ts',
                 '**/bot/bot.ts',
-                '**/intent/intent.ts',
                 '**/dialog/dialog.ts',
+                '**/inference/inference.ts',
+                '**/intent/intent.ts',
                 '**/listen/listen.ts',
                 '**/speak/speak.ts',
                 '**/*mock.ts'
@@ -267,6 +271,25 @@ gulp.task('copy-dialog', function() {
 
 
 /** 
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Inference
+ */ 
+
+gulp.task('copy-inference', function() {
+    return gulp.src([
+        'build/src/inference/inference-action.interface.d.ts',
+        'build/src/inference/inference-const.d.ts',
+        'build/src/inference/inference-factory.d.ts',
+        'build/src/inference/inference-function.type.d.ts',
+        'build/src/inference/inference-option.interface.d.ts',
+        'build/src/inference/inference-speak.interface.d.ts',
+        'build/src/inference/inference-state-context.interface.d.ts',
+        'build/src/inference/inference.interface.d.ts',
+    ])
+        .pipe( gulp.dest('dist/src/inference'));
+}); 
+
+
+/** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Intent
  */ 
 
@@ -361,6 +384,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-speak',
         'copy-listen',
         'copy-dialog',
+        'copy-inference',
         'copy-intent',
         'copy-bot',
         'copy-nuance',
@@ -370,38 +394,54 @@ gulp.task('dist-copy-src', (callback) => {
 
 
 /**
- * Kopiert die Credentials
+ * Erzeugt nuance.credentials.ts in credentials/
  */
 
 gulp.task('install-nuance-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Nuance-Credentials Datei
-        fs.accessSync( './config/nuance-credentials.ts' );
+        fs.accessSync( 'credentials/nuance-credentials.ts' );
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src( './config/nuance-credentials.default.ts' )
-            .pipe( rename( 'nuance-credentials.ts' ))
-            .pipe( gulp.dest( './config' ));
+        return gulp.src([ 'credentials/*.ts' ])
+            .pipe( file( 'nuance-credentials.ts', ''))
+            .pipe( inject.append( "/**\n" ))
+            .pipe( inject.append( " * Nuance Credentials\n" ))
+            .pipe( inject.append( " */\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "export const APP_ID = '';\n" ))
+            .pipe( inject.append( "export const APP_KEY = '';\n" ))
+            .pipe( inject.append( "export const NLU_TAG = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src([]); // empty stream
+    return gulp.src( '' ); // empty stream
 });
 
 
 /**
- * Kopiert die Credentials
+ * Erzeugt nuance.credentials.js in credentials/
  */
 
 gulp.task('install-nuance-credentials-js', function() {
     try {
         // pruefen auf vorhandene Nuance-Credentials Datei
-        fs.accessSync( './config/nuance-credentials.js' );
+        fs.accessSync( 'credentials/nuance-credentials.js' );
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src( './config/nuance-credentials.default.js' )
-            .pipe( rename('nuance-credentials.js'))
-            .pipe( gulp.dest( './config' ));
+        return gulp.src([ 'credentials/*.js' ])
+            .pipe( file( 'nuance-credentials.js', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Nuance Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "var APP_ID = '';\n" ))
+            .pipe(inject.append( "var APP_KEY = '';\n" ))
+            .pipe(inject.append( "var NLU_TAG = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src([]); // empty stream
+    return gulp.src( '' ); // empty stream
 });
 
 
@@ -416,7 +456,6 @@ gulp.task('install', (callback) => {
         callback
     );
 });
-
 
 
 /** 

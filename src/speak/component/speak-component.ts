@@ -2,12 +2,22 @@
  * Speak Komponente, dient zur Sprachausgabe von Texten oder Audiodateien
  * ueber ein TTS-Plugin oder ein AudioPlayer-Plugin.
  *
- * Letzte Aenderung: 07.02.2019
+ * Letzte Aenderung: 21.02.2019
  * Status: gelb
  *
  * @module speak/component
  * @author SB
  */
+
+
+// global
+
+import { SPEECH_SPEAKAUDIOUNLOCK_EVENT } from '../../const/speech-event-const';
+
+
+// event
+
+import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
 
 
 // base
@@ -39,10 +49,10 @@ import {
     SPEAK_UNDEFINE_LANGUAGE,
     SPEAK_UNDEFINE_VOICE
 } from '../speak-const';
+import { OnSpeakAudioUnlockFunc, OnAudioUnlockFunc } from '../speak-function.type';
 import { SPEAK_AUDIO_STOPSELECTOR, SPEAK_TTS_STOPSELECTOR } from './speak-component-const';
 import { SpeakOptionInterface } from '../speak-option.interface';
 import { SpeakComponentInterface } from './speak-component.interface';
-import { Speak } from '../speak';
 
 
 const SPEAK_COMPONENT_VERSION = SPEAK_API_VERSION;
@@ -58,6 +68,10 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
 
     mTTSPlugin: TTSInterface = null;
     mAudioPlayer: AudioPlayerInterface = null;
+
+    // Events
+
+    mAudioUnlockEvent = new EventFunctionList( SPEECH_SPEAKAUDIOUNLOCK_EVENT, SPEAK_COMPONENT_NAME );
 
     // Attribute der Komponente
 
@@ -86,6 +100,7 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
 
     constructor( aRegisterFlag = true ) {
         super( SPEAK_COMPONENT_NAME, aRegisterFlag );
+        this.mAudioUnlockEvent._setErrorOutputFunc( this._getErrorOutputFunc());
     }
 
 
@@ -219,6 +234,15 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
 
 
     /**
+     * Loeschen der inneren Events
+     */
+
+    _doneAllEvent(): void {
+        this.mAudioUnlockEvent.clear();
+    }
+
+
+    /**
      * Loeschen der inneren Attribute
      */
 
@@ -335,8 +359,113 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
     }
 
 
-    // Audio-Funktionen
+    // Fehler-Funktionen
 
+
+    /**
+     * Fehlerausgabe ueber die Konsole ein/ausschalten
+     *
+     * @protected
+     * @param {boolean} aErrorOutputFlag - True, wenn Konsolenausgabe ein
+     */
+
+    _setErrorOutput( aErrorOutputFlag: boolean ): void {
+        super._setErrorOutput( aErrorOutputFlag );
+        this.mAudioUnlockEvent._setErrorOutput( aErrorOutputFlag );
+    }
+
+
+    // Event-Funktionen
+
+
+    /**
+     * Ereignisfunktion fuer Audio-Unlock
+     *
+     * @private
+     * @param {string} aState - aktueller AudioContext.state
+     * @return {number}
+     */
+
+    _onAudioUnlock( aState: string ): number {
+        // console.log('SpeakComponent._onAudioUnlock:', aState);
+        let unlockFlag = false;
+        if ( aState === 'running' ) {
+            unlockFlag = true;
+        }
+        return this.mAudioUnlockEvent.dispatch( unlockFlag );
+    }
+
+
+    get onAudioUnlock(): OnAudioUnlockFunc {
+        return (aState: string) => this._onAudioUnlock( aState );
+    }
+
+
+    /**
+     * EventFunktion eintragen
+     *
+     * @param {string} aPluginName - Name des Listeners
+     * @param {string} aEventName - Name des Events
+     * @param {EventFunc} aEventFunc - Funktion fuer den Event
+     *
+     * @return {number} errorcode(0,-1)
+     */
+
+    addEventListener( aPluginName: string, aEventName: string, aEventFunc: EventFunc ): number {
+        let result = 0;
+        switch ( aEventName ) {
+            case SPEECH_SPEAKAUDIOUNLOCK_EVENT:
+                result = this.mAudioUnlockEvent.addListener( aPluginName, aEventFunc );
+                break;
+
+            default:
+                result = super.addEventListener( aPluginName, aEventName, aEventFunc );
+                break;
+        }
+        return result;
+    }
+
+
+    /**
+     * EventFunktion entfernen
+     *
+     * @param {string} aPluginName - Name des Listeners (Pluginname)
+     * @param {string} aEventName - Name des Events
+     */
+
+    removeEventListener( aPluginName: string, aEventName: string ): number {
+        let result = 0;
+        switch ( aEventName ) {
+            case SPEECH_SPEAKAUDIOUNLOCK_EVENT:
+                result = this.mAudioUnlockEvent.removeListener( aPluginName );
+                break;
+
+            default:
+                result = super.removeEventListener( aPluginName, aEventName );
+                break;
+        }
+        return result;
+    }
+
+
+    addAudioUnlockEvent( aPluginName: string, aEventFunc: OnSpeakAudioUnlockFunc ): number {
+        return this.addEventListener( aPluginName, SPEECH_SPEAKAUDIOUNLOCK_EVENT, aEventFunc );
+    }
+
+    removeAudioUnlockEvent( aPluginName ): number {
+        return this.removeEventListener( aPluginName, SPEECH_SPEAKAUDIOUNLOCK_EVENT );
+    }
+
+    removeAllEvent( aPluginName ): number {
+        let result = super.removeAllEvent( aPluginName );
+        if ( this.removeAudioUnlockEvent( aPluginName ) !== 0 ) {
+            result = -1;
+        }
+        return result;
+    }
+
+
+    // Audio-Funktionen
 
 
     /**

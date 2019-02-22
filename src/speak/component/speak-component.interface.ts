@@ -14,9 +14,12 @@
 import { BaseComponentInterface } from '../../base/component/base-component.interface';
 
 
+
+
 // speak
 
 import { SpeakInterface } from '../speak.interface';
+import { OnAudioUnlockFunc } from '../speak-function.type';
 
 
 /** @export
@@ -24,5 +27,9 @@ import { SpeakInterface } from '../speak.interface';
  */
 
 export interface SpeakComponentInterface extends BaseComponentInterface, SpeakInterface {
+
+    // Speak-Events
+
+    onAudioUnlock: OnAudioUnlockFunc;
 
 }

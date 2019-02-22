@@ -8,30 +8,30 @@ const path = require('path');
 const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
-module.exports = ({ gulp, exec, rootDir, globalConfigDir, globalDistDir, distDir, srcDir }) => {
+module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, distDir, srcDir }) => {
 
     gulp.task('dist-prepare', (done) => {
         rimraf( distDir, done);
     });
 
     gulp.task('dist-copy-nuance-credentials', () => {
-        return gulp.src(path.join( globalConfigDir, 'nuance-credentials.js'))
-            .pipe(gulp.dest(path.join( distDir, 'js')));
+        return gulp.src( path.join( globalCredentialsDir, 'nuance-credentials.js'))
+            .pipe( gulp.dest(path.join( distDir, 'js')));
     });
 
     gulp.task('dist-copy-speech', () => {
-        return gulp.src(path.join( globalDistDir, 'speech-framework.js'))
-            .pipe(gulp.dest(path.join( distDir, 'js')));
+        return gulp.src( path.join( globalDistDir, 'speech-framework.js'))
+            .pipe(gulp.dest( path.join( distDir, 'js')));
     });
 
     gulp.task('dist-copy-src', () => {
-        return gulp.src(path.join(srcDir, '**', '*'))
-            .pipe(gulp.dest( distDir ));
+        return gulp.src( path.join(srcDir, '**', '*'))
+            .pipe( gulp.dest( distDir ));
     });
 
-    gulp.task('dist-replace-nuance-credentials', (done) => {
+    gulp.task( 'dist-replace-nuance-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
-            .pipe(inject.replace('<script type="text/javascript" src="./../../../config/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });

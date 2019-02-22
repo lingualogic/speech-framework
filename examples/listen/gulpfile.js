@@ -6,7 +6,7 @@ const childProcess = require('child_process');
 
 const rootDir = path.resolve(__dirname);
 const globalDistDir = './../../dist';
-const globalConfigDir = './../../config';
+const globalCredentialsDir = './../../credentials';
 const distDir = 'dist';
 const srcDir = 'src';
 const assetsDir = 'src/assets';
@@ -39,7 +39,7 @@ const settings = {
     exec,
     rootDir,
     globalDistDir,
-    globalConfigDir,
+    globalCredentialsDir,
     distDir,
     srcDir,
     assetsDir,

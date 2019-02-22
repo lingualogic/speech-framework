@@ -1,10 +1,10 @@
 /**
  * Speech-Nuance
  * 
- * Version: 0.1.3
- * Build:   0004
+ * Version: 0.1.4
+ * Build:   0005
  * TYPE:    ALPHA
- * Datum:   14.02.2019
+ * Datum:   22.02.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -98,7 +98,7 @@ var Factory = function(t) {
             return this._exception('create', t), null;
         }
     }, e;
-}(Factory), NUANCE_VERSION_NUMBER = '0.1.3', NUANCE_VERSION_BUILD = '0004', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '14.02.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
+}(Factory), NUANCE_VERSION_NUMBER = '0.1.4', NUANCE_VERSION_BUILD = '0005', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '22.02.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
     function t(e, n) {
         void 0 === e && (e = ''), void 0 === n && (n = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = n, 
@@ -724,8 +724,7 @@ var Factory = function(t) {
         var e = null;
         try {
             var n = new Float32Array(t.length);
-            n.set(t), console.log('NuanceAudioPlayer.playByStream: buffer direkt erzeugen:', n.length), 
-            (e = new AudioBuffer({
+            n.set(t), (e = new AudioBuffer({
                 length: n.length,
                 numberOfChannels: 1,
                 sampleRate: NUANCE_AUDIOSAMPLE_RATE
@@ -738,8 +737,7 @@ var Factory = function(t) {
         var e = null;
         try {
             var n = new Float32Array(t.length);
-            n.set(t), console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 16000 Samplerate:', n.length), 
-            (e = this.mAudioContext.createBuffer(1, n.length, NUANCE_AUDIOSAMPLE_RATE)).getChannelData(0).set(n);
+            n.set(t), (e = this.mAudioContext.createBuffer(1, n.length, NUANCE_AUDIOSAMPLE_RATE)).getChannelData(0).set(n);
         } catch (t) {
             e = null, console.log('NuanceAudioPlayer._getAudioBufferSecond: Exception', t);
         }
@@ -750,7 +748,6 @@ var Factory = function(t) {
             var n = new Float32Array(1.4 * t.length);
             n.set(t), this.mResampler = new NuanceResampler(NUANCE_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, n.length, void 0);
             var r = this.mResampler.resampler(n);
-            console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 22500 Samplerate:', r.length), 
             (e = this.mAudioContext.createBuffer(1, r.length, AUDIO_MIN_SAMPLERATE)).getChannelData(0).set(r);
         } catch (t) {
             e = null, console.log('NuanceAudioPlayer._getAudioBufferResample: Exception', t);
@@ -848,7 +845,7 @@ var Factory = function(t) {
     }, e.prototype._stop = function() {
         this.mAudioPlayer && this.mAudioPlayer.stop();
     }, e;
-}(NuanceDevice), NuancePort = function(t) {
+}(NuanceDevice), AUDIO_UNLOCK_TIMEOUT = 2e3, NuancePort = function(t) {
     function e(e, n) {
         void 0 === n && (n = !0);
         var r = t.call(this, e || NUANCE_PORT_NAME, n) || this;
@@ -953,6 +950,20 @@ var Factory = function(t) {
         this.mNuanceNLU && this.mNuanceNLU._setErrorOutput(e);
     }, e.prototype._onStop = function(e, n) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype._onStop.call(this, e, n);
+    }, e.prototype._unlockAudio = function(t) {
+        if (this.mAudioContext) {
+            if ('running' === this.mAudioContext.state) return void t(!0);
+            if ('suspended' === this.mAudioContext.state) {
+                var e = setTimeout(function() {
+                    return t(!1);
+                }, AUDIO_UNLOCK_TIMEOUT);
+                this.mAudioContext.resume().then(function() {
+                    clearTimeout(e), t(!0);
+                }, function(n) {
+                    console.log('NuancePort._unlockAudio:', n), clearTimeout(e), t(!1);
+                });
+            } else t(!1);
+        } else t(!1);
     }, e.prototype.isOpen = function() {
         return this._isConnect();
     }, e.prototype.open = function(t) {
@@ -1013,8 +1024,10 @@ var Factory = function(t) {
         -1;
         if (t !== this.mTransaction.plugin) return this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + t + ' != ' + this.mTransaction.plugin), 
         -1;
-        if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
-        -1;
+        if (e) {
+            if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
+            -1;
+        } else e = this.mTransaction.type;
         var r = 0;
         switch (e) {
           case NUANCE_NLU_ACTION:
@@ -1124,11 +1137,10 @@ var Factory = function(t) {
                 language: n,
                 voice: r
             };
-            return 'suspended' === this.mAudioContext.state ? (this.mAudioContext.resume().then(function() {
-                'running' === o.mAudioContext.state ? o.mNuanceTTS.start(t, i) : o._error('_startTTS', 'AudioContext nicht auf running umgeschaltet');
-            }, function(t) {
-                console.log('NuanceAudioRecorder.start: Resume-Error', t), t && t.message && o._error('_startTTS', t.message);
-            }), 0) : this.mNuanceTTS.start(t, i);
+            return this._unlockAudio(function(e) {
+                e ? o.mNuanceTTS.start(t, i) : (o._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
+                o._onStop(t.plugin, t.type));
+            }), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
         }
@@ -1141,14 +1153,14 @@ var Factory = function(t) {
             return this._exception('_stopTTS', t), -1;
         }
     }, e;
-}(Port), NuanceMock = function(t) {
+}(Port), NUANCEMOCK_CALLBACK_TIMEOUT = 100, NuanceMock = function(t) {
     function e(e, n) {
         void 0 === n && (n = !0);
         var r = t.call(this, e || NUANCE_MOCK_NAME, n) || this;
         return r.webSocketFlag = !0, r.audioContextFlag = !0, r.getUserMediaFlag = !0, r.optionAppParameter = !0, 
         r.nuanceNLUFlag = !0, r.nuanceASRFlag = !0, r.nuanceTTSFlag = !0, r.disconnectFlag = !0, 
-        r.isRecording = !1, r.defaultOptions = null, r.codec = '', r.intentName = 'TestIntent', 
-        r.intentConfidence = 1, r.mTransaction = null, r.mRunningFlag = !1, r;
+        r.defaultOptions = null, r.codec = '', r.intentName = 'TestIntent', r.intentConfidence = 1, 
+        r.mTransaction = null, r.mRunningFlag = !1, r;
     }
     return __extends(e, t), e.prototype.isMock = function() {
         return !0;
@@ -1170,11 +1182,10 @@ var Factory = function(t) {
     }, e.prototype.done = function(e) {
         return void 0 === e && (e = !1), t.prototype.done.call(this), this.webSocketFlag = !0, 
         this.audioContextFlag = !0, this.getUserMediaFlag = !0, this.nuanceNLUFlag = !1, 
-        this.nuanceASRFlag = !1, this.nuanceTTSFlag = !1, this.disconnectFlag = !0, this.isRecording = !1, 
-        this.defaultOptions = null, this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 
-        0;
+        this.nuanceASRFlag = !1, this.nuanceTTSFlag = !1, this.disconnectFlag = !0, this.defaultOptions = null, 
+        this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 0;
     }, e.prototype.reset = function(e) {
-        return this.mTransaction = null, t.prototype.reset.call(this, e);
+        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._onStop = function(e, n) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype._onStop.call(this, e, n);
     }, e.prototype.isOpen = function() {
@@ -1184,7 +1195,7 @@ var Factory = function(t) {
     }, e.prototype.close = function() {
         return this.disconnectFlag = !0, 0;
     }, e.prototype.isRunning = function() {
-        return this.isRecording;
+        return this.mRunningFlag;
     }, e.prototype.isAction = function(t) {
         var e = !1;
         switch (t) {
@@ -1237,8 +1248,10 @@ var Factory = function(t) {
         -1;
         if (t !== this.mTransaction.plugin) return this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + t + ' != ' + this.mTransaction.plugin), 
         -1;
-        if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
-        -1;
+        if (e) {
+            if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
+            -1;
+        } else e = this.mTransaction.type;
         var r = 0;
         switch (e) {
           case NUANCE_NLU_ACTION:
@@ -1257,7 +1270,7 @@ var Factory = function(t) {
           default:
             this._error('stop', 'Keine gueltige Aktion uebergeben ' + e), r = -1;
         }
-        return this.mRunningFlag = !1, r;
+        return this.mTransaction = null, this.mRunningFlag = !1, r;
     }, e.prototype._startNLU = function(t, e, n) {
         if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
         if (!this.nuanceNLUFlag) return this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden'), 
@@ -1279,12 +1292,13 @@ var Factory = function(t) {
             return this._exception('_startNLU', t), -1;
         }
     }, e.prototype._stopNLU = function(t) {
-        return 0;
+        return this._onStop(t.plugin, t.type), 0;
     }, e.prototype._startASR = function(t, e, n, r, o) {
         if (void 0 === r && (r = !1), void 0 === o && (o = !1), !this.nuanceASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
-            return 0;
+            return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
+            this._onStop(t.plugin, t.type), 0;
         } catch (t) {
             return this._exception('_startASR', t), -1;
         }
@@ -1292,16 +1306,19 @@ var Factory = function(t) {
         if (!this.nuanceASRFlag) return this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
-            return 0;
+            return this._onStop(t.plugin, t.type), 0;
         } catch (t) {
             return this._exception('_stopASR', t), -1;
         }
     }, e.prototype._startTTS = function(t, e, n, r) {
+        var o = this;
         if (!e) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
         if (!this.nuanceTTSFlag) return this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
         -1;
         try {
-            return 0;
+            return this._onStart(t.plugin, t.type), setTimeout(function() {
+                return o._onStop(t.plugin, t.type);
+            }, NUANCEMOCK_CALLBACK_TIMEOUT), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
         }
@@ -1309,7 +1326,7 @@ var Factory = function(t) {
         if (!this.nuanceTTSFlag) return this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
         -1;
         try {
-            return 0;
+            return this._onStop(t.plugin, t.type), 0;
         } catch (t) {
             return this._exception('_stopTTS', t), -1;
         }

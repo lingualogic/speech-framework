@@ -1016,7 +1016,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     loadDialogFile( aDialogFileName?: string ): number {
-        // console.log('DialogProxy.loadDialogFile:', aDialogFileName);
+        // console.log('DialogBase.loadDialogFile:', aDialogFileName);
         let fileName = this.mDialogFilePath + this.mDialogFileName;
         if ( aDialogFileName ) {
             fileName = this.mDialogFilePath + aDialogFileName;

@@ -1,8 +1,8 @@
 /**
  * SpeakComponentBuilder erzeugt die lokale Speak-Komponente
  *
- * Letzte Aenderung: 08.11.2018
- * Status: gruen
+ * Letzte Aenderung: 21.02.2019
+ * Status: gelb
  *
  * @module speak/component
  * @author SB
@@ -158,6 +158,7 @@ export class SpeakComponentBuilder extends Builder {
         // Event-Verbindung zwischen Audio und Speak (Problem mit mehrfacher Einbindung!)
         aAudioPlayer.onAudioStart = aSpeak.onStart;
         aAudioPlayer.onAudioStop = aSpeak.onStop;
+        aAudioPlayer.onAudioUnlock = aSpeak.onAudioUnlock;
         aAudioPlayer.onError = aSpeak.onError;
         return 0;
     }

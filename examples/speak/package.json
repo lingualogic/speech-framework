@@ -11,6 +11,7 @@
         "install:ios": "cd cordova && npm install && gulp cordova-install-ios",
         "install:osx": "cd cordova && npm install && gulp cordova-install-osx",
         "start": "gulp dist-run",
+        "e2e": "cd e2e && protractor protractor.conf.js",
         "electron": "gulp electron-run",
         "cordova": "gulp cordova-browser",
         "cordova:android": "gulp cordova-android",
@@ -19,5 +20,7 @@
         "build:android": "gulp cordova-build-android"
     },
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/jasminewd2": "^2.0.6"
+    }
 }

@@ -2,7 +2,7 @@
  * Speak API fuer SpeakComponent, einmalige Initialisierung, alle anderen Initialisierungen
  * laufen auf der gleichen SpeakComponent.
  *
- * Letzte Aenderung: 07.02.2019
+ * Letzte Aenderung: 21.02.2019
  * Status: gelb
  *
  * @module speak
@@ -18,6 +18,7 @@ import { Base } from './../base/base';
 // speak
 
 import { SPEAK_TYPE_NAME } from './speak-const';
+import { OnSpeakAudioUnlockFunc } from './speak-function.type';
 import { SpeakOptionInterface } from './speak-option.interface';
 import { SpeakInterface } from './speak.interface';
 import { SpeakComponentInterface } from './component/speak-component.interface';
@@ -56,6 +57,19 @@ export class Speak extends Base implements SpeakInterface {
 
     _getBuilderName(): string {
         return SPEAK_TYPE_NAME;
+    }
+
+
+    // Event-Funktionen
+
+
+    addAudioUnlockEvent( aPluginName: string, aEventFunc: OnSpeakAudioUnlockFunc ): number {
+        return this.mSpeakComponent.addAudioUnlockEvent( aPluginName, aEventFunc );
+    }
+
+
+    removeAudioUnlockEvent( aPluginName: string ): number {
+        return this.mSpeakComponent.removeAudioUnlockEvent( aPluginName );
     }
 
 

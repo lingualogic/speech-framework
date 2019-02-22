@@ -29,4 +29,7 @@ export type SpeakStopFunc = () => number;
 export type OnSpeakStartFunc = () => number;
 /** Definiert Ereignisfunktion fuer beendete Sprachausgabe */
 export type OnSpeakStopFunc = () => number;
+/** Definiert Ereignisfunktion fuer entsperren von AudioContext */
+export type OnSpeakAudioUnlockFunc = (aUnlockFlag: boolean) => number;
+export type OnAudioUnlockFunc = (aState: string) => number;
 

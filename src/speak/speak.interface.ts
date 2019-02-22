@@ -2,9 +2,9 @@
  * Oeffentliche Speak Schnittstelle als Teil des Speak-API
  *
  * API-Version: 1.3
- * Datum:       12.02.2019
+ * Datum:       21.02.2019
  *
- * Letzte Aenderung: 07.02.2019
+ * Letzte Aenderung: 21.02.2019
  * Status: gelb
  *
  * @module speak
@@ -17,13 +17,11 @@
 import { BaseInterface } from './../base/base.interface';
 
 
-// audio
+// speak
 
 import {
-    OnAudioStartFunc,
-    OnAudioStopFunc,
-    OnAudioUnlockFunc
-} from './../audio/audio-function.type';
+    OnSpeakAudioUnlockFunc
+} from './speak-function.type';
 
 
 // Global API
@@ -34,6 +32,33 @@ import {
  */
 
 export interface SpeakInterface extends BaseInterface {
+
+
+    // Event-Funktionen
+
+
+    /**
+     * Eintragen eines Audio-Unlock Events. Hier wird der AudioContext-Zustand
+     * zurueckgegeben.
+     *
+     * @param {string} aPluginName - Name des Plugins
+     * @param {OnSpeakAudioUnlockFunc} aEventFunc - Ereignis-Behandlungsfunktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    addAudioUnlockEvent( aPluginName: string, aEventFunc: OnSpeakAudioUnlockFunc ): number;
+
+
+    /**
+     * Enfernen eines Audio-Unlock Events.
+     *
+     * @param {string} aPluginName - Name des Plugins
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    removeAudioUnlockEvent( aPluginName: string ): number;
 
 
     // Audio-Funktionen

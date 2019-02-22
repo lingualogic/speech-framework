@@ -186,7 +186,12 @@ export class FileReader extends Plugin implements FileReaderInterface {
                 // console.log('FileReader._requestDialogFile: onload');
                 if ( this.mOnReadFunc ) {
                     try {
-                        this.mOnReadFunc( request.response );
+                        // console.log('FileReader._requestDialogFile:', request);
+                        if ( request.status === 404 ) {
+                            this._error( '_requestDialogFile', 'Error 404' );
+                        } else {
+                            this.mOnReadFunc( request.response );
+                        }
                     } catch (aException) {
                         this._exception( '_requestDialogFile', aException );
                     }
@@ -201,7 +206,7 @@ export class FileReader extends Plugin implements FileReaderInterface {
 
             this.mRequest.onerror = ( aErrorEvent: any ) => {
                 // TODO: muss in Fehlerbehandlung uebertragen werden
-                console.log('FileReader._loadAudioFile: onerror', aErrorEvent);
+                console.log('FileReader._requestDialogFile: onerror', aErrorEvent);
                 this._onError(aErrorEvent);
             };
 
