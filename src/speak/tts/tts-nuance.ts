@@ -2,7 +2,7 @@
  * Hier wird die Nuance-Sprachausgabe implementiert. Ist NuancePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 20.03.2019
  * Status: rot
  *
  * @module speak/tts
@@ -239,7 +239,7 @@ export class TTSNuance extends TTSPlugin {
         });
         this.mNuancePort.addErrorEvent( TTS_NUANCE_NAME, (aError: any) => {
             // console.log('TTSNuance._initSynthesis: errorEvent = ', aError.message);
-            this._onError( aError );
+            this._onSynthesisError({ error: aError.message });
             return 0;
         });
         return 0;
@@ -303,6 +303,19 @@ export class TTSNuance extends TTSPlugin {
             return this.mNuancePort.stop( TTS_NUANCE_NAME, NUANCE_TTS_ACTION );
         }
         return -1;
+    }
+
+
+    /**
+     * prueft, ob die Synthese im NuancePort laeuft
+     */
+
+    _isSynthesisRunning(): boolean {
+        // console.log('TTSNuance._isSynthesisRunning');
+        if ( this.mNuancePort ) {
+            return this.mNuancePort.isRunning( TTS_NUANCE_NAME, NUANCE_TTS_ACTION );
+        }
+        return false;
     }
 
 }

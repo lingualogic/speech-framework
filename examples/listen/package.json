@@ -1,6 +1,7 @@
 {
     "name": "listenapp",
-    "version": "0.5.5",
+    "version": "0.5.6",
+    "productName": "ListenApp",
     "description": "ListenApp",
     "author": "Lingualogic Team",
     "license": "MIT",
@@ -8,6 +9,12 @@
     "main": "src/index.html",
     "scripts": {
         "install": "cd cordova && npm install && gulp cordova-install",
+        "install:ios": "cd cordova && npm install && gulp cordova-install-ios",
+        "install:osx": "cd cordova && npm install && gulp cordova-install-osx",
+        "build": "gulp dist-build",
+        "build:electron": "gulp electron-build",
+        "build:android": "gulp cordova-build-android",
+        "e2e": "gulp e2e",
         "start": "gulp dist-run",
         "electron": "gulp electron-run",
         "cordova": "gulp cordova-browser",

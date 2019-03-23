@@ -1,6 +1,7 @@
 {
     "name": "intentapp",
-    "version": "0.5.5",
+    "version": "0.5.6",
+    "productName": "IntentApp",
     "description": "IntentApp",
     "author": "LinguaLogic Team",
     "license": "MIT",
@@ -10,16 +11,18 @@
         "install": "cd cordova && npm install && gulp cordova-install",
         "install:ios": "cd cordova && npm install && gulp cordova-install-ios",
         "install:osx": "cd cordova && npm install && gulp cordova-install-osx",
+        "build": "gulp dist-build",
+        "build:electron": "gulp electron-build",
+        "build:android": "gulp cordova-build-android",
+        "e2e": "gulp e2e",
         "start": "gulp dist-run",
         "electron": "gulp electron-run",
         "cordova": "gulp cordova-browser",
         "cordova:android": "gulp cordova-android",
         "cordova:ios": "gulp cordova-ios",
-        "cordova:osx": "gulp cordova-osx",
-        "build:android": "gulp cordova-build-android"
+        "cordova:osx": "gulp cordova-osx"
     },
     "dependencies": {},
     "devDependencies": {
-        "ios-deploy": "^1.9.4"
     }
 }

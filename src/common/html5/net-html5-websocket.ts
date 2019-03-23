@@ -2,8 +2,8 @@
  * Diese Komponente dient zum Aufbau und zur Verwaltung einer HTML5-WebSocket-Verbindung
  * mit dem SpeechServer.
  *
- * Letzte Aenderung: 15.12.2018
- * Status: rot
+ * Letzte Aenderung: 20.03.2019
+ * Status: gruen
  *
  * @module common/html5
  * @author SB
@@ -23,8 +23,8 @@ import { WebSocketFactory, WEBSOCKET_FACTORY_NAME } from './websocket-factory';
 
 // Konstanten
 
-/** @constant {number} NET_CONNECT_INTERVAL - Zeitintervall fuer Verbindung erneut aufbauen */
-const NET_CONNECT_INTERVAL = 5000;
+/** Zeitintervall fuer Verbindung erneut aufbauen */
+export const NET_CONNECTINTERVAL_TIMEOUT = 5000;
 
 
 // Funktionstypen
@@ -40,7 +40,7 @@ export type OnNetHtml5ErrorFunc = (aError: any) => number;
  * Beim Aufruf von init(options) koennen optionale Werte zur Konfiguration uebergeben werden.
  * Zur Zeit wird ein optionaler Wert fuer die Verbindungswiederholung uebergeben:
  *
- *      netOptions: { connectInfinite: true }
+ *      netOptions: { connectInfiniteFlag: true }
  *
  *      connectInfinite - true, wenn Verbindung alle NET_CONNECT_INTERVAL Millisekunden erneut
  *                        aufgebaut werden soll.
@@ -72,8 +72,9 @@ export class NetHtml5WebSocket extends ErrorBase {
 
     // Verbindungswiederholungen
 
+    mConnectInfiniteFlag = false;
     mConnectIntervalId: any = 0;
-    mConnectInfinite = false;
+    mConnectIntervalTimeout = NET_CONNECTINTERVAL_TIMEOUT;
 
 
     // Ereignisse
@@ -93,7 +94,7 @@ export class NetHtml5WebSocket extends ErrorBase {
     constructor( aClassName?: string ) {
         super( aClassName || 'NetHtml5WebSocket' );
         // verbinden der Errorfunktion mit dem ErrorEvent
-        this._setErrorOutputFunc((aErrorText: string) => this._onError( new Error( aErrorText)));
+        this._setErrorOutputFunc((aErrorText: string) => this._onError( new Error( aErrorText )));
     }
 
 
@@ -115,9 +116,11 @@ export class NetHtml5WebSocket extends ErrorBase {
 
         // pruefen auf staendigen Verbindungsaufbau
 
-        if ( aOption && aOption.connectInfinite ) {
-            this.mConnectInfinite = true;
-            console.log('NetHtml5WebSocket.init: ConnectInfinite eingeschaltet');
+        if ( aOption && aOption.connectInfiniteFlag ) {
+            this.mConnectInfiniteFlag = true;
+            if ( this.isErrorOutput()) {
+                console.log('NetHtml5WebSocket.init: ConnectInfinite eingeschaltet');
+            }
         }
 
         return 0;
@@ -131,10 +134,28 @@ export class NetHtml5WebSocket extends ErrorBase {
      */
 
     done(): number {
-        this.close();
+        if ( this.mWebSocket ) {
+            this.mWebSocket.onopen = null;
+            this.mWebSocket.onclose = null;
+            this.mWebSocket.onmessage = null;
+            this.mWebSocket.onerror = null;
+            this.close();
+            this.mWebSocket = null;
+        }
+        this.mWebSocketOpenFlag = false;
         this.mWebSocketClass = null;
+        this.mWebSocketUrl = '';
+        this.mConnectInfiniteFlag = false;
         this.mConnectIntervalId = 0;
-        this.mConnectInfinite = false;
+        this.mConnectIntervalTimeout = NET_CONNECTINTERVAL_TIMEOUT;
+
+        // Ereignisse
+
+        this.mOnOpenFunc = null;
+        this.mOnCloseFunc = null;
+        this.mOnMessageFunc = null;
+        this.mOnErrorFunc = null;
+
         return 0;
     }
 
@@ -196,12 +217,7 @@ export class NetHtml5WebSocket extends ErrorBase {
 
         // erste Verbindung aufbauen
 
-        if ( this._connect( aUrl ) !== 0 ) {
-            this._error( 'open', 'keine Verbindung moeglich' );
-            return -1;
-        }
-
-        return 0;
+        return this._connect( aUrl );
     }
 
 
@@ -212,14 +228,14 @@ export class NetHtml5WebSocket extends ErrorBase {
      */
 
     close(): number {
+        // console.log('NetHtml5WebSocket.close');
         this.mWebSocketOpenFlag = false;
         if ( this.mWebSocket ) {
             this._clearInfiniteConnect();
             try {
-                // TODO: sonst wird der Clode-Event nicht erzeugt
+                // TODO: sonst wird der Close-Event nicht erzeugt
                 // this.mWebSocket.onclose = () => {};
-                this.mWebSocket.close(1000, 'Closing normally');
-                this.mWebSocket = null;
+                this.mWebSocket.close( 1000, 'Closing normally');
             } catch (aException) {
                 this._exception( 'close', aException );
                 this.mWebSocket = null;
@@ -287,22 +303,24 @@ export class NetHtml5WebSocket extends ErrorBase {
      */
 
     sendMessage( aMessage: any ): number {
-        // console.log('NetHtml5WebSocket.sendMessage: start');
-        if ( this.isOpen()) {
-            if ( !this.mWebSocket ) {
-                // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
-                this._error( 'sendMessage', 'keine WebSocket vorhanden' );
-                return -1;
-            }
-            try {
-                this.mWebSocket.send( JSON.stringify( aMessage ));
-                return 0;
-            } catch (aException) {
-                // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
-                this._exception( 'sendMessage', aException );
-            }
+        // console.log('NetHtml5WebSocket.sendMessage: start', aMessage);
+        if ( !this.isOpen()) {
+            this._error( 'sendMessage', 'WebSocket ist nicht geoeffnet' );
+            return -1;
         }
-        return -1;
+        if ( !this.mWebSocket ) {
+            // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
+            this._error( 'sendMessage', 'keine WebSocket vorhanden' );
+            return -1;
+        }
+        try {
+            this.mWebSocket.send( JSON.stringify( aMessage ));
+            return 0;
+        } catch (aException) {
+            // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
+            this._exception( 'sendMessage', aException );
+            return -1;
+        }
     }
 
 
@@ -479,12 +497,14 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @return {number} errorCode(0,-1) - Fehlercode
      */
 
-    _webSocketOpen( aEvent: any ) {
-        // console.log('NetHtml5WebSocket._webSocketOpen:', aEvent);
+    _webSocketOpen( aEvent: any ): number {
+        // console.log('NetHtml5WebSocket._webSocketOpen: start', aEvent);
         this.mWebSocketOpenFlag = true;
         this._clearInfiniteConnect();
+        // TODO: Dieser Event wird nicht mehr benoetigt
         if ( this._onMessage({ event: 'start' }) !== 0 ) { return -1; }
         if ( this._onOpen() !== 0 ) { return -1; }
+        // console.log('NetHtml5WebSocket._webSocketOpen: end');
         return 0;
     }
 
@@ -497,9 +517,10 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @return {number} errorCode(0,-1) - Fehlercode
      */
 
-    _webSocketClose( aEvent: any ) {
+    _webSocketClose( aEvent: any ): number {
         // console.log('NetHtml5WebSocket._webSocketClose:', aEvent);
         this.mWebSocketOpenFlag = false;
+        this.mWebSocket = null;
         this._setInfiniteConnect();
         return this._onClose();
     }
@@ -513,7 +534,7 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @return {number} errorCode(0,-1) - Fehlercode
      */
 
-    _webSocketMessage( aMessage: any ) {
+    _webSocketMessage( aMessage: any ): number {
         // console.log('NetHtml5WebSocket._webSocketMessage:', aMessage);
         // TODO: hier wird Nachricht noch aufbereitet
         try {
@@ -534,9 +555,10 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @return {number} errorCode(0,-1) - Fehlercode
      */
 
-    _webSocketError( aEvent: any ) {
-        // console.log('NetHtml5WebSocket._webSocketError: ', aEvent);
-        return this._onError( aEvent );
+    _webSocketError( aEvent: any ): number {
+        // console.log('NetHtml5WebSocket._webSocketError: ', aEvent, aEvent.message);
+        // pruefen auf Fehlermeldung
+        return this._onError( new Error( 'WebSocket wurde nicht verbunden' ));
     }
 
 
@@ -547,11 +569,17 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @return {number} errorCode (0,-1) Fehlercode
      */
 
-    _connect( aUrl?: string ) {
-        // console.log('NetHtml5WebSocket.connect:', aUrl);
-        if ( this.mWebSocket && this.isOpen()) {
+    _connect( aUrl?: string ): number {
+        // console.log('NetHtml5WebSocket._connect:', aUrl);
+        if ( this.isOpen()) {
             // Verbindung ist vorhanden
             return 0;
+        }
+
+        if ( this.mWebSocket ) {
+            // WebSocket existiert noch 
+            this._error( '_connect', 'webSocket noch nicht geschlossen' );
+            return -1;
         }
 
         // pruefen auf WebSocketClass
@@ -574,23 +602,23 @@ export class NetHtml5WebSocket extends ErrorBase {
 
         try {
             this.mWebSocket = new this.mWebSocketClass( this.mWebSocketUrl );
-            // console.log('NetHtml5WebSocket.connect: webSocket = ', aUrl, this.mWebSocket);
             if ( !this.mWebSocket ) {
-                console.log('NetHtml5WebSocket._connect: keine WebSocket erzeugt');
                 this._error( '_connect', 'keine WebSocket erzeugt' );
                 return -1;
             }
 
-            // console.log('NetHtml5WebSocket.connect: readyState=', this.mWebSocket.readyState, this.getState());
+            // Ereignisfunktionen eintragen
 
             this.mWebSocket.binaryType = 'arraybuffer';
-            this.mWebSocket.onopen = (aEvent) => this._webSocketOpen( aEvent );
-            this.mWebSocket.onclose = (aEvent) => this._webSocketClose( aEvent );
-            this.mWebSocket.onmessage = (aEvent) => this._webSocketMessage( aEvent );
-            this.mWebSocket.onerror = (aEvent) => this._webSocketError( aEvent );
+            this.mWebSocket.onopen = (aEvent: any) => this._webSocketOpen( aEvent );
+            this.mWebSocket.onclose = (aEvent: any) => this._webSocketClose( aEvent );
+            this.mWebSocket.onmessage = (aEvent: any) => this._webSocketMessage( aEvent );
+            this.mWebSocket.onerror = (aEvent: any) => this._webSocketError( aEvent );
 
+            // console.log('NetHtml5WebSocket._connect:', this.mWebSocket);
             return 0;
         } catch (aException) {
+            // console.log('NetHtml5WebSocket._connect: Exception', aException);
             this._exception( '_connect', aException );
             this.mWebSocket = null;
             return -1;
@@ -604,10 +632,10 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @private
      */
 
-    _setInfiniteConnect() {
+    _setInfiniteConnect(): void {
         // pruefen auf ConnectInfinite
 
-        if ( !this.mConnectInfinite ) {
+        if ( !this.mConnectInfiniteFlag ) {
             return;
         }
 
@@ -615,7 +643,7 @@ export class NetHtml5WebSocket extends ErrorBase {
         if ( this.mConnectIntervalId === 0 ) {
             this.mConnectIntervalId = setInterval(() => {
                 this._connect( this.mWebSocketUrl );
-            }, NET_CONNECT_INTERVAL );
+            }, this.mConnectIntervalTimeout );
             // console.log('NetHtml5WebSocket._setInfiniteConnect: set', this.mConnectIntervalId);
         }
     }
@@ -627,7 +655,7 @@ export class NetHtml5WebSocket extends ErrorBase {
      * @private
      */
 
-    _clearInfiniteConnect() {
+    _clearInfiniteConnect(): void {
         // console.log('NetHtml5WebSocket._clearInfiniteConnect: start', this.mConnectIntervalId);
         if ( this.mConnectIntervalId !== 0 ) {
             clearInterval( this.mConnectIntervalId );

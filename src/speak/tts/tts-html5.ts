@@ -2,7 +2,7 @@
  * Hier wird die HTML5-Sprachausgabe implementiert. Ist Speech-Synthesis nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 01.12.2018
+ * Letzte Aenderung: 27.02.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -28,7 +28,7 @@ import { TTSPlugin} from './tts-plugin';
 
 // Konstanten
 
-const TTS_BREAK_TIMEOUT = 1000;     // eine Sekunde warten auf Synthesis-Start
+const TTS_BREAK_TIMEOUT = 5000;     // eine Sekunde warten auf Synthesis-Start
 
 
 /**
@@ -382,7 +382,7 @@ export class TTSHtml5 extends TTSPlugin {
             this._onSynthesisEnd();
         }
         this.mUtterance.onerror = (aEvent: any) => {
-            // console.log('TTSHtml5.onerror:', aEvent);
+            console.log('TTSHtml5.onerror:', aEvent);
             this._onSynthesisError( aEvent );
         }
 

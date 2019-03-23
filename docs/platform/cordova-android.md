@@ -77,6 +77,16 @@ Beispiel-Befehl für Mac via [homebrew](https://brew.sh/index_de):
 	$ brew install gradle
 
 
+
+### Android Zugriffsrechte
+
+Im AndroidManifest müssen folgende Rechte eingetragen sein:
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
 ### NDK Problem
 
 Tritt nur auf, wenn das NDK installiert ist. Dies kann im Android Studio unter Preferences | System Settings —> Android SDK —> SDK Tools geprüft werden.

@@ -85,3 +85,8 @@ export const NUANCE_DEFAULT_CODEC = NUANCE_PCM_CODEC;
 
 export const NUANCE_AUDIOBUFFER_SIZE = 2048;
 export const NUANCE_AUDIOSAMPLE_RATE = 16000;
+
+
+// Wenn der Action-Timeout in NuancePort abgeschaltet werden soll
+
+const NUANCE_NOACTION_TIMEOUT = 0;

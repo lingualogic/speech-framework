@@ -570,6 +570,17 @@ export class Port extends ErrorBase implements PortInterface {
 
 
     /**
+     * Rueckgabe der aktuellen Port-Konfiguration
+     *
+     * @return {any} aktuelle Portkonfigurationsdaten
+     */
+
+    getConfig(): any {
+        return {};
+    }
+
+
+    /**
      * Pruefen auf geoeffneten Port
      *
      * @return {boolean} True, wenn Port offen ist, False sonst
@@ -615,12 +626,27 @@ export class Port extends ErrorBase implements PortInterface {
 
 
     /**
-     * Pruefen auf beschaeftigten Port.
+     * Rueckgabe des Aktionsnames, der gerade eine Transaktion ausfuehrt
      *
-     * @return {boolean} True, Port ist beschaeftigt, False sonst
+     * @return {string} ActionName oder leerer String
      */
 
-    isRunning(): boolean {
+    getActionName(): string {
+        return '';
+    }
+
+
+    /**
+     * Pruefen, ob Port eine Aufgabe ausfuehrt, zu einem bestimmten Plugin
+     * und zu einer bestimmten Aufgabe.
+     *
+     * @param {string} aPluginName - optionaler Pluginname
+     * @param {string} aAction - optionaler Aktionsname
+     *
+     * @return {boolean} True, wenn Port beschaeftigt ist, False sonst
+     */
+
+    isRunning( aPluginName?: string, aAction?: string ): boolean {
         return this.mRunFlag;
     }
 
@@ -636,6 +662,18 @@ export class Port extends ErrorBase implements PortInterface {
     isAction( aAction?: string ): boolean {
         // muss von erbenden Klassen ueberschrieben werden
         return false;
+    }
+
+
+    /**
+     * Dient zum Setzen eines Timeouts, um Aktionen abzubrechen. 
+     * Bei Timeout 0 wird kein Timeout gesetzt.
+     * 
+     * @param aTimeout - Zeit in Millisekunden bis die Aktion abgebrochen wird
+     */
+
+    setActionTimeout( aTimeout: number ): void {
+        // kann von erbenden Klassen ueberschrieben werden
     }
 
 

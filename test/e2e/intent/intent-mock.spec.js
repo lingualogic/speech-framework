@@ -47,7 +47,7 @@ describe('Intent', () => {
         console.log('Intent (gemockt) E2E-Tests gestartet...');
         // Nuance initialisieren
         // eslint-disable-next-line
-        expect( speech.Nuance.init({ nuancePortName: 'NuanceMock', errorOutputFlag: true })).toBe( 0 );
+        expect( speech.Nuance.init({ nuancePortName: 'NuanceMock', nuanceAppId: 'testAppId', nuanceAppKey: 'testAppKey', errorOutputFlag: true })).toBe( 0 );
         // eslint-disable-next-line
         expect( speech.Nuance.open(() => {
             // eslint-disable-next-line
@@ -505,6 +505,7 @@ describe('Intent', () => {
             })).toBe( 0 );
             expect( intent.setIntentText( 'Dies ist ein erster TestText' )).toBe( 0 );
             expect( intent.start()).toBe( 0 );
+            expect( intent.getIntentText()).toBe( '' );
             expect( data.literal ).toBe( 'Dies ist ein erster TestText' );
             expect( data.intent ).toBe( 'TestIntent' );
             expect( data.confidence ).toBe( 1.0 );

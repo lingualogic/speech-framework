@@ -14,6 +14,7 @@
  * @author SB
  */
 import { SpeechErrorFunc } from './../../interface/speech-function.type';
+import { NuanceConfigDataInterface } from './nuance-config-data.interface';
 import { NuanceOptionInterface } from './nuance-option.interface';
 /**
  * statische Nuance-Klasse zur Erzeugung des NuancePorts
@@ -75,4 +76,20 @@ export declare class Nuance {
      * @return {number} Fehlercode 0 oder -1
      */
     static open(aOpenEventCallback?: any): number;
+    /**
+     * Traegt geaenderte Credentials ein.
+     *
+     * @static
+     * @param {function} aOpenEventCallback - Ereignis-Funktion fuer Port geoeffnet
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    static setConfig(aConfigData: NuanceConfigDataInterface): number;
+    /**
+     * Gibt die aktuellen Credentials zurueck.
+     *
+     * @static
+     * @return {NuanceConfigDataInterface} Konfigurationsdaten zurueckgeben
+     */
+    static getConfig(): NuanceConfigDataInterface;
 }

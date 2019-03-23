@@ -1,0 +1,12 @@
+{
+    "name": "intentapp",
+    "displayName": "IntentApp",
+    "version": "0.5.6",
+    "description": "Beispiel-App fuer Intent-API in Cordova",
+    "author": "LinguaLogic Team",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

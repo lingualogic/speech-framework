@@ -744,10 +744,13 @@ export class NLUPlugin extends Plugin implements NLUInterface {
                 // Umwandlung der ASR-Fehler in richtige Fehlermeldungen
                 switch ( aEvent.error ) {
                     case 'network':
-                        errorEvent = new Error( 'Netzwerk nicht eingeschaltet' );
+                        errorEvent = new Error( 'NLU-Error: Netzwerk nicht eingeschaltet' );
                         break;
                     case 'no-speech':
-                        errorEvent = new Error( 'Keine Sprache aufgenommen' );
+                        errorEvent = new Error( 'NLU-Error: Keine Sprache aufgenommen' );
+                        break;
+                    case 'not-allowed':
+                        errorEvent = new Error( 'NLU-Error: Kein Mikrofon vorhanden' );
                         break;
                     default:
                         errorEvent = new Error( aEvent.error );
@@ -800,6 +803,12 @@ export class NLUPlugin extends Plugin implements NLUInterface {
 
     _abortRecognition(): number {
         return -1;
+    }
+
+
+    _isRecognitionRunning(): boolean {
+        // muss von erbenden Klassen ueberschrieben werden
+        return true;
     }
 
 
@@ -997,7 +1006,8 @@ export class NLUPlugin extends Plugin implements NLUInterface {
      */
 
     isListenRunning(): boolean {
-        return this.mListenRunningFlag;
+        // console.log('NluPlugin.isListenRunning: ListenRunningFlag = ', this.mListenRunningFlag, ' RecognitionRunningFlag = ', this._isRecognitionRunning());
+        return this.mListenRunningFlag && this._isRecognitionRunning();
     }
 
 

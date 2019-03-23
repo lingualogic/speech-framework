@@ -2,7 +2,7 @@
  * Speak Komponente, dient zur Sprachausgabe von Texten oder Audiodateien
  * ueber ein TTS-Plugin oder ein AudioPlayer-Plugin.
  *
- * Letzte Aenderung: 21.02.2019
+ * Letzte Aenderung: 20.03.2019
  * Status: gelb
  *
  * @module speak/component

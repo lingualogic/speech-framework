@@ -2,7 +2,7 @@
  * Port Schnittstelle fuer die Verbindung mit externen Diensten.
  * Ports sind Vermittler zwischen den externen Diensten und den internen Plugins.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 20.03.2019
  * Status: rot
  *
  * @module core/port
@@ -193,6 +193,15 @@ export interface PortInterface {
 
 
     /**
+     * Rueckgabe der aktuellen Port-Konfiguration
+     *
+     * @return {any} aktuelle Portkonfigurationsdaten
+     */
+
+    getConfig(): any;
+
+
+    /**
      * Pruefen auf geoeffneten Port
      *
      * @return {boolean} True, wenn Port offen ist, False sonst
@@ -221,12 +230,34 @@ export interface PortInterface {
 
 
     /**
-     * Pruefen, ob Port eine Aufgabe ausfuehrt
+     * Rueckgabe des Pluginnamens, der gerade eine Transaktion ausfuehrt
+     *
+     * @return {string} PluginName oder leerer String
+     */
+
+    getPluginName(): string;
+
+
+    /**
+     * Rueckgabe des Aktionsnames, der gerade eine Transaktion ausfuehrt
+     *
+     * @return {string} ActionName oder leerer String
+     */
+
+    getActionName(): string;
+
+
+    /**
+     * Pruefen, ob Port eine Aufgabe ausfuehrt, zu einem bestimmten Plugin
+     * und zu einer bestimmten Aufgabe.
+     *
+     * @param {string} aPluginName - optionaler Pluginname
+     * @param {string} aAction - optionaler Aktionsname
      *
      * @return {boolean} True, wenn Port beschaeftigt ist, False sonst
      */
 
-    isRunning(): boolean;
+    isRunning( aPluginName?: string, aAction?: string ): boolean;
 
 
     /**
@@ -238,6 +269,17 @@ export interface PortInterface {
      */
 
     isAction( aAction?: string ): boolean;
+
+
+    /**
+     * Dient zum Setzen eines Timeouts, um Aktionen abzubrechen. 
+     * Bei Timeout 0 wird kein Timeout gesetzt.
+     * 
+     * @param aTimeout - Zeit in Millisekunden bis die Aktion abgebrochen wird
+     */
+
+    setActionTimeout( aTimeout: number ): void;
+
 
     /**
      * Portaktion starten

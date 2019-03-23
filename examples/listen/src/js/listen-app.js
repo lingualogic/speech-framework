@@ -11,10 +11,8 @@ function ListenApp() {
 
     var receivedEvent = function() {
         var errorButton = document.getElementById('errorClick');
-
         var startButton = document.getElementById('startClick');
         var stopButton = document.getElementById('stopClick');
-
         var errorText = document.getElementById('errorText');
 
         // Language-Button
@@ -184,6 +182,9 @@ function ListenApp() {
     var initListen = function() {
         console.log('ListenApp.init: start...');
 
+        var startButton = document.getElementById('startClick');
+        var startButtonColor = startButton.style.backgroundColor;
+
         // erzeugt das Speech-System
         if ( speech.SpeechMain.init() !== 0 ) {
             console.log('ListenApp: wurde nicht initialisiert');
@@ -197,10 +198,14 @@ function ListenApp() {
 
         listen.addStartEvent( 'ListenApp', function() {
             console.log('ListenApp.startEvent');
+            var startButton = document.getElementById('startClick');
+            startButton.style.backgroundColor = 'red';
         });
 
         listen.addStopEvent( 'ListenApp', function() {
             console.log('ListenApp.stopEvent');
+            var startButton = document.getElementById('startClick');
+            startButton.style.backgroundColor = startButtonColor;
         });
 
         listen.addListenResultEvent( 'ListenApp', function(aResult) {

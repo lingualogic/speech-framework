@@ -6,5 +6,5 @@ Die Cloud-Dienste fügen dem Speech-Framework dynamisch weitere Funktionalität 
 
 Folgende Cloud-Dienste sind bereits implementiert:
 
-* **[Nuance Cloud-Dienst](./Nuance.md):** Nuance Coud-Dienst für die Verbindung zum Nuance Mix-Server
+* **[Nuance Cloud-Dienst](./nuance/Nuance.md):** Nuance Coud-Dienst für die Verbindung zum Nuance Mix-Server
 

@@ -14,7 +14,7 @@ Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) u
 
 ## Letzte Version
 
-* 0.5.5.0046 Alpha vom 22.02.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.6.0047 Alpha vom 22.03.2019 [Release Notizen](./CHANGELOG.md)
 
 Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
@@ -85,10 +85,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.5.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.6.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.5.tgz
+    $ npm install speech-framework-0.5.6.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 

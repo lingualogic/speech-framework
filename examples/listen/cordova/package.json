@@ -1,0 +1,12 @@
+{
+    "name": "listenapp",
+    "displayName": "ListenApp",
+    "version": "0.5.6",
+    "description": "Beispiel-App fuer Listen-API in Cordova",
+    "author": "LinguaLogic Team",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

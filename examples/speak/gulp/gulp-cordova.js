@@ -9,7 +9,7 @@ const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
 
-module.exports = ({ gulp, exec, srcDir, globalDistDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
+module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
 
 
     gulp.task('cordova-create-app', (done) => {
@@ -79,8 +79,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, appDir, cordovaDir, cordo
     });
 
     gulp.task('cordova-copy-dist', () => {
-        return gulp.src( path.join( globalDistDir, 'speech.bundle.js'))
+        return gulp.src( path.join( globalDistDir, 'speech-framework.js'))
             .pipe(gulp.dest( path.join( cordovaWwwDir, 'js')));
+    });
+
+    gulp.task('cordova-copy-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
+            .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
     gulp.task('cordova-copy-src', () => {
@@ -102,6 +107,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, appDir, cordovaDir, cordo
             .on( 'end', done );
     });
 
+    gulp.task('cordova-replace-credentials', (done) => {
+        gulp.src(path.join( cordovaWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
+            .pipe(gulp.dest( cordovaWwwDir))
+            .on('end', done);
+    });
+
     gulp.task('cordova-remove-absolute-assets', (done) => {
         gulp.src(path.join( cordovaWwwDir, '**', '*.js' ))
             .pipe(inject.replace( '/assets/', 'assets/' ))
@@ -114,9 +126,11 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, appDir, cordovaDir, cordo
         runSquence(
             'cordova-prepare',
             'cordova-copy-dist',
+            'cordova-copy-credentials',
             'cordova-copy-src',
             'cordova-replace-cordova',
             'cordova-replace-speech',
+            'cordova-replace-credentials',
             'cordova-remove-absolute-assets',
             (err) => {
                 if(err) {

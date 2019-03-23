@@ -1,6 +1,17 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.6.0047 Alpha (22.03.2019)
+
+### Features
+
+* **Nuance:** es wurden dynamische Credentials eingebaut, um nachträglich Credentials zu ändern
+
+### Fixes
+
+* **Nuance:** die WebSocket verbindet sich auch nach einer Netzunterbrechung wieder mit dem Nuance-Server
+
+
 ## 0.5.5.0046 Alpha (22.02.2019)
 
 ### Fixes

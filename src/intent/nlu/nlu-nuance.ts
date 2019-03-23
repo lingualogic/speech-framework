@@ -2,7 +2,7 @@
  * Diese Komponente dient der Spracherkennung mit Hilfe von Nuance NLU
  * sowohl mit Audio wie auch Text.
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 21.03.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -250,7 +250,7 @@ export class NLUNuance extends NLUPlugin {
         });
         this.mNuancePort.addErrorEvent( NLU_NUANCE_NAME, (aError: any) => {
             // console.log('NLUNuance._initRecognition: errorEvent = ', aError.message);
-            this._onError( aError );
+            this._onRecognitionError( aError );
             return 0;
         });
         return 0;
@@ -401,6 +401,21 @@ export class NLUNuance extends NLUPlugin {
 
     _abortRecognition(): number {
         return this._stopRecognition();
+    }
+
+
+    /**
+     * prueft, ob die Synthese im NuancePort laeuft
+     */
+
+    _isRecognitionRunning(): boolean {
+        // console.log('TTSNuance._isSynthesisRunning');
+        if ( this.mNuancePort ) {
+            // TODO: solange mehrere Actions verwendet werden in der NLU, wird die Action nicht uebergeben
+            // return this.mNuancePort.isRunning( NLU_NUANCE_NAME, NUANCE_NLU_ACTION );
+            return this.mNuancePort.isRunning( NLU_NUANCE_NAME );
+        }
+        return false;
     }
 
 }

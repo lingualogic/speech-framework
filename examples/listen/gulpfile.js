@@ -1,6 +1,8 @@
 const gulp = require('gulp');
 const path = require('path');
 const childProcess = require('child_process');
+const protractor = require('gulp-protractor').protractor;
+
 
 // Verzeichnis-Konstanten
 
@@ -16,6 +18,7 @@ const cordovaDir = 'cordova';
 const cordovaAppDir = 'cordova/app';
 const cordovaWwwDir = 'cordova/app/www';
 const electronDir = 'electron';
+const electronAppDir = 'electron/app';
 const electronWwwDir = 'electron/www';
 
 // Ausfuehrungs-Funktion
@@ -49,6 +52,7 @@ const settings = {
     cordovaAppDir,
     cordovaWwwDir,
     electronDir,
+    electronAppDir,
     electronWwwDir
 };
 
@@ -56,3 +60,13 @@ require('./gulp/gulp-cordova')(settings);
 require('./gulp/gulp-electron')(settings);
 require('./gulp/gulp-dist')(settings);
 
+
+// Gulp-Tasks
+
+gulp.task( 'e2e', () =>
+    gulp.src([ './e2e/src/*.ts' ])
+        .pipe( protractor({
+            configFile: 'e2e/protractor.conf.js'
+        }))
+        .on( 'error', function(e) { throw e; })
+);

@@ -28,6 +28,6 @@ Für die Erzeugung und den Start der Cordova-Versionen der SpeakApp können folg
     $ npm run cordova:ios
     $ npm run cordova:osx
 
-Für die Erzeugung und den Start Electron-Version der SpeakApp kann folgender Befehl verwendet werden:
+Für die Erzeugung und den Start der Electron-Version der SpeakApp kann folgender Befehl verwendet werden:
 
     $ npm run build:electron

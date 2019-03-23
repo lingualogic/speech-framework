@@ -1,7 +1,7 @@
 /**
  *  ASRPlugin definiert die Basisklasse aller ASRs
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 21.03.2019
  * Status: rot
  *
  * @module listen/asr
@@ -521,6 +521,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _onRecognitionError( aEvent: any ): number {
         // console.log('ASRPlugin._onRecognitionError:', aEvent, aEvent.error, aEvent.message);
+        this._clearRecognitionTimeout();
         try {
             // pruefen auf leeren error.message
             let errorEvent = aEvent;
@@ -528,10 +529,13 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                 // Umwandlung der ASR-Fehler in richtige Fehlermeldungen
                 switch ( aEvent.error ) {
                     case 'network':
-                        errorEvent = new Error( 'Netzwerk nicht eingeschaltet' );
+                        errorEvent = new Error( 'ASR-Error: Netzwerk nicht eingeschaltet' );
                         break;
                     case 'no-speech':
-                        errorEvent = new Error( 'Keine Sprache aufgenommen' );
+                        errorEvent = new Error( 'ASR-Error: Keine Sprache aufgenommen' );
+                        break;
+                    case 'not-allowed':
+                        errorEvent = new Error( 'ASR-Error: Kein Mikrofon vorhanden' );
                         break;
                     default:
                         errorEvent = new Error( aEvent.error );
@@ -584,6 +588,12 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _abortRecognition(): number {
         return -1;
+    }
+
+
+    _isRecognitionRunning(): boolean {
+        // muss von erbenden Klassen ueberschrieben werden
+        return true;
     }
 
 
@@ -725,7 +735,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     isListenRunning(): boolean {
-        return this.mListenRunningFlag;
+        return this.mListenRunningFlag && this._isRecognitionRunning();
     }
 
 

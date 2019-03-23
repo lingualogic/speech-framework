@@ -190,6 +190,9 @@ function IntentApp() {
     var initIntent = function() {
         console.log('IntentApp.init: start...');
 
+        var startButton = document.getElementById('startClick');
+        var startButtonColor = startButton.style.backgroundColor;
+
         // erzeugt das Speech-System
         if ( speech.SpeechMain.init() !== 0 ) {
             console.log('IntentApp: wurde nicht initialisiert');
@@ -203,10 +206,14 @@ function IntentApp() {
 
         intent.addStartEvent('IntentApp', function() {
             console.log('IntentApp.startEvent');
+            var startButton = document.getElementById('startClick');
+            startButton.style.backgroundColor = 'red';
         });
 
         intent.addStopEvent('IntentApp', function() {
             console.log('IntentApp.stopEvent');
+            var startButton = document.getElementById('startClick');
+            startButton.style.backgroundColor = startButtonColor;
         });
 
         intent.addListenResultEvent('IntentApp', function(aResult) {

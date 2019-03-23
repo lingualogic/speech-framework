@@ -3,11 +3,19 @@
  * Funktioniert zur Zeit nur in Chrome. Ist Speech-Recognition nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 27.02.2019
  * Status: gelb
  *
  * @module listen/asr
  * @author SB
+ * 
+ * Kommentare:
+ * 
+ *      - unter Cordova/Android funktioniert onstart nicht so, wie erwartet, onstart wird erst erzeugt, wenn mit sprechen begonnen wird.
+ *        Dadurch wird der breakTimeout ausgeloest, welcher hier eigentlich nicht ausgeloest werden sollte, da eine ASR vorhanden ist.
+ *        Ich habe jetzt als Workaround die breakTimeout Zeit auf 5 sekunden erhoeht, auch wenn das in Opera dann zu einer Verzoegerung 
+ *        der Fehlermeldung auf felhenden ASR-Dienst fuehrt.
+ *        Der Fehler liegt wahrscheinlich an dem SpeechRecognition-Plugin, welches ich noch korrigieren muss.
  */
 
 
@@ -29,7 +37,7 @@ import { ASRPlugin} from './asr-plugin';
 
 // Konstanten
 
-const ASR_BREAK_TIMEOUT = 1000;     // eine Sekunde warten auf Recognition-Start
+const ASR_BREAK_TIMEOUT = 5000;     // eine Sekunde warten auf Recognition-Start
 
 
 // TODO: Eine Grammatik ist im Moment noch nicht implementiert
@@ -290,16 +298,26 @@ export class ASRHtml5 extends ASRPlugin {
             this._onRecognitionStart();
         }
         this.mRecognition.onend = () => this._onRecognitionEnd();
-        this.mRecognition.onspeechstart = () => this._onRecognitionSpeechStart();
-        this.mRecognition.onspeechend = () => this._onRecognitionSpeechEnd();
+        this.mRecognition.onspeechstart = () => { 
+            // console.log('ASRHtml5.onspeechstart');
+            this._clearBreakTimeout(); 
+            this._onRecognitionSpeechStart(); 
+        }
+        this.mRecognition.onspeechend = () => {
+            // console.log('ASRHtml5.onspeechend');
+            this._onRecognitionSpeechEnd();
+        }
         this.mRecognition.onresult = (aEvent: any) => this._onRecognitionResult( aEvent );
         this.mRecognition.onnomatch = (aEvent: any) => this._onRecognitionNoMatch( aEvent );
-        this.mRecognition.onerror = (aEvent: any) => this._onRecognitionError( aEvent );
+        this.mRecognition.onerror = (aEvent: any) => { 
+            this._clearBreakTimeout(); 
+            this._onRecognitionError( aEvent ); 
+        }
 
         // Testausgaben 
 
         // this.mRecognition.onaudiostart = () => console.log('ASRHtml5.onaudiostart');
-        // this.mRecognition.onaudioend = () => console.log('ASRHtml5.onaudiostart');
+        // this.mRecognition.onaudioend = () => console.log('ASRHtml5.onaudioend');
         // this.mRecognition.onsoundstart = () => console.log('ASRHtml5.onsoundstart');
         // this.mRecognition.onsoundend = () => console.log('ASRHtml5.onsoundend');
 

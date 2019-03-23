@@ -54,7 +54,12 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
         exec(`cd ${rootDir}/${distDir} && http-server -o -c-1`, done);
     });
 
-    gulp.task('dist-run', (done) => {
+
+    /**
+     * Erzeugt die Web-App
+     */
+
+    gulp.task('dist-build', (done) => {
         runSquence(
             'dist-prepare',
             'dist-copy-src',
@@ -63,6 +68,27 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
             'dist-copy-speech',
             'dist-replace-speech',
             'dist-remove-absolute-assets',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+    /**
+     * Erzeugt und startet die Web-App
+     */
+
+    gulp.task('dist-run', (done) => {
+        runSquence(
+            'dist-build',
             'dist-run-app',
             (err) => {
                 if(err) {

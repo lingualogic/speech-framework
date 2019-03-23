@@ -20,18 +20,19 @@ In der nachfolgenden Grafik zur Gesamtarchitektur des Frameworks werden die einz
 * **[Intent](./intent/Intent.md):** erlaubt die Spracheingabe und gibt einen erkannten Intent zurück
 * **[Listen](./listen/Listen.md):** erlaubt die Spracheingabe und gibt einen erkannten Text zurück
 * **[Speak](./speak/Speak.md):** erlaubt die Sprachausgabe
+* **[Base](./base/Base.md):** beinhaltet die Basisklassen für alle Speech-Komponenten
 
 
 ## Basismodule
 
-* **[Base](./base/Base.md):** beinhaltet die Basisklassen für alle Speech-Komponenten
-* **[Audio](./audio/Audio.md):** erlaubt das Abspielen von Audiodateien
-* **[Cloud](./../cloud/Cloud.md):** erzeugt und verwaltet alle Cloud-Dienste
+
 * **[Common](./common/Html5.md):** beinhaltet Basisklassen für Html5
+* **[Cloud](./../cloud/Cloud.md):** erzeugt und verwaltet alle Cloud-Dienste
+* **[Audio](./audio/Audio.md):** erlaubt das Abspielen von Audiodateien
 
 
 ## Infrastruktur
 
-* **[Core](./core/Core.md):** beinhaltet die Basisklassen für die Infrastruktur des Frameworks
+* **[Core](./core/Core.md):** beinhaltet die Basisklassen und Schnittstellen für die Infrastruktur des Frameworks
 
 

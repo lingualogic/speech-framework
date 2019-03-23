@@ -426,6 +426,12 @@ export class TTSPlugin extends Plugin implements TTSInterface {
     }
 
 
+    _isSynthesisRunning(): boolean {
+        // muss von erbenden Klassen ueberschrieben werden
+        return true;
+    }
+
+
     // TTS-Funktionen
 
 
@@ -590,7 +596,7 @@ export class TTSPlugin extends Plugin implements TTSInterface {
      */
 
     isSpeakRunning() {
-        return this.mSpeakRunningFlag;
+        return this.mSpeakRunningFlag && this._isSynthesisRunning();
     }
 
 
@@ -624,6 +630,7 @@ export class TTSPlugin extends Plugin implements TTSInterface {
 
         // pruefen auf laufende Sprachausgabe
 
+        // console.log('TTSPlugin.startSpeak: speakRunning = ', this.isSpeakRunning(), ' synthesisRunning = ', this._isSynthesisRunning());
         if ( this.isSpeakRunning()) {
             // console.log('TTSPlugin.startSpeak: isSpeakRunning == true');
             this._error( 'startSpeak', 'Sprachausgabe laeuft bereits' );

@@ -1,7 +1,7 @@
 /**
  * IntentComponent zur Verwaltung von NLU-Plugins. Sie erbt von der BaseComponent.
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 27.02.2019
  * Status: rot
  *
  * @module intent/component
@@ -623,7 +623,13 @@ export class IntentComponent extends BaseComponent implements IntentComponentInt
 
         // interne NLU mit Text verwenden
 
-        return this.mNLUPlugin.startIntent( this.mIntentText );
+        const result = this.mNLUPlugin.startIntent( this.mIntentText );
+
+        // uebergebener NLU-Text muss wieder geloescht werden, da ansonsten die ASRNLU blockiert wird
+        // Text wird im Intent zurueckgegeben
+
+        this.mIntentText = '';
+        return result;
     }
 
 

@@ -21,6 +21,8 @@ export interface NuanceOptionInterface {
     nuancePortName?: string;
     /** legt die URL fuer die Verbindung zum Server fest */
     nuanceServerUrl?: string;
+    /** legt dynamische Konfigurierbarkeit fest */
+    nuanceDynamicCredentialsFlag?: boolean;
     /** legt die App-ID fuer die Verbindung zum Server fest */
     nuanceAppId?: string;
     /** legt den App-Key fuer die Verbindung zum Server fest */

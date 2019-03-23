@@ -13,7 +13,7 @@ const runSequence = require('run-sequence');
 const typedoc = require('gulp-typedoc');
 const del = require('del');
 const fs = require('fs');
-const rename = require('gulp-rename');
+// const rename = require('gulp-rename');
 const file = require('gulp-file');
 const inject = require('gulp-inject-string');
 
@@ -333,6 +333,7 @@ gulp.task('copy-nuance', function() {
     return gulp.src([
         'bundle/nuance.d.ts',
         'build/src/cloud/nuance/nuance-const.d.ts',
+        'build/src/cloud/nuance/nuance-config-data.interface.d.ts',
         'build/src/cloud/nuance/nuance-option.interface.d.ts'
     ])
         .pipe( gulp.dest('dist/src/cloud/nuance'));
@@ -446,6 +447,13 @@ gulp.task('install-nuance-credentials-js', function() {
 
 
 /**
+ * Installiert die WebDriver-Treiber fuer die  Protractor-Tests
+ */
+
+gulp.task('install-webdriver', shell.task('node_modules/protractor/bin/webdriver-manager update'));
+
+
+/**
  * Installiert alle benoetigten Dateien
  */
 
@@ -453,6 +461,7 @@ gulp.task('install', (callback) => {
     runSequence(
         'install-nuance-credentials-ts',
         'install-nuance-credentials-js',
+        // 'install-webdriver',
         callback
     );
 });
@@ -496,6 +505,206 @@ gulp.task('build-rollup', shell.task('rollup -c ./rollup.config.js'));
  */
 
 gulp.task('dist-pack', shell.task('cd dist && npm pack'));
+
+
+// Intent-Beispiel erzeugen
+
+
+/**
+ * Installiert das Intent Web-Beispiel
+ */
+
+gulp.task('install-intent', shell.task('cd examples/intent && npm install'));
+
+
+/**
+ * Erzeugt das Intent Web-Beispiel
+ */
+
+gulp.task('build-intent', shell.task('cd examples/intent && npm run build'));
+
+
+/**
+ * Erzeugt das Intent-Electron Beispiel
+ */
+
+gulp.task('build-intent-electron', shell.task('cd examples/intent && npm run build:electron'));
+
+
+/**
+ * Erzeugt das Intent-Android Beispiel
+ */
+
+gulp.task('build-intent-android', shell.task('cd examples/intent && npm run build:android'));
+
+
+/**
+ * Testet das Intent Web-Beispiel
+ */
+
+gulp.task('test-intent', shell.task('cd examples/intent && npm run e2e'));
+
+
+/** 
+ * Erzeugt das Intent-Example
+ */
+
+gulp.task('build-intent-example', function(callback) {
+    try {
+        // pruefen auf vorhandenes Intent-Beispiel
+        fs.accessSync( 'examples/intent/package.json' );
+        runSequence(
+            // 'install-intent',
+            'build-intent',
+            'build-intent-electron',
+            // 'build-intent-android',
+            // 'test-intent',
+            callback
+        );
+    } catch (e) {
+        callback();
+    }
+});
+
+
+// Listen-Beispiel erzeugen
+
+
+/**
+ * Installiert das Listen Web-Beispiel
+ */
+
+gulp.task('install-listen', shell.task('cd examples/listen && npm install'));
+
+
+/**
+ * Erzeugt das Listen-Beispiel
+ */
+
+gulp.task('build-listen', shell.task('cd examples/listen && npm run build'));
+
+
+/**
+ * Erzeugt das Listen-Electron Beispiel
+ */
+
+gulp.task('build-listen-electron', shell.task('cd examples/listen && npm run build:electron'));
+
+
+/**
+ * Erzeugt das Listen-Android Beispiel
+ */
+
+gulp.task('build-listen-android', shell.task('cd examples/listen && npm run build:android'));
+
+
+/**
+ * Testet das Listen Web-Beispiel
+ */
+
+gulp.task('test-listen', shell.task('cd examples/listen && npm run e2e'));
+
+
+/** 
+ * Erzeugt das Listen-Example
+ */
+
+gulp.task('build-listen-example', function(callback) {
+    try {
+        // pruefen auf vorhandenes Listen-Beispiel
+        fs.accessSync( 'examples/listen/package.json' );
+        runSequence(
+            // 'install-listen',
+            'build-listen',
+            'build-listen-electron',
+            // 'build-listen-android',
+            // 'test-listen',
+            callback
+        );
+    } catch (e) {
+        callback();
+    }
+});
+
+
+// Speak-Beispiel erzeugen
+
+
+/**
+ * Installiert das Speak Web-Beispiel
+ */
+
+gulp.task('install-speak', shell.task('cd examples/speak && npm install'));
+
+
+/**
+ * Erzeugt das Speak-Beispiel
+ */
+
+gulp.task('build-speak', shell.task('cd examples/speak && npm run build'));
+
+
+/**
+ * Erzeugt das Speak-Electron Beispiel
+ */
+
+gulp.task('build-speak-electron', shell.task('cd examples/speak && npm run build:electron'));
+
+
+/**
+ * Erzeugt das Speak-Android Beispiel
+ */
+
+gulp.task('build-speak-android', shell.task('cd examples/speak && npm run build:android'));
+
+
+/**
+ * Testet das Speak Web-Beispiel
+ */
+
+gulp.task('test-speak', shell.task('cd examples/speak && npm run e2e'));
+
+
+/** 
+ * Erzeugt das Speak-Example
+ */
+
+gulp.task('build-speak-example', function(callback) {
+    try {
+        // pruefen auf vorhandenes Speak-Beispiel
+        fs.accessSync( 'examples/speak/package.json' );
+        runSequence(
+            // 'install-speak',
+            'build-speak',
+            'build-speak-electron',
+            // 'build-speak-android',
+            // 'test-speak',
+            callback
+        );
+    } catch (e) {
+        callback();
+    }
+});
+
+
+// Beispiele erzeugen
+
+
+/** 
+ * Erzeugt die Examples
+ */
+
+gulp.task('build-examples', function(callback) {
+    runSequence(
+        'build-intent-example',
+        'build-listen-example',
+        'build-speak-example',
+        callback
+    );
+});
+
+
+// Speech-Bibliothek erzeugeun
 
 
 /** 

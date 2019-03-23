@@ -9,7 +9,7 @@ const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
 
-module.exports = ({ gulp, exec, srcDir, globalDistDir, globalConfigDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
+module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
 
     gulp.task('cordova-create-app', (done) => {
         exec(`cd ${cordovaDir} && cordova create ${appDir}`, done);
@@ -50,10 +50,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalConfigDir, appDir, 
         runSquence(
             'cordova-create-app',
             'cordova-copy-original',
+            // fuer alle Betriebssysteme verfuegbar
             'cordova-install-browser',
             'cordova-install-android',
-            'cordova-install-ios',
-            'cordova-install-osx',
+            // koennen nur unter Mac-Rechner installiert werden !
+            // werden deshalb separat installiert
+            // 'cordova-install-ios',
+            // 'cordova-install-osx',
             'cordova-install-speechrecognition',
             (err) => {
                 if(err) {
@@ -79,7 +82,7 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalConfigDir, appDir, 
     });
 
     gulp.task('cordova-copy-credentials', () => {
-        return gulp.src(path.join( globalConfigDir, 'nuance-credentials.js'))
+        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
@@ -104,7 +107,7 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalConfigDir, appDir, 
 
     gulp.task('cordova-replace-credentials', (done) => {
         gulp.src(path.join( cordovaWwwDir, 'index.html'))
-            .pipe(inject.replace('<script type="text/javascript" src="./../../../config/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
     });
@@ -141,6 +144,32 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalConfigDir, appDir, 
         );
     });
 
+    // Cordova erzeugen
+
+    gulp.task('cordova-compile-android', (done) => {
+        exec(`cd ${cordovaAppDir} && cordova build android --scan`, done);
+    });
+
+
+    gulp.task('cordova-build-android', (done) => {
+        runSquence(
+            'cordova-generate',
+            'cordova-compile-android',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+    // Cordova starten
 
     gulp.task('cordova-run-browser', (done) => {
         exec(`cd ${cordovaAppDir} && cordova run browser --debug`, done);
