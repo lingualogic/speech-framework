@@ -4,7 +4,7 @@
  * Version: 1.2
  * Datum:   27.01.2019
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 28.03.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -135,23 +135,36 @@ export interface NLUInterface extends PluginInterface {
     isIntent(): boolean;
 
 
+    /**
+     * Startet die Textanalyse und gibt einen Intent mit Entities zurueck
+     *
+     * @param aText - Text, der analysiert werden soll
+     */
     startIntent( aText: string ): number;
-
 
 
     // Listen-Funktionen
 
-
+    // Kommentar: Alle Listenfunktionen werden aus Intent wieder entfernt
 
     /**
      * pruefen auf vorhandene Listen-Dienst
      *
+     * @deprecated
      * @returns {boolean}
      * @memberof ASRPlugin
      */
 
     isListen(): boolean;
 
+
+    /**
+     * pruefen auf aktuelle Sprachaufnahme
+     * 
+     * @deprecated
+     * 
+     * @return {boolean} True, wenn Aufnahme laeuft, false sonst
+     */
 
     isListenRunning(): boolean;
 
@@ -160,6 +173,7 @@ export interface NLUInterface extends PluginInterface {
      * Timout in Millisekunden setzen. Der Timeout begrenzt die Zeit,
      * die auf Listen gewartet wird, wenn listen nicht starten kann.
      *
+     * @deprecated
      * @param {number} aTimeout
      */
 

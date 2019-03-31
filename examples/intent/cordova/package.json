@@ -1,7 +1,7 @@
 {
     "name": "intentapp",
     "displayName": "IntentApp",
-    "version": "0.5.6",
+    "version": "0.5.7",
     "description": "Beispiel-App fuer Intent-API in Cordova",
     "author": "LinguaLogic Team",
     "license": "MIT",

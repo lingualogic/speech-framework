@@ -104,9 +104,9 @@ module.exports = function(config) {
         // only for Windows
         // browsers: ['Chrome', 'Firefox', 'OperaWindows', 'Edge'],
         
-        // browsers: ['ChromeHeadless'],
+        browsers: ['ChromeHeadless'],
 
-        browsers: ['Chrome'],
+        // browsers: ['Chrome'],
         // browsers: ['Firefox'],
         // browsers: ['Opera'],
         // browsers: ['OperaWindows'],

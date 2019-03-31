@@ -1,7 +1,7 @@
 /**
  * Dialog API Wrapper fuer DialogComponent
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 26.03.2019
  * Status: rot
  *
  * @module dialog
@@ -244,6 +244,22 @@ export class Dialog extends Base implements DialogInterface {
 
     setDialogStateContext( aContext: DialogStateContextInterface ): number {
         return this.mDialogComponent.setDialogStateContext( aContext );
+    }
+
+
+    // Kontext-Funktionen
+
+
+    clearContext(): number {
+        return this.mDialogComponent.clearContext();
+    }
+
+    addContextElement( aElementName: string, aContextName: string ): number {
+        return this.mDialogComponent.addContextElement( aElementName, aContextName );
+    }
+
+    removeContextElement( aElementName: string, aContextName: string ): number {
+        return this.mDialogComponent.removeContextElement( aElementName, aContextName );
     }
 
 }

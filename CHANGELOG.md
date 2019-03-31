@@ -1,6 +1,11 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.7.0048 Alpha (31.03.2019)
+
+* **Nuance:** der IntentResultEvent gibt jetzt auch eine Liste der Konzepte (Entities) zurück
+
+
 ## 0.5.6.0047 Alpha (22.03.2019)
 
 ### Features

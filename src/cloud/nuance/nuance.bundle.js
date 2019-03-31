@@ -1071,8 +1071,9 @@ var Factory = function(t) {
         if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
         -1;
         try {
-            return this.mNuanceConfig.appId = t.nuanceAppId, this.mNuanceConfig.appKey = t.nuanceAppKey, 
-            'string' == typeof t.nuanceNluTag && (this.mNuanceConfig.nluTag = t.nuanceNluTag), 
+            return 'string' == typeof t.nuanceAppId && t.nuanceAppId && (this.mNuanceConfig.appId = t.nuanceAppId), 
+            'string' == typeof t.nuanceAppKey && t.nuanceAppKey && (this.mNuanceConfig.appKey = t.nuanceAppKey), 
+            'string' == typeof t.nuanceNluTag && t.nuanceNluTag && (this.mNuanceConfig.nluTag = t.nuanceNluTag), 
             0;
         } catch (t) {
             return this._exception('setConfig', t), -1;

@@ -999,6 +999,9 @@ export class NLUPlugin extends Plugin implements NLUInterface {
     // Listen-Funktionen
 
 
+    // TODO: Alle Listenfunktionen werden aus Intent wieder entfernt
+
+
     /**
      * pruefen auf gestartete Spracheingabe
      *

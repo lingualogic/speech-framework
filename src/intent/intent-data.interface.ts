@@ -1,10 +1,10 @@
 /**
  * Public Intent Data Schnittstelle
  *
- * API-Version: 1.0
- * Datum:   04.12.2018
+ * API-Version: 1.1
+ * Datum:   28.03.2019
  *
- * Letzte Aenderung: 04.12.2018
+ * Letzte Aenderung: 28.03.2019
  * Status: gelb
  *
  * @module intent
@@ -24,6 +24,8 @@ export interface IntentDataInterface {
     intent: string;
     /** definiert die Wahrscheinlichkeit fuer den Intent */
     confidence: number;
+    /** defniert moegliche Konzepte */
+    conceptList: any;
     /** Text zum Intent */
     literal: string;
     /** aufgetretene Fehler */

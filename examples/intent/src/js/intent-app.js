@@ -225,7 +225,9 @@ function IntentApp() {
         intent.addIntentResultEvent('IntentApp', function(aResult) {
             console.log('IntentApp.IntentResultEvent', aResult);
             var intentResult = document.getElementById('intentResult');
-            intentResult.value = aResult.intent;
+            intentResult.value = aResult.intent + ' Convidence: ' + aResult.confidence;
+            var entityResult = document.getElementById('entityResult');
+            entityResult.value = 'Konzept = ' + aResult.conceptList[0].value + ' Wert = ' + aResult.conceptList[0].literal;
         });
 
         intent.addErrorEvent('IntentApp', function(aError) {

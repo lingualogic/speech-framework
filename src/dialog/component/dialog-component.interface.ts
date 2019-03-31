@@ -73,15 +73,4 @@ export interface DialogComponentInterface extends BaseComponentInterface, Dialog
     setReadFileFunc( aReadFunc: OnFileReaderReadFunc ): number;
     getWriteFileDataFunc(): DialogWriteFileDataFunc;
 
-
-    // TODO: sollen erst in Bot implementiert sein ---> werden zu Bot verschoben
-
-    // Kontext-Funktionen
-
-
-    clearContext(): number;
-
-    addContextElement( aElementName: string, aContextName: string): number;
-    removeContextElement( aElementName: string, aContextName: string): number;
-
 }

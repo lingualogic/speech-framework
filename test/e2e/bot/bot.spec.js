@@ -1032,6 +1032,7 @@ describe('Bot', () => {
                 done.fail('should not call');
             })).toBe( 0 );
             expect( bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
+                // console.log('===> Bot.loadDialogFile:', aError);
                 expect(aError.message).toEqual('FileReader._requestDialogFile: Error 404');
                 done();
                 return 0;
@@ -1047,11 +1048,13 @@ describe('Bot', () => {
                 return 0;
             })).toBe( 0 );
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
+                console.log('===> Bot.loadDialogFile2:', aError);
                 done.fail('Test 2 Error: ' + aError.message);
                 return 0;
             })).toBe(0);
             expect( bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe(0);
             console.log('===> getDialogFilePath:', bot.getDialogFilePath());
+            console.log('===> getDialogFileName:', bot.getDialogFileName());
             expect( bot.loadDialogFile()).toBe( 0 );
             // console.log('Test 2 Ende');
         });

@@ -1,10 +1,10 @@
 /**
  * Oeffentliche Dialog Schnittstelle
  *
- * API-Version: 1.1
- * Datum:   18.10.2018
+ * API-Version: 1.2
+ * Datum:   26.03.2019
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 26.03.2019
  * Status: gelb
  *
  * @module dialog
@@ -470,5 +470,16 @@ export interface DialogInterface extends BaseInterface {
      */
 
     setDialogStateContext( aContext: DialogStateContextInterface ): number;
+
+
+    // TODO: sollen erst in Bot implementiert sein ---> werden zu Bot verschoben
+
+    // Kontext-Funktionen
+
+
+    clearContext(): number;
+
+    addContextElement( aElementName: string, aContextName: string): number;
+    removeContextElement( aElementName: string, aContextName: string): number;
 
 }

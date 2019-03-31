@@ -2,7 +2,7 @@
  * Diese Komponente dient der Spracherkennung mit Hilfe von Nuance NLU
  * sowohl mit Audio wie auch Text.
  *
- * Letzte Aenderung: 21.03.2019
+ * Letzte Aenderung: 28.03.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -333,6 +333,7 @@ export class NLUNuance extends NLUPlugin {
         const intentData = {
             intent: '',
             confidence: 0.0,
+            conceptList: [],
             literal: '',
             error: ''
         };
@@ -340,6 +341,17 @@ export class NLUNuance extends NLUPlugin {
             // Mapping der Daten auf IntentData
             intentData.intent = aEvent[0].action.intent.value;
             intentData.confidence = aEvent[0].action.intent.confidence;
+            // Konzepte kopieren, wenn vorhanden
+            if ( aEvent[0].concepts ) {
+                console.log('NluNuance._getRecognitionIntentResult:', aEvent[0].concepts);
+                for ( let conceptName in aEvent[0].concepts ) {
+                    let concept = { concept: conceptName, value: '', literal: ''}
+                    console.log('NluNuance._getRecognitionIntentResult: concept = ', conceptName);
+                    concept.value = aEvent[0].concepts[conceptName][0].value;
+                    concept.literal = aEvent[0].concepts[conceptName][0].literal;
+                    intentData.conceptList.push( concept );
+                }
+            }
             intentData.literal = aEvent[0].literal;
         } catch ( aException ) {
             this._exception( '_getRecognitionIntentResult', aException );

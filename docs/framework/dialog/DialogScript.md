@@ -1,6 +1,6 @@
 ## Dialog-Skriptsprache
 
-Die Definiton eines Dialogs legt die Art und Weise fest, wie der Dialog ausgeführt wird. In der aktuellen Version des Speech-Plugins werden nur Ausgabedialoge unterstuetzt. Spracheingaben werden noch nicht unterstuetzt. Jeder Dialog wird in Dialogzustaende und Dialogaktionen unterteilt. Pro
+Die Definiton eines Dialogs legt die Art und Weise fest, wie der Dialog ausgeführt wird. In der aktuellen Version des Speech-Frameworks werden nur Ausgabedialoge unterstuetzt. Spracheingaben werden noch nicht unterstuetzt. Jeder Dialog wird in Dialogzustaende und Dialogaktionen unterteilt. Pro
 eigener App-Seitenansicht wird ein eigener Dialogzustand definiert. Die App definiert die Dialogzustaende und ihre Namen, die in der Dialogdefinition benutzt werden. Gleiches gilt fuer die Aktionsnamen, Objekttypen und Objektnamen. Die Aktionen werden an die App durchgereicht. Die Sprachausgaben werden im Plugin ausgefuehrt.
 
 Der GROUP-Befehl erlaubt das optionale Ausführen von Aktionen, je nach Zustandskontext, der vorher in
@@ -10,13 +10,15 @@ gesetzten Eigenschaft zusammen mit den zugehörigen Objektnamen eingetragen. Die
 abgeschlossen. Die Eigenschaftsnamen hinter dem GROUP-Befehl können frei gewählt werden, müssen aber mit
 dem Property-Namen im StateContext übereinstimmen. Es werden nur die Aktionen ausgeführt, deren Objektnamen in der zugehörigen Gruppen-Eigenschaft in StateContext eingetragen wurden.
 
-Beispiel: 	stateName = home/communication/inbox
- 			stateContext = { property: { "optional": ["arrow"]}}
+Beispiel:
+ 	
+	stateName = home/communication/inbox
+	stateContext = { property: { "optional": ["arrow"]}}
 		
-			setState( stateName, stateContext )
+	setState( stateName, stateContext )
 
 
-Die speech.def Datei wird im assets/www/speech Ordner der App abgelegt.
+Die speech.def Datei wird im assets/speech Ordner der App abgelegt.
 
 
 Definition der Skriptsprache:

@@ -4,7 +4,7 @@
  * API-Version: 1.1
  * Datum: 27.01.2019
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 28.03.2019
  * Status: rot
  *
  * @module intent
@@ -39,6 +39,7 @@ export interface IntentInterface extends BaseInterface {
      * Eintragen eines Spracheingabe-Ergebnis Events. Hier wird der Ergebnistext
      * der Spracheingabe zurueckgegeben.
      *
+     * @deprecated
      * @param {string} aPluginName - Name des Plugins
      * @param {OnListenResultFunc} aEventFunc - Ereignis-Behandlungsfunktion
      *
@@ -64,6 +65,7 @@ export interface IntentInterface extends BaseInterface {
     /**
      * Enfernen eines Spracheingabe-Ergebnis Events.
      *
+     * @deprecated
      * @param {string} aPluginName - Name des Plugins
      *
      * @return {number} Fehlercode 0 oder -1
@@ -185,6 +187,7 @@ export interface IntentInterface extends BaseInterface {
     /**
      * Sofortiger Abbruch der Spracheingabe ohne Resultate zurueckzugeben
      *
+     * @deprecated
      * @returns {number} Fehlercode 0 oder -1
      */
 

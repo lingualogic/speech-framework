@@ -2,7 +2,7 @@
  * DialogBase definiert die Basisfunktionalitaet fuer eine Dialog-Komponente.
  * Von dieser Klasse koennen weitere Varianten der Dialog-Komponente abgeleitet werden.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 26.03.2019
  * Status: gelb
  *
  * @module dialog/component
@@ -930,6 +930,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     parseSpeechDefFile( aDefFileName: string ): number {
+        if ( !this.isActive()) {
+            this._error('parseSpeechDefFile', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( typeof this.mParseSpeechDefFileFunc === 'function' ) {
             return this.mParseSpeechDefFileFunc( aDefFileName );
         }
@@ -946,6 +950,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     parseSpeechDefData( aDefData: string ): number {
+        if ( !this.isActive()) {
+            this._error('parseSpeechDefData', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         try {
             if ( typeof this.mParseSpeechDefDataFunc !== 'function' ) {
                 this._error( 'parseSpeechDefData', 'keine ParseDefData funktion' );
@@ -966,6 +974,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     setDialogFilePath( aDialogFilePath: string ): number {
+        if ( !this.isActive()) {
+            this._error('setDialogFilePath', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         this.mDialogFilePath = aDialogFilePath;
         return 0;
     }
@@ -991,6 +1003,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     setDialogFileName( aDialogFileName: string ): number {
+        if ( !this.isActive()) {
+            this._error('setDialogFileName', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         this.mDialogFileName = aDialogFileName;
         return 0;
     }
@@ -1017,6 +1033,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
     loadDialogFile( aDialogFileName?: string ): number {
         // console.log('DialogBase.loadDialogFile:', aDialogFileName);
+        if ( !this.isActive()) {
+            this._error('loadDialogFile', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         let fileName = this.mDialogFilePath + this.mDialogFileName;
         if ( aDialogFileName ) {
             fileName = this.mDialogFilePath + aDialogFileName;
@@ -1040,6 +1060,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
     writeDialogData( aDialogData: string ): number {
         // console.log('DialogBase.writeDialogData');
+        if ( !this.isActive()) {
+            this._error('writeDialogData', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         return this.parseSpeechDefData( aDialogData );
     }
 
@@ -1060,6 +1084,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     toggleDialog(): number {
+        if ( !this.isActive()) {
+            this._error('toggleDialog', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( this.isRunning()) {
             return this.stop();
         } else {
@@ -1161,6 +1189,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     clearContext(): number {
+        if ( !this.isActive()) {
+            this._error('clearContext', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         this.mDialogContext.clear();
         return 0;
     }
@@ -1188,6 +1220,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     addContextElement( aElementName: string, aContextName: string ): number {
+        if ( !this.isActive()) {
+            this._error('addContextElement', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( this.mDialogContext.insert( aElementName, aContextName ) !== 0 ) {
             return -1;
         }
@@ -1205,6 +1241,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     removeContextElement( aElementName: string, aContextName: string ): number {
+        if ( !this.isActive()) {
+            this._error('removeContextElement', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( this.mDialogContext.remove( aElementName, aContextName ) !== 0 ) {
             return -1;
         }

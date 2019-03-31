@@ -1,7 +1,7 @@
 /**
  * DialogComponent definiert einen DialogManager fuer Aktionen und Sprachausgaben
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 26.03.2019
  * Status: gelb
  *
  * @module dialog/component
@@ -119,6 +119,10 @@ export class DialogComponent extends DialogBase {
      */
 
     clearDialog(): number {
+        if ( !this.isActive()) {
+            this._error('clearDialog', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         try {
             this.mStore.clear();
             return 0;
@@ -138,6 +142,10 @@ export class DialogComponent extends DialogBase {
      */
 
     setDialog( aDialogName: string ): number {
+        if ( !this.isActive()) {
+            this._error('setDialog', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         try {
             return this.mInterpreter.setDialog( aDialogName );
         } catch ( aException ) {
@@ -184,6 +192,10 @@ export class DialogComponent extends DialogBase {
      */
 
     start(): number {
+        if ( !this.isActive()) {
+            this._error('start', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( !this.mInterpreter ) {
             return -1;
         }
@@ -199,6 +211,10 @@ export class DialogComponent extends DialogBase {
      */
 
     stop(): number {
+        if ( !this.isActive()) {
+            this._error('stop', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( !this.mInterpreter ) {
             return -1;
         }
@@ -217,6 +233,10 @@ export class DialogComponent extends DialogBase {
      */
 
     setDialogState( aState: string, aContext?: DialogStateContextInterface ): number {
+        if ( !this.isActive()) {
+            this._error('setDialogState', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         try {
             return this.mInterpreter.setState( aState, aContext );
         } catch ( aException ) {
@@ -243,6 +263,10 @@ export class DialogComponent extends DialogBase {
      */
 
     setDialogStateContext( aContext: DialogStateContextInterface ): number {
+        if ( !this.isActive()) {
+            this._error('setDialogStateContext', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         try {
             return this.mInterpreter.setStateContext( aContext );
         } catch (aException) {
@@ -260,6 +284,10 @@ export class DialogComponent extends DialogBase {
      */
 
     skipNextSpeak() {
+        if ( !this.isActive()) {
+            this._error('skipNextSpeak', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
         if ( !this.mInterpreter ) {
             return -1;
         }
