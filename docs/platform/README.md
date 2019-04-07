@@ -29,9 +29,11 @@ Folgende Betriebssysteme und Browser werden vollständig unterstützt:
 
 ## Cross Plattformen
 
-Cordova wird unter Mac OS X >= 10.11 vollständig unterstützt.
+Cordova wird unter MacOS, Linux und Windows vollständig unterstützt.
 
 * **[Cordova](./Cordova.md)** >= 8.0 (WebView) für Android und iOS
+
+Electron wird unter MacOS, Linux und Windows vollständig unterstützt.
 
 
 ## Schnelleinstieg

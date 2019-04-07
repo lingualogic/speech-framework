@@ -1,7 +1,7 @@
 /**
  * Globale Fabrik zur Erzeugung einer TTS Version
  *
- * Letzte Aenderung: 01.12.2018
+ * Letzte Aenderung: 03.04.2019
  * Status: rot
  *
  * @module speak/tts
@@ -16,10 +16,11 @@ import { PluginFactory } from '../../core/plugin/plugin-factory';
 
 // tts
 
-import { TTS_TYPE_NAME, TTS_FACTORY_NAME, TTS_DEFAULT_NAME, TTS_GROUP_NAME, TTS_PLUGIN_NAME, TTS_MOCK_NAME, TTS_HTML5_NAME, TTS_NUANCE_NAME } from './tts-const';
+import { TTS_TYPE_NAME, TTS_FACTORY_NAME, TTS_DEFAULT_NAME, TTS_GROUP_NAME, TTS_PLUGIN_NAME, TTS_MOCK_NAME, TTS_HTML5_NAME, TTS_AMAZON_NAME, TTS_NUANCE_NAME } from './tts-const';
 import { TTSInterface } from './tts.interface';
 import { TTSMock } from './tts-mock';
 import { TTSHtml5 } from './tts-html5';
+import { TTSAmazon } from './tts-amazon';
 import { TTSNuance } from './tts-nuance';
 import { TTSGroup } from './tts-group';
 
@@ -80,6 +81,10 @@ export class TTSFactory extends PluginFactory {
                 // verwendet wird
             case TTS_HTML5_NAME:
                 tts = new TTSHtml5( aPluginName, aRegisterFlag );
+                break;
+            // Amazon-TTS
+            case TTS_AMAZON_NAME:
+                tts = new TTSAmazon( aPluginName, aRegisterFlag );
                 break;
             // Nuance-TTS
             case TTS_NUANCE_NAME:

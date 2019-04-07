@@ -6,9 +6,10 @@
  * Installierte TTS:
  *
  *      TTSHtml5    - Default Web-TTS
+ *      TTSAmazon   - Amazon-Service TTS
  *      TTSNuance   - Nuance-Service TTS
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 03.04.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -32,6 +33,7 @@ import {
     TTS_TYPE_NAME,
     TTS_GROUP_NAME,
     TTS_HTML5_NAME,
+    TTS_AMAZON_NAME,
     TTS_NUANCE_NAME
 } from './tts-const';
 import {
@@ -62,6 +64,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
     // alle inneren TTS
 
     mTTSHtml5: TTSInterface = null;
+    mTTSAmazon: TTSInterface = null;
     mTTSNuance: TTSInterface = null;
 
 
@@ -126,6 +129,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         // eintragen der verfuegbaren TTS-Plugins
         this.insertPlugin( TTS_HTML5_NAME, this.mTTSFactory.create( TTS_HTML5_NAME, false ));
         this.insertPlugin( TTS_NUANCE_NAME, this.mTTSFactory.create( TTS_NUANCE_NAME, false ));
+        this.insertPlugin( TTS_AMAZON_NAME, this.mTTSFactory.create( TTS_AMAZON_NAME, false ));
     }
 
 
@@ -151,6 +155,32 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         }
         if ( this.isErrorOutput()) {
             console.log('TTSGroup._initTTSHtml5: TTS nicht eingefuegt');
+        }
+    }
+
+
+    /**
+     * Initialisierung des AMAZON-TTS Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initTTSAmazon( aOption: any ): void {
+        this.mTTSAmazon = this.findPlugin( TTS_AMAZON_NAME ) as TTSInterface;
+        if ( this.mTTSAmazon ) {
+            this.mTTSAmazon.init( aOption );
+            if ( this.mTTSAmazon.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('TTSGroup._initTTSmazon: TTS eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( TTS_AMAZON_NAME );
+            this.mTTSAmazon.done();
+            this.mTTSAmazon = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('TTSGroup._initTTSAmazon: TTS nicht eingefuegt');
         }
     }
 
@@ -216,6 +246,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
 
         this._initTTSHtml5( option );   // Default-TTS
         this._initTTSNuance( option );
+        this._initTTSAmazon( option );  // dritter wegen Tests
 
         // console.log('TTSGroup.init: erfolgreich');
         if ( super.init( aOption ) !== 0 ) {
@@ -249,6 +280,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
 
     done(): number {
         this.mTTSHtml5 = null;
+        this.mTTSAmazon = null;
         this.mTTSNuance = null;
         this.mCurrentTTS = null;
         return super.done();
@@ -396,6 +428,10 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
 
             case TTS_HTML5_NAME:
                 tts = this.mTTSHtml5;
+                break;
+
+            case TTS_AMAZON_NAME:
+                tts = this.mTTSAmazon;
                 break;
 
             case TTS_NUANCE_NAME:

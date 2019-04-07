@@ -1,10 +1,10 @@
 /**
  * Speech-Nuance
  * 
- * Version: 0.1.6
- * Build:   0007
+ * Version: 0.1.7
+ * Build:   0008
  * TYPE:    ALPHA
- * Datum:   21.03.2019
+ * Datum:   07.04.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -98,7 +98,7 @@ var Factory = function(t) {
             return this._exception('create', t), null;
         }
     }, e;
-}(Factory), NUANCE_VERSION_NUMBER = '0.1.6', NUANCE_VERSION_BUILD = '0007', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '21.03.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
+}(Factory), NUANCE_VERSION_NUMBER = '0.1.7', NUANCE_VERSION_BUILD = '0008', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '07.04.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
     function t(e, n) {
         void 0 === e && (e = ''), void 0 === n && (n = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = n, 
@@ -612,8 +612,8 @@ var Factory = function(t) {
             } catch (t) {
                 e._onError(new Error('ASRNLU-Exception: ' + t.message));
             } else e._onError(new Error('ASRNLU-Error: ' + t.nlu_interpretation_results.reason)); else 'rec_text_results' === t.result_format ? e._onResult(t.transcriptions) : console.log('ASR', t); else 'NDSP_CONCEPT_UPLOAD_FULL_CMD' === t.result_type || 'NDSP_DELETE_ALL_CONCEPTS_DATA_CMD' === t.result_type || ('query_error' === t.message ? (e._onError(new Error('ASR-Error.' + t.message + ': ' + t.reason)), 
-            e._onStop()) : 'disconnect' === t.message && ('Transaction completed.' !== t.reason && e._onError(new Error('ASR-Error.' + t.message + ': ' + t.reason)), 
-            e._onStop()));
+            e._onStop()) : 'disconnect' === t.message && ('Transaction completed.' !== t.reason && (e._onError(new Error('ASR-Error.' + t.message + ': ' + t.reason)), 
+            e._stop()), e._onStop()));
         }, n;
     }, e.prototype._sendQueryBeginMessage = function(t, e, n, r, o) {
         var i = {
@@ -753,7 +753,8 @@ var Factory = function(t) {
                 } else e._onError(new Error('NLU-Error: ' + t.nlu_interpretation_results.reason));
                 e._onStop();
             } else console.log('ASR', t); else 'NDSP_CONCEPT_UPLOAD_FULL_CMD' === t.result_type ? console.log('Concept Upload', t) : 'NDSP_DELETE_ALL_CONCEPTS_DATA_CMD' === t.result_type ? console.log('Concept Upload Reset', t) : 'query_error' === t.message ? (e._onError(new Error('NLU-Error.' + t.message + ': ' + t.reason)), 
-            e._onStop()) : 'disconnect' === t.message && 'Transaction completed.' !== t.reason && e._onError(new Error('NLU-Error.' + t.message + ': ' + t.reason));
+            e._onStop()) : 'disconnect' === t.message && 'Transaction completed.' !== t.reason && (e._onError(new Error('NLU-Error.' + t.message + ': ' + t.reason)), 
+            e._onStop());
         }, n;
     }, e.prototype._sendQueryBeginMessage = function(t, e, n) {
         var r = {
@@ -876,7 +877,8 @@ var Factory = function(t) {
         var e = this, n = t.prototype._getDefaultOption.call(this);
         return n.onresult = function(t) {
             'NMDP_TTS_CMD' === t.result_type || 'NVC_TTS_CMD' === t.result_type || ('query_error' === t.message ? (e._onError(new Error('TTS-Error.' + t.message + ': ' + t.reason)), 
-            e._onStop()) : 'disconnect' === t.message && 'Transaction completed.' !== t.reason && e._onError(new Error('TTS-Error.' + t.message + ': ' + t.reason)));
+            e._onStop()) : 'disconnect' === t.message && 'Transaction completed.' !== t.reason && (e._onError(new Error('TTS-Error.' + t.message + ': ' + t.reason)), 
+            e._onStop()));
         }, n.onttsdecode = function(t, n) {
             e.mAudioPlayer && e.mAudioPlayer.decode(t, n);
         }, n.onttsstart = function() {

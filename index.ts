@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.7.0048 (Alpha) vom 31.03.2019
+ * Version: 0.5.8.0049 (Alpha) vom 07.04.2019
  */
 
 
@@ -82,6 +82,16 @@ export { BotFactory } from './src/bot/bot-factory';
 export { NuanceConfigDataInterface } from './src/cloud/nuance/nuance-config-data.interface';
 export { NuanceOptionInterface } from './src/cloud/nuance/nuance-option.interface';
 export { Nuance } from './src/cloud/nuance/nuance';
+
+
+// amazon
+
+export { AmazonConfigDataInterface } from './src/cloud/amazon/amazon-config-data.interface';
+export { AmazonOptionInterface } from './src/cloud/amazon/amazon-option.interface';
+export { Amazon } from './src/cloud/amazon/amazon';
+
+
+// aws-sdk
 
 
 // speech

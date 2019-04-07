@@ -31,6 +31,7 @@ export const SPEAK_AUDIO_FLAG = false;
 // TTS-Konstanten (muessen mit den Konstenten in TTS synchron gehalten werden!)
 
 export const SPEAK_HTML5_TTS = 'TTSHtml5';
+export const SPEAK_AMAZON_TTS = 'TTSAmazon';
 export const SPEAK_NUANCE_TTS = 'TTSNuance';
 
 

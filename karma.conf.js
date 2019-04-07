@@ -1,12 +1,28 @@
 // Karma configuration
 // Generated on Tue May 01 2018 21:02:58 GMT+0200 (CEST)
 
-
 console.log('**************************************************');
 console.log('*                Karma E2E-Tests                 *');
 console.log('*                                                *');
 
 
+// BrowserList-Konfiguration
+
+const browserConfig = require( './config/karma-browser-list.json');
+const browserList = [];
+console.log('*       Browser:                                 *');
+
+if ( browserConfig.CHROME )  { browserList.push( 'ChromeHeadless' );    console.log('*                   Chrome                       *'); }
+if ( browserConfig.FIREFOX ) { browserList.push( 'Firefox' );   console.log('*                   Firefox                      *'); }
+if ( browserConfig.OPERA )   { browserList.push( 'Opera' );     console.log('*                   Opera                        *'); }
+if ( browserConfig.SAFARI )  { browserList.push( 'Safari' );    console.log('*                   Safari                       *'); }
+if ( browserConfig.EDGE )    { browserList.push( 'Edge' );      console.log('*                   Edge                         *'); }
+console.log('*                                                *');
+
+
+// FileList-Konfiguration
+
+console.log('*       Konfiguration:                           *');
 const fileList = [];
 fileList.push( './test/e2e/action/*.spec.js' );    console.log('*                   Action                       *');
 fileList.push( './test/e2e/audio/*.spec.js' );     console.log('*                   Audio                        *');
@@ -104,8 +120,9 @@ module.exports = function(config) {
         // only for Windows
         // browsers: ['Chrome', 'Firefox', 'OperaWindows', 'Edge'],
         
-        browsers: ['ChromeHeadless'],
+        browsers: browserList,
 
+        // browsers: ['ChromeHeadless'],
         // browsers: ['Chrome'],
         // browsers: ['Firefox'],
         // browsers: ['Opera'],

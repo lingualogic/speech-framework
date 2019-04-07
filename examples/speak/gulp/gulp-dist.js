@@ -8,14 +8,24 @@ const path = require('path');
 const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
-module.exports = ({ gulp, exec, rootDir, globalDistDir, distDir, globalCredentialsDir, srcDir }) => {
+module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, distDir, globalCredentialsDir, srcDir }) => {
 
     gulp.task('dist-prepare', (done) => {
         rimraf( distDir, done);
     });
 
+    gulp.task('dist-copy-amazon-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'amazon-credentials.js'))
+            .pipe(gulp.dest(path.join( distDir, 'js')));
+    });
+
     gulp.task('dist-copy-nuance-credentials', () => {
         return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
+            .pipe(gulp.dest(path.join( distDir, 'js')));
+    });
+
+    gulp.task('dist-copy-aws-sdk', () => {
+        return gulp.src(path.join( globalLibDir, 'aws-sdk-polly.min.js'))
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
@@ -29,9 +39,23 @@ module.exports = ({ gulp, exec, rootDir, globalDistDir, distDir, globalCredentia
             .pipe(gulp.dest( distDir ));
     });
 
+    gulp.task('dist-replace-amazon-credentials', (done) => {
+        gulp.src(path.join( distDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/amazon-credentials.js"></script>', '<script type="text/javascript" src="js/amazon-credentials.js"></script>'))
+            .pipe(gulp.dest( distDir ))
+            .on('end', done);
+    });
+
     gulp.task('dist-replace-nuance-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
+            .pipe(gulp.dest( distDir ))
+            .on('end', done);
+    });
+
+    gulp.task('dist-replace-aws-sdk', (done) => {
+        gulp.src(path.join( distDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-polly.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-polly.min.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
@@ -63,8 +87,12 @@ module.exports = ({ gulp, exec, rootDir, globalDistDir, distDir, globalCredentia
         runSquence(
             'dist-prepare',
             'dist-copy-src',
+            'dist-copy-amazon-credentials',
+            'dist-replace-amazon-credentials',
             'dist-copy-nuance-credentials',
             'dist-replace-nuance-credentials',
+            'dist-copy-aws-sdk',
+            'dist-replace-aws-sdk',
             'dist-copy-speech',
             'dist-replace-speech',
             'dist-remove-absolute-assets',

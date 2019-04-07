@@ -347,9 +347,9 @@ export class TTSPlugin extends Plugin implements TTSInterface {
      */
 
     _onSynthesisEnd(): number {
-        // console.log('TTSPlugin._onSynthesisEnd');
+        // console.log('TTSPlugin._onSynthesisEnd:', this.mSpeakRunningFlag);
         let result = 0;
-        if ( this.isSpeakRunning()) {
+        if ( this.mSpeakRunningFlag ) {
             this.mSpeakRunningFlag = false;
             result = this._onSpeakStop();
         }

@@ -1,6 +1,11 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.8.0049 Alpha (07.04.2019)
+
+* **Amazon:** der Amazon Cloud-Dienst für Polly (TTS) wurde eingebaut, um Amazons Stimmen fuer die Sprachausgabe verwenden zu können
+
+
 ## 0.5.7.0048 Alpha (31.03.2019)
 
 * **Nuance:** der IntentResultEvent gibt jetzt auch eine Liste der Konzepte (Entities) zurück

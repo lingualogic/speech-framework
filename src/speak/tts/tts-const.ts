@@ -1,7 +1,7 @@
 /**
  * Globale Konstanten fuer TTS
  *
- * Letzte Aenderung: 17.10.2018
+ * Letzte Aenderung: 03.04.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -20,6 +20,7 @@ export const TTS_MOCK_NAME = 'TTSMock';
 // konkrete TTS
 
 export const TTS_HTML5_NAME = 'TTSHtml5';
+export const TTS_AMAZON_NAME = 'TTSAmazon';
 export const TTS_NUANCE_NAME = 'TTSNuance';
 export const TTS_GROUP_NAME = 'TTSGroup';
 export const TTS_DEFAULT_NAME = TTS_GROUP_NAME;

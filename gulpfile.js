@@ -326,7 +326,7 @@ gulp.task('copy-bot', function() {
 
 
 /** 
- * Kopiert die Sourcedateien aus build/src nach dist/src/ von Bot
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Nuance
  */ 
 
 gulp.task('copy-nuance', function() {
@@ -341,6 +341,21 @@ gulp.task('copy-nuance', function() {
 
 
 /** 
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Amazon
+ */ 
+
+gulp.task('copy-amazon', function() {
+    return gulp.src([
+        'bundle/amazon.d.ts',
+        'build/src/cloud/amazon/amazon-const.d.ts',
+        'build/src/cloud/amazon/amazon-config-data.interface.d.ts',
+        'build/src/cloud/amazon/amazon-option.interface.d.ts'
+    ])
+        .pipe( gulp.dest('dist/src/cloud/amazon'));
+}); 
+
+
+/** 
  * Kopiert die Bundledateien aus bundle/ nach dist/
  */ 
 
@@ -348,6 +363,19 @@ gulp.task('copy-bundle', function() {
     return gulp.src([
         'bundle/index.js',
         'bundle/package.json'
+    ])
+        .pipe( gulp.dest('dist/'));
+}); 
+
+
+/** 
+ * Kopiert die Originaldateien aus / nach dist/
+ */ 
+
+gulp.task('copy-lib-aws-sdk', function() {
+    return gulp.src([
+        'lib/AWS_SDK_LICENSE.txt',
+        'lib/aws-sdk-polly.min.js'
     ])
         .pipe( gulp.dest('dist/'));
 }); 
@@ -375,6 +403,7 @@ gulp.task('dist-copy-src', (callback) => {
     runSequence(
         'copy-index',
         'copy-bundle',
+        'copy-lib-aws-sdk',        
         'copy-original',        
         'copy-main',        
         'copy-const',
@@ -389,6 +418,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-intent',
         'copy-bot',
         'copy-nuance',
+        'copy-amazon',
         callback
     );
 });
@@ -404,7 +434,7 @@ gulp.task('install-nuance-credentials-ts', function() {
         fs.accessSync( 'credentials/nuance-credentials.ts' );
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/*.ts' ])
+        return gulp.src([ 'credentials/nuance-credentials.ts' ])
             .pipe( file( 'nuance-credentials.ts', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Nuance Credentials\n" ))
@@ -430,7 +460,7 @@ gulp.task('install-nuance-credentials-js', function() {
         fs.accessSync( 'credentials/nuance-credentials.js' );
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/*.js' ])
+        return gulp.src([ 'credentials/nuance-credentials.js' ])
             .pipe( file( 'nuance-credentials.js', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Nuance Credentials\n" ))
@@ -440,6 +470,56 @@ gulp.task('install-nuance-credentials-js', function() {
             .pipe(inject.append( "var APP_ID = '';\n" ))
             .pipe(inject.append( "var APP_KEY = '';\n" ))
             .pipe(inject.append( "var NLU_TAG = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
+ * Erzeugt amazon.credentials.ts in credentials/
+ */
+
+gulp.task('install-amazon-credentials-ts', function() {
+    try {
+        // pruefen auf vorhandene Amazon-Credentials Datei
+        fs.accessSync( 'credentials/amazon-credentials.ts' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/amazon-credentials.ts' ])
+            .pipe( file( 'amazon-credentials.ts', ''))
+            .pipe( inject.append( "/**\n" ))
+            .pipe( inject.append( " * Amazon Credentials\n" ))
+            .pipe( inject.append( " */\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "export const REGION = '';\n" ))
+            .pipe( inject.append( "export const IDENTITY_POOL_ID = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
+ * Erzeugt amazon.credentials.js in credentials/
+ */
+
+gulp.task('install-amazon-credentials-js', function() {
+    try {
+        // pruefen auf vorhandene Amazon-Credentials Datei
+        fs.accessSync( 'credentials/amazon-credentials.js' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/amazon-credentials.js' ])
+            .pipe( file( 'amazon-credentials.js', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Amazon Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "var REGION = '';\n" ))
+            .pipe(inject.append( "var IDENTITY_POOL_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
     return gulp.src( '' ); // empty stream
@@ -461,7 +541,9 @@ gulp.task('install', (callback) => {
     runSequence(
         'install-nuance-credentials-ts',
         'install-nuance-credentials-js',
-        // 'install-webdriver',
+        'install-amazon-credentials-ts',
+        'install-amazon-credentials-js',
+        'install-webdriver',
         callback
     );
 });

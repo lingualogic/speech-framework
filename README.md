@@ -8,13 +8,14 @@ Daneben git es einzeln verwendbare Dienste:
 * **Listen** für die Spracherennung (Html5 SpeechRecognition, Nuance-ASR)
 * **Intent** für das Sprachverstehen (Nuance-NLU)
 * **Action** für die Aktionserzeugung
+* **Dialog** für die Ausführung von Dialogskripten
 
-Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch der Nuance-Clouddienst verwendet werden. Dazu wird ein eigener Nuance-Mix Account benötigt.
+Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch der Nuance Cloud-Dienst verwendet werden. Dazu wird ein eigener Nuance-Mix Account benötigt. Neu ist auch der Amazon Cloud-Dienst für die Sprachausgabe (TTS).
 
 
 ## Letzte Version
 
-* 0.5.7.0048 Alpha vom 31.03.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.8.0049 Alpha vom 07.04.2019 [Release Notizen](./CHANGELOG.md)
 
 Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
@@ -46,7 +47,9 @@ Als weitere Plattformen können Android und iOS mit Cordova verwendet werden:
 
 Für Cordova müssen weitere Programme zur Entwicklung von Android- und iOS-Apps installiert werden.
 
-Will man den Nuance-Clouddienst verwenden, muss ein eigener Nuance-Mix Account eingerichtet werden und die Nuance-Komponente des Speech-Frameworks separat in die eigene App eingebunden werden.
+Will man den Nuance Cloud-Dienst verwenden, muss ein eigener Nuance-Mix Account eingerichtet werden und die Nuance-Komponente des Speech-Frameworks separat in die eigene App eingebunden werden.
+
+Will man den Amazon Cloud-Dienst verwenden, muss ein eigener Amazon AWS Account eingerichtet werden und die Amazon-Komponente des Speech-Frameworks separat in die eigene App eingebunden werden.
 
 
 ## Installation
@@ -73,8 +76,8 @@ Die E2E-Tests können mit folgenden Befehl separat ausgeführt werden:
 
 Zusätzlich können in der Datei karma.conf.js der Browser zum Testen gewechselt und SingleRun=false gesetzt werden.
 Beim Chrome werden nicht alle Tests durchgeführt, da Audio- und Sprachausgabe gesperrt sind. Man kann die Sperrung durch drücken
-auf den Debug-Button oben rechts im Karma-Runner aufheben und die Tests inklusive Audio- und Sprachausgabe wiederholen. Dazu muss SingleRun=false
-in karma.conf.js gesetzt sein, da sonst der Browser nach dem ersten Durchlauf aller Tests wieder verschwindet.
+in den Browser aufheben und die Tests inklusive Audio- und Sprachausgabe.
+
 Alle E2E-Tests sind unter test/e2e zu finden.
 
 
@@ -85,10 +88,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.7.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.8.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.7.tgz
+    $ npm install speech-framework-0.5.8.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -140,6 +143,7 @@ Für das Intent-Beispiel ist folgender Befehl einzugeben:
 
 
 * die verschiedenen Browser verhalten sich unterschiedlich, so dass nicht in jedem Browser alle Funktionen des Speech-Frameworks zur Verfügung stehen.
+* unter iOS funktioniert die Cordova-Version von Listen mit Nuance Cloud-Dienst oder Amazon Cloud-Dienst nicht, da die Apple WebView die getUserMedia-API nicht unterstützt.
 
 
 ## Projektverantwortliche (LinguaLogic Team)

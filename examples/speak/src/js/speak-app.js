@@ -392,17 +392,36 @@ function SpeakApp() {
 
     try {
         console.log('SpeakApp: create...');
+        // Amazon-Zurgiffsdaten als Optionen eintragen
+        var amazonOption = {
+            amazonRegion: REGION,
+            amazonIdentityPoolId: IDENTITY_POOL_ID,
+            errorOutputFlag: true
+        };
+        // erzeugt das Amazon-Modul
+        // console.log('pruefen auf speech.Amazon', speech.Amazon );
+        if ( speech.Amazon ) {
+            if ( speech.Amazon.init( amazonOption ) === 0 ) {
+                speech.Amazon.open((aError, aPortName, aPortResult) => {
+                    console.log('SpeakApp.init: Amazon', aPortResult);
+                });
+            } else {
+                console.log('Amazon nicht initialisiert');
+            }
+        } else {
+            console.log('Amazon nicht vorhanden');
+        }
         // Nuance-Zurgiffsdaten als Optionen eintragen
-        var option = {
+        var nuanceOption = {
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             errorOutputFlag: false
         };
-        // erzeugt das Nuance-Modul
         // console.log('pruefen auf speech.Nuance', speech.Nuance );
+        // erzeugt das Nuance-Modul
         if ( speech.Nuance ) {
             // console.log('start von Nuance.init');
-            if ( speech.Nuance.init( option ) === 0 ) {
+            if ( speech.Nuance.init( nuanceOption ) === 0 ) {
                 // console.log('start von Nuance.open');
                 if ( speech.Nuance.open((aError, aPortName, aPortResult) => {
                     console.log('SpeakApp.init: Nuance', aPortResult);

@@ -6,14 +6,21 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### Mai: Version 0.5.9
+
+beinhaltet:
+
+* **Google:** Integration des Google Cloud-Dienstes für eine TTS
+
+
+## Veröffentlichte Versionen
+
+
 ### April: Version 0.5.8
 
 beinhaltet:
 
 * **Amazon:** Integration des Amazon Polly Cloud-Dienstes für eine TTS
-
-
-## Veröffentlichte Versionen
 
 
 ### März: Version 0.5.7
