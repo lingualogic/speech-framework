@@ -1,7 +1,7 @@
 /**
  * E2E-Tests fuer Speak API
  * 
- * Letzte Aenderung: 14.02.2019
+ * Letzte Aenderung: 09.04.2019
  * Status: gelb
  *
  * Getestet:
@@ -641,16 +641,24 @@ describe('Speak', () => {
 
         it('sollte play audio', (done) => {
             // console.log('Test 8 Start');
-            expect( speak.addStopEvent( TEST_SPEAK_NAME, () => {
-                // console.log('Test 8 Done');
-                done();
-                return 0;
-            })).toBe( 0 );
             let errorText = '';
             expect( speak.addErrorEvent( TEST_SPEAK_NAME, (aError) => {
                 errorText = aError.message;
                 // console.log('===> Speak-E2E start(audio) ErrorEvent:', errorText); 
-                speak.stop();
+                if ( speak.isTTS()) {
+                    if ( aError.message !== 'AudioPlayer.play: AudioContext ist nicht entsperrt' &&
+                         aError.message !== 'TTSHtml5._breakSynthesis: Kein SpeechSynthesis-Service vorhanden' ) {
+                        done.fail( 'falsche Fehlermeldung:' + aError.message );
+                    }
+                } else {
+                    expect( errorText ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
+                }
+                done();
+                return 0;
+            })).toBe( 0 );
+            expect( speak.addStopEvent( TEST_SPEAK_NAME, () => {
+                // console.log('Test 8 Done');
+                done();
                 return 0;
             })).toBe( 0 );
             expect( speak.setAudioOn()).toBe( 0 );
@@ -658,25 +666,14 @@ describe('Speak', () => {
             expect( speak.setAudioFilePath( TEST_SPEAKASSETS_PATH )).toBe( 0 );
             expect( speak.setAudioFileName( TEST_SPEAKAUDIO_FILE )).toBe( 0 );
             if ( speak.isTTS()) {
-                if ( speak.isUnlockAudio()) {
-                    expect( speak.start()).toBe( 0 );
-                    expect( speak.isRunning()).toBe( true );
-                    expect( errorText ).toBe( '' );
-                } else {
-                    expect( speak.start()).toBe( -1 );
-                    expect( speak.isRunning()).toBe( false );
-                    expect( errorText ).toBe( 'AudioPlayer.playFile: AudioContext ist nicht entsperrt' );
-                    done();
-                }
+                expect( speak.start()).toBe( 0 );
             } else {
                 expect( speak.start()).toBe( -1 );
-                expect( errorText ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
-                done();
             }
             // console.log('Test 8 Ende');
         });
 
-        it('should no play audio, if no audio file', () => {
+        it('sollte nicht play audio, wenn kein Audio File uebergeben wurde', () => {
             // console.log('Test 9 Start');
             expect(speak.addStartEvent( TEST_SPEAK_NAME, () => {
                 fail('Test 9 should not call');
@@ -733,12 +730,24 @@ describe('Speak', () => {
             // console.log('Test 10 Ende');
         });
 
-        it('should not audio play, if startSpeak double', () => {
+        it('sollte nicht audio play, wenn startSpeak doppelt aufgerufen wurde', (done) => {
             // console.log('Test 11 Start');
-            let errorText = '';
             expect(speak.addErrorEvent( TEST_SPEAK_NAME, (aError) => {
-                errorText = aError.message;
                 // console.log('===> Speak-E2E start(audio) ErrorEvent:', errorText);                
+                if ( speak.isTTS()) {
+                    if ( aError.message !== 'SpeakComponent.start: Sprachausgabe laeuft bereits' && 
+                         aError.message !== 'AudioPlayer.play: AudioContext ist nicht entsperrt' && 
+                         aError.message !== 'TTSHtml5._breakSynthesis: Kein SpeechSynthesis-Service vorhanden' ) {
+                        done.fail('Falsche Fehlermeldung: ' + aError.message);
+                    }
+                } else {
+                    expect( aError.message ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
+                }
+                done();
+                return 0;
+            })).toBe(0);
+            expect( speak.addStopEvent( TEST_SPEAK_NAME, () => {
+                done();
                 return 0;
             })).toBe(0);
             expect(speak.setAudioOn()).toBe(0);
@@ -746,20 +755,11 @@ describe('Speak', () => {
             expect(speak.setAudioFilePath(TEST_SPEAKASSETS_PATH)).toBe(0);
             expect(speak.setAudioFileName(TEST_SPEAKAUDIO_FILE)).toBe(0);
             if ( speak.isTTS()) {
-                if ( speak.isUnlockAudio()) {
-                    expect(speak.start()).toBe(0);
-                    expect(speak.isRunning()).toBe(true);
-                    expect(speak.start()).toBe(-1);
-                    expect(errorText).toEqual('SpeakComponent.start: Sprachausgabe laeuft bereits');
-                    expect( speak.stop()).toBe( 0 );
-                } else {
-                    expect( speak.start()).toBe( -1 );
-                    expect( speak.isRunning()).toBe( false );
-                    expect( errorText ).toBe( 'AudioPlayer.playFile: AudioContext ist nicht entsperrt' );
-                }
+                expect(speak.start()).toBe( 0 );
+                expect(speak.start()).toBe( 0 );
+                expect( speak.stop()).toBe( 0 );
             } else {
                 expect( speak.start()).toBe( -1 );
-                expect( errorText ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
             }
             // console.log('Test 11 Ende');
         });
@@ -789,19 +789,27 @@ describe('Speak', () => {
             // console.log('Test 12 Ende');
         });
 
-        it('should return 0, if start and stop', () => {
+        it('should return 0, if start and stop', (done) => {
             // console.log('Test 13 Start');
+            expect(speak.addErrorEvent( TEST_SPEAK_NAME, (aError) => {
+                // console.log('===> Speak-E2E stop(audio) ErrorEvent:', errorText);                
+                if ( speak.isTTS()) {
+                    if ( aError.message !== 'AudioPlayer.play: AudioContext ist nicht entsperrt' && 
+                         aError.message !== 'TTSHtml5._breakSynthesis: Kein SpeechSynthesis-Service vorhanden' ) {
+                        done.fail( 'Falsche Fehlermeldung: ' + aError.message );
+                    }
+                } else {
+                    expect( aError.message ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
+                }
+                done();
+                return 0;
+            })).toBe(0);
             expect( speak.addStartEvent( TEST_SPEAK_NAME, () => {
                 fail('Test 13 should not call');
                 return 0;
             })).toBe(0);
             expect( speak.addStopEvent( TEST_SPEAK_NAME, () => {
-                return 0;
-            })).toBe(0);
-            let errorText = '';
-            expect(speak.addErrorEvent( TEST_SPEAK_NAME, (aError) => {
-                errorText = aError.message;
-                // console.log('===> Speak-E2E stop(audio) ErrorEvent:', errorText);                
+                done();
                 return 0;
             })).toBe(0);
             expect(speak.setAudioOn()).toBe( 0 );
@@ -809,20 +817,10 @@ describe('Speak', () => {
             expect(speak.setAudioFilePath( TEST_SPEAKASSETS_PATH )).toBe( 0 );
             expect(speak.setAudioFileName( TEST_SPEAKAUDIO_FILE )).toBe( 0 );
             if ( speak.isTTS()) {
-                if ( speak.isUnlockAudio()) {
-                    expect(speak.start()).toBe(0);
-                    expect(speak.isRunning()).toBe(true);
-                    expect(speak.stop()).toBe(0);
-                    expect(speak.isRunning()).toBe(false);
-                    expect( errorText ).toBe( '' );
-                } else {
-                    expect( speak.start()).toBe( -1 );
-                    expect( speak.isRunning()).toBe( false );
-                    expect( errorText ).toBe( 'AudioPlayer.playFile: AudioContext ist nicht entsperrt' );
-                }
+                expect(speak.start()).toBe( 0 );
+                expect(speak.stop()).toBe( 0 );
             } else {
                 expect(speak.start()).toBe( -1 );
-                expect( errorText ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
             }
             // console.log('Test 13 Ende');
         });

@@ -1,7 +1,7 @@
 /**
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 30.01.2019
+ * Letzte Aenderung: 09.04.2019
  * Status: rot
  *
  * @module audio/player
@@ -474,9 +474,50 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     /**
      * Versuch, AudioContext zu entsperren
+     * 
+     * @private
+     */
+
+    _unlockAudio( aCallbackFunc: (aUnlockFlag: boolean) => void): void {
+        // console.log('AudioPlayer._unlockAudio: start');
+        // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
+        if ( this.mAudioContext ) {
+            if ( this.mAudioContext.state === 'running' ) {
+                aCallbackFunc( true );
+                return;
+            }
+            if ( this.mAudioContext.state === 'suspended' ) {
+                // console.log('NuancePort._unlockAudio: start', this.mAudioContext.state);
+                let timeoutId = setTimeout( () => aCallbackFunc( false ), AUDIO_UNLOCK_TIMEOUT );
+                this.mAudioContext.resume().then(() => {
+                    // console.log('NuancePort._unlockAudio: state = ', this.mAudioContext.state);
+                    clearTimeout( timeoutId );
+                    aCallbackFunc( true );
+                }, (aError: any) => {
+                    console.log('AudioPlayer._unlockAudio:', aError)
+                    clearTimeout( timeoutId );
+                    aCallbackFunc( false );
+                });
+            } else {
+                aCallbackFunc( false );
+            }
+        } else {
+            aCallbackFunc( false );
+        }
+    }
+
+
+    /**
+     * Versuch, AudioContext zu entsperren
+     * 
+     * @deprecated
      */
 
     unlockAudio(): void {
+        this._unlockAudio((aUnlockFlag: boolean) => {
+            this._onAudioUnlock();
+        })
+        /**** alte Version, wird ersetzt
         // console.log('AudioPlayer.unlockAudio: start');
         // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
         if ( this.mAudioContext ) {
@@ -497,6 +538,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         } else {
             this._onAudioUnlock();
         }
+        *****/
     }
 
 
@@ -758,7 +800,6 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     play( aAudioFilePath: string, aAudioId: string ): number {
-        this.unlockAudio();
         // console.log('AudioPlayer.play:', aAudioFilePath, aAudioId);
         if ( !this.isActive()) {
             // kein Fehler
@@ -775,6 +816,31 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             // Audioausgabe stoppen
             this.stop();
         }
+        // console.log('AudioPlayer.play: AudioContext.state = ', this.mAudioContext.state);
+        try {
+            let filePath = './';
+            if ( aAudioFilePath ) {
+                filePath = aAudioFilePath;
+            }
+            const fileName = filePath + aAudioId + '.' + this.mAudioFormat;
+            this.mSource = null;
+            this.mAudioBuffer = null;
+            // AudioContext entsperren
+            this._unlockAudio((aUnlockFlag: boolean) => {
+                if ( aUnlockFlag ) {
+                    this._loadAudioFile( fileName );
+                } else {
+                    this._error( 'play', 'AudioContext ist nicht entsperrt' );
+                    this._onAudioStop();
+                }
+            });
+            return 0;
+        } catch (aException) {
+            this._exception( 'play', aException );
+            return -1;
+        }
+
+        /**** alter Code, wird ersetzt
         try {
             let filePath = './';
             if ( aAudioFilePath ) {
@@ -794,6 +860,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             this._exception( 'play', aException );
             return -1;
         }
+        ****/
     }
 
 
@@ -806,7 +873,6 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
     playFile( aFileName: string ): number {
         // console.log('AudioPlayer.playFile:', aFileName);
-        this.unlockAudio();
         if ( !this.isActive()) {
             // kein Fehler
             if ( this.isErrorOutput()) {
@@ -826,6 +892,26 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             this._error( 'playFile', 'kein Dateiname uebergeben' );
             return -1;
         }
+        // console.log('AudioPlayer.playFile: Context.state = ', this.mAudioContext.state);
+        try {
+            this.mSource = null;
+            this.mAudioBuffer = null;
+            // AudioContext entsperren
+            this._unlockAudio((aUnlockFlag: boolean) => {
+                if ( aUnlockFlag ) {
+                    this._loadAudioFile( aFileName );
+                } else {
+                    this._error( 'playFile', 'AudioContext ist nicht entsperrt' );
+                    this._onAudioStop();
+                }
+            });
+            return 0;
+        } catch (aException) {
+            this._exception( 'playFile', aException );
+            return -1;
+        }
+
+        /**** alter Code, wird ersetzt
         try {
             this.mSource = null;
             this.mAudioBuffer = null;
@@ -841,6 +927,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             this._exception( 'playFile', aException );
             return -1;
         }
+        ****/
     }
 
 

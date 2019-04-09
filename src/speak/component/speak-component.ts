@@ -2,7 +2,7 @@
  * Speak Komponente, dient zur Sprachausgabe von Texten oder Audiodateien
  * ueber ein TTS-Plugin oder ein AudioPlayer-Plugin.
  *
- * Letzte Aenderung: 20.03.2019
+ * Letzte Aenderung: 09.04.2019
  * Status: gelb
  *
  * @module speak/component
@@ -470,12 +470,16 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
 
     /**
      * AudioContext entsperren
+     * 
+     * @deprecated
      */
 
     unlockAudio(): number {
         if ( !this.mAudioPlayer ) {
             return -1;
         }
+        // TODO: wird nicht mehr benoetigt, da in AudioPlayer automatisch auf Unlock geprueft wird
+        // eventuell besteht das Problem einer Race-Condition!
         this.mAudioPlayer.unlockAudio();
         return 0;
     }

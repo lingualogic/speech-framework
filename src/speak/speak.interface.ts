@@ -4,7 +4,7 @@
  * API-Version: 1.3
  * Datum:       21.02.2019
  *
- * Letzte Aenderung: 21.02.2019
+ * Letzte Aenderung: 09.04.2019
  * Status: gelb
  *
  * @module speak
@@ -66,6 +66,8 @@ export interface SpeakInterface extends BaseInterface {
 
     /**
      * AudioContext entsperren
+     * 
+     * @deprecated
      */
 
     unlockAudio(): number;

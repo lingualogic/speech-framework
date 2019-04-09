@@ -1,7 +1,7 @@
 /**
  * E2E-Tests fuer Audio API
  * 
- * Letzte Aenderung: 12.02.19
+ * Letzte Aenderung: 09.04.19
  * Status: rot
  *
  * Getestet:
@@ -99,9 +99,9 @@ describe('Audio', () => {
 
 
         it('sollte 0 zurueckgeben, wenn Dateiname uebergeben wurde', (done) => {
-            let errorText = '';
             expect( audio.addErrorEvent( TEST_AUDIO_NAME, (aError) => {
-                errorText = aError.message;
+                expect( aError.message ).toBe( 'AudioPlayer.playFile: AudioContext ist nicht entsperrt' ); 
+                done();
                 // console.log('===> Audio-E2E ErrorEvent:', errorText);
             })).toBe( 0 );
             expect( audio.addPlayerStartEvent( TEST_AUDIO_NAME, () => {
@@ -111,14 +111,7 @@ describe('Audio', () => {
                 // console.log('===> Audio-E2E: PlayerStopEvent');
                 done();
             })).toBe( 0 );
-            if ( audio.isUnlockAudio()) {
-                expect( audio.playFile( TEST_AUDIO_FILE )).toBe( 0 );
-                expect( errorText ).toBe( '' ); 
-            } else {
-                expect( audio.playFile( TEST_AUDIO_FILE )).toBe( -1 );
-                expect( errorText ).toBe( 'AudioPlayer.playFile: AudioContext ist nicht entsperrt' ); 
-                done();                
-            }
+            expect( audio.playFile( TEST_AUDIO_FILE )).toBe( 0 );
         });
 
     });

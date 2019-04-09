@@ -300,8 +300,8 @@ var Factory = function(t) {
     }, n.prototype.connect = function() {
         if (this.isConnect()) return 0;
         try {
-            return console.log('AmazonConnect: Region = ', this.mConfig.region), console.log('AmazonConnect: IdentityPoolId = ', this.mConfig.identityPoolId), 
-            this.mConfig.region && (window.AWS.config.region = this.mConfig.region), this.mConfig.identityPoolId && (window.AWS.config.credentials = new window.AWS.CognitoIdentityCredentials({
+            return this.mConfig.region && (window.AWS.config.region = this.mConfig.region), 
+            this.mConfig.identityPoolId && (window.AWS.config.credentials = new window.AWS.CognitoIdentityCredentials({
                 IdentityPoolId: this.mConfig.identityPoolId
             }), !window.AWS.config.credentials) ? (this._error('connect', 'keine Amazon-Credentials erzeugt'), 
             -1) : (this.mConnectFlag = !0, 0);
