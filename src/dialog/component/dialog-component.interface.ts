@@ -51,6 +51,7 @@ export interface DialogComponentInterface extends BaseComponentInterface, Dialog
 
     // Event-Funktionen
 
+    onNetOpen: () => number;
 
     onDialogParse: OnDialogParseFunc;
     onDialogSet: OnDialogSetFunc;

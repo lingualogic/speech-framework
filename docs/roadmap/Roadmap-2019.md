@@ -6,14 +6,21 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### Juni: Version 0.5.10
+
+beinhaltet:
+
+* **Amazon:** Integration des Amazon Transcribe Cloud-Dienstes für eine ASR
+
+
+## Veröffentlichte Versionen
+
+
 ### Mai: Version 0.5.9
 
 beinhaltet:
 
-* **Google:** Integration des Google Cloud-Dienstes für eine TTS
-
-
-## Veröffentlichte Versionen
+* **Google:** Integration des Google Dialogflow Cloud-Dienstes für eine NLU
 
 
 ### April: Version 0.5.8

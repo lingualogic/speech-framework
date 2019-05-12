@@ -139,10 +139,10 @@ export class ASRHtml5 extends ASRPlugin {
      */
 
     done(): number {
+        // Timeout loeschen
+        this._clearBreakTimeout();
         // pruefen auf laufende Spracheingabe
-
         if ( this.isListenRunning() && this.mRecognition ) {
-            this._clearBreakTimeout();
             try {
                 // Spracheingabe abbrechen
                 this.mRecognition.abort();

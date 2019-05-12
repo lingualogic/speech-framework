@@ -833,6 +833,8 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
      * @return {number} errorcode (0,-1)
      */
 
+    // TODO: Problem des unterschiedlichen Verhaltens wenn Lock oder Unlock Audio muss untersucht werden
+
     start(): number {
         // console.log('SpeakComponent.start');
 

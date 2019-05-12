@@ -6,15 +6,15 @@
  * einmal zur Initialisierung des Speech-Frameworks ausgefuehrt werden !
  *
  * Konfiguration: stable
- * Version: 0.5.8.0049 (Alpha) vom 07.04.2019
+ * Version: 0.5.9.0050 (Alpha) vom 12.05.2019
  *
  * Komponenten:
  *
- *              Action    - Aktionsausfuehrung
- *              Speak     - Sprachausgabe
- *              Listen    - Spracheingabe
- *              intent    - Sprachanalyse
- *              Dialog    - Dialoginterpreter
+ *              Action      - Aktionsausfuehrung
+ *              Speak       - Sprachausgabe
+ *              Listen      - Spracheingabe
+ *              intent      - Sprachanalyse
+ *              Dialog      - Dialogproxy
  *              Bot       - Sprachassistent
  *
  * @module main

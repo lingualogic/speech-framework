@@ -1,7 +1,7 @@
 {
     "name": "speakapp",
     "displayName": "SpeakApp",
-    "version": "0.5.8",
+    "version": "0.5.9",
     "description": "Beispiel-App fuer Speak-API in Cordova",
     "author": "LinguaLogic Team",
     "license": "MIT",

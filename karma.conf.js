@@ -12,7 +12,7 @@ const browserConfig = require( './config/karma-browser-list.json');
 const browserList = [];
 console.log('*       Browser:                                 *');
 
-if ( browserConfig.CHROME )  { browserList.push( 'ChromeHeadless' );    console.log('*                   Chrome                       *'); }
+if ( browserConfig.CHROME )  { browserList.push( 'Chrome' );    console.log('*                   Chrome                       *'); }
 if ( browserConfig.FIREFOX ) { browserList.push( 'Firefox' );   console.log('*                   Firefox                      *'); }
 if ( browserConfig.OPERA )   { browserList.push( 'Opera' );     console.log('*                   Opera                        *'); }
 if ( browserConfig.SAFARI )  { browserList.push( 'Safari' );    console.log('*                   Safari                       *'); }

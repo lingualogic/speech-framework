@@ -1005,7 +1005,7 @@ describe('Bot', () => {
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> setDialogFileXXX: errorEvent', aError.message);
+                // console.log('===> setDialogFileXXX: errorEvent', aError.message);
                 done();
                 return 0;
             }));
@@ -1033,7 +1033,7 @@ describe('Bot', () => {
             })).toBe( 0 );
             expect( bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 // console.log('===> Bot.loadDialogFile:', aError);
-                expect(aError.message).toEqual('FileReader._requestDialogFile: Error 404');
+                expect(aError.message).toEqual('FileHtml5Reader._onLoad: Error 404');
                 done();
                 return 0;
             })).toBe( 0 );
@@ -1048,13 +1048,13 @@ describe('Bot', () => {
                 return 0;
             })).toBe( 0 );
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
-                console.log('===> Bot.loadDialogFile2:', aError);
+                // console.log('===> Bot.loadDialogFile2:', aError);
                 done.fail('Test 2 Error: ' + aError.message);
                 return 0;
             })).toBe(0);
             expect( bot.setDialogFilePath( TEST_BOTSPEECH_PATH )).toBe(0);
-            console.log('===> getDialogFilePath:', bot.getDialogFilePath());
-            console.log('===> getDialogFileName:', bot.getDialogFileName());
+            // console.log('===> getDialogFilePath:', bot.getDialogFilePath());
+            // console.log('===> getDialogFileName:', bot.getDialogFileName());
             expect( bot.loadDialogFile()).toBe( 0 );
             // console.log('Test 2 Ende');
         });
@@ -1171,7 +1171,7 @@ describe('Bot', () => {
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E setDialog: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E setDialog: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));
@@ -1223,7 +1223,7 @@ describe('Bot', () => {
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E toggleDialog: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E toggleDialog: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));
@@ -1259,7 +1259,7 @@ describe('Bot', () => {
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E toggleDialog: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E toggleDialog: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));
@@ -1311,22 +1311,22 @@ describe('Bot', () => {
         });
 
         it('should return 0, if dialog start', (done) => {
-            console.log('===> Bot-E2E startDialog: Start');
+            // console.log('===> Bot-E2E startDialog: Start');
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E startDialog: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E startDialog: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));
             expect(bot.addDialogStopEvent( TEST_BOT_NAME, () => {
-                console.log('===> Bot-E2E setDialog: StopEvent');
+                // console.log('===> Bot-E2E setDialog: StopEvent');
                 done();
                 return 0;
             }));
             expect(bot.start()).toBe(0);
             expect(bot.isRunning()).toBe(true);
-            console.log('===> Bot-E2E startDialog: Ende');
+            // console.log('===> Bot-E2E startDialog: Ende');
         });
 
         it('should return 0, if dialog start/stop', (done) => {
@@ -1414,7 +1414,7 @@ describe('Bot', () => {
             let errorText = '';
             expect( bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E setDialogState: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E setDialogState: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));
@@ -1434,7 +1434,7 @@ describe('Bot', () => {
             let errorText = '';
             expect(bot.addErrorEvent( TEST_BOT_NAME, (aError) => {
                 errorText = aError.message;
-                console.log('===> Bot-E2E setDialogState: ErrorEvent', errorText);
+                // console.log('===> Bot-E2E setDialogState: ErrorEvent', errorText);
                 bot.stop();
                 return 0;
             }));

@@ -15,7 +15,7 @@ Die Amazon-API besteht aus der statischen Klasse Amazon und ihrer statischen Kla
 ![Amazon-API](./Amazon-2.gif)
 
 
-### Aamazon.init( optionList: NuanceOptionInterface ): number
+### Aamazon.init( optionList: AmazonOptionInterface ): number
 
 Mit dem Aufruf:
 

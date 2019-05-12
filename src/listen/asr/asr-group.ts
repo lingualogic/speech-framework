@@ -475,9 +475,16 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
      */
 
     setLanguage( aLanguage: string ): number {
+        // console.log('ASRGroup.setLanguage', this.getASR(), this.getASRList());
         let result = 0;
         let asr = this.firstPlugin() as ASRInterface;
+        // pruefen, ob eine ASR vorhanden ist
+        if ( !asr ) {
+            this._error( 'setLanguage', 'Keine ASR vorhanden' );
+            return -1;
+        }
         while ( asr ) {
+            // console.log('ASRGroup.setLanguage: ', asr.getASR(), aLanguage);
             if ( asr.setLanguage( aLanguage ) !== 0 ) {
                 result = -1;
             }
@@ -553,6 +560,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
      */
 
     startListen(): number {
+        // console.log('ASRGroup.startListen:', this.getASR(), this.getASRList());
         // pruefen auf vorhandene ASR
         if ( !this.mCurrentASR ) {
             this._error( 'startListen', 'keine ASR vorhanden' );

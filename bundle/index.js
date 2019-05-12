@@ -3,7 +3,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.8.0049 (Alpha) vom 07.04.2019
+ * Version: 0.5.9.0050 (Alpha) vom 12.05.2019
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const
@@ -52,8 +52,8 @@ exports.INTENT_TYPE_NAME = intent_const_1.INTENT_TYPE_NAME;
 exports.INTENT_COMPONENT_NAME = intent_const_1.INTENT_COMPONENT_NAME;
 exports.INTENT_DE_LANGUAGE = intent_const_1.INTENT_DE_LANGUAGE;
 exports.INTENT_EN_LANGUAGE = intent_const_1.INTENT_EN_LANGUAGE;
-exports.INTENT_HTML5_NLU = intent_const_1.INTENT_HTML5_NLU;
 exports.INTENT_NUANCE_NLU = intent_const_1.INTENT_NUANCE_NLU;
+exports.INTENT_GOOGLE_NLU = intent_const_1.INTENT_GOOGLE_NLU;
 var intent_factory_1 = require("./speech-framework");
 exports.IntentFactory = intent_factory_1.IntentFactory;
 // dialog
@@ -72,6 +72,8 @@ var bot_factory_1 = require("./speech-framework");
 exports.BotFactory = bot_factory_1.BotFactory;
 var nuance_1 = require("./speech-framework");
 exports.Nuance = nuance_1.Nuance;
+var google_1 = require("./speech-framework");
+exports.Google = google_1.Google;
 var amazon_1 = require("./speech-framework");
 exports.Amazon = amazon_1.Amazon;
 var awssdk = require("./aws-sdk-polly.min");

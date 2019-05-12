@@ -1,7 +1,7 @@
 /**
  * Globale Konstanten fuer SpeechApi
  *
- * @module speech-api
+ * @module speech
  * @author SB
  */
 

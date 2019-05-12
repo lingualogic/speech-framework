@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.8.0049 (Alpha) vom 07.04.2019
+ * Version: 0.5.9.0050 (Alpha) vom 12.05.2019
  */
 
 
@@ -52,7 +52,7 @@ export { ListenFactory } from './src/listen/listen-factory';
 
 // intent
 
-export { INTENT_TYPE_NAME, INTENT_COMPONENT_NAME, INTENT_DE_LANGUAGE, INTENT_EN_LANGUAGE, INTENT_HTML5_NLU, INTENT_NUANCE_NLU } from './src/intent/intent-const';
+export { INTENT_TYPE_NAME, INTENT_COMPONENT_NAME, INTENT_DE_LANGUAGE, INTENT_EN_LANGUAGE, INTENT_NUANCE_NLU, INTENT_GOOGLE_NLU } from './src/intent/intent-const';
 export { IntentDataInterface } from './src/intent/intent-data.interface';
 export { IntentOptionInterface } from './src/intent/intent-option.interface';
 export { IntentInterface } from './src/intent/intent.interface';
@@ -82,6 +82,13 @@ export { BotFactory } from './src/bot/bot-factory';
 export { NuanceConfigDataInterface } from './src/cloud/nuance/nuance-config-data.interface';
 export { NuanceOptionInterface } from './src/cloud/nuance/nuance-option.interface';
 export { Nuance } from './src/cloud/nuance/nuance';
+
+
+// google
+
+export { GoogleConfigDataInterface } from './src/cloud/google/google-config-data.interface';
+export { GoogleOptionInterface } from './src/cloud/google/google-option.interface';
+export { Google } from './src/cloud/google/google';
 
 
 // amazon

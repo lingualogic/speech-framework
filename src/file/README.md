@@ -1,3 +1,3 @@
 # File
 
-Erlaubt das einlesen von Dateien über Html5 API in den Browser.
+Erlaubt das einlesen von Text-Dateien über Html5 API in den Browser.

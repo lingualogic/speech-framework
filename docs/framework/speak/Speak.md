@@ -27,27 +27,197 @@ Die Speak-API erweitert die Base-API um die Audio-, TTS-, Language-, Voice- und 
 ![Speak API](./Speak-3.gif)
 
 
+### Speak erzeugen
+
+Um die Speak-Kompnente zu erzeugen, wird die SpeakFactory verwendet:
+
+	import { SpeakFactory, SpeakInterface, SPEAK_COMPONENT_NAME } form 'speech-framework';
+	
+	const speak = SpeakFactory.create( SPEAK_COMPONENT_NAME );
+
+
+### Event-Funktionen
+
+Als Event kommt der AudioUnlockEvent zu den Events der Base-Komponente dazu:
+
+
+Eintragen des AudioUnlock-Events:
+
+	const result = speak.addAudioUnlockEvent('<CallerComponent>', (aUnlockFlag: boolean) => {
+		console.log('AudioUnlock', aUnlockFlag);
+		return 0;
+	});
+	
+	
+Entfernen des AudioUnlock-Events:
+
+	const result = speak.removeAudioUnlockEvent('<CallerComponent>');
+
+
 ### Audio-Funktionen
 
-Die Audio-Funktionen dienen der Umschaltung der Sprachausgabe auf das Abspielen von Audiodateien.
+Die Audio-Funktionen dienen der Umschaltung der Sprachausgabe auf das Abspielen von Audiodateien. Unter Google Chome, Opera und Safari muss der AudiContext jeweils durch eine Benutzeraktion freigeschaltet werden.
 
+Ob der AudioContext freigeschaltet ist kann mit isUnlockAudio() festgestellt werden:
+
+
+	if ( speak.isUnlockAudio()) {
+		console.log('AudioContext ist freigeschaltet');
+	} else {
+		console.log('AudioContext ist nicht freigeschaltet');
+	}
+
+
+Audio kann anstelle der TTS für die Sprachausgabe verwendet werden. Dazu dienen folgende Funktionen:
+
+	const result = speak.setAudioOn();
+	
+	if ( speak.isAudio()) {
+		console.log('Audio-Sprachausgabe ist eingeschaltet');
+	}
+	
+	const result = speak.setAudioOff();
+
+	if ( !speak.isAudio()) {
+		console.log('Audio-Sprachausgabe ist ausgeschaltet');
+	}
+	
+	
+Den globalen AudioContext erhält man über getAudioContext() zurück:
+	
+	const audioContext = speak.getAudioContext();
+
+
+Das Audioformat der azuspielenden Audiodateien kann man mit setAudioFormat() einstellen und mit getAudioFormat abfragen:
+
+
+	const result = speak.setAudioFormat( SPEAK_MP3_FORMAT );
+
+	const audioFormat = speak.getAudioFormat(); 
+	if ( audioFormat === SPEAK_MP3_FORMAT ) {
+		console.log('AudioFormat ist MP3');
+	}
+	
+	const result = speak.setAudioFormat( SPEAK_WAV_FORMAT );
+	const audioFormat = speak.getAudioFormat(); 
+	if ( audioFormat === SPEAK_WAV_FORMAT ) {
+		console.log('AudioFormat ist WAV');
+	}
+	
+
+Um eine Audiodatei abspielen zu können, muss der Audio-Dateipfad und der Audio-Dateiname an Speak übergeben werden:
+
+	const result = speak.setAudioFilePath( './assets/audio' );
+	
+	const audioPath = speak.getAudioFilePath();
+	
+	const result = speak.setAudioFileName( '<AudioDatei>' );
+	
+	const audioFile = speak.getAudioFileName();
+		
+	
 
 ### TTS-Funktionen
 
-Die TTS-Funktionen erlauben den Wechsel der TTS. Im Moment sind die Html5-TTS und die Nuance-TTS implementiert.
+Die TTS-Funktionen erlauben den Wechsel der TTS. Im Moment sind die Html5-TTS, die Nuance-TTS und die Amazon-TTS implementiert.
 
+
+	const result = speak.setTTS( SPEAK_HTML5_TTS );
+	const tts = speak.getTTS();
+
+	if ( tts === SPEAK_HTML5_TTS ) {
+		console.log('HTML5-TTS ist eingestellt');
+	}
+
+	const result = speak.setTTS( SPEAK_NUANCE_TTS );
+
+	const result = speak.setTTS( SPEAK_AMAZON_TTS );
+	
+	
+Eine Liste der Namen aller verfügbaren TTS kann mit getTTSList() erhalten werden:
+
+	const ttsList = speak.getTTSList();	
+	
 
 ### Language-Funktionen
 
-Die Language-Funktionen erlauben den Wechsel der Sprache. Im Moment sind Deutsch und Englisch implementiert.
+Die Language-Funktionen erlauben den Wechsel der Sprache. Im Moment sind Deutsch (de) und Englisch (en) implementiert.
 
 
+	const result = speak.setLanguage( SPEAK_DE_LANGUAGE );
+	
+	const language = speak.getLanguage();
+	if ( language === SPEAK_DE_LANGUAGE ) {
+		console.log('Deutsch ist als Sprache eingestellt');
+	}
+	
+	const result = speak.setLanguage( SPEAK_EN_LANGUAGE );
+
+	const language = speak.getLanguage();
+	if ( language === SPEAK_EN_LANGUAGE ) {
+		console.log('Englisch ist als Sprache eingestellt');
+	}
+	
+	
+Eine Liste aller verfügbaren Sprachen kann mit getLanguageList() erhalten werden:
+
+	const languageList = speak.getLanguageList();		
+	
 ### Voice-Funktionen
 
-Die Voice-Funktionen erlauben das einstellen einer anderen Stimme für die Sprachausgabe. Die Stimmen wechseln mit der Änderung der Sprache.
+Die Voice-Funktionen erlauben das Einstellen einer anderen Stimme für die Sprachausgabe. Die Stimmen wechseln mit der Änderung der Sprache.
+
+
+	const result = speak.setVoice( '<Voice1>' );
+	
+	const voice = speak.getVoice();
+	if ( voice === '<Voice1>' ) {
+		console.log('Stimme <Voice1> ist eingestellt');
+	}
+	
+	
+Eine Liste aller verfügbaren Stimmen kann mit getVoiceList() erhalten werden:
+
+	const voiceList = speak.getVoiceList();
 
 
 ### Speak-Funktionen
 
-Die Speak-Funktionen erlauben die Übergabe eines Textes für die Speachausgabe. 
+Die Speak-Funktionen erlauben die Übergabe eines Textes für die Sprachausgabe mit der TTS.
+
+
+	const result = speak.setSpeakText( 'zu sprechender Text' );
+	
+	const text = speak.getSpeakText(); 
+
+
+
+### Start der Sprachausgabe
+
+Die Sprachausgabe startet man mit start(). Dabei muss je nach Ausgabe über die TTS oder den Audio-Player vorher ein Text oder eine Audiodatei eingetragen werden. Die Sprachausgabe beendet sich selbst oder kann mit stop() abgebrochen werden. Die Events für Start und Stop werden ausgelöst.
+
+
+Zunächst die Events einrichten:
+
+	const result = speak.addStartEvent( 'Test', () => {
+		console.log('Sprachausgabe gestartet');
+	});
+	
+	const result = speak.addStopEvent( 'Test', () => {
+		console.log('Sprachausgabe beendet');
+	});
+	
+
+Für die Sprachausgabe mit TTS:
+
+	const result = speak.setText( 'zu sprechender Text' );
+	const result = speak.start();
+	
+	
+Für die Sprachausgabe mit Audio:
+
+	const result = speak.setAudioOn();
+	const result = speak.setAudioFileName( '<AudioDatei>' );
+	const result = speak.start();
+
 

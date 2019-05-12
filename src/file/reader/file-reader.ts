@@ -1,6 +1,9 @@
 /**
  * Diese Komponente liest eine Datei in den Browser als String
  *
+ * Letzte Aenderung: 09.05.2019
+ * Status: rot
+ * 
  * @module file/reader
  * @author SB
  */
@@ -8,13 +11,13 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
 import { Plugin } from '../../core/plugin/plugin';
 
 
 // common
 
-import { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from './../../common/html5/xmlhttprequest-factory';
+import { XMLHTTPREQUEST_TEXT_RESPONSETYPE } from './../../common/html5/file-html5-reader.interface';
+import { FileHtml5Reader } from './../../common/html5/file-html5-reader';
 
 
 // file
@@ -33,33 +36,10 @@ import { FileReaderInterface, FileReaderReadFunc, OnFileReaderReadFunc } from '.
 
 export class FileReader extends Plugin implements FileReaderInterface {
 
-    /**
-     * Fabrik zur Erzeugung der Audioobjekte
-     * @member {XMLHttpRequestFactory} mXMLHttpRequestFactory
-     * @private
-     */
-    mXMLHttpRequestFactory: XMLHttpRequestFactory;
+    // interne Implementierungsklasse zum Einlesen von Dateien aus dem Browser
 
-    /**
-     * XMLHttpRequest fuer das einlesen der Datei
-     * @member {Object} mXMLHttpRequest
-     * @private
-     */
-    mXMLHttpRequest: any = null;
+    mFileHtml5Reader: FileHtml5Reader = null;
 
-    /**
-     * Request fuer das einlesen der Audiodaten
-     * @member {Object} mRequest
-     * @private
-     */
-    mRequest: any = null;
-
-    /**
-     * Callback-Funktion fuer LoadDialog-Event
-     * @member {callback} mOnReadFile
-     * @private
-     */
-    mOnReadFunc: OnFileReaderReadFunc = null;
 
     /**
      * Creates an instance of FileReader.
@@ -69,6 +49,9 @@ export class FileReader extends Plugin implements FileReaderInterface {
 
     constructor( aRegisterFlag = true ) {
         super( FILEREADER_PLUGIN_NAME, aRegisterFlag );
+        this.mFileHtml5Reader = new FileHtml5Reader();
+        // verbinden der Errorfunktion mit dem ErrorEvent
+        this.mFileHtml5Reader.onError = this.onError;
     }
 
 
@@ -103,13 +86,9 @@ export class FileReader extends Plugin implements FileReaderInterface {
             return -1;
         }
 
-        // Initialisierung der XMLHttpRequestFactory, ist noch keine Fabrik vorhanden, wird sie eingetragen
+        // FileHtml5Reader initialisieren
 
-        this.mXMLHttpRequestFactory = FactoryManager.get( XMLHTTPREQUEST_FACTORY_NAME, XMLHttpRequestFactory ) as XMLHttpRequestFactory;
-
-        // pruefen auf vorhandenen XMLHttpRequest in HTML5
-
-        if ( !this._detectXMLHttpRequest()) {
+        if ( this.mFileHtml5Reader.init( aOptions ) != 0 ) {
             return -1;
         }
 
@@ -122,106 +101,21 @@ export class FileReader extends Plugin implements FileReaderInterface {
      */
 
     done(): number {
-        this.mXMLHttpRequest = null;
-        this.mRequest = null;
-        this.mOnReadFunc = null;
+        this.mFileHtml5Reader.done();
         return super.done();
     }
 
 
-    /**
-     * Feststellen, ob HTML5 XMLHttpRequest API vorhanden ist
-     *
-     * @private
-     * @return {boolean} true, wenn XMLHttpRequest existiert, false sonst
-     */
+    // Error-Funktionen
 
-    _detectXMLHttpRequest(): boolean {
-        // console.log('SpeechFile._detectXMLHttpRequest:', window.XMLHttpRequest);
-        // pruefen auf Fabrik
-
-        if ( !this.mXMLHttpRequestFactory ) {
-            this._error( '_detectXMLHttpRequest', 'keine File-Fabrik vorhanden' );
-            return false;
-        }
-
-        try {
-            this.mXMLHttpRequest = this.mXMLHttpRequestFactory.getXMLHttpRequestClass();
-        } catch (aException) {
-            this._exception( '_detectXMLHttpRequest', aException );
-            return false;
-        }
-
-        if ( this.mXMLHttpRequest === null ) {
-            this._error( '_detectXMLHttpRequest', 'kein XMLHttpRequest vorhanden' );
-            return false;
-        }
-
-        return true;
+    
+    _setErrorOutput( aOutputFlag: boolean): void {
+        super._setErrorOutput( aOutputFlag );
+        this.mFileHtml5Reader._setErrorOutput( aOutputFlag );
     }
 
 
-    /**
-     * XMLHttpRequest zum einlesen einer Datei ausfuehren
-     *
-     * @private
-     * @param {string} aUrl
-     * @return {number} errorCode(0,-1) - Fehlercode
-     */
-
-    _requestDialogFile(aUrl: string): number {
-        if ( !this.mXMLHttpRequest ) {
-            this._error( '_requestDialogFile', 'kein XMLHttpRequest vorhanden' );
-            return -1;
-        }
-        try {
-            this.mRequest = new this.mXMLHttpRequest();
-            this.mRequest.open('GET', aUrl, true);
-            this.mRequest.responseType = 'text';
-
-            // console.log('FileReader._requestDialogFile:', this.mRequest);
-            const request = this.mRequest;
-
-            this.mRequest.onload = () => {
-                // console.log('FileReader._requestDialogFile: onload');
-                if ( this.mOnReadFunc ) {
-                    try {
-                        // console.log('FileReader._requestDialogFile:', request);
-                        if ( request.status === 404 ) {
-                            this._error( '_requestDialogFile', 'Error 404' );
-                        } else {
-                            this.mOnReadFunc( request.response );
-                        }
-                    } catch (aException) {
-                        this._exception( '_requestDialogFile', aException );
-                    }
-                }
-            };
-
-            this.mRequest.onloadend = () => {
-                if ( request.status === 404 ) {
-                    this._error( '_requestDialogFile', 'Error 404' );
-                }
-            };
-
-            this.mRequest.onerror = ( aErrorEvent: any ) => {
-                // TODO: muss in Fehlerbehandlung uebertragen werden
-                console.log('FileReader._requestDialogFile: onerror', aErrorEvent);
-                this._onError(aErrorEvent);
-            };
-
-            this.mRequest.onabord = ( aEvent: any ) => {
-                // TODO: muss in Fehlerbehandlung uebertragen werden
-                console.log('FileReader._loadAudioFile: onabord', aEvent);
-            };
-
-            this.mRequest.send();
-            return 0;
-        } catch (aException) {
-            this._exception( '_requestDialogFile', aException );
-            return -1;
-        }
-    }
+    // FileReader-Funktionen
 
 
     getReadFunc(): FileReaderReadFunc {
@@ -244,7 +138,7 @@ export class FileReader extends Plugin implements FileReaderInterface {
             this._error( 'read', 'nicht initialisiert' );
             return -1;
         }
-        return this._requestDialogFile( aFileUrl );
+        return this.mFileHtml5Reader._loadFile( aFileUrl, XMLHTTPREQUEST_TEXT_RESPONSETYPE );
     }
 
 
@@ -269,7 +163,7 @@ export class FileReader extends Plugin implements FileReaderInterface {
      */
 
     set onRead( aReadFunc: OnFileReaderReadFunc ) {
-        this.mOnReadFunc = aReadFunc;
+        this.mFileHtml5Reader.onRead = aReadFunc;
     }
 
 
@@ -281,7 +175,7 @@ export class FileReader extends Plugin implements FileReaderInterface {
      */
 
     set onLoadDialogFile( aReadFunc: OnFileReaderReadFunc ) {
-        this.mOnReadFunc = aReadFunc;
+        this.mFileHtml5Reader.onRead = aReadFunc;
     }
 
 }

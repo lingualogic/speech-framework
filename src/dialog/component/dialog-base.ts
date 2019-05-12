@@ -2,7 +2,7 @@
  * DialogBase definiert die Basisfunktionalitaet fuer eine Dialog-Komponente.
  * Von dieser Klasse koennen weitere Varianten der Dialog-Komponente abgeleitet werden.
  *
- * Letzte Aenderung: 26.03.2019
+ * Letzte Aenderung: 25.04.2019
  * Status: gelb
  *
  * @module dialog/component
@@ -221,6 +221,21 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
 
     /**
+     * Dialogdatei lokal laden
+     */
+
+    _initLoadDialogFile(): number {
+        // console.log('DialogComponent.init: Dialogdatei wird geladen');
+        if ( this.mDialogLoadFlag && this.loadDialogFile() !== 0 ) {
+            this._error( 'init', 'Dialogdatei nicht geladen' );
+            this._clearInit();
+            return -1;
+        }
+        return 0;
+    }
+
+
+    /**
      * Initialisierung des Speech-Systems
      *
      * @param {DialogOptionInterface} aOption - optionale Parameter {}
@@ -246,14 +261,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
         // optional Dialogdatei laden
 
-        // console.log('DialogComponent.init: Dialogdatei wird geladen');
-        if ( this.mDialogLoadFlag && this.loadDialogFile() !== 0 ) {
-            this._error( 'init', 'Dialogdatei nicht geladen' );
-            this._clearInit();
-            return -1;
-        }
-
-        return 0;
+        return this._initLoadDialogFile();
     }
 
 
@@ -437,7 +445,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     _onDialogStart(): number {
-        // console.log('DialogComponent._onDialogStart');
+        // console.log('DialogBase._onDialogStart');
         this.mActivDialogFlag = true;
         return this.mDialogStartEvent.dispatch();
     }
@@ -451,7 +459,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     _onDialogStop(): number {
-        // console.log('DialogComponent._onDialogStop');
+        // console.log('DialogBase._onDialogStop');
         this._stop();
         return this.mDialogStopEvent.dispatch();
     }
@@ -536,6 +544,17 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         // console.log('DialogComponent._onSpeakStop');
         this._onDialogActionStop();
         return this.mDialogSpeakStopEvent.dispatch();
+    }
+
+
+    /**
+     * Rueckgabe der NetOpen-Ereignisfunktion, um ein Ereignis extern auszuloesen
+     *
+     * @readonly
+     */
+
+    get onNetOpen() {
+        return () => 0;
     }
 
 
@@ -1059,7 +1078,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     writeDialogData( aDialogData: string ): number {
-        // console.log('DialogBase.writeDialogData');
+        // console.log('DialogBase.writeDialogData: ', aDialogData);
         if ( !this.isActive()) {
             this._error('writeDialogData', 'Komponente ist nicht aktiviert');
             return -1;

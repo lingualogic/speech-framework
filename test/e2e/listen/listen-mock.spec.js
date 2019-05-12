@@ -97,6 +97,7 @@ describe('Listen', () => {
         speech.SpeechMain.init();
         listen = speech.ListenFactory.create( speech.LISTEN_COMPONENT_NAME, { errorOutputFlag: ERROR_LISTEN_OUTPUT });
         expect( listen ).toBeTruthy();
+        expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
     });
 
     afterAll(() => {
@@ -110,6 +111,7 @@ describe('Listen', () => {
         expect( listen.removeAllEvent( TEST_LISTEN_NAME )).toBe( 0 );
         expect( listen.abort()).toBe( 0 );
         expect( listen.reset()).toBe( 0 );
+        expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
         if( ERROR_LISTEN_OUTPUT ) {
             listen.setErrorOutputOn();
         } else {

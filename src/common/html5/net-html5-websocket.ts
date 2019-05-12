@@ -42,9 +42,9 @@ export type OnNetHtml5ErrorFunc = (aError: any) => number;
  *
  *      netOptions: { connectInfiniteFlag: true }
  *
- *      connectInfinite - true, wenn Verbindung alle NET_CONNECT_INTERVAL Millisekunden erneut
- *                        aufgebaut werden soll.
- *                        Defaultwert ist false.
+ *      connectInfiniteFlag - true, wenn Verbindung alle NET_CONNECT_INTERVAL Millisekunden erneut
+ *                            aufgebaut werden soll.
+ *                            Defaultwert ist false.
  */
 
 
@@ -501,8 +501,8 @@ export class NetHtml5WebSocket extends ErrorBase {
         // console.log('NetHtml5WebSocket._webSocketOpen: start', aEvent);
         this.mWebSocketOpenFlag = true;
         this._clearInfiniteConnect();
-        // TODO: Dieser Event wird nicht mehr benoetigt
-        if ( this._onMessage({ event: 'start' }) !== 0 ) { return -1; }
+        // TODO: Dieser Event wird nicht mehr benoetigt (erst mal wird ein MessageEvent-Dummy versendet)
+        if ( this._onMessage({ data: '{ "event": "start" }' }) !== 0 ) { return -1; }
         if ( this._onOpen() !== 0 ) { return -1; }
         // console.log('NetHtml5WebSocket._webSocketOpen: end');
         return 0;

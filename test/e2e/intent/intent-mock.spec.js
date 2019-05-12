@@ -1,10 +1,11 @@
 /**
  * E2E-Tests fuer Intent
  * 
- * Alle Nuance-Tests werden mit dem Nuance-MOck durchgefuehrt
+ * Alle Nuance-Tests werden mit dem Nuance-Mock durchgefuehrt
+ * Alle Google-Tests werden mit dem Google-Mock durchgefuehrt
  *
- * Letzte Aenderung: 13.02.2019
- * Status: gelb
+ * Letzte Aenderung: 11.05.2019
+ * Status: rot
  * 
  * Getestet:
  * 
@@ -30,7 +31,7 @@
 
 
 const TEST_INTENT_NAME = 'TestIntent';
-const ERROR_INTENT_OUTPUT = false;
+const ERROR_INTENT_OUTPUT = true;
 
 const jasmineIntentTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
@@ -40,31 +41,69 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
 describe('Intent', () => {
 
+    let nuanceFlag = false;
+    let googleFlag = false;
     let intent = null;
+    let nluCount = 0;
 
     beforeAll((done) => {
         // eslint-disable-next-line
         console.log('Intent (gemockt) E2E-Tests gestartet...');
-        // Nuance initialisieren
+        // console.log('Nuance vorhanden:', speech.Nuance);
+        // console.log('Google vorhanden:', speech.Google);
         // eslint-disable-next-line
-        expect( speech.Nuance.init({ nuancePortName: 'NuanceMock', nuanceAppId: 'testAppId', nuanceAppKey: 'testAppKey', errorOutputFlag: true })).toBe( 0 );
-        // eslint-disable-next-line
-        expect( speech.Nuance.open(() => {
+        if ( speech.Nuance ) {
+            // console.log('IntentTest: Nuance wird erzeugt');
+            // Nuance initialisieren
             // eslint-disable-next-line
-            speech.SpeechMain.init();
+            expect( speech.Nuance.init({ nuancePortName: 'NuanceMock', nuanceAppId: 'testAppId', nuanceAppKey: 'testAppKey', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
             // eslint-disable-next-line
-            intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
-            expect( intent ).toBeTruthy();
-            done();
-        })).toBe( 0 );
+            expect( speech.Nuance.open(() => {
+                // eslint-disable-next-line
+                speech.SpeechMain.init();
+                // eslint-disable-next-line
+                intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
+                expect( intent ).toBeTruthy();
+                nuanceFlag = true;
+                nluCount++;
+                done();
+            })).toBe( 0 );
+        } else {
+            // eslint-disable-next-line
+            if ( speech.Google ) {
+                // console.log('IntentTest: Google wird erzeugt');
+                // Google initialisieren
+                // eslint-disable-next-line
+                expect( speech.Google.init({ googlePortName: 'GoogleMock', googleAppKey: 'testAppKey', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
+                // eslint-disable-next-line
+                expect( speech.Google.open(() => {
+                    // eslint-disable-next-line
+                    speech.SpeechMain.init();
+                    // eslint-disable-next-line
+                    intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
+                    expect( intent ).toBeTruthy();
+                    googleFlag = true;
+                    nluCount++;
+                    done();
+                })).toBe( 0 );
+            }
+        }
     });
 
     afterAll(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = jasmineIntentTimeout;
+        intent = null;
         // eslint-disable-next-line
         speech.SpeechMain.done();
         // eslint-disable-next-line
-        speech.Nuance.done();
+        if ( speech.Nuance ) {
+            // eslint-disable-next-line
+            speech.Nuance.done();
+        // eslint-disable-next-line
+        } else if ( speech.Google ) {
+            // eslint-disable-next-line
+            speech.Google.done();
+        }
     });
 
     afterEach(() => {
@@ -508,7 +547,12 @@ describe('Intent', () => {
             expect( intent.getIntentText()).toBe( '' );
             expect( data.literal ).toBe( 'Dies ist ein erster TestText' );
             expect( data.intent ).toBe( 'TestIntent' );
-            expect( data.confidence ).toBe( 1.0 );
+            if ( nuanceFlag ) {
+                expect( data.confidence ).toBe( 1.0 );
+            } else if ( googleFlag ) {
+                expect( data.confidence ).toBe( 0 );
+                expect( data.speech ).toBe( 'TestSpeech' );
+            }
             expect( data.error ).toBe( '' );
             // console.log('Test 1 Ende');
         });
@@ -559,14 +603,41 @@ describe('Intent', () => {
             expect( errorText ).toBe( 'NLUGroup.setNLU: Keine NLU vorhanden' );
         });
 
-        it('sollte 0 zurueckgeben, bei Nuance NLU Namen', () => {
-            // eslint-disable-next-line
-            expect( intent.setNLU( speech.INTENT_NUANCE_NLU )).toBe( 0 );
+        it('sollte 0 zurueckgeben, bei vorhandener Nuance-NLU', () => {
+            if ( nuanceFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_NUANCE_NLU )).toBe( 0 );
+            } else {
+                let errorText = '';
+                expect( intent.addErrorEvent( TEST_INTENT_NAME, (aError) => {
+                    errorText = aError.message;
+                    // console.log('===> Intent-E2E setNLU ErrorEvent:', errorText);                
+                })).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_NUANCE_NLU )).toBe( -1 );
+                expect( errorText ).toBe( 'NLUGroup.setNLU: Keine NLU vorhanden' ); 
+            }
+        });
+
+        it('sollte 0 zurueckgeben, bei vorhandener Google-NLU', () => {
+            if ( googleFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_GOOGLE_NLU )).toBe( 0 );
+            } else {
+                let errorText = '';
+                expect( intent.addErrorEvent( TEST_INTENT_NAME, (aError) => {
+                    errorText = aError.message;
+                    // console.log('===> Intent-E2E setNLU ErrorEvent:', errorText);                
+                })).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_GOOGLE_NLU )).toBe( -1 );
+                expect( errorText ).toBe( 'NLUGroup.setNLU: Keine NLU vorhanden' ); 
+            }
         });
 
         it('sollte 0 zurueckgeben, bei Html5 NLU Namen', () => {
             const nluList = intent.getNLUList();
-            if ( nluList.length > 1 ) {
+            if ( nluList.length > nluCount ) {
                 // eslint-disable-next-line
                 expect( intent.setNLU( speech.INTENT_HTML5_NLU )).toBe( 0 );
             } else {
@@ -588,8 +659,21 @@ describe('Intent', () => {
     describe('Funktion getNLU', () => {
 
         it('sollte Nuance NLU zurueckgeben', () => {
-            // eslint-disable-next-line
-            expect( intent.getNLU()).toBe( speech.INTENT_NUANCE_NLU );
+            if ( nuanceFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_NUANCE_NLU )).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.getNLU()).toBe( speech.INTENT_NUANCE_NLU );
+            }
+        });
+
+        it('sollte Google NLU zurueckgeben', () => {
+            if ( googleFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_GOOGLE_NLU )).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.getNLU()).toBe( speech.INTENT_GOOGLE_NLU );
+            }
         });
 
     });
@@ -600,13 +684,20 @@ describe('Intent', () => {
 
         it('sollte NLU-Liste zurueckgeben', () => {
             const nluList = intent.getNLUList();
-            if ( nluList.length > 0 ) {
+            if ( nuanceFlag ) {
                 // eslint-disable-next-line
                 expect( nluList[ 0 ]).toBe( speech.INTENT_NUANCE_NLU );
-            }
-            if ( nluList.length > 1 ) {
+                if ( googleFlag ) {
+                    // eslint-disable-next-line
+                    expect( nluList[ 1 ]).toBe( speech.INTENT_GOOGLE_NLU );
+                }
+            } else  if ( googleFlag ) {
                 // eslint-disable-next-line
-                expect( nluList[ 0 ]).toBe( speech.INTENT_HTML5_NLU );
+                expect( nluList[ 0 ]).toBe( speech.INTENT_GOOGLE_NLU );
+            }
+            if ( nluList.length > nluList ) {
+                // eslint-disable-next-line
+                expect( nluList[ 2 ]).toBe( speech.INTENT_HTML5_NLU );
             }
         });
 
@@ -623,7 +714,11 @@ describe('Intent', () => {
                 // console.log('===> Listen-E2E setLanguage ErrorEvent:', errorText);                
             })).toBe( 0 );
             expect( intent.setLanguage( '' )).toBe( -1 );
-            expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
+            if ( nuanceFlag ) {
+                expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( googleFlag ) {
+                expect( errorText ).toBe( 'NLUGoogle.setLanguage: keine gueltige Sprache uebergeben' );
+            }
         });
 
         it('sollte -1 zurueckgeben, wenn falsche Sprache eingetragen wird', () => {
@@ -633,7 +728,11 @@ describe('Intent', () => {
                 // console.log('===> Listen-E2E setLanguage ErrorEvent:', errorText);                
             })).toBe( 0 );
             expect( intent.setLanguage( 'noLanguage' )).toBe( -1 );
-            expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
+            if ( nuanceFlag ) {
+                expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( googleFlag ) {
+                expect( errorText ).toBe( 'NLUGoogle.setLanguage: keine gueltige Sprache uebergeben' );
+            }
         });
 
         it('sollte 0 zurueckgeben, wenn Deutsch eingetragen wird', () => {

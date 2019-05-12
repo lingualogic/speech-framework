@@ -493,14 +493,16 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
      */
 
     setLanguage( aLanguage: string ): number {
+        // console.log('TTSGroup.setLanguage', this.getTTS(), this.getTTSList());
         let result = 0;
         let tts = this.firstPlugin() as TTSInterface;
         // pruefen, ob eine TTS vorhanden ist
         if ( !tts ) {
-            this._error( 'setTTS', 'Keine TTS vorhanden' );
+            this._error( 'setLanguage', 'Keine TTS vorhanden' );
             return -1;
         }
         while ( tts ) {
+            // console.log('ASRGroup.setLanguage: ', tts.getTTS(), aLanguage);
             if ( tts.setLanguage( aLanguage ) !== 0 ) {
                 result = -1;
             }
@@ -605,6 +607,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
      */
 
     startSpeak( aText: string ): number {
+        // console.log('TTSGroup.startSpeak:', this.getTTS(), this.getTTSList());
         // pruefen auf vorhandene TTS
         if ( !this.mCurrentTTS ) {
             this._error( 'startSpeak', 'keine TTS vorhanden' );

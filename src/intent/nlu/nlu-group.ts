@@ -6,9 +6,10 @@
  * Installierte NLU:
  *
  *      NLUNuance   - Default Nuance-Service NLU
+ *      NLUGoogle   - Google Dialogflow NLU (Version1-API, bis Oktober 2019)
  *      NLUHtml5    - Web-NLU (Grammatik muss definiert werden)
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 08.05.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -35,7 +36,8 @@ import {
     NLU_TYPE_NAME,
     NLU_GROUP_NAME,
     NLU_HTML5_NAME,
-    NLU_NUANCE_NAME
+    NLU_NUANCE_NAME,
+    NLU_GOOGLE_NAME
 } from './nlu-const';
 import {
     NLUInterface,
@@ -70,6 +72,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
     mNLUHtml5: NLUInterface = null;
     mNLUNuance: NLUInterface = null;
+    mNLUGoogle: NLUInterface = null;
 
 
     // aktuell genutzte NLU
@@ -133,6 +136,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         }
         // eintragen der verfuegbaren NLU-Plugins
         this.insertPlugin( NLU_NUANCE_NAME, this.mNLUFactory.create( NLU_NUANCE_NAME, false ));
+        this.insertPlugin( NLU_GOOGLE_NAME, this.mNLUFactory.create( NLU_GOOGLE_NAME, false ));
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this.insertPlugin( NLU_HTML5_NAME, this.mNLUFactory.create( NLU_HTML5_NAME, false ));
     }
@@ -191,6 +195,32 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
 
     /**
+     * Initialisierung des Google-NLU Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initNLUGoogle( aOption: any ): void {
+        this.mNLUGoogle = this.findPlugin( NLU_GOOGLE_NAME ) as NLUInterface;
+        if ( this.mNLUGoogle ) {
+            this.mNLUGoogle.init( aOption );
+            if ( this.mNLUGoogle.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('NLUGroup._initNLUGoogle: NLU eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( NLU_GOOGLE_NAME );
+            this.mNLUGoogle.done();
+            this.mNLUGoogle = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('NLUGroup._initNLUGoogle: NLU nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung von NLUPlugin
      *
      * @param {any} [aOption] - optionale Parameter
@@ -223,6 +253,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         // NLU eintragen in Reihenfolge ihrer Nutzung
 
         this._initNLUNuance( option );  // Default-NLU
+        this._initNLUGoogle( option );  // Dialogflow-NLU Version-1 bis Oktober 2019
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this._initNLUHtml5( option );
 
@@ -259,6 +290,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
     done(): number {
         this.mNLUHtml5 = null;
         this.mNLUNuance = null;
+        this.mNLUGoogle = null;
         this.mCurrentNLU = null;
         return super.done();
     }
@@ -466,15 +498,19 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
     setNLU( aNLUName: string ): number {
         // console.log( 'NLUGroup.setNLU:', aNLUName );
-        let tts = null;
+        let nlu = null;
         switch ( aNLUName ) {
 
             case NLU_HTML5_NAME:
-                tts = this.mNLUHtml5;
+                nlu = this.mNLUHtml5;
                 break;
 
             case NLU_NUANCE_NAME:
-                tts = this.mNLUNuance;
+                nlu = this.mNLUNuance;
+                break;
+
+            case NLU_GOOGLE_NAME:
+                nlu = this.mNLUGoogle;
                 break;
 
             default:
@@ -483,14 +519,14 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
         // pruefen auf gefundene NLU
 
-        if ( !tts ) {
+        if ( !nlu ) {
             this._error( 'setNLU', 'Keine NLU vorhanden' );
             return -1;
         }
 
         // neue NLU eintragen
 
-        this.mCurrentNLU = tts;
+        this.mCurrentNLU = nlu;
         return 0;
     }
 
@@ -533,12 +569,17 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
     setLanguage( aLanguage: string ): number {
         let result = 0;
-        let asr = this.firstPlugin() as NLUInterface;
-        while ( asr ) {
-            if ( asr.setLanguage( aLanguage ) !== 0 ) {
+        let nlu = this.firstPlugin() as NLUInterface;
+        // pruefen, ob eine NLU vorhanden ist
+        if ( !nlu ) {
+            this._error( 'setLanguage', 'Keine NLU vorhanden' );
+            return -1;
+        }
+        while ( nlu ) {
+            if ( nlu.setLanguage( aLanguage ) !== 0 ) {
                 result = -1;
             }
-            asr = this.nextPlugin() as NLUInterface;
+            nlu = this.nextPlugin() as NLUInterface;
         }
         return result;
     }

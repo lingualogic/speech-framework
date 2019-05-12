@@ -309,8 +309,13 @@ var Factory = function(t) {
             return this._exception('connect', t), -1;
         }
     }, n.prototype.disconnect = function() {
-        return this.mConnectFlag = !1, window.AWS.config.region = '', window.AWS.config.credentials = null, 
-        0;
+        this.mConnectFlag = !1;
+        try {
+            window.AWS.config.region = '', window.AWS.config.credentials = null;
+        } catch (t) {
+            return this._exception('disconnect', t), -1;
+        }
+        return 0;
     }, n;
 }(ErrorBase), PCM_L16CodecArray = [ 'audio/L16;rate=8000', 'audio/L16;rate=16000' ], AmazonAudioCodec = function(t) {
     function n() {
@@ -494,10 +499,11 @@ var Factory = function(t) {
         this.mAudioSource = null;
     }, n;
 }(ErrorBase), AmazonDevice = function(t) {
-    function n(n, o) {
-        var e = t.call(this, n || 'AmazonDevice') || this;
-        return e.mConfig = null, e.mTransaction = null, e.onStart = null, e.onStop = null, 
-        e.onResult = null, e.onError = null, e.onClose = null, e.mConfig = o, e;
+    function n(n, o, e) {
+        var i = t.call(this, n || 'AmazonDevice') || this;
+        return i.mConfig = null, i.mConnect = null, i.mTransaction = null, i.onStart = null, 
+        i.onStop = null, i.onResult = null, i.onError = null, i.onClose = null, i.mConfig = o, 
+        i.mConnect = e, i;
     }
     return __extends(n, t), n.prototype._onStart = function() {
         return this.mTransaction && this.onStart && this.onStart(this.mTransaction), 0;
@@ -541,14 +547,17 @@ var Factory = function(t) {
         this.mTransaction = null;
     }, n;
 }(ErrorBase), AmazonTTS = function(t) {
-    function n(n, o) {
-        var e = t.call(this, 'AmazonTTS', n) || this;
-        return e.mAudioContext = null, e.mAudioPlayer = null, e.mAudioContext = o, e;
+    function n(n, o, e) {
+        var i = t.call(this, 'AmazonTTS', n, o) || this;
+        return i.mAudioContext = null, i.mAudioPlayer = null, i.mAudioContext = e, i;
     }
     return __extends(n, t), n.prototype._start = function(t) {
         var n = this;
-        if (t && t.text && 'string' == typeof t.text) try {
-            if (this.mAudioPlayer = new AmazonAudioPlayer(this.mAudioContext), !this.mAudioPlayer) return void console.log('AmazonTTS._start: AudioPlayer wurde nicht erzeugt');
+        if (!t || !t.text || 'string' != typeof t.text) return this._error('_start', 'kein Text uebergeben'), 
+        -1;
+        try {
+            if (this.mAudioPlayer = new AmazonAudioPlayer(this.mAudioContext), !this.mAudioPlayer) return this._error('_start', 'AudioPlayer wurde nicht erzeugt'), 
+            -1;
             this.mAudioPlayer.onAudioStart = function() {
                 n._onStart();
             }, this.mAudioPlayer.onAudioStop = function() {
@@ -564,16 +573,17 @@ var Factory = function(t) {
                 TextType: 'text',
                 VoiceId: t.voice || 'Vicki'
             };
-            o.synthesizeSpeech(e, function(t, o) {
+            return o.synthesizeSpeech(e, function(t, o) {
                 t ? (n._onError(t), n._onStop()) : o && n.mAudioPlayer.decode({
                     codec: AMAZON_PCM_CODEC
                 }, o.AudioStream);
-            }), this.mAudioPlayer.start();
+            }), this.mAudioPlayer.start(), 0;
         } catch (t) {
-            this._exception('_start', t);
-        } else this._error('_start', 'kein Text uebergeben');
+            return this._exception('_start', t), -1;
+        }
     }, n.prototype._stop = function() {
-        this.mAudioPlayer && (this.mAudioPlayer.stop(), this.mAudioPlayer = null);
+        return this.mAudioPlayer && (this.mAudioPlayer.stop(), this.mAudioPlayer = null), 
+        0;
     }, n;
 }(AmazonDevice), AUDIO_UNLOCK_TIMEOUT = 2e3, AMAZON_ACTION_TIMEOUT = 6e4, AmazonPort = function(t) {
     function n(n, o) {
@@ -608,7 +618,7 @@ var Factory = function(t) {
         }, 0 !== this.mAmazonNetwork.init(t) ? -1 : (this.mAmazonConnect = new AmazonConnect(this.mAmazonConfig), 
         this.mAmazonConnect._setErrorOutputFunc(function(t) {
             return n._onError(new Error(t));
-        }), this.mAudioContext && (this.mAmazonTTS = new AmazonTTS(this.mAmazonConfig, this.mAudioContext), 
+        }), this.mAudioContext && (this.mAmazonTTS = new AmazonTTS(this.mAmazonConfig, this.mAmazonConnect, this.mAudioContext), 
         this.mAmazonTTS.onStart = function(t) {
             return n._onStart(t.plugin, t.type);
         }, this.mAmazonTTS.onStop = function(t) {
@@ -739,7 +749,7 @@ var Factory = function(t) {
             if (!i) return -1;
             e._setActionTimeout();
             var r = o || {};
-            e.mRunningFlag = !0;
+            e.mPluginName = t, e.mRunningFlag = !0;
             var a = 0;
             switch (n) {
               case AMAZON_NLU_ACTION:

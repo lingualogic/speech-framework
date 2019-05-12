@@ -1,7 +1,7 @@
 /**
  * Globale Konstanten fuer NLU
  *
- * Letzte Aenderung: 23.10.2018
+ * Letzte Aenderung: 08.05.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -20,6 +20,7 @@ export const NLU_MOCK_NAME = 'NLUMock';
 
 export const NLU_HTML5_NAME = 'NLUHtml5';
 export const NLU_NUANCE_NAME = 'NLUNuance';
+export const NLU_GOOGLE_NAME = 'NLUGoogle';
 export const NLU_GROUP_NAME = 'NLUGroup';
 export const NLU_DEFAULT_NAME = NLU_GROUP_NAME;
 

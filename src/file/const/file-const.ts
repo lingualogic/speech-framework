@@ -1,6 +1,9 @@
 /**
  * Globale Konstanten fuer FileLoader
  *
+ * Version: 1.1
+ * Datum:   23.07.2018
+ * 
  * @module file
  * @author SB
  */

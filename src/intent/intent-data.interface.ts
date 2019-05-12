@@ -28,6 +28,8 @@ export interface IntentDataInterface {
     conceptList: any;
     /** Text zum Intent */
     literal: string;
+    /** Textantwort zum Intent */
+    speech: string;
     /** aufgetretene Fehler */
     error: string;
 }

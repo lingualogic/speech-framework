@@ -1,10 +1,10 @@
 /**
  * Globale Konstanten fuer Intent
  *
- * API-Version: 1.0
- * Datum: 28.11.2018
+ * API-Version: 1.1
+ * Datum: 08.05.2019
  *
- * Letzte Aenderung: 28.11.2018
+ * Letzte Aenderung: 08.05.2019
  * Status: rot
  *
  * @module intent
@@ -28,6 +28,7 @@ export const INTENT_MOCK_NAME = 'ListenMock';
 
 export const INTENT_HTML5_NLU = 'NLUHtml5';
 export const INTENT_NUANCE_NLU = 'NLUNuance';
+export const INTENT_GOOGLE_NLU = 'NLUGoogle';
 
 
 // Sprach-Konstanten

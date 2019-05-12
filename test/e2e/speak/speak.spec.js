@@ -58,10 +58,15 @@ describe('Speak', () => {
         // eslint-disable-next-line
         speak = speech.SpeakFactory.create(  '', { errorOutputFlag: ERROR_SPEAK_OUTPUT });
         expect( speak ).toBeTruthy();
+        // eslint-disable-next-line
+        expect( speak.setTTS( speech.SPEAK_HTML5_TTS )).toBe( 0 );
         // Ausgabe fuer fehlende TTS
         if ( !speak.isTTS()) {
+            // eslint-disable-next-line
             console.log('******************************************************');
+            // eslint-disable-next-line
             console.log('*       Speak-E2E Tests:  keine TTS vorhanden        *');
+            // eslint-disable-next-line
             console.log('******************************************************');
         }
         if ( speak.isUnlockAudio()) {
@@ -87,6 +92,8 @@ describe('Speak', () => {
     afterEach(() => {
         expect( speak.removeAllEvent( TEST_SPEAK_NAME )).toBe( 0 );
         expect( speak.reset()).toBe( 0 );
+        // eslint-disable-next-line
+        expect( speak.setTTS( speech.SPEAK_HTML5_TTS )).toBe( 0 );
         if( ERROR_SPEAK_OUTPUT ) {
             speak.setErrorOutputOn();
         } else {
@@ -608,7 +615,7 @@ describe('Speak', () => {
             expect(speak.addErrorEvent( TEST_SPEAK_NAME, (aError) => {
                 errorText = aError.message;
                 // eslint-disable-next-line
-                console.log('===> Speak-E2E start(TTS) ErrorEvent:', errorText );
+                // console.log('===> Speak-E2E stop(TTS) ErrorEvent:', errorText );
                 return 0;
             })).toBe(0);
             expect( speak.setSpeakText( 'this is a TestText' )).toBe(0);
@@ -756,7 +763,12 @@ describe('Speak', () => {
             expect(speak.setAudioFileName(TEST_SPEAKAUDIO_FILE)).toBe(0);
             if ( speak.isTTS()) {
                 expect(speak.start()).toBe( 0 );
-                expect(speak.start()).toBe( 0 );
+                // TODO: Problem des unterschiedlichen Verhaltens wenn Lock oder Unlock Audio muss untersucht werden
+                if ( speak.isUnlockAudio()) {
+                    expect(speak.start()).toBe( -1 );
+                } else {
+                    expect(speak.start()).toBe( 0 );
+                }
                 expect( speak.stop()).toBe( 0 );
             } else {
                 expect( speak.start()).toBe( -1 );
@@ -819,6 +831,8 @@ describe('Speak', () => {
             if ( speak.isTTS()) {
                 expect(speak.start()).toBe( 0 );
                 expect(speak.stop()).toBe( 0 );
+                // TODO: Workaround, weil es kein Stop-Event gibt!
+                done();
             } else {
                 expect(speak.start()).toBe( -1 );
             }

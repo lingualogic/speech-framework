@@ -49,7 +49,16 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
      * @member {callback} mOnReadFunc
      * @private
      */
-    mOnReadFunc: (aConfigData: any) => void = null;
+    mOnReadFunc: OnFileHtml5ReaderReadFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer Error-Event
+     * @member {callback} mOnErrorFunc
+     * @private
+     */
+
+    mOnErrorFunc: OnFileHtml5ErrorFunc = null;
 
 
     /**
@@ -58,6 +67,8 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
 
     constructor( aClassName?: string ) {
         super( aClassName || 'FileHtml5Reader' );
+        // verbinden der Errorfunktion mit dem ErrorEvent
+        this._setErrorOutputFunc((aErrorText: string) => this._onError( new Error( aErrorText )));
     }
 
 
@@ -120,11 +131,42 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
     // Event-Funktionen
 
 
-    _onLoad( aData: any ): number {
-        // console.log('FileHtml5Reader._onLoad:', aData);
+    /**
+     * Ereignisfunktion fuer Fehler aufrufen
+     *
+     * @private
+     * @param {any} aError - Error Datentransferobjekt
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onError( aError: any ): number {
+        // console.log('FileHtml5Reader._onError:', aError);
+        if (typeof this.mOnErrorFunc === 'function') {
+            try {
+                // console.log('FileHtml5Reader._onError: call', this.mOnErrorFunc);
+                this.mOnErrorFunc( aError );
+            } catch ( aException ) {
+                if ( this.isErrorOutput()) {
+                    // hier darf nicht this._exception() verwendet werden, da sonst eine Endlosschleife entstehen kann!
+                    console.log( '===> EXCEPTION Plugin._onError: ', aException.message );
+                }
+                return -1;
+            }
+        }
+        return 0;
+    }
+    
+
+    _onLoad( aData: any, aStatus: number ): number {
+        // console.log('FileHtml5Reader._onLoad:', aData, aStatus);
         if ( this.mOnReadFunc ) {
             try {
-                this.mOnReadFunc( aData );
+                // console.log('FileReader._requestDialogFile:', aData, aStatus);
+                if ( aStatus === 404 ) {
+                    this._error( '_onLoad', 'Error 404' );
+                } else {
+                    this.mOnReadFunc( aData );
+                }
             } catch (aException) {
                 this._exception( '_onLoad', aException );
                 return -1;
@@ -134,7 +176,7 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
     }
 
 
-    _onLoadEnd( aStatus ): number {
+    _onLoadEnd( aStatus: number ): number {
         // console.log('FileHtml5Reader._onLoadEnd:', aStatus);
         if ( aStatus === 404 ) {
             this._error( '_onLoadEnd', 'Error 404' );
@@ -184,7 +226,7 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
             this.mRequest.responseType = aResponseType;
             // console.log('FileHtml5Reader._requestFile:', this.mRequest);
             const request = this.mRequest;
-            this.mRequest.onload = () => this._onLoad( request.response );
+            this.mRequest.onload = () => this._onLoad( request.response, request.status );
             this.mRequest.onloadend = () => this._onLoadEnd( request.status );
             this.mRequest.onerror = ( aErrorEvent: any ) => this._onLoadError( aErrorEvent );
             this.mRequest.onabord = ( aEvent: any ) => this._onLoadAbort( aEvent );
@@ -209,13 +251,13 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
 
 
     /**
-     * onRead Callback-Funktion eintragen
+     * onError Callback-Funktion eintragen
      *
      * @param {*} aErrorFunc - Callback fuer Dateidaten geladen
      */
 
     set onError( aErrorFunc: OnFileHtml5ErrorFunc ) {
-        this._setErrorOutputFunc( aErrorFunc );
+        this.mOnErrorFunc = aErrorFunc;
     }
 
 

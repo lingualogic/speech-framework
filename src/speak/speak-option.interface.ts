@@ -1,10 +1,10 @@
 /**
  * Speak Option Schnittstelle
  *
- * API-Version: 1.1
- * Datum:       18.10.2018
+ * API-Version: 1.2
+ * Datum:       10.05.2019
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 10.05.2019
  * Status: gruen
  *
  * @module speak
@@ -32,8 +32,4 @@ export interface SpeakOptionInterface extends BaseOptionInterface {
     audioFilePath?: string;
     /** True, wenn Audiodateien abgespielt werden sollen */
     audioFlag?: boolean;
-    /** legt die App-ID fuer die Verbindung zum Server fest */
-    nuanceAppId?: string;
-    /** legt den App-Key fuer die Verbindung zum Server fest */
-    nuanceAppKey?: string;
 }

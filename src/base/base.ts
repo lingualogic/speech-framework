@@ -115,7 +115,7 @@ export class Base implements BaseInterface {
             // Komponente initialisieren
 
             if ( !this.mComponent.isInit()) {
-                // console.log('Action._init: Komponente initialisieren', aOption);
+                // console.log('Base._init: Komponente initialisieren', aOption);
                 if ( this.mComponent.init( aOption ) !== 0 ) {
                     if ( errorOutputFlag ) {
                         console.log('Base._init: Komponente nicht initialisiert');

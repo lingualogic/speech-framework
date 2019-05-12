@@ -1,6 +1,11 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.9.0050 Alpha (12.05.2019)
+
+* **Google:** der Google Cloud-Dienst für die NLU wurde eingebaut, um Googles NLU für die Sprachverarbeitung verwenden zu können
+
+
 ## 0.5.8.0049 Alpha (07.04.2019)
 
 * **Amazon:** der Amazon Cloud-Dienst für Polly (TTS) wurde eingebaut, um Amazons Stimmen fuer die Sprachausgabe verwenden zu können

@@ -224,10 +224,26 @@ function IntentApp() {
 
         intent.addIntentResultEvent('IntentApp', function(aResult) {
             console.log('IntentApp.IntentResultEvent', aResult);
+            var listenResult = document.getElementById('listenResult');
+            listenResult.value = aResult.literal;
             var intentResult = document.getElementById('intentResult');
-            intentResult.value = aResult.intent + ' Convidence: ' + aResult.confidence;
+            if ( aResult.confidence > 0.0 ) {
+                intentResult.value = aResult.intent + ' Confidence: ' + aResult.confidence;
+            } else {
+                intentResult.value = aResult.intent;
+            }
             var entityResult = document.getElementById('entityResult');
-            entityResult.value = 'Konzept = ' + aResult.conceptList[0].value + ' Wert = ' + aResult.conceptList[0].literal;
+            if ( aResult.conceptList.length > 0 ) {
+                entityResult.value = 'Konzept = ' + aResult.conceptList[0].concept + ' Wert = ' + aResult.conceptList[0].literal;
+            } else {
+                entityResult.value = '';
+            }
+            var speechResult = document.getElementById('speechResult');
+            if ( aResult.speech ) {
+                speechResult.value = aResult.speech;
+            } else {
+                speechResult.value = '';
+            }
         });
 
         intent.addErrorEvent('IntentApp', function(aError) {
@@ -254,11 +270,26 @@ function IntentApp() {
         console.log('IntentApp: create...');
         // Nuance-Zurgiffsdaten als Optionen eintragen
         var option = {
+            googleAppKey: GOOGLE_APP_KEY,
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             nuanceNluTag: NLU_TAG
         };
+
+        // erzeugt das Google-Modul
+
+        if ( speech.Google ) {
+            speech.Google.init( option );
+            speech.Google.open((aError, aPortName, aPortResult) => {
+                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                console.log('IntentApp.init: Google', aPortResult);
+            });
+        } else {
+            console.log('IntentApp.init: kein Google vorhanden');
+        }
+
         // erzeugt das Nuance-Modul
+
         if ( speech.Nuance ) {
             speech.Nuance.init( option );
             speech.Nuance.open((aError, aPortName, aPortResult) => {

@@ -356,6 +356,21 @@ gulp.task('copy-amazon', function() {
 
 
 /** 
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Google
+ */ 
+
+gulp.task('copy-google', function() {
+    return gulp.src([
+        'bundle/google.d.ts',
+        'build/src/cloud/google/google-const.d.ts',
+        'build/src/cloud/google/google-config-data.interface.d.ts',
+        'build/src/cloud/google/google-option.interface.d.ts'
+    ])
+        .pipe( gulp.dest('dist/src/cloud/google'));
+}); 
+
+
+/** 
  * Kopiert die Bundledateien aus bundle/ nach dist/
  */ 
 
@@ -419,6 +434,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-bot',
         'copy-nuance',
         'copy-amazon',
+        'copy-google',
         callback
     );
 });
@@ -527,6 +543,54 @@ gulp.task('install-amazon-credentials-js', function() {
 
 
 /**
+ * Erzeugt amazon.credentials.ts in credentials/
+ */
+
+gulp.task('install-google-credentials-ts', function() {
+    try {
+        // pruefen auf vorhandene Google-Credentials Datei
+        fs.accessSync( 'credentials/google-credentials.ts' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/google-credentials.ts' ])
+            .pipe( file( 'google-credentials.ts', ''))
+            .pipe( inject.append( "/**\n" ))
+            .pipe( inject.append( " * Google Credentials\n" ))
+            .pipe( inject.append( " */\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "export const GOOGLE_APP_KEY = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
+ * Erzeugt google.credentials.js in credentials/
+ */
+
+gulp.task('install-google-credentials-js', function() {
+    try {
+        // pruefen auf vorhandene Google-Credentials Datei
+        fs.accessSync( 'credentials/google-credentials.js' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/google-credentials.js' ])
+            .pipe( file( 'google-credentials.js', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Google Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "var GOOGLE_APP_KEY = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
  * Installiert die WebDriver-Treiber fuer die  Protractor-Tests
  */
 
@@ -543,6 +607,8 @@ gulp.task('install', (callback) => {
         'install-nuance-credentials-js',
         'install-amazon-credentials-ts',
         'install-amazon-credentials-js',
+        'install-google-credentials-ts',
+        'install-google-credentials-js',
         'install-webdriver',
         callback
     );

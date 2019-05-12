@@ -444,8 +444,7 @@ var Factory = function(t) {
         try {
             o.mResampler = new NuanceResampler(o.mAudioContext.sampleRate, o.mSampleRate, 1, o.mBufferSize, void 0);
         } catch (t) {
-            throw console.log('NuanceAudioRecorder: Exception', t.message), o._exception('constructor', t), 
-            new Error('NuanceAudioRecorder nicht initialisiert');
+            throw o._exception('constructor', t), new Error('NuanceAudioRecorder nicht initialisiert');
         }
         return o;
     }
@@ -456,23 +455,21 @@ var Factory = function(t) {
                 n.stop && n.stop();
             }
         } catch (t) {
-            console.log('NuanceAudioRecorder._closeMediaStream: Exception', t), this._exception('_closeMediaStream', t);
+            this._exception('_closeMediaStream', t);
         }
         this.mUserMediaStream = null;
     }, e.prototype._onEnded = function() {
         if ('function' == typeof this.mOnEndedFunc) try {
             this.mOnEndedFunc();
         } catch (t) {
-            return console.log('NuanceAudioRecorder._onEnded: Exception', t), this._exception('_onEnded', t), 
-            -1;
+            return this._exception('_onEnded', t), -1;
         }
         return 0;
     }, e.prototype._onVolume = function(t) {
         if ('function' == typeof this.mOnVolumeFunc) try {
             this.mOnVolumeFunc(t);
         } catch (t) {
-            return console.log('NuanceAudioRecorder._onVolume: Exception', t), this._exception('_onVolume', t), 
-            -1;
+            return this._exception('_onVolume', t), -1;
         }
         return 0;
     }, e.prototype._onAudioProcess = function(t) {
@@ -502,14 +499,12 @@ var Factory = function(t) {
                 }, n.mAudioInputNode.connect(n.mAnalyseNode), n.mAnalyseNode.connect(n.mRecordingNode), 
                 n.mRecordingNode.connect(n.mAudioContext.destination);
             } catch (t) {
-                console.log('NuanceAudioRecorder.start: Exception', t), n._exception('start', t);
+                n._exception('start', t);
             }
         }, function(t) {
-            console.log('NuanceAudioRecorder.start: Resume-Error', t), t && t.message && n._error('start.resume', t.message);
+            t && t.message && n._error('start.resume', t.message);
         });
-    }, e.prototype.startAudio = function(t, e) {
-        console.log('NuanceAudioRecorder.startAudio:', e);
-    }, e.prototype.stop = function(t) {
+    }, e.prototype.startAudio = function(t, e) {}, e.prototype.stop = function(t) {
         this.mOnEndedFunc = t, this.mRecordingFlag = !1;
     }, e;
 }(ErrorBase), NuanceDevice = function(t) {
@@ -1159,7 +1154,7 @@ var Factory = function(t) {
             if (!o) return -1;
             r._setActionTimeout();
             var i = n || {};
-            r.mRunningFlag = !0;
+            r.mPluginName = t, r.mRunningFlag = !0;
             var a = 0;
             switch (e) {
               case NUANCE_NLU_ACTION:

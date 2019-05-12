@@ -512,6 +512,7 @@ export class NLUPlugin extends Plugin implements NLUInterface {
     /**
      * pruefen auf vorhandene Recognition fuer Listen
      *
+     * @deprecated
      * @returns {boolean} True, wenn Recognition vorhanden ist, False sonst
      */
 
