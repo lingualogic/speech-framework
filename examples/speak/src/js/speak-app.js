@@ -411,6 +411,24 @@ function SpeakApp() {
         } else {
             console.log('Amazon nicht vorhanden');
         }
+        // Google-Zurgiffsdaten als Optionen eintragen
+        var googleOption = {
+            googleAppKey: GOOGLE_APP_KEY,
+            errorOutputFlag: true
+        };
+        // erzeugt das Google-Modul
+        // console.log('pruefen auf speech.Google', speech.Google );
+        if ( speech.Google ) {
+            if ( speech.Google.init( googleOption ) === 0 ) {
+                speech.Google.open((aError, aPortName, aPortResult) => {
+                    console.log('SpeakApp.init: Google', aPortResult);
+                });
+            } else {
+                console.log('Google nicht initialisiert');
+            }
+        } else {
+            console.log('Google nicht vorhanden');
+        }
         // Nuance-Zurgiffsdaten als Optionen eintragen
         var nuanceOption = {
             nuanceAppId: APP_ID,

@@ -237,10 +237,22 @@ function ListenApp() {
         console.log('ListenApp: create...');
         // Nuance-Zurgiffsdaten als Optionen eintragen
         var option = {
+            googleAppKey: GOOGLE_APP_KEY,
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             nuanceNluTag: NLU_TAG
         };
+        // erzeugt das Google-Modul
+        if ( speech.Google ) {
+            speech.Google.init( option );
+            speech.Google.open((aError, aPortName, aPortResult) => {
+                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                console.log('ListenApp.init: Google', aPortResult);
+            });
+        } else {
+            console.log('ListenApp.init: kein Google vorhanden');
+        }
+
         // erzeugt das Nuance-Modul
         if ( speech.Nuance ) {
             speech.Nuance.init( option );

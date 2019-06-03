@@ -3,7 +3,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.9.0050 (Alpha) vom 12.05.2019
+ * Version: 0.5.10.0051 (Alpha) vom 02.06.2019
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const
@@ -76,7 +76,7 @@ var google_1 = require("./speech-framework");
 exports.Google = google_1.Google;
 var amazon_1 = require("./speech-framework");
 exports.Amazon = amazon_1.Amazon;
-var awssdk = require("./aws-sdk-polly.min");
+var awssdk = require("./aws-sdk-speech.min");
 // speech
 var speech_main_1 = require("./speech-framework");
 exports.SpeechMain = speech_main_1.SpeechMain;

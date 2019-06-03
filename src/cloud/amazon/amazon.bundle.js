@@ -317,7 +317,69 @@ var Factory = function(t) {
         }
         return 0;
     }, n;
-}(ErrorBase), PCM_L16CodecArray = [ 'audio/L16;rate=8000', 'audio/L16;rate=16000' ], AmazonAudioCodec = function(t) {
+}(ErrorBase), AmazonDevice = function(t) {
+    function n(n, o, e) {
+        var r = t.call(this, n || 'AmazonDevice') || this;
+        return r.mConfig = null, r.mConnect = null, r.mTransaction = null, r.onStart = null, 
+        r.onStop = null, r.onResult = null, r.onError = null, r.onClose = null, r.mConfig = o, 
+        r.mConnect = e, r;
+    }
+    return __extends(n, t), n.prototype._onStart = function() {
+        return this.mTransaction && this.onStart && this.onStart(this.mTransaction), 0;
+    }, n.prototype._onStop = function() {
+        return this.mTransaction && this.onStop && this.onStop(this.mTransaction), this.mTransaction = null, 
+        0;
+    }, n.prototype._onResult = function(t) {
+        return this.mTransaction && this.onResult && (this.mTransaction.result = t, this.onResult(this.mTransaction)), 
+        0;
+    }, n.prototype._onError = function(t) {
+        return this.mTransaction && this.onError && (this.mTransaction.error = t, this.onError(this.mTransaction)), 
+        0;
+    }, n.prototype._onClose = function() {
+        return this.mTransaction && this.onClose && this.onClose(this.mTransaction), 0;
+    }, n.prototype._start = function(t) {}, n.prototype._stop = function() {}, n.prototype.start = function(t, n) {
+        if (!t) return this._error('start', 'keine Transaktion uebergeben'), -1;
+        if (this.mTransaction) return this._error('start', 'vorherige Transaktion nicht beendet'), 
+        -1;
+        this.mTransaction = t;
+        try {
+            return this._start(n), 0;
+        } catch (t) {
+            return this._exception('start', t), -1;
+        }
+    }, n.prototype.stop = function(t) {
+        if (!t) return this._error('stop', 'keine Transaktion uebergeben'), -1;
+        if (!this.mTransaction) return this._error('stop', 'keine Transaktion gestartet'), 
+        -1;
+        if (this.mTransaction.transactionId !== t.transactionId) return this._error('stop', 'Transaktions-ID stimmt nicht ueberein'), 
+        -1;
+        try {
+            return this._stop(), this._onStop(), 0;
+        } catch (t) {
+            return this._exception('stop', t), -1;
+        }
+    }, n.prototype.isTransaction = function() {
+        return !!this.mTransaction;
+    }, n.prototype.getTransaction = function() {
+        return this.mTransaction;
+    }, n.prototype.clearTransaction = function() {
+        this.mTransaction = null;
+    }, n;
+}(ErrorBase), AmazonASR = function(t) {
+    function n(n, o, e, r, i) {
+        var a = t.call(this, 'AmazonASR', n, o) || this;
+        return a.mAudioContext = null, a.mGetUserMedia = null, a.mAudioReader = null, a.mAudioRecorder = null, 
+        a.mUserMediaStream = null, a.mRequestId = 0, a.mVolumeCounter = 0, a.mTimeoutCounter = 0, 
+        a.mRecordingFlag = !1, a.mAudioContext = e, a.mGetUserMedia = r, a.mAudioReader = i, 
+        a;
+    }
+    return __extends(n, t), n.prototype._startAudio = function(t) {}, n.prototype._startASR = function(t) {}, 
+    n.prototype._start = function(t) {
+        return this._error('_start', 'ASR ist nicht implementiert'), -1;
+    }, n.prototype._stop = function() {
+        return this._error('_stop', 'ASR ist nicht implementiert'), -1;
+    }, n;
+}(AmazonDevice), PCM_L16CodecArray = [ 'audio/L16;rate=8000', 'audio/L16;rate=16000' ], AmazonAudioCodec = function(t) {
     function n() {
         return t.call(this, 'AmazonAudioCodec') || this;
     }
@@ -336,19 +398,19 @@ var Factory = function(t) {
         return this.findPcmCodec(n) ? [ this._float32ArrayToInt16Array(t) ] : [ t ];
     }, n.prototype.decodePCM = function(t) {
         try {
-            for (var n = new Uint8Array(t), o = n.length, e = new Float32Array(o / 2), i = new Int16Array(1), r = 0, a = 0; a < o; a += 2) i[0] = (n[a + 1] << 8) + n[a], 
-            e[r] = i[0] / 32768, r++;
+            for (var n = new Uint8Array(t), o = n.length, e = new Float32Array(o / 2), r = new Int16Array(1), i = 0, a = 0; a < o; a += 2) r[0] = (n[a + 1] << 8) + n[a], 
+            e[i] = r[0] / 32768, i++;
             return e;
         } catch (t) {
             return this._exception('decodePCM', t), [];
         }
     }, n;
 }(ErrorBase), AmazonResampler = function() {
-    function t(t, n, o, e, i) {
+    function t(t, n, o, e, r) {
         this.fromSampleRate = 0, this.toSampleRate = 0, this.channels = 0, this.outputBufferSize = 0, 
         this.noReturn = !1, this.resampler = null, this.ratioWeight = 0, this.interpolate = null, 
         this.lastWeight = 0, this.outputBuffer = null, this.lastOutput = null, this.fromSampleRate = t, 
-        this.toSampleRate = n, this.channels = o || 0, this.outputBufferSize = e, this.noReturn = !!i, 
+        this.toSampleRate = n, this.channels = o || 0, this.outputBufferSize = e, this.noReturn = !!r, 
         this.initialize();
     }
     return t.prototype.initialize = function() {
@@ -498,58 +560,10 @@ var Factory = function(t) {
         }
         this.mAudioSource = null;
     }, n;
-}(ErrorBase), AmazonDevice = function(t) {
-    function n(n, o, e) {
-        var i = t.call(this, n || 'AmazonDevice') || this;
-        return i.mConfig = null, i.mConnect = null, i.mTransaction = null, i.onStart = null, 
-        i.onStop = null, i.onResult = null, i.onError = null, i.onClose = null, i.mConfig = o, 
-        i.mConnect = e, i;
-    }
-    return __extends(n, t), n.prototype._onStart = function() {
-        return this.mTransaction && this.onStart && this.onStart(this.mTransaction), 0;
-    }, n.prototype._onStop = function() {
-        return this.mTransaction && this.onStop && this.onStop(this.mTransaction), this.mTransaction = null, 
-        0;
-    }, n.prototype._onResult = function(t) {
-        return this.mTransaction && this.onResult && (this.mTransaction.result = t, this.onResult(this.mTransaction)), 
-        0;
-    }, n.prototype._onError = function(t) {
-        return this.mTransaction && this.onError && (this.mTransaction.error = t, this.onError(this.mTransaction)), 
-        0;
-    }, n.prototype._onClose = function() {
-        return this.mTransaction && this.onClose && this.onClose(this.mTransaction), 0;
-    }, n.prototype._start = function(t) {}, n.prototype._stop = function() {}, n.prototype.start = function(t, n) {
-        if (!t) return this._error('start', 'keine Transaktion uebergeben'), -1;
-        if (this.mTransaction) return this._error('start', 'vorherige Transaktion nicht beendet'), 
-        -1;
-        this.mTransaction = t;
-        try {
-            return this._start(n), 0;
-        } catch (t) {
-            return this._exception('start', t), -1;
-        }
-    }, n.prototype.stop = function(t) {
-        if (!t) return this._error('stop', 'keine Transaktion uebergeben'), -1;
-        if (!this.mTransaction) return this._error('stop', 'keine Transaktion gestartet'), 
-        -1;
-        if (this.mTransaction.transactionId !== t.transactionId) return this._error('stop', 'Transaktions-ID stimmt nicht ueberein'), 
-        -1;
-        try {
-            return this._stop(), this._onStop(), 0;
-        } catch (t) {
-            return this._exception('stop', t), -1;
-        }
-    }, n.prototype.isTransaction = function() {
-        return !!this.mTransaction;
-    }, n.prototype.getTransaction = function() {
-        return this.mTransaction;
-    }, n.prototype.clearTransaction = function() {
-        this.mTransaction = null;
-    }, n;
 }(ErrorBase), AmazonTTS = function(t) {
     function n(n, o, e) {
-        var i = t.call(this, 'AmazonTTS', n, o) || this;
-        return i.mAudioContext = null, i.mAudioPlayer = null, i.mAudioContext = e, i;
+        var r = t.call(this, 'AmazonTTS', n, o) || this;
+        return r.mAudioContext = null, r.mAudioPlayer = null, r.mAudioContext = e, r;
     }
     return __extends(n, t), n.prototype._start = function(t) {
         var n = this;
@@ -590,9 +604,9 @@ var Factory = function(t) {
         void 0 === o && (o = !0);
         var e = t.call(this, n || AMAZON_PORT_NAME, o) || this;
         return e.mAudioContext = null, e.mGetUserMedia = null, e.mAmazonConfig = null, e.mAmazonNetwork = null, 
-        e.mAmazonConnect = null, e.mAmazonTTS = null, e.mDynamicCredentialsFlag = !1, e.mTransaction = null, 
-        e.mRunningFlag = !1, e.mDefaultOptions = null, e.mActionTimeoutId = 0, e.mActionTimeout = AMAZON_ACTION_TIMEOUT, 
-        e;
+        e.mAmazonConnect = null, e.mAmazonTTS = null, e.mAmazonASR = null, e.mDynamicCredentialsFlag = !1, 
+        e.mTransaction = null, e.mRunningFlag = !1, e.mDefaultOptions = null, e.mActionTimeoutId = 0, 
+        e.mActionTimeout = AMAZON_ACTION_TIMEOUT, e;
     }
     return __extends(n, t), n.prototype.isMock = function() {
         return !1;
@@ -606,30 +620,51 @@ var Factory = function(t) {
         return !!t && ('string' == typeof t.amazonRegion && (!!t.amazonRegion && ('string' == typeof t.amazonIdentityPoolId && !!t.amazonIdentityPoolId)));
     }, n.prototype._initAllObject = function(t) {
         var n = this, o = new FileHtml5Reader();
-        return o.init(), new AudioHtml5Reader().init({
+        o.init();
+        var e = new AudioHtml5Reader();
+        if (e.init({
             audioContext: this.mAudioContext
-        }), this.mAmazonConfig = new AmazonConfig(o), 0 !== this.mAmazonConfig.init(t) ? -1 : (this.mAmazonNetwork = new AmazonNetwork(), 
-        this.mAmazonNetwork.onOnline = function() {
+        }), this.mAmazonConfig = new AmazonConfig(o), 0 !== this.mAmazonConfig.init(t)) return -1;
+        if (this.mAmazonNetwork = new AmazonNetwork(), this.mAmazonNetwork.onOnline = function() {
             return n._onOnline();
         }, this.mAmazonNetwork.onOffline = function() {
             return n._onOffline();
         }, this.mAmazonNetwork.onError = function(t) {
             return n._onError(t);
-        }, 0 !== this.mAmazonNetwork.init(t) ? -1 : (this.mAmazonConnect = new AmazonConnect(this.mAmazonConfig), 
-        this.mAmazonConnect._setErrorOutputFunc(function(t) {
+        }, 0 !== this.mAmazonNetwork.init(t)) return -1;
+        if (this.mAmazonConnect = new AmazonConnect(this.mAmazonConfig), this.mAmazonConnect._setErrorOutputFunc(function(t) {
             return n._onError(new Error(t));
-        }), this.mAudioContext && (this.mAmazonTTS = new AmazonTTS(this.mAmazonConfig, this.mAmazonConnect, this.mAudioContext), 
-        this.mAmazonTTS.onStart = function(t) {
-            return n._onStart(t.plugin, t.type);
-        }, this.mAmazonTTS.onStop = function(t) {
-            return n._onStop(t.plugin, t.type);
-        }, this.mAmazonTTS.onResult = function(t) {
-            return n._onResult(t.result, t.plugin, t.type);
-        }, this.mAmazonTTS.onError = function(t) {
-            return n._onError(t.error, t.plugin, t.type);
-        }, this.mAmazonTTS.onClose = function(t) {
-            return n._onClose();
-        }), 0));
+        }), this.mAudioContext) {
+            this.mAmazonTTS = new AmazonTTS(this.mAmazonConfig, this.mAmazonConnect, this.mAudioContext), 
+            this.mAmazonTTS.onStart = function(t) {
+                return n._onStart(t.plugin, t.type);
+            }, this.mAmazonTTS.onStop = function(t) {
+                return n._onStop(t.plugin, t.type);
+            }, this.mAmazonTTS.onResult = function(t) {
+                return n._onResult(t.result, t.plugin, t.type);
+            }, this.mAmazonTTS.onError = function(t) {
+                return n._onError(t.error, t.plugin, t.type);
+            }, this.mAmazonTTS.onClose = function(t) {
+                return n._onClose();
+            };
+            try {
+                this.mGetUserMedia && (this.mAmazonASR = new AmazonASR(this.mAmazonConfig, this.mAmazonConnect, this.mAudioContext, this.mGetUserMedia, e), 
+                this.mAmazonASR.onStart = function(t) {
+                    return n._onStart(t.plugin, t.type);
+                }, this.mAmazonASR.onStop = function(t) {
+                    return n._onStop(t.plugin, t.type);
+                }, this.mAmazonASR.onResult = function(t) {
+                    return n._onResult(t.result, t.plugin, t.type);
+                }, this.mAmazonASR.onError = function(t) {
+                    return n._onError(t.error, t.plugin, t.type);
+                }, this.mAmazonASR.onClose = function(t) {
+                    return n._onClose();
+                });
+            } catch (t) {
+                this._exception('_initAllObject', t);
+            }
+        }
+        return 0;
     }, n.prototype.init = function(n) {
         if (this.mInitFlag) return this._error('init', 'Port ist bereits initialisiert'), 
         0;
@@ -641,23 +676,24 @@ var Factory = function(t) {
             var e = o.create();
             e && (this.mAudioContext = new e());
         }
-        var i = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
-        return i && (this.mGetUserMedia = i.create()), 0 !== this._initAllObject(n) ? -1 : 0 !== t.prototype.init.call(this, n) ? -1 : (this.isErrorOutput() && (this.mAmazonTTS ? console.log('AmazonPort: TTS ist vorhanden') : console.log('AmazonPort: TTS ist nicht vorhanden')), 
+        var r = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
+        return r && (this.mGetUserMedia = r.create()), 0 !== this._initAllObject(n) ? -1 : 0 !== t.prototype.init.call(this, n) ? -1 : (this.isErrorOutput() && (this.mAmazonTTS ? console.log('AmazonPort: TTS ist vorhanden') : console.log('AmazonPort: TTS ist nicht vorhanden'), 
+        this.mAmazonASR ? console.log('AmazonPort: ASR ist vorhanden') : console.log('AmazonPort: ASR ist nicht vorhanden')), 
         0);
     }, n.prototype.done = function() {
         return t.prototype.done.call(this), this._clearActionTimeout(), this.mAmazonNetwork && (this.mAmazonNetwork.done(), 
         this.mAmazonNetwork = null), this.mAmazonConnect && (this.mAmazonConnect.disconnect(), 
         this.mAmazonConnect = null), this.mAmazonConfig && (this.mAmazonConfig.done(), this.mAmazonConfig = null), 
-        this.mAmazonTTS = null, this.mAudioContext && (this.mAudioContext.close(), this.mAudioContext = null), 
-        this.mGetUserMedia = null, this.mDynamicCredentialsFlag = !1, this.mTransaction = null, 
-        this.mRunningFlag = !1, this.mDefaultOptions = null, this.mActionTimeoutId = 0, 
+        this.mAmazonTTS = null, this.mAmazonASR = null, this.mAudioContext && (this.mAudioContext.close(), 
+        this.mAudioContext = null), this.mGetUserMedia = null, this.mDynamicCredentialsFlag = !1, 
+        this.mTransaction = null, this.mRunningFlag = !1, this.mDefaultOptions = null, this.mActionTimeoutId = 0, 
         this.mActionTimeout = AMAZON_ACTION_TIMEOUT, 0;
     }, n.prototype.reset = function(n) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, n);
     }, n.prototype._setErrorOutput = function(n) {
         t.prototype._setErrorOutput.call(this, n), this.mAmazonConfig && this.mAmazonConfig._setErrorOutput(n), 
         this.mAmazonNetwork && this.mAmazonNetwork._setErrorOutput(n), this.mAmazonConnect && this.mAmazonConnect._setErrorOutput(n), 
-        this.mAmazonTTS && this.mAmazonTTS._setErrorOutput(n);
+        this.mAmazonTTS && this.mAmazonTTS._setErrorOutput(n), this.mAmazonASR && this.mAmazonASR._setErrorOutput(n);
     }, n.prototype._breakAction = function() {
         this.mActionTimeoutId = 0, this.mTransaction && (this._error('_breakAction', 'Timeout fuer Action erreicht'), 
         this._onStop(this.mTransaction.plugin, this.mTransaction.type));
@@ -736,6 +772,10 @@ var Factory = function(t) {
     }, n.prototype.isAction = function(t) {
         var n = !1;
         switch (t) {
+          case AMAZON_ASR_ACTION:
+            n = !!this.mAmazonASR;
+            break;
+
           case AMAZON_TTS_ACTION:
             n = !!this.mAmazonTTS;
         }
@@ -745,27 +785,27 @@ var Factory = function(t) {
     }, n.prototype.start = function(t, n, o) {
         var e = this;
         return this.isRunning() ? (this._error('start', 'Aktion laeuft bereits'), -1) : this.mAmazonConfig.isCredentials() ? this.mTransaction ? (this._error('start', 'andere Transaktion laeuft noch'), 
-        -1) : this._checkOpen(function(i) {
-            if (!i) return -1;
+        -1) : this._checkOpen(function(r) {
+            if (!r) return -1;
             e._setActionTimeout();
-            var r = o || {};
+            var i = o || {};
             e.mPluginName = t, e.mRunningFlag = !0;
             var a = 0;
             switch (n) {
               case AMAZON_NLU_ACTION:
-                e.mTransaction = new AmazonTransaction(t, AMAZON_NLU_ACTION), a = e._startNLU(e.mTransaction, r.text, r.language || AMAZON_DEFAULT_LANGUAGE);
+                e.mTransaction = new AmazonTransaction(t, AMAZON_NLU_ACTION), a = e._startNLU(e.mTransaction, i.text, i.language || AMAZON_DEFAULT_LANGUAGE);
                 break;
 
               case AMAZON_ASRNLU_ACTION:
-                e.mTransaction = new AmazonTransaction(t, AMAZON_ASRNLU_ACTION), a = e._startASR(e.mTransaction, r.language || AMAZON_DEFAULT_LANGUAGE, r.audioURL || '', !0, r.useProgressive || !1);
+                e.mTransaction = new AmazonTransaction(t, AMAZON_ASRNLU_ACTION), a = e._startASR(e.mTransaction, i.language || AMAZON_DEFAULT_LANGUAGE, i.audioURL || '', !0, i.useProgressive || !1);
                 break;
 
               case AMAZON_ASR_ACTION:
-                e.mTransaction = new AmazonTransaction(t, AMAZON_ASR_ACTION), a = e._startASR(e.mTransaction, r.language || AMAZON_DEFAULT_LANGUAGE, r.audioURL || '', !1, r.useProgressive || !1);
+                e.mTransaction = new AmazonTransaction(t, AMAZON_ASR_ACTION), a = e._startASR(e.mTransaction, i.language || AMAZON_DEFAULT_LANGUAGE, i.audioURL || '', !1, i.useProgressive || !1);
                 break;
 
               case AMAZON_TTS_ACTION:
-                e.mTransaction = new AmazonTransaction(t, AMAZON_TTS_ACTION), a = e._startTTS(e.mTransaction, r.text, r.language || AMAZON_DEFAULT_LANGUAGE, r.voice || AMAZON_DEFAULT_VOICE);
+                e.mTransaction = new AmazonTransaction(t, AMAZON_TTS_ACTION), a = e._startTTS(e.mTransaction, i.text, i.language || AMAZON_DEFAULT_LANGUAGE, i.voice || AMAZON_DEFAULT_VOICE);
                 break;
 
               default:
@@ -793,7 +833,6 @@ var Factory = function(t) {
             e = this._stopNLU(this.mTransaction);
             break;
 
-          case AMAZON_ASRNLU_ACTION:
           case AMAZON_ASR_ACTION:
             e = this._stopASR(this.mTransaction);
             break;
@@ -823,25 +862,43 @@ var Factory = function(t) {
         return this._error('_startNLU', 'nicht implementiert'), -1;
     }, n.prototype._stopNLU = function(t) {
         return this._error('_stopNLU', 'nicht implementiert'), -1;
-    }, n.prototype._startASR = function(t, n, o, e, i) {
-        return void 0 === e && (e = !1), void 0 === i && (i = !1), this._error('_startASR', 'nicht implementiert'), 
+    }, n.prototype._startASR = function(t, n, o, e, r) {
+        if (void 0 === e && (e = !1), void 0 === r && (r = !1), !n) return this._error('_startASR', 'keine Sprache uebergeben'), 
         -1;
+        if (!this.mAmazonASR) return this._error('_startASR', 'keine Amazon ASR-Anbindung vorhanden'), 
+        -1;
+        try {
+            var i = {
+                language: n,
+                nlu: e,
+                progressive: r
+            };
+            return o && (i.audioURL = o), this.mAmazonASR.start(t, i);
+        } catch (t) {
+            return this._exception('_startASR', t), -1;
+        }
     }, n.prototype._stopASR = function(t) {
-        return this._error('_stopASR', 'nicht implementiert'), -1;
+        if (!this.mAmazonASR) return this._error('_stopASR', 'keine Amazon ASR-Anbindung vorhanden'), 
+        -1;
+        try {
+            return this.mAmazonASR.stop(t);
+        } catch (t) {
+            return this._exception('_stopASR', t), -1;
+        }
     }, n.prototype._startTTS = function(t, n, o, e) {
-        var i = this;
+        var r = this;
         if (!n) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
         if (!this.mAmazonTTS) return this._error('_startTTS', 'keine Amazon TTS-Anbindung vorhanden'), 
         -1;
         try {
-            var r = {
+            var i = {
                 text: n,
                 language: o,
                 voice: e
             };
             return this._unlockAudio(function(n) {
-                n ? i.mAmazonTTS.start(t, r) : (i._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
-                i._onStop(t.plugin, t.type));
+                n ? r.mAmazonTTS.start(t, i) : (r._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
+                r._onStop(t.plugin, t.type));
             }), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
@@ -926,7 +983,6 @@ var Factory = function(t) {
             n = this.amazonNLUFlag;
             break;
 
-          case AMAZON_ASRNLU_ACTION:
           case AMAZON_ASR_ACTION:
             n = this.amazonASRFlag;
             break;
@@ -944,28 +1000,28 @@ var Factory = function(t) {
         -1;
         var e = o || {};
         this.mRunningFlag = !0;
-        var i = 0;
+        var r = 0;
         switch (n) {
           case AMAZON_NLU_ACTION:
-            this.mTransaction = new AmazonTransaction(t, AMAZON_NLU_ACTION), i = this._startNLU(this.mTransaction, e.text, e.language || AMAZON_DEFAULT_LANGUAGE);
+            this.mTransaction = new AmazonTransaction(t, AMAZON_NLU_ACTION), r = this._startNLU(this.mTransaction, e.text, e.language || AMAZON_DEFAULT_LANGUAGE);
             break;
 
           case AMAZON_ASRNLU_ACTION:
-            this.mTransaction = new AmazonTransaction(t, AMAZON_ASRNLU_ACTION), i = this._startASR(this.mTransaction, e.language || AMAZON_DEFAULT_LANGUAGE, e.audioURL || '', !0, e.useProgressive || !1);
+            this.mTransaction = new AmazonTransaction(t, AMAZON_ASRNLU_ACTION), r = this._startASR(this.mTransaction, e.language || AMAZON_DEFAULT_LANGUAGE, e.audioURL || '', !0, e.useProgressive || !1);
             break;
 
           case AMAZON_ASR_ACTION:
-            this.mTransaction = new AmazonTransaction(t, AMAZON_ASR_ACTION), i = this._startASR(this.mTransaction, e.language || AMAZON_DEFAULT_LANGUAGE, e.audioURL || '', !1, e.useProgressive || !1);
+            this.mTransaction = new AmazonTransaction(t, AMAZON_ASR_ACTION), r = this._startASR(this.mTransaction, e.language || AMAZON_DEFAULT_LANGUAGE, e.audioURL || '', !1, e.useProgressive || !1);
             break;
 
           case AMAZON_TTS_ACTION:
-            this.mTransaction = new AmazonTransaction(t, AMAZON_TTS_ACTION), i = this._startTTS(this.mTransaction, e.text, e.language || AMAZON_DEFAULT_LANGUAGE, e.voice || AMAZON_DEFAULT_VOICE);
+            this.mTransaction = new AmazonTransaction(t, AMAZON_TTS_ACTION), r = this._startTTS(this.mTransaction, e.text, e.language || AMAZON_DEFAULT_LANGUAGE, e.voice || AMAZON_DEFAULT_VOICE);
             break;
 
           default:
-            this._error('start', 'Keine gueltige Aktion uebergeben ' + n), i = -1;
+            this._error('start', 'Keine gueltige Aktion uebergeben ' + n), r = -1;
         }
-        return i;
+        return r;
     }, n.prototype.stop = function(t, n, o) {
         if (!this.isRunning()) return 0;
         if (!this.isOpen()) return this._error('stop', 'Port ist nicht geoeffnet'), -1;
@@ -1020,8 +1076,8 @@ var Factory = function(t) {
         }
     }, n.prototype._stopNLU = function(t) {
         return this._onStop(t.plugin, t.type), 0;
-    }, n.prototype._startASR = function(t, n, o, e, i) {
-        if (void 0 === e && (e = !1), void 0 === i && (i = !1), !this.amazonASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+    }, n.prototype._startASR = function(t, n, o, e, r) {
+        if (void 0 === e && (e = !1), void 0 === r && (r = !1), !this.amazonASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
@@ -1038,13 +1094,13 @@ var Factory = function(t) {
             return this._exception('_stopASR', t), -1;
         }
     }, n.prototype._startTTS = function(t, n, o, e) {
-        var i = this;
+        var r = this;
         if (!n) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
         if (!this.amazonTTSFlag) return this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), setTimeout(function() {
-                return i._onStop(t.plugin, t.type);
+                return r._onStop(t.plugin, t.type);
             }, AMAZONMOCK_CALLBACK_TIMEOUT), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
@@ -1098,9 +1154,9 @@ var Factory = function(t) {
         var o = 0;
         return n && (o = n.done(), PortManager.remove(AMAZON_TYPE_NAME)), t.mCurrentPort = null, 
         t.mInitFlag = !1, o;
-    }, t._onOpenEvent = function(n, o, e, i) {
-        if ('function' == typeof i) try {
-            return i(n, o, e), 0;
+    }, t._onOpenEvent = function(n, o, e, r) {
+        if ('function' == typeof r) try {
+            return r(n, o, e), 0;
         } catch (n) {
             return t.mErrorOutputFlag && console.log('Amazon._onOpenEvent: Exception', n.message), 
             -1;

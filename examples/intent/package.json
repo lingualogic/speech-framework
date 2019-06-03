@@ -1,6 +1,6 @@
 {
     "name": "intentapp",
-    "version": "0.5.9",
+    "version": "0.5.10",
     "productName": "IntentApp",
     "description": "IntentApp",
     "author": "LinguaLogic Team",
@@ -23,6 +23,5 @@
         "cordova:osx": "gulp cordova-osx"
     },
     "dependencies": {},
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }

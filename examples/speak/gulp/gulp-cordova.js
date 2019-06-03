@@ -3,13 +3,22 @@
  */
 
 
-const rimraf = require('rimraf');
+const del = require('del');
 const path = require('path');
 const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
 
 module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
+
+
+    /** 
+     * Loeschen von Cordova-App
+     */
+
+    gulp.task('cordova-clean-app', () => {
+        return del( cordovaAppDir );
+    });
 
 
     gulp.task('cordova-create-app', (done) => {
@@ -49,6 +58,7 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
 
     gulp.task('cordova-install', (done) => {
         runSquence(
+            'cordova-clean-app',
             'cordova-create-app',
             'cordova-copy-original',
             // fuer alle Betriebssysteme verfuegbar
@@ -74,12 +84,12 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
     });
 
 
-    gulp.task('cordova-prepare', (done) => {
-        rimraf( cordovaWwwDir, done );
+    gulp.task('cordova-prepare', () => {
+        return del( cordovaWwwDir );
     });
 
     gulp.task('cordova-copy-aws-sdk', () => {
-        return gulp.src( path.join( globalLibDir, 'aws-sdk-polly.min.js'))
+        return gulp.src( path.join( globalLibDir, 'aws-sdk-speech.min.js'))
             .pipe(gulp.dest( path.join( cordovaWwwDir, 'js')));
     });
 
@@ -110,7 +120,7 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
 
     gulp.task('cordova-replace-aws-sdk', (done) => {
         gulp.src( path.join( cordovaWwwDir, 'index.html' ))
-            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-polly.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-polly.min.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-speech.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-speech.min.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on( 'end', done );
     });

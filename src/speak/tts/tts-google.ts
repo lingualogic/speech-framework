@@ -1,8 +1,8 @@
 /**
- * Hier wird die Amazon-Sprachausgabe implementiert. Ist AmazonPort nicht vorhanden, wird
+ * Hier wird die Google-Sprachausgabe implementiert. Ist GooglePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 03.04.2019
+ * Letzte Aenderung: 17.05.2019
  * Status: rot
  *
  * @module speak/tts
@@ -21,36 +21,36 @@ import { PortManager } from './../../core/port/port-manager';
 import { PortInterface } from './../../core/port/port.interface';
 
 
-// amazon
+// google
 
-import { AMAZON_TYPE_NAME, AMAZON_TTS_ACTION } from './../../cloud/amazon/amazon-const';
+import { GOOGLE_TYPE_NAME, GOOGLE_TTS_ACTION } from './../../cloud/google/google-const';
 
 
 // tts
 
-import { TTS_AMAZON_NAME } from './tts-const';
+import { TTS_GOOGLE_NAME } from './tts-const';
 import { TTSPlugin} from './tts-plugin';
 
 
 /**
- * Die TTSAmazon Klasse kapselt die Amazon-TTS
+ * Die TTSGoogle Klasse kapselt die Google-TTS
  */
 
-export class TTSAmazon extends TTSPlugin {
+export class TTSGoogle extends TTSPlugin {
 
-    // externes Amazon-Objekt
+    // externes Google-Objekt
 
     mPort: PortInterface = null;
 
     /**
-     * TTSAmazon Objekt erzeugen.
+     * TTSGoogle Objekt erzeugen.
      *
      * @param {string} aPluginName - Name des Plugins, fuer den PluginManager
      * @param {boolean} aRegisterFlag - bestimmt, ob Plugin in PluginManager eingetragen wird
      */
 
     constructor( aPluginName?: string, aRegisterFlag = true ) {
-        super( aPluginName || TTS_AMAZON_NAME, aRegisterFlag );
+        super( aPluginName || TTS_GOOGLE_NAME, aRegisterFlag );
     }
 
 
@@ -61,7 +61,7 @@ export class TTSAmazon extends TTSPlugin {
      */
 
     getClass(): string {
-        return 'TTSAmazon';
+        return 'TTSGoogle';
     }
 
 
@@ -75,7 +75,7 @@ export class TTSAmazon extends TTSPlugin {
     done(): number {
         // pruefen auf Nuance-Port
         if ( this.mPort ) {
-            this.mPort.removeAllEvent( TTS_AMAZON_NAME );
+            this.mPort.removeAllEvent( TTS_GOOGLE_NAME );
             this.mPort = null;
         }
         return super.done();
@@ -117,11 +117,11 @@ export class TTSAmazon extends TTSPlugin {
     getVoiceList(): Array<string> {
         // Deutschland
         if ( this.getLanguage() === 'de' ) {
-            return [ 'Marlene', 'Hans', 'Vicki' ];
+            return [ 'de-DE-Standard-A', 'de-DE-Standard-B', 'de-DE-Wavenet-A', 'de-DE-Wavenet-B', 'de-DE-Wavenet-C', 'de-DE-Wavenet-D' ];
         }
         // US-Englisch
         if ( this.getLanguage() === 'en' ) {
-            return [ 'Ivy', 'Joey', 'Joanna', 'Justin', 'Kendra', 'Matthew', 'Kimberly', 'Salli' ];
+            return [ 'en-US-Standard-B', 'en-US-Standard-C', 'en-US-Standard-D', 'en-US-Standard-E', 'en-US-Wavenet-A', 'en-US-Wavenet-B', 'en-US-Wavenet-C', 'en-US-Wavenet-D' ];
         }
         return [];
     }
@@ -138,9 +138,9 @@ export class TTSAmazon extends TTSPlugin {
      */
 
     _detectSynthesis(): boolean {
-        this.mPort = PortManager.find( AMAZON_TYPE_NAME );
+        this.mPort = PortManager.find( GOOGLE_TYPE_NAME );
         if ( !this.mPort ) {
-            this._error( '_detectSynthesis', 'kein Amazon-Port vorhanden' );
+            this._error( '_detectSynthesis', 'kein Google-Port vorhanden' );
             return false;
         }
         return true;
@@ -157,31 +157,31 @@ export class TTSAmazon extends TTSPlugin {
      */
 
     _initSynthesis( aOption?: any ): number {
-        // console.log('TTSAmazon._initSynthesis:', aOption);
+        // console.log('TTSGoogle._initSynthesis:', aOption);
         if ( !this.mPort ) {
-            this._error( '_initSynthesis', 'kein Amazon-Port vorhanden' );
+            this._error( '_initSynthesis', 'kein Google-Port vorhanden' );
             return -1;
         }
         if ( !this.mPort.isInit()) {
-            this._error( '_initSynthesis', 'Amazon-Port ist nicht initialisiert' );
+            this._error( '_initSynthesis', 'Google-Port ist nicht initialisiert' );
             return -1;
         }
         if ( !this.mPort.isOpen()) {
-            this._error( '_initSynthesis', 'Amazon-Port ist nicht geoeffnet' );
+            this._error( '_initSynthesis', 'Google-Port ist nicht geoeffnet' );
             return -1;
         }
-        this.mPort.addStartEvent( TTS_AMAZON_NAME, (aEventData: EventDataInterface) => {
-            // console.log('TTSAmazon._initSynthesis: startEvent = ', aEventData);
+        this.mPort.addStartEvent( TTS_GOOGLE_NAME, (aEventData: EventDataInterface) => {
+            // console.log('TTSGoogle._initSynthesis: startEvent = ', aEventData);
             this._onSynthesisStart();
             return 0;
         });
-        this.mPort.addStopEvent( TTS_AMAZON_NAME, (aEventData: EventDataInterface) => {
-            // console.log('TTSAmazon._initSynthesis: stopEvent = ', aEventData);
+        this.mPort.addStopEvent( TTS_GOOGLE_NAME, (aEventData: EventDataInterface) => {
+            // console.log('TTSGoogle._initSynthesis: stopEvent = ', aEventData);
             this._onSynthesisEnd();
             return 0;
         });
-        this.mPort.addErrorEvent( TTS_AMAZON_NAME, (aError: any) => {
-            // console.log('TTSAmazon._initSynthesis: errorEvent = ', aError.message);
+        this.mPort.addErrorEvent( TTS_GOOGLE_NAME, (aError: any) => {
+            // console.log('TTSGoogle._initSynthesis: errorEvent = ', aError.message);
             this._onSynthesisError({ error: aError.message });
             return 0;
         });
@@ -197,7 +197,7 @@ export class TTSAmazon extends TTSPlugin {
 
     _isSynthesis(): boolean {
         if ( this.mPort ) {
-            return this.mPort.isAction( AMAZON_TTS_ACTION );
+            return this.mPort.isAction( GOOGLE_TTS_ACTION );
         }
         return false;
     }
@@ -226,8 +226,8 @@ export class TTSAmazon extends TTSPlugin {
 
     _startSynthesis( aText: string ): number {
         if ( this.mPort ) {
-            // console.log('TTSAmazon._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
-            return this.mPort.start( TTS_AMAZON_NAME, AMAZON_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
+            // console.log('TTSGoogle._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
+            return this.mPort.start( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
         }
         return -1;
     }
@@ -242,8 +242,8 @@ export class TTSAmazon extends TTSPlugin {
 
     _stopSynthesis(): number {
         if ( this.mPort ) {
-            // console.log('TTSAmazon._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
-            return this.mPort.stop( TTS_AMAZON_NAME, AMAZON_TTS_ACTION );
+            // console.log('TTSGoogle._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
+            return this.mPort.stop( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION );
         }
         return -1;
     }
@@ -254,9 +254,9 @@ export class TTSAmazon extends TTSPlugin {
      */
 
     _isSynthesisRunning(): boolean {
-        // console.log('TTSAmazon._isSynthesisRunning');
+        // console.log('TTSGoogle._isSynthesisRunning');
         if ( this.mPort ) {
-            return this.mPort.isRunning( TTS_AMAZON_NAME, AMAZON_TTS_ACTION );
+            return this.mPort.isRunning( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION );
         }
         return false;
     }

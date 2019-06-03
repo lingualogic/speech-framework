@@ -20,7 +20,7 @@ export const GOOGLE_DEFAULT_NAME = GOOGLE_PORT_NAME;
 
 // Default URL des Amazon-Service
 
-export const GOOGLE_SERVER_URL = '';
+export const GOOGLE_SERVER_URL = 'ws://localhost:7050';
 export const GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL;
 
 

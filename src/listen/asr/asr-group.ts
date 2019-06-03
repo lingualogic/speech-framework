@@ -3,13 +3,14 @@
  * Hier werden die vorhandenen ASR verwaltet und es kann
  * zwischen ihnen gewechselt werden.
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 16.05.2019
  * Status: rot
  *
  * Installierte ASR:
  *
  *      ASRHtml5    - Default Web-ASR
  *      ASRNuance   - Nuance-Service ASR
+ *      ASRGoogle   - Google-Service ASR (nur mit Speech-Server)
  *
  * @module listen/asr
  * @author SB
@@ -32,7 +33,8 @@ import {
     ASR_TYPE_NAME,
     ASR_GROUP_NAME,
     ASR_HTML5_NAME,
-    ASR_NUANCE_NAME
+    ASR_NUANCE_NAME,
+    ASR_GOOGLE_NAME
 } from './asr-const';
 import {
     ASRInterface,
@@ -64,6 +66,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
 
     mASRHtml5: ASRInterface = null;
     mASRNuance: ASRInterface = null;
+    mASRGoogle: ASRInterface = null;
 
 
     // aktuell genutzte ASR
@@ -127,6 +130,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
         // eintragen der verfuegbaren ASR-Plugins
         this.insertPlugin( ASR_HTML5_NAME, this.mASRFactory.create( ASR_HTML5_NAME, false ));
         this.insertPlugin( ASR_NUANCE_NAME, this.mASRFactory.create( ASR_NUANCE_NAME, false ));
+        this.insertPlugin( ASR_GOOGLE_NAME, this.mASRFactory.create( ASR_GOOGLE_NAME, false ));
     }
 
 
@@ -183,6 +187,32 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
 
 
     /**
+     * Initialisierung des GOOGLE-ASR Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initASRGoogle( aOption: any ): void {
+        this.mASRGoogle = this.findPlugin( ASR_GOOGLE_NAME ) as ASRInterface;
+        if ( this.mASRGoogle ) {
+            this.mASRGoogle.init( aOption );
+            if ( this.mASRGoogle.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('ASRGroup._initASRGoogle: ASR eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( ASR_GOOGLE_NAME );
+            this.mASRGoogle.done();
+            this.mASRGoogle = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('ASRGroup._initASRGoogle: ASR nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung von ASRPlugin
      *
      * @param {any} [aOption] - optionale Parameter
@@ -217,6 +247,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
 
         this._initASRHtml5( option );   // Default-ASR
         this._initASRNuance( option );
+        this._initASRGoogle( option );
 
         // console.log('ASRGroup.init: erfolgreich');
         if ( super.init( aOption ) !== 0 ) {
@@ -251,6 +282,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
     done(): number {
         this.mASRHtml5 = null;
         this.mASRNuance = null;
+        this.mASRGoogle = null;
         this.mCurrentASR = null;
         return super.done();
     }
@@ -416,8 +448,13 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
                 break;
 
             case ASR_NUANCE_NAME:
-                // console.log( 'ASRGroup.setASR: HTML5', this.mASRNuance);
+                // console.log( 'ASRGroup.setASR: Nuance', this.mASRNuance);
                 asr = this.mASRNuance;
+                break;
+
+            case ASR_GOOGLE_NAME:
+                // console.log( 'ASRGroup.setASR: Google', this.mASRGoogle);
+                asr = this.mASRGoogle;
                 break;
 
             default:

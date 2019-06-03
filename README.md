@@ -15,7 +15,7 @@ Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) u
 
 ## Letzte Version
 
-* 0.5.9.0050 Alpha vom 12.05.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.10.0051 Alpha vom 02.06.2019 [Release Notizen](./CHANGELOG.md)
 
 Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
@@ -88,10 +88,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.9.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.10.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.9.tgz
+    $ npm install speech-framework-0.5.10.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -141,7 +141,7 @@ Für das Intent-Beispiel ist folgender Befehl einzugeben:
 
 ## Bekannte Probleme
 
-
+* Nuance hat seine Sprqachdienste abgeschaltet und steht als Cloud-Dienst nicht mehr zur Verfügung
 * die verschiedenen Browser verhalten sich unterschiedlich, so dass nicht in jedem Browser alle Funktionen des Speech-Frameworks zur Verfügung stehen.
 * unter iOS funktioniert die Cordova-Version von Listen mit Nuance Cloud-Dienst oder Amazon Cloud-Dienst nicht, da die Apple WebView die getUserMedia-API nicht unterstützt.
 

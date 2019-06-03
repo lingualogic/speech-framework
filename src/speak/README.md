@@ -41,6 +41,7 @@ Das Speak-TTS Plugin besteht aus folgenden Dateien:
 * **tts-amazon.ts:** Amazon TTS-Plugin
 * **tts-const.ts:** interne Konstanten für das TTS-Plugin
 * **tts-factory.ts:** Erzeugt eine Instanz des TTS-Plugins
+* **tts-google.ts:** Google TTS-Plugin
 * **tts-group.ts:** Gruppe der vorhandenen TTS-Plugins
 * **tts-html5.ts:** Html5 API TTS-Plugin
 * **tts-mock.ts:** Mock TTS-Plugin

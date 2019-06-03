@@ -19,13 +19,18 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, distDir, g
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
+    gulp.task('dist-copy-google-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
+            .pipe(gulp.dest(path.join( distDir, 'js')));
+    });
+
     gulp.task('dist-copy-nuance-credentials', () => {
         return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
     gulp.task('dist-copy-aws-sdk', () => {
-        return gulp.src(path.join( globalLibDir, 'aws-sdk-polly.min.js'))
+        return gulp.src(path.join( globalLibDir, 'aws-sdk-speech.min.js'))
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
@@ -46,6 +51,13 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, distDir, g
             .on('end', done);
     });
 
+    gulp.task('dist-replace-google-credentials', (done) => {
+        gulp.src(path.join( distDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(gulp.dest( distDir ))
+            .on('end', done);
+    });
+
     gulp.task('dist-replace-nuance-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
@@ -55,7 +67,7 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, distDir, g
 
     gulp.task('dist-replace-aws-sdk', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
-            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-polly.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-polly.min.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-speech.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-speech.min.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
@@ -89,6 +101,8 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, distDir, g
             'dist-copy-src',
             'dist-copy-amazon-credentials',
             'dist-replace-amazon-credentials',
+            'dist-copy-google-credentials',
+            'dist-replace-google-credentials',
             'dist-copy-nuance-credentials',
             'dist-replace-nuance-credentials',
             'dist-copy-aws-sdk',

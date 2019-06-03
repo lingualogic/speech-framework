@@ -14,6 +14,11 @@ module.exports = ({ gulp, exec, rootDir, globalDistDir, globalCredentialsDir, di
         rimraf( distDir, done);
     });
 
+    gulp.task('dist-copy-google-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
+            .pipe(gulp.dest(path.join( distDir, 'js')));
+    });
+
     gulp.task('dist-copy-nuance-credentials', () => {
         return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
             .pipe(gulp.dest(path.join( distDir, 'js')));
@@ -27,6 +32,13 @@ module.exports = ({ gulp, exec, rootDir, globalDistDir, globalCredentialsDir, di
     gulp.task('dist-copy-src', () => {
         return gulp.src(path.join(srcDir, '**', '*'))
             .pipe(gulp.dest( distDir ));
+    });
+
+    gulp.task('dist-replace-google-credentials', (done) => {
+        gulp.src(path.join( distDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(gulp.dest( distDir ))
+            .on('end', done);
     });
 
     gulp.task('dist-replace-nuance-credentials', (done) => {
@@ -63,7 +75,9 @@ module.exports = ({ gulp, exec, rootDir, globalDistDir, globalCredentialsDir, di
         runSquence(
             'dist-prepare',
             'dist-copy-src',
+            'dist-copy-google-credentials',
             'dist-copy-nuance-credentials',
+            'dist-replace-google-credentials',
             'dist-replace-nuance-credentials',
             'dist-copy-speech',
             'dist-replace-speech',

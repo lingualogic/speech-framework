@@ -40,6 +40,7 @@ Das Listen-ASR Plugin besteht aus folgenden Dateien:
 
 * **asr-const.ts:** interne Konstanten für das ASR-Plugin
 * **asr-factory.ts:** Erzeugt eine Instanz des ASR-Plugins
+* **asr-google.ts:** Google ASR-Plugin
 * **asr-group.ts:** Gruppe der vorhandenen ASR-Plugins
 * **asr-html5.ts:** Html5 API ASR-Plugin
 * **asr-mock.ts:** Mock ASR-Plugin

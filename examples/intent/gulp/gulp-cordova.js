@@ -3,13 +3,22 @@
  */
 
 
-const rimraf = require('rimraf');
+const del = require('del');
 const path = require('path');
 const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
 
 module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
+
+
+    /** 
+     * Loeschen von Cordova-App
+     */
+
+    gulp.task('cordova-clean-app', () => {
+        return del( cordovaAppDir );
+    });
 
 
     gulp.task('cordova-create-app', (done) => {
@@ -49,6 +58,7 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
 
     gulp.task('cordova-install', (done) => {
         runSquence(
+            'cordova-clean-app',
             'cordova-create-app',
             'cordova-copy-original',
             // fuer alle Betriebssysteme verfuegbar
@@ -74,8 +84,8 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
     });
 
 
-    gulp.task('cordova-prepare', (done) => {
-        rimraf( cordovaWwwDir, done );
+    gulp.task('cordova-prepare', () => {
+        return del( cordovaWwwDir );
     });
 
     gulp.task('cordova-copy-dist', () => {

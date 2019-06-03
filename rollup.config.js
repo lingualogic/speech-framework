@@ -17,7 +17,7 @@ const SPEECH_VERSION_STRING = speechVersion.SPEECH_VERSION_NUMBER + '.' + speech
 console.log('');
 console.log('*******************************************************************');
 console.log('**                                                               **');
-console.log('**  Speech-Framework VERSION: ' + SPEECH_VERSION_STRING + '  **');
+console.log('**  Speech-Framework VERSION: ' + SPEECH_VERSION_STRING + ' **');
 console.log('**                                                               **');
 console.log('*******************************************************************');
 console.log('');

@@ -55,7 +55,7 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
     });
 
     gulp.task('electron-copy-aws-sdk', () => {
-        return gulp.src(path.join( globalLibDir, 'aws-sdk-polly.min.js'))
+        return gulp.src(path.join( globalLibDir, 'aws-sdk-speech.min.js'))
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
@@ -79,7 +79,7 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
 
     gulp.task('electron-replace-aws-sdk', (done) => {
         gulp.src(path.join(electronWwwDir, 'index.html'))
-            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-polly.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-polly.min.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-speech.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-speech.min.js"></script>'))
             .pipe(gulp.dest(electronWwwDir))
             .on('end', done);
     });

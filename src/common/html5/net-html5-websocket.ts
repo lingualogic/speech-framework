@@ -324,6 +324,35 @@ export class NetHtml5WebSocket extends ErrorBase {
     }
 
 
+    /**
+     * Nachricht als JSON-Objekt versenden
+     *
+     * @param {ArrayBuffer} aStream
+     * @return {number} errorCode(0,-1) - Fehlercode
+     */
+
+    sendStream( aStream: ArrayBuffer ): number {
+        // console.log('NetHtml5WebSocket.sendStream: start');
+        if ( !this.isOpen()) {
+            this._error( 'sendStream', 'WebSocket ist nicht geoeffnet' );
+            return -1;
+        }
+        if ( !this.mWebSocket ) {
+            // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
+            this._error( 'sendStream', 'keine WebSocket vorhanden' );
+            return -1;
+        }
+        try {
+            this.mWebSocket.send( aStream );
+            return 0;
+        } catch (aException) {
+            // TODO: kann zu einer Endlosschleife fuehren, wenn der Fehler ueber sendMessage versendet werden soll !
+            this._exception( 'sendStream', aException );
+            return -1;
+        }
+    }
+
+
     get webSocket() {
         return this.mWebSocket;
     }

@@ -390,7 +390,7 @@ gulp.task('copy-bundle', function() {
 gulp.task('copy-lib-aws-sdk', function() {
     return gulp.src([
         'lib/AWS_SDK_LICENSE.txt',
-        'lib/aws-sdk-polly.min.js'
+        'lib/aws-sdk-speech.min.js'
     ])
         .pipe( gulp.dest('dist/'));
 }); 
@@ -597,6 +597,14 @@ gulp.task('install-google-credentials-js', function() {
 gulp.task('install-webdriver', shell.task('node node_modules/protractor/bin/webdriver-manager update'));
 
 
+// Gulp-Task
+
+
+gulp.task('install-electron', shell.task('npm install --save-dev electron electron-packager'));
+
+gulp.task('install-cordova', shell.task('npm install --save-dev cordova'));
+
+
 /**
  * Installiert alle benoetigten Dateien
  */
@@ -609,7 +617,9 @@ gulp.task('install', (callback) => {
         'install-amazon-credentials-js',
         'install-google-credentials-ts',
         'install-google-credentials-js',
-        'install-webdriver',
+        // 'install-webdriver',
+        'install-electron',
+        // 'install-cordova',
         callback
     );
 });
@@ -653,6 +663,7 @@ gulp.task('build-rollup', shell.task('rollup -c ./rollup.config.js'));
  */
 
 gulp.task('dist-pack', shell.task('cd dist && npm pack'));
+
 
 
 // Intent-Beispiel erzeugen
@@ -704,7 +715,7 @@ gulp.task('build-intent-example', function(callback) {
         runSequence(
             // 'install-intent',
             'build-intent',
-            'build-intent-electron',
+            // 'build-intent-electron',
             // 'build-intent-android',
             // 'test-intent',
             callback
@@ -764,7 +775,7 @@ gulp.task('build-listen-example', function(callback) {
         runSequence(
             // 'install-listen',
             'build-listen',
-            'build-listen-electron',
+            // 'build-listen-electron',
             // 'build-listen-android',
             // 'test-listen',
             callback
@@ -824,7 +835,7 @@ gulp.task('build-speak-example', function(callback) {
         runSequence(
             // 'install-speak',
             'build-speak',
-            'build-speak-electron',
+            // 'build-speak-electron',
             // 'build-speak-android',
             // 'test-speak',
             callback

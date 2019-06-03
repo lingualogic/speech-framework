@@ -1,7 +1,7 @@
 /**
  * Globale Fabrik zur Erzeugung einer ASR
  *
- * Letzte Aenderung: 02.12.2018
+ * Letzte Aenderung: 16.05.2019
  * Status: rot
  *
  * @module listen/asr
@@ -16,11 +16,12 @@ import { PluginFactory } from '../../core/plugin/plugin-factory';
 
 // asr
 
-import { ASR_FACTORY_NAME, ASR_TYPE_NAME, ASR_DEFAULT_NAME, ASR_PLUGIN_NAME, ASR_HTML5_NAME, ASR_NUANCE_NAME, ASR_MOCK_NAME, ASR_GROUP_NAME } from './asr-const';
+import { ASR_FACTORY_NAME, ASR_TYPE_NAME, ASR_DEFAULT_NAME, ASR_PLUGIN_NAME, ASR_HTML5_NAME, ASR_NUANCE_NAME, ASR_GOOGLE_NAME, ASR_MOCK_NAME, ASR_GROUP_NAME } from './asr-const';
 import { ASRInterface } from './asr.interface';
 import { ASRMock } from './asr-mock';
 import { ASRHtml5 } from './asr-html5';
 import { ASRNuance } from './asr-nuance';
+import { ASRGoogle } from './asr-google';
 import { ASRGroup } from './asr-group';
 
 
@@ -84,6 +85,10 @@ export class ASRFactory extends PluginFactory {
             // Nuance-ASR
             case ASR_NUANCE_NAME:
                 asr = new ASRNuance( aPluginName, aRegisterFlag );
+                break;
+            // Google-ASR
+            case ASR_GOOGLE_NAME:
+                asr = new ASRGoogle( aPluginName, aRegisterFlag );
                 break;
             // Mock-ASR
             case ASR_MOCK_NAME:

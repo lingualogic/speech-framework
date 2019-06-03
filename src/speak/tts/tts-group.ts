@@ -7,9 +7,10 @@
  *
  *      TTSHtml5    - Default Web-TTS
  *      TTSAmazon   - Amazon-Service TTS
+ *      TTSGoogle   - Google-Service TTS (nur mit Speech-Server)
  *      TTSNuance   - Nuance-Service TTS
  *
- * Letzte Aenderung: 03.04.2019
+ * Letzte Aenderung: 17.05.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -34,6 +35,7 @@ import {
     TTS_GROUP_NAME,
     TTS_HTML5_NAME,
     TTS_AMAZON_NAME,
+    TTS_GOOGLE_NAME,
     TTS_NUANCE_NAME
 } from './tts-const';
 import {
@@ -65,6 +67,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
 
     mTTSHtml5: TTSInterface = null;
     mTTSAmazon: TTSInterface = null;
+    mTTSGoogle: TTSInterface = null;
     mTTSNuance: TTSInterface = null;
 
 
@@ -130,6 +133,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         this.insertPlugin( TTS_HTML5_NAME, this.mTTSFactory.create( TTS_HTML5_NAME, false ));
         this.insertPlugin( TTS_NUANCE_NAME, this.mTTSFactory.create( TTS_NUANCE_NAME, false ));
         this.insertPlugin( TTS_AMAZON_NAME, this.mTTSFactory.create( TTS_AMAZON_NAME, false ));
+        this.insertPlugin( TTS_GOOGLE_NAME, this.mTTSFactory.create( TTS_GOOGLE_NAME, false ));
     }
 
 
@@ -171,7 +175,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
             this.mTTSAmazon.init( aOption );
             if ( this.mTTSAmazon.isActive()) {
                 if ( this.isErrorOutput()) {
-                    console.log('TTSGroup._initTTSmazon: TTS eingefuegt');
+                    console.log('TTSGroup._initTTSAmazon: TTS eingefuegt');
                 }
                 return;
             }
@@ -181,6 +185,32 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         }
         if ( this.isErrorOutput()) {
             console.log('TTSGroup._initTTSAmazon: TTS nicht eingefuegt');
+        }
+    }
+
+
+    /**
+     * Initialisierung des GOOGLE-TTS Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initTTSGoogle( aOption: any ): void {
+        this.mTTSGoogle = this.findPlugin( TTS_GOOGLE_NAME ) as TTSInterface;
+        if ( this.mTTSGoogle ) {
+            this.mTTSGoogle.init( aOption );
+            if ( this.mTTSGoogle.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('TTSGroup._initTTSGoogle: TTS eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( TTS_GOOGLE_NAME );
+            this.mTTSGoogle.done();
+            this.mTTSGoogle = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('TTSGroup._initTTSGoogle: TTS nicht eingefuegt');
         }
     }
 
@@ -247,6 +277,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         this._initTTSHtml5( option );   // Default-TTS
         this._initTTSNuance( option );
         this._initTTSAmazon( option );  // dritter wegen Tests
+        this._initTTSGoogle( option );  // vierter wegen Tests
 
         // console.log('TTSGroup.init: erfolgreich');
         if ( super.init( aOption ) !== 0 ) {
@@ -281,6 +312,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
     done(): number {
         this.mTTSHtml5 = null;
         this.mTTSAmazon = null;
+        this.mTTSGoogle = null;
         this.mTTSNuance = null;
         this.mCurrentTTS = null;
         return super.done();
@@ -434,6 +466,10 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
                 tts = this.mTTSAmazon;
                 break;
 
+            case TTS_GOOGLE_NAME:
+                tts = this.mTTSGoogle;
+                break;
+    
             case TTS_NUANCE_NAME:
                 tts = this.mTTSNuance;
                 break;

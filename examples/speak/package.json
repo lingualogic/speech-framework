@@ -1,6 +1,6 @@
 {
     "name": "speakapp",
-    "version": "0.5.9",
+    "version": "0.5.10",
     "productName": "SpeakApp",
     "description": "SpeakApp",
     "author": "LinguaLogic Team",
@@ -23,6 +23,5 @@
         "cordova:osx": "gulp cordova-osx"
     },
     "dependencies": {},
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }

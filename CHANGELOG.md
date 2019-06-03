@@ -1,17 +1,30 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.10.0051 Alpha (02.06.2019)
+
+### Fixes
+
+* **Nuance:** wurde als Deprecated markiert, fällt ab Version 0.6 weg
+
+
 ## 0.5.9.0050 Alpha (12.05.2019)
+
+### Features
 
 * **Google:** der Google Cloud-Dienst für die NLU wurde eingebaut, um Googles NLU für die Sprachverarbeitung verwenden zu können
 
 
 ## 0.5.8.0049 Alpha (07.04.2019)
 
+### Features
+
 * **Amazon:** der Amazon Cloud-Dienst für Polly (TTS) wurde eingebaut, um Amazons Stimmen fuer die Sprachausgabe verwenden zu können
 
 
 ## 0.5.7.0048 Alpha (31.03.2019)
+
+### Features
 
 * **Nuance:** der IntentResultEvent gibt jetzt auch eine Liste der Konzepte (Entities) zurück
 
