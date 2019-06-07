@@ -1,10 +1,10 @@
 /**
  * GoogleOption Schnittstelle
  *
- * API-Version: 1.0
- * Datum:       02.04.2019
+ * API-Version: 1.1
+ * Datum:       07.06.2019
  *
- * Letzte Aenderung: 02.04.2019
+ * Letzte Aenderung: 07.06.2019
  * Status: rot
  *
  * @module cloud/google
@@ -19,6 +19,8 @@
 export interface GoogleOptionInterface {
     /** legt den konkreten Port fest, der geladen werden soll, wird hier AmazonMock angegeben, wird der Mock geladen */
     googlePortName?: string;
+    /** legt fest, ob Verbindung zum Server aufgebaut wird */
+    googleServerFlag?: boolean;
     /** legt die URL fuer die Verbindung zum Server fest */
     googleServerUrl?: string;
     /** legt dynamische Konfigurierbarkeit fest */

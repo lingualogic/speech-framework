@@ -316,6 +316,7 @@ var ApiAiConstants, Factory = function(t) {
     }, e.prototype.connect = function(t) {
         var e = this;
         if (this.isConnect()) return 0;
+        if (!this.mWebSocket) return this.mConnectFlag = !0, 0;
         try {
             return this.mWebSocket.onMessage = function(o) {
                 if ('string' == typeof o.data) {
@@ -333,14 +334,14 @@ var ApiAiConstants, Factory = function(t) {
         } catch (t) {
             return this._exception('connect', t), -1;
         }
-        return 0;
     }, e.prototype.disconnect = function() {
-        return this.mConnectFlag = !1, this.mWebSocket.onMessage = null, 0;
+        return this.mConnectFlag = !1, this.mWebSocket && (this.mWebSocket.onMessage = null), 
+        0;
     }, e.prototype.sendJSON = function(t) {
         return this.mWebSocket ? this.mWebSocket.sendMessage(t) : -1;
     }, Object.defineProperty(e.prototype, "webSocket", {
         get: function() {
-            return this.mWebSocket.webSocket;
+            return this.mWebSocket ? this.mWebSocket.webSocket : null;
         },
         enumerable: !0,
         configurable: !0
@@ -387,11 +388,11 @@ var ApiAiBaseError = function(t) {
             if (n && e === t.Method.GET) {
                 c += "?";
                 var h = 0;
-                for (var p in n) n.hasOwnProperty(p) && (h++ && (c += "&"), c += encodeURIComponent(p) + "=" + encodeURIComponent(n[p]));
+                for (var g in n) n.hasOwnProperty(g) && (h++ && (c += "&"), c += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
             } else n && (r || (r = {}), r["Content-Type"] = "application/json; charset=utf-8", 
             l = JSON.stringify(n));
-            for (var p in i) p in a && (a[p] = i[p]);
-            if (a.open(t.Method[e], c, !0), r) for (var p in r) r.hasOwnProperty(p) && a.setRequestHeader(p, r[p]);
+            for (var g in i) g in a && (a[g] = i[g]);
+            if (a.open(t.Method[e], c, !0), r) for (var g in r) r.hasOwnProperty(g) && a.setRequestHeader(g, r[g]);
             l ? a.send(l) : a.send(), a.onload = function() {
                 a.status >= 200 && a.status < 300 ? s(a) : u(a);
             }, a.onerror = function() {
@@ -988,13 +989,15 @@ var ApiAiClient = function() {
     function e(e, o) {
         void 0 === o && (o = !0);
         var n = t.call(this, e || GOOGLE_PORT_NAME, o) || this;
-        return n.mAudioContext = null, n.mGetUserMedia = null, n.mGoogleConfig = null, n.mGoogleNetwork = null, 
-        n.mGoogleWebSocket = null, n.mGoogleConnect = null, n.mGoogleTTS = null, n.mGoogleASR = null, 
-        n.mGoogleNLU = null, n.mDynamicCredentialsFlag = !1, n.mTransaction = null, n.mRunningFlag = !1, 
-        n.mDefaultOptions = null, n.mActionTimeoutId = 0, n.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 
-        n;
+        return n.mAudioContext = null, n.mGetUserMedia = null, n.mGoogleServerFlag = !1, 
+        n.mGoogleConfig = null, n.mGoogleNetwork = null, n.mGoogleWebSocket = null, n.mGoogleConnect = null, 
+        n.mGoogleTTS = null, n.mGoogleASR = null, n.mGoogleNLU = null, n.mDynamicCredentialsFlag = !1, 
+        n.mTransaction = null, n.mRunningFlag = !1, n.mDefaultOptions = null, n.mActionTimeoutId = 0, 
+        n.mActionTimeout = GOOGLE_ACTION_TIMEOUT, n;
     }
-    return __extends(e, t), e.prototype.isMock = function() {
+    return __extends(e, t), e.prototype.isServer = function() {
+        return this.mGoogleServerFlag;
+    }, e.prototype.isMock = function() {
         return !1;
     }, e.prototype.getType = function() {
         return GOOGLE_TYPE_NAME;
@@ -1018,13 +1021,13 @@ var ApiAiClient = function() {
         }, this.mGoogleNetwork.onError = function(t) {
             return e._onError(t);
         }, 0 !== this.mGoogleNetwork.init(t)) return -1;
-        if (this.mGoogleWebSocket = new GoogleWebSocket(), this.mGoogleWebSocket.onOpen = function(t) {
+        if (this.isServer() && (this.mGoogleWebSocket = new GoogleWebSocket(), this.mGoogleWebSocket.onOpen = function(t) {
             return e._onOpen();
         }, this.mGoogleWebSocket.onClose = function() {
             return e._onClose();
         }, this.mGoogleWebSocket.onError = function(t) {
             return e._onError(t);
-        }, 0 !== this.mGoogleWebSocket.init(t)) return -1;
+        }, 0 !== this.mGoogleWebSocket.init(t))) return -1;
         if (this.mGoogleConnect = new GoogleConnect(this.mGoogleConfig, this.mGoogleWebSocket), 
         this.mGoogleNLU = new GoogleNLU(this.mGoogleConfig, this.mGoogleConnect), this.mGoogleNLU.onStart = function(t) {
             return e._onStart(t.plugin, t.type);
@@ -1036,7 +1039,7 @@ var ApiAiClient = function() {
             return e._onError(t.error, t.plugin, t.type);
         }, this.mGoogleNLU.onClose = function(t) {
             return e._onClose();
-        }, this.mAudioContext) {
+        }, this.isServer() && this.mAudioContext) {
             this.mGoogleTTS = new GoogleTTS(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext), 
             this.mGoogleTTS.onStart = function(t) {
                 return e._onStart(t.plugin, t.type);
@@ -1072,6 +1075,7 @@ var ApiAiClient = function() {
         0;
         if (e && 'boolean' == typeof e.googleDynamicCredentialsFlag && e.googleDynamicCredentialsFlag) this.mDynamicCredentialsFlag = !0; else if (!this._checkCredentials(e)) return this._error('init', 'kein AppKey als Parameter uebergeben'), 
         -1;
+        e && 'boolean' == typeof e.googleServerFlag && e.googleServerFlag && (this.mGoogleServerFlag = !0);
         var o = FactoryManager.get(AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory);
         if (o) {
             var n = o.create();
@@ -1088,9 +1092,10 @@ var ApiAiClient = function() {
         this.mGoogleConnect = null), this.mGoogleWebSocket && (this.mGoogleWebSocket.done(), 
         this.mGoogleWebSocket = null), this.mGoogleNetwork && (this.mGoogleNetwork.done(), 
         this.mGoogleNetwork = null), this.mGoogleConfig && (this.mGoogleConfig.done(), this.mGoogleConfig = null), 
-        this.mGoogleTTS = null, this.mGoogleASR = null, this.mGoogleNLU = null, this.mDynamicCredentialsFlag = !1, 
-        this.mTransaction = null, this.mRunningFlag = !1, this.mDefaultOptions = null, this.mActionTimeoutId = 0, 
-        this.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 0;
+        this.mGoogleTTS = null, this.mGoogleASR = null, this.mGoogleNLU = null, this.mGoogleServerFlag = !1, 
+        this.mDynamicCredentialsFlag = !1, this.mTransaction = null, this.mRunningFlag = !1, 
+        this.mDefaultOptions = null, this.mActionTimeoutId = 0, this.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 
+        0;
     }, e.prototype.reset = function(e) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._setErrorOutput = function(e) {
@@ -1145,10 +1150,10 @@ var ApiAiClient = function() {
     }, e.prototype.isOnline = function() {
         return !!this.mGoogleNetwork && this.mGoogleNetwork.isOnline();
     }, e.prototype.isOpen = function() {
-        return this._isConnect();
+        return !this.isServer() || this._isConnect();
     }, e.prototype._checkOpen = function(t) {
         var e = this;
-        return this.isOnline() ? this.isOpen() ? (t(!0), 0) : 'CLOSING' === this.mGoogleWebSocket.getState() ? (this._error('_checkOpen', 'Websocket wird geschlossen'), 
+        return this.isServer() ? this.isOnline() ? this.isOpen() ? (t(!0), 0) : 'CLOSING' === this.mGoogleWebSocket.getState() ? (this._error('_checkOpen', 'Websocket wird geschlossen'), 
         t(!1), -1) : this.mGoogleWebSocket ? (this.mGoogleWebSocket.onOpen = function(o) {
             return e.mGoogleWebSocket.onOpen = function(t) {
                 return e._onOpen();
@@ -1174,11 +1179,32 @@ var ApiAiClient = function() {
                 return e._onError(t);
             }, t(!1), 0;
         }, this.open()) : (this._error('_checkOpen', 'Websocket ist nicht vorhanden'), t(!1), 
-        -1) : (this._error('_checkOpen', 'kein Netz vorhanden'), t(!1), -1);
+        -1) : (this._error('_checkOpen', 'kein Netz vorhanden'), t(!1), -1) : (t(!0), 0);
     }, e.prototype.open = function(t) {
-        return this._connect(t);
+        return this.isServer() ? this._connect(t) : (this._onOpen(), 0);
     }, e.prototype.close = function() {
-        return this._disconnect();
+        return this.isServer() ? this._disconnect() : (this._onClose(), 0);
+    }, e.prototype._isConnect = function() {
+        return !!this.mGoogleWebSocket && this.mGoogleWebSocket.isConnect();
+    }, e.prototype._connect = function(t) {
+        if (this._isConnect()) return 0;
+        if (!this.mGoogleWebSocket) return this._error('_connect', 'kein GoogleWebSocket vorhanden'), 
+        -1;
+        try {
+            return this.mGoogleWebSocket.connect(this.mGoogleConfig.serverUrl || GOOGLE_DEFAULT_URL), 
+            0;
+        } catch (t) {
+            return this._exception('_connect', t), -1;
+        }
+    }, e.prototype._disconnect = function() {
+        if (!this._isConnect()) return 0;
+        if (!this.mGoogleWebSocket) return this._error('_disconnect', 'kein GoogleWebSocket vorhanden'), 
+        -1;
+        try {
+            return this.mGoogleWebSocket.disconnect(), 0;
+        } catch (t) {
+            return this._exception('_disconnect', t), -1;
+        }
     }, e.prototype.getPluginName = function() {
         return this.mTransaction ? this.mTransaction.plugin : '';
     }, e.prototype.getActionName = function() {
@@ -1284,27 +1310,6 @@ var ApiAiClient = function() {
                 console.error(t), e._onError(t);
             }
         }, 0;
-    }, e.prototype._isConnect = function() {
-        return !!this.mGoogleWebSocket && this.mGoogleWebSocket.isConnect();
-    }, e.prototype._connect = function(t) {
-        if (this._isConnect()) return 0;
-        if (!this.mGoogleWebSocket) return this._error('_connect', 'kein GoogleWebSocket vorhanden'), 
-        -1;
-        try {
-            return this.mGoogleWebSocket.connect(this.mGoogleConfig.serverUrl || GOOGLE_DEFAULT_URL), 
-            0;
-        } catch (t) {
-            return this._exception('_connect', t), -1;
-        }
-    }, e.prototype._disconnect = function() {
-        if (!this._isConnect()) return 0;
-        if (!this.mGoogleWebSocket) return this._error('_disconnect', 'kein GoogleWebSocket vorhanden'), 
-        -1;
-        try {
-            return this.mGoogleWebSocket.disconnect(), 0;
-        } catch (t) {
-            return this._exception('_disconnect', t), -1;
-        }
     }, e.prototype._startNLU = function(t, e, o) {
         if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
         if (!o) return this._error('_startNLU', 'keine Sprache uebergeben'), -1;

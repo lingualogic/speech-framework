@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.10.0052 Alpha (07.06.2019)
+
+### Fixes
+
+* **Google:** wurde nicht korrekt initialisiert
+
+
 ## 0.5.10.0051 Alpha (02.06.2019)
 
 ### Fixes

@@ -70,6 +70,15 @@ export interface PortInterface {
 
 
     /**
+     * pruefen auf Port mit Server-Verbindung
+     *
+     * @return {boolean} serverFlag - true, Port hat Server-Verbindung, false keine Server-Verbindung
+     */
+
+    isServer(): boolean;
+
+
+    /**
      * pruefen auf Mock-Port zum Testen
      *
      * @return {boolean} mockFlag - true, wenn Port ein Mock zum Testen ist

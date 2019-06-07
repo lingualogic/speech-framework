@@ -243,6 +243,17 @@ export class Port extends ErrorBase implements PortInterface {
 
 
     /**
+     * pruefen auf Server-Verbindung
+     *
+     * @return {boolean} true, Port hat Server-Verbindung, false sonst
+     */
+
+    isServer(): boolean {
+        return false;
+    }
+
+
+    /**
      * internes loeschen des Init-Flags, falls Init abgebrochen werden muss
      *
      * @protected

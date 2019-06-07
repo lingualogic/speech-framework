@@ -15,7 +15,7 @@ Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) u
 
 ## Letzte Version
 
-* 0.5.10.0051 Alpha vom 02.06.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.10.0052 Alpha vom 07.06.2019 [Release Notizen](./CHANGELOG.md)
 
 Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
