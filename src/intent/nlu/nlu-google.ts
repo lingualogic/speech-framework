@@ -269,6 +269,7 @@ export class NLUGoogle extends NLUPlugin {
         try {
             // Mapping der Daten auf IntentData
             intentData.intent = aEvent.metadata.intentName;
+            intentData.confidence = aEvent.score;
             // intentData.confidence = 1.0;
             // Konzepte kopieren, wenn vorhanden
             /**** TODO: Konzepte muessen in Google erst noch ausprobiert werden

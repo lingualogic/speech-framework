@@ -8,9 +8,10 @@
  *
  * Installierte ASR:
  *
- *      ASRHtml5    - Default Web-ASR
- *      ASRNuance   - Nuance-Service ASR
- *      ASRGoogle   - Google-Service ASR (nur mit Speech-Server)
+ *      ASRHtml5     - Default Web-ASR
+ *      ASRNuance    - Nuance-Service ASR (deprecated)
+ *      ASRGoogle    - Google-Service ASR (nur mit Speech-Server)
+ *      ASRMicrosoft - Google-Service ASR (nur mit Speech-Server)
  *
  * @module listen/asr
  * @author SB
@@ -34,7 +35,8 @@ import {
     ASR_GROUP_NAME,
     ASR_HTML5_NAME,
     ASR_NUANCE_NAME,
-    ASR_GOOGLE_NAME
+    ASR_GOOGLE_NAME,
+    ASR_MICROSOFT_NAME
 } from './asr-const';
 import {
     ASRInterface,
@@ -67,6 +69,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
     mASRHtml5: ASRInterface = null;
     mASRNuance: ASRInterface = null;
     mASRGoogle: ASRInterface = null;
+    mASRMicrosoft: ASRInterface = null;
 
 
     // aktuell genutzte ASR
@@ -131,6 +134,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
         this.insertPlugin( ASR_HTML5_NAME, this.mASRFactory.create( ASR_HTML5_NAME, false ));
         this.insertPlugin( ASR_NUANCE_NAME, this.mASRFactory.create( ASR_NUANCE_NAME, false ));
         this.insertPlugin( ASR_GOOGLE_NAME, this.mASRFactory.create( ASR_GOOGLE_NAME, false ));
+        this.insertPlugin( ASR_MICROSOFT_NAME, this.mASRFactory.create( ASR_MICROSOFT_NAME, false ));
     }
 
 
@@ -213,6 +217,32 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
 
 
     /**
+     * Initialisierung des Microsoft-ASR Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initASRMicrosoft( aOption: any ): void {
+        this.mASRMicrosoft = this.findPlugin( ASR_MICROSOFT_NAME ) as ASRInterface;
+        if ( this.mASRMicrosoft ) {
+            this.mASRMicrosoft.init( aOption );
+            if ( this.mASRMicrosoft.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('ASRGroup._initASRMicrosoft: ASR eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( ASR_MICROSOFT_NAME );
+            this.mASRMicrosoft.done();
+            this.mASRMicrosoft = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('ASRGroup._initASRMicrosoft: ASR nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung von ASRPlugin
      *
      * @param {any} [aOption] - optionale Parameter
@@ -248,6 +278,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
         this._initASRHtml5( option );   // Default-ASR
         this._initASRNuance( option );
         this._initASRGoogle( option );
+        this._initASRMicrosoft( option );
 
         // console.log('ASRGroup.init: erfolgreich');
         if ( super.init( aOption ) !== 0 ) {
@@ -283,6 +314,7 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
         this.mASRHtml5 = null;
         this.mASRNuance = null;
         this.mASRGoogle = null;
+        this.mASRMicrosoft = null;
         this.mCurrentASR = null;
         return super.done();
     }
@@ -457,6 +489,11 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
                 asr = this.mASRGoogle;
                 break;
 
+            case ASR_MICROSOFT_NAME:
+                // console.log( 'ASRGroup.setASR: Microsoft', this.mASRMicrosoft);
+                asr = this.mASRMicrosoft;
+                break;
+    
             default:
                 break;
         }

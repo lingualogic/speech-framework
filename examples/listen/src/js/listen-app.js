@@ -238,6 +238,8 @@ function ListenApp() {
         // Nuance-Zurgiffsdaten als Optionen eintragen
         var option = {
             googleAppKey: GOOGLE_APP_KEY,
+            microsoftRegion: MICROSOFT_REGION,
+            microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             nuanceNluTag: NLU_TAG
@@ -251,6 +253,17 @@ function ListenApp() {
             });
         } else {
             console.log('ListenApp.init: kein Google vorhanden');
+        }
+
+        // erzeugt das Microsoft-Modul
+        if ( speech.Microsoft ) {
+            speech.Microsoft.init( option );
+            speech.Microsoft.open((aError, aPortName, aPortResult) => {
+                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                console.log('ListenApp.init: Microsoft', aPortResult);
+            });
+        } else {
+            console.log('ListenApp.init: kein Microsoft vorhanden');
         }
 
         // erzeugt das Nuance-Modul

@@ -371,6 +371,21 @@ gulp.task('copy-google', function() {
 
 
 /** 
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Microsoft
+ */ 
+
+gulp.task('copy-microsoft', function() {
+    return gulp.src([
+        'bundle/microsoft.d.ts',
+        'build/src/cloud/microsoft/microsoft-const.d.ts',
+        'build/src/cloud/microsoft/microsoft-config-data.interface.d.ts',
+        'build/src/cloud/microsoft/microsoft-option.interface.d.ts'
+    ])
+        .pipe( gulp.dest('dist/src/cloud/microsoft'));
+}); 
+
+
+/** 
  * Kopiert die Bundledateien aus bundle/ nach dist/
  */ 
 
@@ -400,6 +415,20 @@ gulp.task('copy-lib-aws-sdk', function() {
  * Kopiert die Originaldateien aus / nach dist/
  */ 
 
+gulp.task('copy-lib-azure-sdk', function() {
+    return gulp.src([
+        'lib/AZURE_SDK_LICENSE',
+        'lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js',
+        'lib/speech-processor.js'
+    ])
+        .pipe( gulp.dest('dist/'));
+}); 
+
+
+/** 
+ * Kopiert die Originaldateien aus / nach dist/
+ */ 
+
 gulp.task('copy-original', function() {
     return gulp.src([
         'CHANGELOG.md',
@@ -419,6 +448,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-index',
         'copy-bundle',
         'copy-lib-aws-sdk',        
+        'copy-lib-azure-sdk',        
         'copy-original',        
         'copy-main',        
         'copy-const',
@@ -435,6 +465,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-nuance',
         'copy-amazon',
         'copy-google',
+        'copy-microsoft',
         callback
     );
 });
@@ -591,6 +622,56 @@ gulp.task('install-google-credentials-js', function() {
 
 
 /**
+ * Erzeugt microsoft-credentials.ts in credentials/
+ */
+
+gulp.task('install-microsoft-credentials-ts', function() {
+    try {
+        // pruefen auf vorhandene Microsoft-Credentials Datei
+        fs.accessSync( 'credentials/microsoft-credentials.ts' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/microsoft-credentials.ts' ])
+            .pipe( file( 'microsoft-credentials.ts', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Microsoft Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "export const MICROSOFT_REGION = '';\n" ))
+            .pipe(inject.append( "export const MICROSOFT_SUBSCRIPTION_KEY = '';\n" ))
+            .pipe( gulp.dest(  'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
+ * Erzeugt microsoft-credentials.js in credentials/
+ */
+
+gulp.task('install-microsoft-credentials-js', function() {
+    try {
+        // pruefen auf vorhandene Microsoft-Credentials Datei
+        fs.accessSync( 'credentials/microsoft-credentials.js' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/microsoft-credentials.js' ])
+            .pipe( file( 'microsoft-credentials.js', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Microsoft Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "var MICROSOFT_REGION = '';\n" ))
+            .pipe(inject.append( "var MICROSOFT_SUBSCRIPTION_KEY = '';\n" ))
+            .pipe( gulp.dest(  'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
  * Installiert die WebDriver-Treiber fuer die  Protractor-Tests
  */
 
@@ -617,6 +698,8 @@ gulp.task('install', (callback) => {
         'install-amazon-credentials-js',
         'install-google-credentials-ts',
         'install-google-credentials-js',
+        'install-microsoft-credentials-ts',
+        'install-microsoft-credentials-js',
         // 'install-webdriver',
         'install-electron',
         // 'install-cordova',

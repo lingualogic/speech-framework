@@ -7,6 +7,7 @@ const protractor = require('gulp-protractor').protractor;
 // Verzeichnis-Konstanten
 
 const rootDir = path.resolve(__dirname);
+const globalLibDir = './../../lib';
 const globalDistDir = './../../dist';
 const globalCredentialsDir = './../../credentials';
 const distDir = 'dist';
@@ -41,6 +42,7 @@ const settings = {
     gulp,
     exec,
     rootDir,
+    globalLibDir,
     globalDistDir,
     globalCredentialsDir,
     distDir,

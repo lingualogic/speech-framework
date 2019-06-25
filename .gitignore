@@ -33,6 +33,7 @@ node_modules/
 .sass-cache/
 connect.lock/
 coverage/
+credentials/
 libpeerconnection.log/
 npm-debug.log
 testem.log
@@ -57,3 +58,6 @@ package-lock.json
 
 nuance-credentials*
 amazon-credentials*
+google-credentials*
+microsoft-credentials*
+

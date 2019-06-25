@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.10.0052 (Alpha) vom 07.06.2019
+ * Version: 0.5.11.0053 (Alpha) vom 25.06.2019
  */
 
 
@@ -84,13 +84,6 @@ export { NuanceOptionInterface } from './src/cloud/nuance/nuance-option.interfac
 export { Nuance } from './src/cloud/nuance/nuance';
 
 
-// google
-
-export { GoogleConfigDataInterface } from './src/cloud/google/google-config-data.interface';
-export { GoogleOptionInterface } from './src/cloud/google/google-option.interface';
-export { Google } from './src/cloud/google/google';
-
-
 // amazon
 
 export { AmazonConfigDataInterface } from './src/cloud/amazon/amazon-config-data.interface';
@@ -98,11 +91,32 @@ export { AmazonOptionInterface } from './src/cloud/amazon/amazon-option.interfac
 export { Amazon } from './src/cloud/amazon/amazon';
 
 
-// aws-sdk
+// google
+
+export { GoogleConfigDataInterface } from './src/cloud/google/google-config-data.interface';
+export { GoogleOptionInterface } from './src/cloud/google/google-option.interface';
+export { Google } from './src/cloud/google/google';
+
+
+// microsoft
+
+export { MicrosoftConfigDataInterface } from './src/cloud/microsoft/microsoft-config-data.interface';
+export { MicrosoftOptionInterface } from './src/cloud/microsoft/microsoft-option.interface';
+export { Microsoft } from './src/cloud/microsoft/microsoft';
 
 
 // speech
 
 export { SpeechMain } from './src/speech-main';
+
+
+
+
+// aws-sdk
+
+
+
+
+// azure-sdk
 
 

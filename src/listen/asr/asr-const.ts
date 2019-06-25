@@ -1,7 +1,7 @@
 /**
  * Globale Konstanten fuer ASR
  *
- * Letzte Aenderung: 16.05.2019
+ * Letzte Aenderung: 17.06.2019
  * Status: gelb
  *
  * @module listen/asr
@@ -21,6 +21,7 @@ export const ASR_MOCK_NAME = 'ASRMock';
 export const ASR_HTML5_NAME = 'ASRHtml5';
 export const ASR_NUANCE_NAME = 'ASRNuance';
 export const ASR_GOOGLE_NAME = 'ASRGoogle';
+export const ASR_MICROSOFT_NAME = 'ASRMicrosoft';
 export const ASR_GROUP_NAME = 'ASRGroup';
 export const ASR_DEFAULT_NAME = ASR_GROUP_NAME;
 

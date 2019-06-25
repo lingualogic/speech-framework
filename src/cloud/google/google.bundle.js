@@ -1,10 +1,10 @@
 /**
  * Speech-Google
  * 
- * Version: 0.1.0
- * Build:   0001
+ * Version: 0.1.2
+ * Build:   0003
  * TYPE:    ALPHA
- * Datum:   11.05.2019
+ * Datum:   24.06.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -98,7 +98,7 @@ var ApiAiConstants, Factory = function(t) {
             return this._exception('create', t), null;
         }
     }, e;
-}(Factory), GOOGLE_VERSION_NUMBER = '0.1.0', GOOGLE_VERSION_BUILD = '0001', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '11.05.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
+}(Factory), GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '0003', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '24.06.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
     function t(e, o) {
         void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = o, 
@@ -1538,7 +1538,8 @@ var ApiAiClient = function() {
                 fulfillment: {
                     speech: this.intentSpeech
                 },
-                resolvedQuery: e
+                resolvedQuery: e,
+                score: this.intentConfidence
             };
             return t.result = n, console.log('GoogleMock._startNLU: _onResult wird aufgerufen'), 
             this._onResult(t.result, t.plugin, t.type), this._onStop(t.plugin, t.type), 0;

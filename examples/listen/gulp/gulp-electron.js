@@ -22,7 +22,7 @@ var localPkg = require('./../package.json');
 // var electronVersion = electronPackage.version;
 
 
-module.exports = ({ gulp, exec, globalDistDir, globalCredentialsDir, srcDir, electronDir, electronAppDir, electronWwwDir }) => {
+module.exports = ({ gulp, exec, globalLibDir, globalDistDir, globalCredentialsDir, srcDir, electronDir, electronAppDir, electronWwwDir }) => {
 
 
     var opts = {
@@ -55,13 +55,23 @@ module.exports = ({ gulp, exec, globalDistDir, globalCredentialsDir, srcDir, ele
         ]);
     });
 
-    gulp.task('electron-copy-dist', () => {
+    gulp.task('electron-copy-speech', () => {
         return gulp.src(path.join( globalDistDir, 'speech-framework.js'))
+            .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
+    });
+
+    gulp.task('electron-copy-azure-sdk', () => {
+        return gulp.src(path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js'))
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
     gulp.task('electron-copy-google-credentials', () => {
         return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
+            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
+    });
+
+    gulp.task('electron-copy-microsoft-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'microsoft-credentials.js'))
             .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
     });
 
@@ -82,9 +92,23 @@ module.exports = ({ gulp, exec, globalDistDir, globalCredentialsDir, srcDir, ele
             .on('end', done);
     });
 
+    gulp.task('electron-replace-azure-sdk', (done) => {
+        gulp.src(path.join(electronWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
+            .pipe(gulp.dest(electronWwwDir))
+            .on('end', done);
+    });
+
     gulp.task('electron-replace-google-credentials', (done) => {
         gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(gulp.dest( electronWwwDir))
+            .on('end', done);
+    });
+
+    gulp.task('electron-replace-microsoft-credentials', (done) => {
+        gulp.src(path.join( electronWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
             .pipe(gulp.dest( electronWwwDir))
             .on('end', done);
     });
@@ -128,17 +152,39 @@ module.exports = ({ gulp, exec, globalDistDir, globalCredentialsDir, srcDir, ele
     });
 
 
-    gulp.task('electron-build', (done) => {
+    gulp.task('electron-generate', (done) => {
         runSquence(
             'electron-prepare',
-            'electron-copy-dist',
+            'electron-copy-speech',
+            'electron-copy-azure-sdk',
             'electron-copy-google-credentials',
+            'electron-copy-microsoft-credentials',
             'electron-copy-nuance-credentials',
             'electron-copy-src',
             'electron-replace-speech',
+            'electron-replace-azure-sdk',
             'electron-replace-google-credentials',
+            'electron-replace-microsoft-credentials',
             'electron-replace-nuance-credentials',
             'electron-remove-absolute-assets',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+
+    gulp.task('electron-build', (done) => {
+        runSquence(
+            'electron-generate',
             'electron-mkdir-app',
             'electron-build-app',
             (err) => {
@@ -158,15 +204,7 @@ module.exports = ({ gulp, exec, globalDistDir, globalCredentialsDir, srcDir, ele
 
     gulp.task('electron-run', (done) => {
         runSquence(
-            'electron-prepare',
-            'electron-copy-dist',
-            'electron-copy-google-credentials',
-            'electron-copy-nuance-credentials',
-            'electron-copy-src',
-            'electron-replace-speech',
-            'electron-replace-google-credentials',
-            'electron-replace-nuance-credentials',
-            'electron-remove-absolute-assets',
+            'electron-generate',
             'electron-run-app',
             (err) => {
                 if(err) {

@@ -101,7 +101,8 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
     gulp.task('cordova-copy-credentials', () => {
         return gulp.src([
             path.join( globalCredentialsDir, 'nuance-credentials.js'),
-            path.join( globalCredentialsDir, 'amazon-credentials.js')
+            path.join( globalCredentialsDir, 'amazon-credentials.js'),
+            path.join( globalCredentialsDir, 'google-credentials.js')
         ])
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
@@ -136,6 +137,7 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/amazon-credentials.js"></script>', '<script type="text/javascript" src="js/amazon-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
     });

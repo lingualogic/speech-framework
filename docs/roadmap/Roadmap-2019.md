@@ -6,14 +6,28 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### Juli: Version 0.5.12
+
+beinhaltet:
+
+* **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine TTS
+
+
+### Juni: Version 0.5.11
+
+beinhaltet:
+
+* **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine ASR
+
+
+## Veröffentlichte Versionen
+
+
 ### Juni: Version 0.5.10
 
 beinhaltet:
 
-* **Amazon:** Integration des Amazon Transcribe Cloud-Dienstes für eine ASR
-
-
-## Veröffentlichte Versionen
+* **Nuance:** als deprecated gekennzeichnet, fällt ab Version 0.6 weg
 
 
 ### Mai: Version 0.5.9

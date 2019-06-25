@@ -550,7 +550,7 @@ describe('Intent', () => {
             if ( nuanceFlag ) {
                 expect( data.confidence ).toBe( 1.0 );
             } else if ( googleFlag ) {
-                expect( data.confidence ).toBe( 0 );
+                expect( data.confidence ).toBe( 1.0 );
                 expect( data.speech ).toBe( 'TestSpeech' );
             }
             expect( data.error ).toBe( '' );
