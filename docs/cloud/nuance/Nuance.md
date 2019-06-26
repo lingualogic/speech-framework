@@ -1,4 +1,4 @@
-# Nuance Cloud-Dienst
+# Nuance Cloud-Dienst (deprecated)
 
 Der Nuance Cloud-Dienst verbindet das Speech-Framework über die generische Port-Schnittstelle mit dem Nuance-Server. Der Nuance Cloud-Dienst dient zur Spracheingabe, Sprachausgabe und zur Sprachanalyse.
 Um ihn verwenden zu können, ist ein Account bei Nuance-Mix notwendig. Für die Sprachanalyse müssen entsprechende Sprachmodelle in Nuance-Mix erstellt werden. Diese erlauben die Zuordnung zwischen einer Spracheingabe und einem Intent. Der Intent kann in der Web-App weiterverarbeitet werden.

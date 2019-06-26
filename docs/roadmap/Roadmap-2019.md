@@ -13,14 +13,14 @@ beinhaltet:
 * **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine TTS
 
 
+## Veröffentlichte Versionen
+
+
 ### Juni: Version 0.5.11
 
 beinhaltet:
 
 * **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine ASR
-
-
-## Veröffentlichte Versionen
 
 
 ### Juni: Version 0.5.10

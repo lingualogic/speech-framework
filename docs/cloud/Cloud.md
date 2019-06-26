@@ -9,5 +9,5 @@ Folgende Cloud-Dienste sind bereits implementiert:
 * **[Amazon Cloud-Dienst](./amazon/Amazon.md):** Amazon Coud-Dienst für die Verbindung zum Amazon Sprach-Server
 * **[Google Cloud-Dienst](./google/Google.md):** Google Coud-Dienst für die Verbindung zum Google Sprach-Server
 * **[Microsoft Cloud-Dienst](./microsoft/Microsoft.md):** Microsoft Coud-Dienst für die Verbindung zum Microsoft Sprach-Server
-* **[Nuance Cloud-Dienst](./nuance/Nuance.md):** Nuance Coud-Dienst für die Verbindung zum Nuance Mix-Server
+* **[Nuance Cloud-Dienst](./nuance/Nuance.md):** Nuance Coud-Dienst für die Verbindung zum Nuance Mix-Server (deprecated)
 
