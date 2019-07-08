@@ -31,7 +31,7 @@ import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from '../../common/htm
 
 import { PortManager } from '../../core/port/port-manager.ts';
 
-var MICROSOFT_TYPE_NAME = 'Microsoft', MICROSOFT_PORT_NAME = 'MicrosoftPort', MICROSOFT_MOCK_NAME = 'MicrosoftMock', MICROSOFT_SERVER_URL = '', MICROSOFT_DEFAULT_URL = MICROSOFT_SERVER_URL, MICROSOFT_NLU_ACTION = 'NLU', MICROSOFT_ASR_ACTION = 'ASR', MICROSOFT_ASRNLU_ACTION = 'ASRNLU', MICROSOFT_TTS_ACTION = 'TTS', MICROSOFT_CONFIG_PATH = 'assets/', MICROSOFT_CONFIG_FILE = 'microsoft.json', MICROSOFT_CONFIG_LOAD = !1, MICROSOFT_DE_LANGUAGE = 'de-DE', MICROSOFT_DEFAULT_LANGUAGE = MICROSOFT_DE_LANGUAGE, MICROSOFT_TTS_VOICE1 = 'Vicki', MICROSOFT_TTS_VOICE = MICROSOFT_TTS_VOICE1, MICROSOFT_DEFAULT_VOICE = MICROSOFT_TTS_VOICE, MICROSOFT_PCM_CODEC = 'audio/L16;rate=16000', MICROSOFT_AUDIOSAMPLE_RATE = 16e3, MICROSOFT_AUDIO_FORMAT = 'pcm', extendStatics = function(t, o) {
+var MICROSOFT_TYPE_NAME = 'Microsoft', MICROSOFT_PORT_NAME = 'MicrosoftPort', MICROSOFT_MOCK_NAME = 'MicrosoftMock', MICROSOFT_SERVER_URL = '', MICROSOFT_DEFAULT_URL = MICROSOFT_SERVER_URL, MICROSOFT_NLU_ACTION = 'NLU', MICROSOFT_ASR_ACTION = 'ASR', MICROSOFT_ASRNLU_ACTION = 'ASRNLU', MICROSOFT_TTS_ACTION = 'TTS', MICROSOFT_CONFIG_PATH = 'assets/', MICROSOFT_CONFIG_FILE = 'microsoft.json', MICROSOFT_CONFIG_LOAD = !1, MICROSOFT_DE_LANGUAGE = 'de-DE', MICROSOFT_DEFAULT_LANGUAGE = MICROSOFT_DE_LANGUAGE, MICROSOFT_TTS_VOICE1 = 'de-DE-Hedda', MICROSOFT_TTS_VOICE = MICROSOFT_TTS_VOICE1, MICROSOFT_DEFAULT_VOICE = MICROSOFT_TTS_VOICE, MICROSOFT_PCM_CODEC = 'audio/L16;rate=16000', MICROSOFT_AUDIOSAMPLE_RATE = 16e3, MICROSOFT_AUDIO_FORMAT = 'raw-16khz-16bit-mono-pcm', extendStatics = function(t, o) {
     return (extendStatics = Object.setPrototypeOf || {
         __proto__: []
     } instanceof Array && function(t, o) {
@@ -321,10 +321,10 @@ var Factory = function(t) {
     }, o;
 }(ErrorBase), MicrosoftDevice = function(t) {
     function o(o, n, r) {
-        var i = t.call(this, o || 'MicrosoftDevice') || this;
-        return i.mConfig = null, i.mConnect = null, i.mTransaction = null, i.onStart = null, 
-        i.onStop = null, i.onResult = null, i.onError = null, i.onClose = null, i.mConfig = n, 
-        i.mConnect = r, i;
+        var e = t.call(this, o || 'MicrosoftDevice') || this;
+        return e.mConfig = null, e.mConnect = null, e.mTransaction = null, e.onStart = null, 
+        e.onStop = null, e.onResult = null, e.onError = null, e.onClose = null, e.mConfig = n, 
+        e.mConnect = r, e;
     }
     return __extends(o, t), o.prototype._onStart = function() {
         return this.mTransaction && this.onStart && this.onStart(this.mTransaction), 0;
@@ -368,12 +368,12 @@ var Factory = function(t) {
         this.mTransaction = null;
     }, o;
 }(ErrorBase), MicrosoftASR = function(t) {
-    function o(o, n, r, i, e) {
+    function o(o, n, r, e, i) {
         var s = t.call(this, 'MicrosoftASR', o, n) || this;
         return s.mAudioContext = null, s.mGetUserMedia = null, s.mAudioReader = null, s.mAudioRecorder = null, 
         s.mUserMediaStream = null, s.mRequestId = 0, s.mVolumeCounter = 0, s.mTimeoutCounter = 0, 
-        s.mRecordingFlag = !1, s.mRecognizer = null, s.mAudioContext = r, s.mGetUserMedia = i, 
-        s.mAudioReader = e, s;
+        s.mRecordingFlag = !1, s.mRecognizer = null, s.mAudioContext = r, s.mGetUserMedia = e, 
+        s.mAudioReader = i, s;
     }
     return __extends(o, t), o.prototype._startAudio = function(t) {}, o.prototype._startASR = function(t) {
         var o = this;
@@ -429,19 +429,19 @@ var Factory = function(t) {
         return this.findPcmCodec(o) ? [ this._float32ArrayToInt16Array(t) ] : [ t ];
     }, o.prototype.decodePCM = function(t) {
         try {
-            for (var o = new Uint8Array(t), n = o.length, r = new Float32Array(n / 2), i = new Int16Array(1), e = 0, s = 0; s < n; s += 2) i[0] = (o[s + 1] << 8) + o[s], 
-            r[e] = i[0] / 32768, e++;
+            for (var o = new Uint8Array(t), n = o.length, r = new Float32Array(n / 2), e = new Int16Array(1), i = 0, s = 0; s < n; s += 2) e[0] = (o[s + 1] << 8) + o[s], 
+            r[i] = e[0] / 32768, i++;
             return r;
         } catch (t) {
             return this._exception('decodePCM', t), [];
         }
     }, o;
 }(ErrorBase), MicrosoftResampler = function() {
-    function t(t, o, n, r, i) {
+    function t(t, o, n, r, e) {
         this.fromSampleRate = 0, this.toSampleRate = 0, this.channels = 0, this.outputBufferSize = 0, 
         this.noReturn = !1, this.resampler = null, this.ratioWeight = 0, this.interpolate = null, 
         this.lastWeight = 0, this.outputBuffer = null, this.lastOutput = null, this.fromSampleRate = t, 
-        this.toSampleRate = o, this.channels = n || 0, this.outputBufferSize = r, this.noReturn = !!i, 
+        this.toSampleRate = o, this.channels = n || 0, this.outputBufferSize = r, this.noReturn = !!e, 
         this.initialize();
     }
     return t.prototype.initialize = function() {
@@ -591,14 +591,52 @@ var Factory = function(t) {
         }
         this.mAudioSource = null;
     }, o;
-}(ErrorBase), MicrosoftTTS = function(t) {
+}(ErrorBase), MICROSOFT_ACCESSTOKEN_URL = '.api.cognitive.microsoft.com/sts/v1.0/issueToken', MICROSOFT_TTS_URL = '.tts.speech.microsoft.com/cognitiveservices/v1', MicrosoftTTS = function(t) {
     function o(o, n, r) {
-        var i = t.call(this, 'MicrosoftTTS', o, n) || this;
-        return i.mAudioContext = null, i.mAudioPlayer = null, i.mAudioContext = r, i;
+        var e = t.call(this, 'MicrosoftTTS', o, n) || this;
+        return e.mAudioContext = null, e.mAudioPlayer = null, e.mAccessToken = '', e.mAudioContext = r, 
+        e;
     }
-    return __extends(o, t), o.prototype._start = function(t) {
+    return __extends(o, t), o.prototype._getAccessToken = function(t, o) {
+        var n = this;
+        return new Promise(function(r, e) {
+            try {
+                var i = 'https://' + t + MICROSOFT_ACCESSTOKEN_URL, s = new XMLHttpRequest();
+                n.mAccessToken = '', s.open('POST', i), s.setRequestHeader('Ocp-Apim-Subscription-Key', o), 
+                s.onload = function() {
+                    try {
+                        n.mAccessToken = s.responseText, r(n.mAccessToken);
+                    } catch (t) {
+                        n._exception('getAccessToken', t), e();
+                    }
+                }, s.onerror = function(t) {
+                    n._error('getAccessToken', t.message), e();
+                }, s.send('');
+            } catch (t) {
+                n._exception('_getAccessToken', t), e();
+            }
+        });
+    }, o.prototype._getSSMLBody = function(t, o, n) {
+        return t ? o ? n ? "<?xml version=\"1.0\"?><speak version=\"1.0\" xml:lang=\"" + o + "\"><voice xml:lang=\"" + o + "\" name=\"" + n + "\">" + t + "</voice></speak>" : (this._error('getSSMLBody', 'keine Stimme uebergeben'), 
+        '') : (this._error('getSSMLBody', 'keine Sprache uebergeben'), '') : (this._error('getSSMLBody', 'kein Text uebergeben'), 
+        '');
+    }, o.prototype._sendToTTS = function(t, o, n, r) {
+        var e = this;
+        try {
+            var i = 'https://' + o + MICROSOFT_TTS_URL, s = new XMLHttpRequest();
+            return s.open('POST', i), s.setRequestHeader('Authorization', 'Bearer ' + n), s.setRequestHeader('cache-control', 'no-cache'), 
+            s.setRequestHeader('X-Microsoft-OutputFormat', MICROSOFT_AUDIO_FORMAT), s.setRequestHeader('Content-Type', 'application/ssml+xml'), 
+            s.responseType = 'arraybuffer', s.onload = function() {
+                console.log('Response:', s), e.mAudioPlayer.decode(t, s.response);
+            }, s.onerror = function(t) {
+                e._error('_sentToTTS', t.message);
+            }, s.send(r), 0;
+        } catch (t) {
+            return this._exception('_sendToTTS', t), -1;
+        }
+    }, o.prototype._start = function(t) {
         var o = this;
-        if (!t || !t.text || 'string' != typeof t.text) return this._error('_start', 'kein Text uebergeben'), 
+        if (console.log('MicrosoftTTS._start: Start', t), !t || !t.text || 'string' != typeof t.text) return this._error('_start', 'kein Text uebergeben'), 
         -1;
         try {
             if (this.mAudioPlayer = new MicrosoftAudioPlayer(this.mAudioContext), !this.mAudioPlayer) return this._error('_start', 'AudioPlayer wurde nicht erzeugt'), 
@@ -608,21 +646,14 @@ var Factory = function(t) {
             }, this.mAudioPlayer.onAudioStop = function() {
                 o._onStop();
             };
-            var n = new window.AWS.Polly({
-                apiVersion: '2016-06-10'
-            }), r = {
-                LanguageCode: t.language || 'de-DE',
-                OutputFormat: MICROSOFT_AUDIO_FORMAT,
-                SampleRate: '' + MICROSOFT_AUDIOSAMPLE_RATE,
-                Text: t.text || '',
-                TextType: 'text',
-                VoiceId: t.voice || 'Vicki'
+            var n = this._getSSMLBody(t.text, t.language, t.voice);
+            if (!n) return -1;
+            var r = {
+                codec: MICROSOFT_PCM_CODEC
             };
-            return n.synthesizeSpeech(r, function(t, n) {
-                t ? (o._onError(t), o._onStop()) : n && o.mAudioPlayer.decode({
-                    codec: MICROSOFT_PCM_CODEC
-                }, n.AudioStream);
-            }), this.mAudioPlayer.start(), 0;
+            return this._getAccessToken(this.mConfig.region, this.mConfig.subscriptionKey).then(function(t) {
+                o._sendToTTS(r, o.mConfig.region, t, n);
+            }).catch(function() {}), this.mAudioPlayer.start(), 0;
         } catch (t) {
             return this._exception('_start', t), -1;
         }
@@ -710,8 +741,8 @@ var Factory = function(t) {
             var r = n.create();
             r && (this.mAudioContext = new r());
         }
-        var i = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
-        return i && (this.mGetUserMedia = i.create()), 0 !== this._initAllObject(o) ? -1 : 0 !== t.prototype.init.call(this, o) ? -1 : (this.isErrorOutput() && (this.mMicrosoftTTS ? console.log('MicrosoftPort: TTS ist vorhanden') : console.log('MicrosoftPort: TTS ist nicht vorhanden'), 
+        var e = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
+        return e && (this.mGetUserMedia = e.create()), 0 !== this._initAllObject(o) ? -1 : 0 !== t.prototype.init.call(this, o) ? -1 : (this.isErrorOutput() && (this.mMicrosoftTTS ? console.log('MicrosoftPort: TTS ist vorhanden') : console.log('MicrosoftPort: TTS ist nicht vorhanden'), 
         this.mMicrosoftASR ? console.log('MicrosoftPort: ASR ist vorhanden') : console.log('MicrosoftPort: ASR ist nicht vorhanden')), 
         0);
     }, o.prototype.done = function() {
@@ -820,27 +851,27 @@ var Factory = function(t) {
     }, o.prototype.start = function(t, o, n) {
         var r = this;
         return this.isRunning() ? (this._error('start', 'Aktion laeuft bereits'), -1) : this.mMicrosoftConfig.isCredentials() ? this.mTransaction ? (this._error('start', 'andere Transaktion laeuft noch'), 
-        -1) : this._checkOpen(function(i) {
-            if (!i) return -1;
+        -1) : this._checkOpen(function(e) {
+            if (!e) return -1;
             r._setActionTimeout();
-            var e = n || {};
+            var i = n || {};
             r.mPluginName = t, r.mRunningFlag = !0;
             var s = 0;
             switch (o) {
               case MICROSOFT_NLU_ACTION:
-                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_NLU_ACTION), s = r._startNLU(r.mTransaction, e.text, e.language || MICROSOFT_DEFAULT_LANGUAGE);
+                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_NLU_ACTION), s = r._startNLU(r.mTransaction, i.text, i.language || MICROSOFT_DEFAULT_LANGUAGE);
                 break;
 
               case MICROSOFT_ASRNLU_ACTION:
-                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASRNLU_ACTION), s = r._startASR(r.mTransaction, e.language || MICROSOFT_DEFAULT_LANGUAGE, e.audioURL || '', !0, e.useProgressive || !1);
+                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASRNLU_ACTION), s = r._startASR(r.mTransaction, i.language || MICROSOFT_DEFAULT_LANGUAGE, i.audioURL || '', !0, i.useProgressive || !1);
                 break;
 
               case MICROSOFT_ASR_ACTION:
-                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASR_ACTION), s = r._startASR(r.mTransaction, e.language || MICROSOFT_DEFAULT_LANGUAGE, e.audioURL || '', !1, e.useProgressive || !1);
+                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASR_ACTION), s = r._startASR(r.mTransaction, i.language || MICROSOFT_DEFAULT_LANGUAGE, i.audioURL || '', !1, i.useProgressive || !1);
                 break;
 
               case MICROSOFT_TTS_ACTION:
-                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_TTS_ACTION), s = r._startTTS(r.mTransaction, e.text, e.language || MICROSOFT_DEFAULT_LANGUAGE, e.voice || MICROSOFT_DEFAULT_VOICE);
+                r.mTransaction = new MicrosoftTransaction(t, MICROSOFT_TTS_ACTION), s = r._startTTS(r.mTransaction, i.text, i.language || MICROSOFT_DEFAULT_LANGUAGE, i.voice || MICROSOFT_DEFAULT_VOICE);
                 break;
 
               default:
@@ -897,18 +928,18 @@ var Factory = function(t) {
         return this._error('_startNLU', 'nicht implementiert'), -1;
     }, o.prototype._stopNLU = function(t) {
         return this._error('_stopNLU', 'nicht implementiert'), -1;
-    }, o.prototype._startASR = function(t, o, n, r, i) {
-        if (void 0 === r && (r = !1), void 0 === i && (i = !1), !o) return this._error('_startASR', 'keine Sprache uebergeben'), 
+    }, o.prototype._startASR = function(t, o, n, r, e) {
+        if (void 0 === r && (r = !1), void 0 === e && (e = !1), !o) return this._error('_startASR', 'keine Sprache uebergeben'), 
         -1;
         if (!this.mMicrosoftASR) return this._error('_startASR', 'keine Microsoft ASR-Anbindung vorhanden'), 
         -1;
         try {
-            var e = {
+            var i = {
                 language: o,
                 nlu: r,
-                progressive: i
+                progressive: e
             };
-            return n && (e.audioURL = n), this.mMicrosoftASR.start(t, e);
+            return n && (i.audioURL = n), this.mMicrosoftASR.start(t, i);
         } catch (t) {
             return this._exception('_startASR', t), -1;
         }
@@ -921,19 +952,19 @@ var Factory = function(t) {
             return this._exception('_stopASR', t), -1;
         }
     }, o.prototype._startTTS = function(t, o, n, r) {
-        var i = this;
+        var e = this;
         if (!o) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
         if (!this.mMicrosoftTTS) return this._error('_startTTS', 'keine Microsoft TTS-Anbindung vorhanden'), 
         -1;
         try {
-            var e = {
+            var i = {
                 text: o,
                 language: n,
                 voice: r
             };
             return this._unlockAudio(function(o) {
-                o ? i.mMicrosoftTTS.start(t, e) : (i._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
-                i._onStop(t.plugin, t.type));
+                o ? e.mMicrosoftTTS.start(t, i) : (e._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
+                e._onStop(t.plugin, t.type));
             }), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
@@ -1036,28 +1067,28 @@ var Factory = function(t) {
         -1;
         var r = n || {};
         this.mRunningFlag = !0;
-        var i = 0;
+        var e = 0;
         switch (o) {
           case MICROSOFT_NLU_ACTION:
-            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_NLU_ACTION), i = this._startNLU(this.mTransaction, r.text, r.language || MICROSOFT_DEFAULT_LANGUAGE);
+            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_NLU_ACTION), e = this._startNLU(this.mTransaction, r.text, r.language || MICROSOFT_DEFAULT_LANGUAGE);
             break;
 
           case MICROSOFT_ASRNLU_ACTION:
-            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASRNLU_ACTION), i = this._startASR(this.mTransaction, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.audioURL || '', !0, r.useProgressive || !1);
+            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASRNLU_ACTION), e = this._startASR(this.mTransaction, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.audioURL || '', !0, r.useProgressive || !1);
             break;
 
           case MICROSOFT_ASR_ACTION:
-            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASR_ACTION), i = this._startASR(this.mTransaction, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.audioURL || '', !1, r.useProgressive || !1);
+            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_ASR_ACTION), e = this._startASR(this.mTransaction, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.audioURL || '', !1, r.useProgressive || !1);
             break;
 
           case MICROSOFT_TTS_ACTION:
-            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_TTS_ACTION), i = this._startTTS(this.mTransaction, r.text, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.voice || MICROSOFT_DEFAULT_VOICE);
+            this.mTransaction = new MicrosoftTransaction(t, MICROSOFT_TTS_ACTION), e = this._startTTS(this.mTransaction, r.text, r.language || MICROSOFT_DEFAULT_LANGUAGE, r.voice || MICROSOFT_DEFAULT_VOICE);
             break;
 
           default:
-            this._error('start', 'Keine gueltige Aktion uebergeben ' + o), i = -1;
+            this._error('start', 'Keine gueltige Aktion uebergeben ' + o), e = -1;
         }
-        return i;
+        return e;
     }, o.prototype.stop = function(t, o, n) {
         if (!this.isRunning()) return 0;
         if (!this.isOpen()) return this._error('stop', 'Port ist nicht geoeffnet'), -1;
@@ -1112,8 +1143,8 @@ var Factory = function(t) {
         }
     }, o.prototype._stopNLU = function(t) {
         return this._onStop(t.plugin, t.type), 0;
-    }, o.prototype._startASR = function(t, o, n, r, i) {
-        if (void 0 === r && (r = !1), void 0 === i && (i = !1), !this.microsoftASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+    }, o.prototype._startASR = function(t, o, n, r, e) {
+        if (void 0 === r && (r = !1), void 0 === e && (e = !1), !this.microsoftASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
@@ -1130,13 +1161,13 @@ var Factory = function(t) {
             return this._exception('_stopASR', t), -1;
         }
     }, o.prototype._startTTS = function(t, o, n, r) {
-        var i = this;
+        var e = this;
         if (!o) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
         if (!this.microsoftTTSFlag) return this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), setTimeout(function() {
-                return i._onStop(t.plugin, t.type);
+                return e._onStop(t.plugin, t.type);
             }, MICROSOFTMOCK_CALLBACK_TIMEOUT), 0;
         } catch (t) {
             return this._exception('_startTTS', t), -1;
@@ -1190,9 +1221,9 @@ var Factory = function(t) {
         var n = 0;
         return o && (n = o.done(), PortManager.remove(MICROSOFT_TYPE_NAME)), t.mCurrentPort = null, 
         t.mInitFlag = !1, n;
-    }, t._onOpenEvent = function(o, n, r, i) {
-        if ('function' == typeof i) try {
-            return i(o, n, r), 0;
+    }, t._onOpenEvent = function(o, n, r, e) {
+        if ('function' == typeof e) try {
+            return e(o, n, r), 0;
         } catch (o) {
             return t.mErrorOutputFlag && console.log('Microsoft._onOpenEvent: Exception', o.message), 
             -1;

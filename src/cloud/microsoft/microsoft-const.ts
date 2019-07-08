@@ -62,10 +62,9 @@ export const MICROSOFT_TTS_LANGUAGE = MICROSOFT_TTS_LANGUAGE1;
 
 // Microsoft Stimmen
 
-export const MICROSOFT_TTS_VOICE1 = 'Vicki';
-export const MICROSOFT_TTS_VOICE2 = 'Markus';
-export const MICROSOFT_TTS_VOICE3 = 'Anna-ML';
-export const MICROSOFT_TTS_VOICE4 = 'Petra-ML';
+export const MICROSOFT_TTS_VOICE1 = 'de-DE-Hedda';
+export const MICROSOFT_TTS_VOICE2 = 'de-DE-HeddaRUS';
+export const MICROSOFT_TTS_VOICE3 = 'de-DE-Stefan-Apollo';
 export const MICROSOFT_TTS_VOICE = MICROSOFT_TTS_VOICE1;
 export const MICROSOFT_DEFAULT_VOICE = MICROSOFT_TTS_VOICE;
 
@@ -82,7 +81,7 @@ export const MICROSOFT_DEFAULT_CODEC = MICROSOFT_PCM_CODEC;
 
 export const MICROSOFT_AUDIOBUFFER_SIZE = 2048;
 export const MICROSOFT_AUDIOSAMPLE_RATE = 16000;
-export const MICROSOFT_AUDIO_FORMAT = 'pcm';
+export const MICROSOFT_AUDIO_FORMAT = 'raw-16khz-16bit-mono-pcm';
 
 
 // Wenn der Action-Timeout in NuancePort abgeschaltet werden soll

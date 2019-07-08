@@ -1,7 +1,7 @@
 /**
  * Globale Fabrik zur Erzeugung einer TTS Version
  *
- * Letzte Aenderung: 17.05.2019
+ * Letzte Aenderung: 04.07.2019
  * Status: rot
  *
  * @module speak/tts
@@ -16,12 +16,13 @@ import { PluginFactory } from '../../core/plugin/plugin-factory';
 
 // tts
 
-import { TTS_TYPE_NAME, TTS_FACTORY_NAME, TTS_DEFAULT_NAME, TTS_GROUP_NAME, TTS_PLUGIN_NAME, TTS_MOCK_NAME, TTS_HTML5_NAME, TTS_AMAZON_NAME, TTS_GOOGLE_NAME, TTS_NUANCE_NAME } from './tts-const';
+import { TTS_TYPE_NAME, TTS_FACTORY_NAME, TTS_DEFAULT_NAME, TTS_GROUP_NAME, TTS_PLUGIN_NAME, TTS_MOCK_NAME, TTS_HTML5_NAME, TTS_AMAZON_NAME, TTS_GOOGLE_NAME, TTS_MICROSOFT_NAME, TTS_NUANCE_NAME } from './tts-const';
 import { TTSInterface } from './tts.interface';
 import { TTSMock } from './tts-mock';
 import { TTSHtml5 } from './tts-html5';
 import { TTSAmazon } from './tts-amazon';
 import { TTSGoogle } from './tts-google';
+import { TTSMicrosoft } from './tts-microsoft';
 import { TTSNuance } from './tts-nuance';
 import { TTSGroup } from './tts-group';
 
@@ -90,6 +91,10 @@ export class TTSFactory extends PluginFactory {
             // Google-TTS
             case TTS_GOOGLE_NAME:
                 tts = new TTSGoogle( aPluginName, aRegisterFlag );
+                break;
+            // Microsoft-TTS
+            case TTS_MICROSOFT_NAME:
+                tts = new TTSMicrosoft( aPluginName, aRegisterFlag );
                 break;
             // Nuance-TTS
             case TTS_NUANCE_NAME:

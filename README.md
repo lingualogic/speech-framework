@@ -4,18 +4,18 @@ Das Speech-Framework ist eine Typescript Browser-Bibliothek zur Integration von 
 
 Daneben git es einzeln verwendbare Dienste: 
 
-* **Speak** für die Sprachausgabe (Html5 SpeechSynthesis, Nuance-TTS, Amazon-TTS)
-* **Listen** für die Spracherennung (Html5 SpeechRecognition, Nuance-ASR)
+* **Speak** für die Sprachausgabe (Html5 SpeechSynthesis, Nuance-TTS, Amazon-TTS, Microsoft-TTS)
+* **Listen** für die Spracherennung (Html5 SpeechRecognition, Nuance-ASR, Microsoft-ASR)
 * **Intent** für das Sprachverstehen (Nuance-NLU, Google-NLU)
 * **Action** für die Aktionserzeugung
 * **Dialog** für die Ausführung von Dialogskripten
 
-Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch der Nuance Cloud-Dienst verwendet werden. Dazu wird ein eigener Nuance-Mix Account benötigt. Neu ist auch der Amazon Cloud-Dienst für die Sprachausgabe (TTS) und der Google Cloud-Dienst für das Sprachverstehen (NLU).
+Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch der Nuance Cloud-Dienst verwendet werden. Dazu wird ein eigener Nuance-Mix Account benötigt. Neu sind auch der Amazon Cloud-Dienst für die Sprachausgabe (TTS), der Microsoft Cloud-Dienst für die Sprachausgabe (TTS) und die Speacheingabe (ASR), sowie der Google Cloud-Dienst für das Sprachverstehen (NLU).
 
 
 ## Letzte Version
 
-* 0.5.11.0053 Alpha vom 25.06.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.12.0054 Alpha vom 08.07.2019 [Release Notizen](./CHANGELOG.md)
 
 Das Speech-Framework sollte noch nicht direkt in eigenen Projekten verwendet werden, da sich die API noch stark ändern kann. 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
@@ -88,10 +88,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.11.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.12.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.11.tgz
+    $ npm install speech-framework-0.5.12.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 

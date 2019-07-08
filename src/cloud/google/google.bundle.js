@@ -388,11 +388,11 @@ var ApiAiBaseError = function(t) {
             if (n && e === t.Method.GET) {
                 c += "?";
                 var h = 0;
-                for (var g in n) n.hasOwnProperty(g) && (h++ && (c += "&"), c += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
+                for (var p in n) n.hasOwnProperty(p) && (h++ && (c += "&"), c += encodeURIComponent(p) + "=" + encodeURIComponent(n[p]));
             } else n && (r || (r = {}), r["Content-Type"] = "application/json; charset=utf-8", 
             l = JSON.stringify(n));
-            for (var g in i) g in a && (a[g] = i[g]);
-            if (a.open(t.Method[e], c, !0), r) for (var g in r) r.hasOwnProperty(g) && a.setRequestHeader(g, r[g]);
+            for (var p in i) p in a && (a[p] = i[p]);
+            if (a.open(t.Method[e], c, !0), r) for (var p in r) r.hasOwnProperty(p) && a.setRequestHeader(p, r[p]);
             l ? a.send(l) : a.send(), a.onload = function() {
                 a.status >= 200 && a.status < 300 ? s(a) : u(a);
             }, a.onerror = function() {
@@ -577,7 +577,6 @@ var ApiAiClient = function() {
     }
     return __extends(e, t), e.prototype._start = function(t) {
         var e = this;
-        console.log('GoogleNLU._startNLU:', t);
         try {
             if (!this.mConfig.appKey) return void this._error('_start', 'kein AppKey vorhanden');
             this.mDialogflowClient = new ApiAiClient({
@@ -594,9 +593,7 @@ var ApiAiClient = function() {
         } catch (t) {
             this._exception('_start', t);
         }
-    }, e.prototype._stop = function() {
-        console.log('GoogleNLU._stop');
-    }, e;
+    }, e.prototype._stop = function() {}, e;
 }(GoogleDevice), PCM_L16CodecArray = [ 'audio/L16;rate=8000', 'audio/L16;rate=16000' ], OpusCodecArray = [ 'audio/opus;rate=8000', 'audio/opus;rate=16000' ], GoogleAudioCodec = function(t) {
     function e() {
         return t.call(this, 'GoogleAudioCodec') || this;

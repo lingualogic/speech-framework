@@ -5,12 +5,13 @@
  *
  * Installierte TTS:
  *
- *      TTSHtml5    - Default Web-TTS
- *      TTSAmazon   - Amazon-Service TTS
- *      TTSGoogle   - Google-Service TTS (nur mit Speech-Server)
- *      TTSNuance   - Nuance-Service TTS
+ *      TTSHtml5     - Default Web-TTS
+ *      TTSAmazon    - Amazon-Service TTS
+ *      TTSGoogle    - Google-Service TTS (kann nur mit Speech-Server verwendet werden)
+ *      TTSMicrosoft - Microsoft-Service TTS (sollte nur mit Speech-Server verwendet werden)
+ *      TTSNuance    - Nuance-Service TTS (deprecated)
  *
- * Letzte Aenderung: 17.05.2019
+ * Letzte Aenderung: 04.07.2019
  * Status: gelb
  *
  * @module speak/tts
@@ -36,6 +37,7 @@ import {
     TTS_HTML5_NAME,
     TTS_AMAZON_NAME,
     TTS_GOOGLE_NAME,
+    TTS_MICROSOFT_NAME,
     TTS_NUANCE_NAME
 } from './tts-const';
 import {
@@ -68,6 +70,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
     mTTSHtml5: TTSInterface = null;
     mTTSAmazon: TTSInterface = null;
     mTTSGoogle: TTSInterface = null;
+    mTTSMicrosoft: TTSInterface = null;
     mTTSNuance: TTSInterface = null;
 
 
@@ -134,6 +137,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         this.insertPlugin( TTS_NUANCE_NAME, this.mTTSFactory.create( TTS_NUANCE_NAME, false ));
         this.insertPlugin( TTS_AMAZON_NAME, this.mTTSFactory.create( TTS_AMAZON_NAME, false ));
         this.insertPlugin( TTS_GOOGLE_NAME, this.mTTSFactory.create( TTS_GOOGLE_NAME, false ));
+        this.insertPlugin( TTS_MICROSOFT_NAME, this.mTTSFactory.create( TTS_MICROSOFT_NAME, false ));
     }
 
 
@@ -216,6 +220,32 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
 
 
     /**
+     * Initialisierung des Microsoft-TTS Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initTTSMicrosoft( aOption: any ): void {
+        this.mTTSMicrosoft = this.findPlugin( TTS_MICROSOFT_NAME ) as TTSInterface;
+        if ( this.mTTSMicrosoft ) {
+            this.mTTSMicrosoft.init( aOption );
+            if ( this.mTTSMicrosoft.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('TTSMicrosoft._initTTSMicrosoft: TTS eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( TTS_MICROSOFT_NAME );
+            this.mTTSMicrosoft.done();
+            this.mTTSMicrosoft = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('TTSGroup._initTTSMicrosoft: TTS nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung des NUANCE-TTS Plugins
      *
      * @param {*} aOption - optionale Parameter
@@ -278,6 +308,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         this._initTTSNuance( option );
         this._initTTSAmazon( option );  // dritter wegen Tests
         this._initTTSGoogle( option );  // vierter wegen Tests
+        this._initTTSMicrosoft( option );  // fuenfter wegen Tests
 
         // console.log('TTSGroup.init: erfolgreich');
         if ( super.init( aOption ) !== 0 ) {
@@ -313,6 +344,7 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
         this.mTTSHtml5 = null;
         this.mTTSAmazon = null;
         this.mTTSGoogle = null;
+        this.mTTSMicrosoft = null;
         this.mTTSNuance = null;
         this.mCurrentTTS = null;
         return super.done();
@@ -469,7 +501,11 @@ export class TTSGroup extends PluginGroup implements TTSInterface {
             case TTS_GOOGLE_NAME:
                 tts = this.mTTSGoogle;
                 break;
-    
+
+            case TTS_MICROSOFT_NAME:
+                tts = this.mTTSMicrosoft;
+                break;
+                    
             case TTS_NUANCE_NAME:
                 tts = this.mTTSNuance;
                 break;

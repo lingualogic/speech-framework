@@ -29,10 +29,12 @@ function SpeakApp() {
         var tts2Button = document.getElementById('tts2Click');
         var tts3Button = document.getElementById('tts3Click');
         var tts4Button = document.getElementById('tts4Click');
+        var tts5Button = document.getElementById('tts5Click');
         var tts1Name = document.getElementById('tts1Name');
         var tts2Name = document.getElementById('tts2Name');
         var tts3Name = document.getElementById('tts3Name');
         var tts4Name = document.getElementById('tts4Name');
+        var tts5Name = document.getElementById('tts5Name');
 
         // Speak-Elemente
 
@@ -81,6 +83,12 @@ function SpeakApp() {
             tts4Name.innerHTML = ttsList[ 3 ];
         } else {
             tts4Button.style.display = 'none';
+        }
+        // TTS5
+        if ( ttsList.length > 4 ) {
+            tts5Name.innerHTML = ttsList[ 4 ];
+        } else {
+            tts5Button.style.display = 'none';
         }
 
         // alle Voice-Button initialisieren
@@ -255,6 +263,16 @@ function SpeakApp() {
         };
 
 
+        var onTTS5Click = function() {
+            clearErrorText();
+            console.log('===> onTTS5Click: auf TTS5 umschalten');
+            if ( ttsList.length > 4 ) {
+                speak.setTTS( ttsList[ 4 ]);
+                setVoiceList();
+            }
+        };
+
+
         // Voice bestimmen
 
 
@@ -329,6 +347,7 @@ function SpeakApp() {
         tts2Button.addEventListener('click', onTTS2Click, false);
         tts3Button.addEventListener('click', onTTS3Click, false);
         tts4Button.addEventListener('click', onTTS4Click, false);
+        tts5Button.addEventListener('click', onTTS5Click, false);
 
         // Voice 
 
@@ -410,6 +429,25 @@ function SpeakApp() {
             }
         } else {
             console.log('Amazon nicht vorhanden');
+        }
+        // Microsoft-Zurgiffsdaten als Optionen eintragen
+        var microsoftOption = {
+            microsoftRegion: MICROSOFT_REGION,
+            microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,
+            errorOutputFlag: true
+        };
+        // erzeugt das Microsoft-Modul
+        // console.log('pruefen auf speech.Microsoft', speech.Microsoft );
+        if ( speech.Microsoft ) {
+            if ( speech.Microsoft.init( microsoftOption ) === 0 ) {
+                speech.Microsoft.open((aError, aPortName, aPortResult) => {
+                    console.log('SpeakApp.init: Microsoft', aPortResult);
+                });
+            } else {
+                console.log('Microsoft nicht initialisiert');
+            }
+        } else {
+            console.log('Microsoft nicht vorhanden');
         }
         // Google-Zurgiffsdaten als Optionen eintragen
         var googleOption = {
