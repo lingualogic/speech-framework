@@ -395,8 +395,7 @@ var Factory = function(t) {
             return this._exception('_startASR', t), -1;
         }
     }, o.prototype._start = function(t) {
-        if (console.log('MicrosoftASR._start:', t.language), this.mRecordingFlag) return this._error('_start', 'ASR laeuft bereits'), 
-        -1;
+        if (this.mRecordingFlag) return this._error('_start', 'ASR laeuft bereits'), -1;
         var o = {
             language: t.language
         };

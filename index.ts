@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.12.0054 (Alpha) vom 08.07.2019
+ * Version: 0.5.13.0055 (Alpha) vom 18.07.2019
  */
 
 
@@ -103,6 +103,13 @@ export { Google } from './src/cloud/google/google';
 export { MicrosoftConfigDataInterface } from './src/cloud/microsoft/microsoft-config-data.interface';
 export { MicrosoftOptionInterface } from './src/cloud/microsoft/microsoft-option.interface';
 export { Microsoft } from './src/cloud/microsoft/microsoft';
+
+
+// rasa
+
+export { RasaConfigDataInterface } from './src/cloud/rasa/rasa-config-data.interface';
+export { RasaOptionInterface } from './src/cloud/rasa/rasa-option.interface';
+export { Rasa } from './src/cloud/rasa/rasa';
 
 
 // speech

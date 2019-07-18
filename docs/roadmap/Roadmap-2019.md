@@ -6,14 +6,21 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
-### August: Version 0.5.13
+### August: Version 0.5.14
+
+beinhaltet:
+
+* **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine NLU
+
+
+## Veröffentlichte Versionen
+
+
+### Juli: Version 0.5.13
 
 beinhaltet:
 
 * **Rasa:** Integration des Rasa Cloud-Dienstes für eine NLU
-
-
-## Veröffentlichte Versionen
 
 
 ### Juli: Version 0.5.12

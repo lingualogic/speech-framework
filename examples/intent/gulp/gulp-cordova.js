@@ -103,6 +103,11 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
+    gulp.task('cordova-copy-rasa-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'rasa-credentials.js'))
+            .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
+    });
+
     gulp.task('cordova-copy-src', () => {
         return gulp.src(path.join( srcDir, '**', '*'))
             .pipe(gulp.dest( cordovaWwwDir ));
@@ -136,6 +141,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
             .on('end', done);
     });
 
+    gulp.task('cordova-replace-rasa-credentials', (done) => {
+        gulp.src(path.join( cordovaWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
+            .pipe(gulp.dest( cordovaWwwDir))
+            .on('end', done);
+    });
+
     gulp.task('cordova-remove-absolute-assets', (done) => {
         gulp.src(path.join( cordovaWwwDir, '**', '*.js' ))
             .pipe(inject.replace( '/assets/', 'assets/' ))
@@ -150,11 +162,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
             'cordova-copy-dist',
             'cordova-copy-nuance-credentials',
             'cordova-copy-google-credentials',
+            'cordova-copy-rasa-credentials',
             'cordova-copy-src',
             'cordova-replace-cordova',
             'cordova-replace-speech',
             'cordova-replace-nuance-credentials',
             'cordova-replace-google-credentials',
+            'cordova-replace-rasa-credentials',
             'cordova-remove-absolute-assets',
             (err) => {
                 if(err) {

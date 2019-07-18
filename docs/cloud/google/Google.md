@@ -42,7 +42,7 @@ Die wichtigsten Parameter werden hier nochmal aufgeführt:
 
 * **googlePortName:** hier kann man "GooglePort" oder "GoogleMock" als Portname angeben. GoogleMock verbindet sich nicht mit dem Google Cloud-Dienst kann für die Unit-Tests verwendet werden.
 * **googleDynamicCredentialsFlag:** wird hier true angegeben, können die Google-Credentials für den AppKey auch später über Google.setConfig( aConfigData ) übergeben werden. Wird hier false angegeben oder der Parameter nicht eingetragen, muss der folgende Parameter googleAppKey eingetragen sein.
-* **amazonAppKey:** hier wird der AppKey der Google Cloud oder von Dialogflow angegeben. Muss vorhanden sein, wenn amazonDynamicCredentialsFlag false ist oder nicht eingetragen wurde.
+* **googleAppKey:** hier wird der AppKey der Google Cloud oder von Dialogflow angegeben. Muss vorhanden sein, wenn googeDynamicCredentialsFlag false ist oder nicht eingetragen wurde.
 
 
 ### Google.isInit(): boolean
@@ -71,7 +71,7 @@ Mit dem Aufruf:
 
 wird der GooglePort mit dem externen Google-Server verbunden. In result wird 0 für erfolgreich und -1 für einen aufgetretenen Fehler zurückgegeben.
  
-Die openEventCallback-Funktion gibt drei Werte zurück, der erste Wert ist ein Fehler oder null, der zweite Wert beinhaltet den Portnamen und der dritte Wert das Ergebnis 0 oder -1 für erfolgreiches Öffnen des AmazonPort oder nicht. Bei -1 wurde auch ein Fehler übergeben. Die Definition der openEnventCallback-Funktion sieht folgendermaßen aus:
+Die openEventCallback-Funktion gibt drei Werte zurück, der erste Wert ist ein Fehler oder null, der zweite Wert beinhaltet den Portnamen und der dritte Wert das Ergebnis 0 oder -1 für erfolgreiches Öffnen des GooglePort oder nicht. Bei -1 wurde auch ein Fehler übergeben. Die Definition der openEnventCallback-Funktion sieht folgendermaßen aus:
  
 	const openEventCallback = ( error: Error, portName: string, portResult: number ) => {
 		// hier kann auf das OpenEvent entsprechend den Rückgabewerten reagiert werden

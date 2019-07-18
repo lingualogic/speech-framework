@@ -7,6 +7,7 @@
  *
  *      NLUNuance   - Default Nuance-Service NLU
  *      NLUGoogle   - Google Dialogflow NLU (Version1-API, bis Oktober 2019)
+ *      NLURasa     - Rasa NLU 
  *      NLUHtml5    - Web-NLU (Grammatik muss definiert werden)
  *
  * Letzte Aenderung: 08.05.2019
@@ -37,7 +38,8 @@ import {
     NLU_GROUP_NAME,
     NLU_HTML5_NAME,
     NLU_NUANCE_NAME,
-    NLU_GOOGLE_NAME
+    NLU_GOOGLE_NAME,
+    NLU_RASA_NAME
 } from './nlu-const';
 import {
     NLUInterface,
@@ -73,6 +75,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
     mNLUHtml5: NLUInterface = null;
     mNLUNuance: NLUInterface = null;
     mNLUGoogle: NLUInterface = null;
+    mNLURasa: NLUInterface = null;
 
 
     // aktuell genutzte NLU
@@ -137,6 +140,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         // eintragen der verfuegbaren NLU-Plugins
         this.insertPlugin( NLU_NUANCE_NAME, this.mNLUFactory.create( NLU_NUANCE_NAME, false ));
         this.insertPlugin( NLU_GOOGLE_NAME, this.mNLUFactory.create( NLU_GOOGLE_NAME, false ));
+        this.insertPlugin( NLU_RASA_NAME, this.mNLUFactory.create( NLU_RASA_NAME, false ));
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this.insertPlugin( NLU_HTML5_NAME, this.mNLUFactory.create( NLU_HTML5_NAME, false ));
     }
@@ -221,6 +225,32 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
 
     /**
+     * Initialisierung des Rasa-NLU Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initNLURasa( aOption: any ): void {
+        this.mNLURasa = this.findPlugin( NLU_RASA_NAME ) as NLUInterface;
+        if ( this.mNLURasa ) {
+            this.mNLURasa.init( aOption );
+            if ( this.mNLURasa.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('NLUGroup._initNLURasa: NLU eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( NLU_RASA_NAME );
+            this.mNLURasa.done();
+            this.mNLURasa = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('NLUGroup._initNLURasa: NLU nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung von NLUPlugin
      *
      * @param {any} [aOption] - optionale Parameter
@@ -254,6 +284,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
         this._initNLUNuance( option );  // Default-NLU
         this._initNLUGoogle( option );  // Dialogflow-NLU Version-1 bis Oktober 2019
+        this._initNLURasa( option );    // Rasa-NLU
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this._initNLUHtml5( option );
 
@@ -291,6 +322,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         this.mNLUHtml5 = null;
         this.mNLUNuance = null;
         this.mNLUGoogle = null;
+        this.mNLURasa = null;
         this.mCurrentNLU = null;
         return super.done();
     }
@@ -513,6 +545,10 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
                 nlu = this.mNLUGoogle;
                 break;
 
+            case NLU_RASA_NAME:
+                nlu = this.mNLURasa;
+                break;
+    
             default:
                 break;
         }

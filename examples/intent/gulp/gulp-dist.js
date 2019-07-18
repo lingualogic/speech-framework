@@ -24,6 +24,11 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
             .pipe( gulp.dest(path.join( distDir, 'js')));
     });
 
+    gulp.task('dist-copy-rasa-credentials', () => {
+        return gulp.src( path.join( globalCredentialsDir, 'rasa-credentials.js'))
+            .pipe( gulp.dest(path.join( distDir, 'js')));
+    });
+
     gulp.task('dist-copy-speech', () => {
         return gulp.src( path.join( globalDistDir, 'speech-framework.js'))
             .pipe(gulp.dest( path.join( distDir, 'js')));
@@ -44,6 +49,13 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
     gulp.task( 'dist-replace-google-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(gulp.dest( distDir ))
+            .on('end', done);
+    });
+
+    gulp.task( 'dist-replace-rasa-credentials', (done) => {
+        gulp.src(path.join( distDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
@@ -79,6 +91,8 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
             'dist-replace-nuance-credentials',
             'dist-copy-google-credentials',
             'dist-replace-google-credentials',
+            'dist-copy-rasa-credentials',
+            'dist-replace-rasa-credentials',
             'dist-copy-speech',
             'dist-replace-speech',
             'dist-remove-absolute-assets',

@@ -70,6 +70,11 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
             .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
     });
 
+    gulp.task('electron-copy-rasa-credentials', () => {
+        return gulp.src(path.join( globalCredentialsDir, 'rasa-credentials.js'))
+            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
+    });
+
     gulp.task('electron-copy-src', () => {
         return gulp.src(path.join(srcDir, '**', '*'))
             .pipe(gulp.dest(electronWwwDir));
@@ -92,6 +97,13 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
     gulp.task('electron-replace-google-credentials', (done) => {
         gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(gulp.dest( electronWwwDir))
+            .on('end', done);
+    });
+
+    gulp.task('electron-replace-rasa-credentials', (done) => {
+        gulp.src(path.join( electronWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
             .pipe(gulp.dest( electronWwwDir))
             .on('end', done);
     });
@@ -128,17 +140,37 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
     });
 
 
-    gulp.task('electron-build', (done) => {
+    gulp.task('electron-generate', (done) => {
         runSquence(
             'electron-prepare',
             'electron-copy-dist',
             'electron-copy-nuance-credentials',
             'electron-copy-google-credentials',
+            'electron-copy-rasa-credentials',
             'electron-copy-src',
             'electron-replace-speech',
             'electron-replace-nuance-credentials',
             'electron-replace-google-credentials',
+            'electron-replace-rasa-credentials',
             'electron-remove-absolute-assets',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+
+    gulp.task('electron-build', (done) => {
+        runSquence(
+            'electron-generate',
             'electron-mkdir-app',
             'electron-build-app',
             (err) => {
@@ -158,15 +190,7 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
 
     gulp.task('electron-run', (done) => {
         runSquence(
-            'electron-prepare',
-            'electron-copy-dist',
-            'electron-copy-nuance-credentials',
-            'electron-copy-google-credentials',
-            'electron-copy-src',
-            'electron-replace-speech',
-            'electron-replace-nuance-credentials',
-            'electron-replace-google-credentials',
-            'electron-remove-absolute-assets',
+            'electron-generate',
             'electron-run-app',
             (err) => {
                 if(err) {

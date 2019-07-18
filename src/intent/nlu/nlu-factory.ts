@@ -1,7 +1,7 @@
 /**
  * Globale Fabrik zur Erzeugung einer NLU
  *
- * Letzte Aenderung: 08.05.2019
+ * Letzte Aenderung: 09.07.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -25,6 +25,7 @@ import {
     NLU_HTML5_NAME,
     NLU_NUANCE_NAME,
     NLU_GOOGLE_NAME,
+    NLU_RASA_NAME,
     NLU_MOCK_NAME
 } from './nlu-const';
 import { NLUInterface } from './nlu.interface';
@@ -32,6 +33,7 @@ import { NLUMock } from './nlu-mock';
 import { NLUHtml5 } from './nlu-html5';
 import { NLUNuance } from './nlu-nuance';
 import { NLUGoogle } from './nlu-google';
+import { NLURasa } from './nlu-rasa';
 import { NLUGroup } from './nlu-group';
 
 
@@ -94,6 +96,9 @@ export class NLUFactory extends PluginFactory {
                 break;
             case NLU_GOOGLE_NAME:
                 nlu = new NLUGoogle( aPluginName, aRegisterFlag );
+                break;
+            case NLU_RASA_NAME:
+                nlu = new NLURasa( aPluginName, aRegisterFlag );
                 break;
             case NLU_HTML5_NAME:
                 nlu = new NLUHtml5( aPluginName, aRegisterFlag );

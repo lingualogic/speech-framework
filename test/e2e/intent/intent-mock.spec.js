@@ -43,6 +43,7 @@ describe('Intent', () => {
 
     let nuanceFlag = false;
     let googleFlag = false;
+    let rasaFlag = false;
     let intent = null;
     let nluCount = 0;
 
@@ -51,6 +52,7 @@ describe('Intent', () => {
         console.log('Intent (gemockt) E2E-Tests gestartet...');
         // console.log('Nuance vorhanden:', speech.Nuance);
         // console.log('Google vorhanden:', speech.Google);
+        // console.log('Rasa vorhanden:', speech.Rasa);
         // eslint-disable-next-line
         if ( speech.Nuance ) {
             // console.log('IntentTest: Nuance wird erzeugt');
@@ -86,8 +88,27 @@ describe('Intent', () => {
                     nluCount++;
                     done();
                 })).toBe( 0 );
+            } else {
+                // eslint-disable-next-line
+                if ( speech.Rasa ) {
+                    console.log('IntentTest: Rasa wird erzeugt');
+                    // Google initialisieren
+                    // eslint-disable-next-line
+                    expect( speech.Rasa.init({ rasaPortName: 'RasaMock', rasaAppKey: 'testAppKey', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
+                    // eslint-disable-next-line
+                    expect( speech.Rasa.open(() => {
+                        // eslint-disable-next-line
+                        speech.SpeechMain.init();
+                        // eslint-disable-next-line
+                        intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
+                        expect( intent ).toBeTruthy();
+                        rasaFlag = true;
+                        nluCount++;
+                        done();
+                    })).toBe( 0 );
+                }
             }
-        }
+        } 
     });
 
     afterAll(() => {
@@ -103,6 +124,10 @@ describe('Intent', () => {
         } else if ( speech.Google ) {
             // eslint-disable-next-line
             speech.Google.done();
+            // eslint-disable-next-line
+        } else if ( speech.Rasa ) {
+            // eslint-disable-next-line
+            speech.Rasa.done();
         }
     });
 
@@ -552,6 +577,8 @@ describe('Intent', () => {
             } else if ( googleFlag ) {
                 expect( data.confidence ).toBe( 1.0 );
                 expect( data.speech ).toBe( 'TestSpeech' );
+            } else if ( rasaFlag ) {
+                expect( data.confidence ).toBe( 1.0 );
             }
             expect( data.error ).toBe( '' );
             // console.log('Test 1 Ende');

@@ -582,7 +582,6 @@ var ApiAiClient = function() {
             this.mDialogflowClient = new ApiAiClient({
                 accessToken: this.mConfig.appKey
             }), this.mDialogflowClient.textRequest(t.text).then(function(t) {
-                console.log('GoogleNlu._start: response = ', t.result);
                 try {
                     e._onResult(t.result);
                 } catch (t) {

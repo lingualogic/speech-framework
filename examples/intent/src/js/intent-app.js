@@ -228,13 +228,17 @@ function IntentApp() {
             listenResult.value = aResult.literal;
             var intentResult = document.getElementById('intentResult');
             if ( aResult.confidence > 0.0 ) {
-                intentResult.value = aResult.intent + ' Confidence: ' + aResult.confidence;
+                intentResult.value = 'Intent = ' + aResult.intent + ',  Confidence = ' + aResult.confidence;
             } else {
                 intentResult.value = aResult.intent;
             }
             var entityResult = document.getElementById('entityResult');
             if ( aResult.conceptList.length > 0 ) {
-                entityResult.value = 'Konzept = ' + aResult.conceptList[0].concept + ' Wert = ' + aResult.conceptList[0].literal;
+                let confidence = '';
+                if ( aResult.conceptList[0].confidence ) {
+                    confidence = ',  Confidence = ' + aResult.conceptList[0].confidence;
+                }
+                entityResult.value = 'Konzept = ' + aResult.conceptList[0].concept + ',  Wert = ' + aResult.conceptList[0].literal + confidence;
             } else {
                 entityResult.value = '';
             }
@@ -268,8 +272,8 @@ function IntentApp() {
 
     try {
         console.log('IntentApp: create...');
-        // Nuance-Zurgiffsdaten als Optionen eintragen
         var option = {
+            rasaAppKey: RASA_APP_KEY,
             googleAppKey: GOOGLE_APP_KEY,
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
@@ -286,6 +290,18 @@ function IntentApp() {
             });
         } else {
             console.log('IntentApp.init: kein Google vorhanden');
+        }
+
+        // erzeugt das Rasa-Modul
+
+        if ( speech.Rasa ) {
+            speech.Rasa.init( option );
+            speech.Rasa.open((aError, aPortName, aPortResult) => {
+                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                console.log('IntentApp.init: Rasa', aPortResult);
+            });
+        } else {
+            console.log('IntentApp.init: kein Rasa vorhanden');
         }
 
         // erzeugt das Nuance-Modul

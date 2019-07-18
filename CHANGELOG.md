@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.13.0055 Alpha (18.07.2019)
+
+### Features
+
+* **Rasa:** der Rasa Cloud-Dienst für die NLU wurde eingebaut, um einen eigenen Rasa-Server nutzen zu können
+
+
 ## 0.5.12.0054 Alpha (08.07.2019)
 
 ### Features

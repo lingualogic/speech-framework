@@ -386,6 +386,21 @@ gulp.task('copy-microsoft', function() {
 
 
 /** 
+ * Kopiert die Sourcedateien aus build/src nach dist/src/ von Rasa
+ */ 
+
+gulp.task('copy-rasa', function() {
+    return gulp.src([
+        'bundle/rasa.d.ts',
+        'build/src/cloud/rasa/rasa-const.d.ts',
+        'build/src/cloud/rasa/rasa-config-data.interface.d.ts',
+        'build/src/cloud/rasa/rasa-option.interface.d.ts'
+    ])
+        .pipe( gulp.dest('dist/src/cloud/rasa'));
+}); 
+
+
+/** 
  * Kopiert die Bundledateien aus bundle/ nach dist/
  */ 
 
@@ -466,6 +481,7 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-amazon',
         'copy-google',
         'copy-microsoft',
+        'copy-rasa',
         callback
     );
 });
@@ -672,6 +688,54 @@ gulp.task('install-microsoft-credentials-js', function() {
 
 
 /**
+ * Erzeugt rasa-credentials.ts in credentials/
+ */
+
+gulp.task('install-rasa-credentials-ts', function() {
+    try {
+        // pruefen auf vorhandene Rasa-Credentials Datei
+        fs.accessSync( 'credentials/rasa-credentials.ts' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/rasa-credentials.ts' ])
+            .pipe( file( 'rasa-credentials.ts', ''))
+            .pipe( inject.append( "/**\n" ))
+            .pipe( inject.append( " * Rasa Credentials\n" ))
+            .pipe( inject.append( " */\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "export const RASA_APP_KEY = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
+ * Erzeugt rasa-credentials.js in credentials/
+ */
+
+gulp.task('install-rasa-credentials-js', function() {
+    try {
+        // pruefen auf vorhandene Rasa-Credentials Datei
+        fs.accessSync( 'credentials/rasa-credentials.js' );
+    } catch (e) {
+        // Datei ist nicht vorhanden und kann erzeugt werden
+        return gulp.src([ 'credentials/rasa-credentials.js' ])
+            .pipe( file( 'rasa-credentials.js', ''))
+            .pipe(inject.append( "/**\n" ))
+            .pipe(inject.append( " * Rasa Credentials\n" ))
+            .pipe(inject.append( " */\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "\n" ))
+            .pipe(inject.append( "var RASA_APP_KEY = '';\n" ))
+            .pipe( gulp.dest( 'credentials' ));
+    }
+    return gulp.src( '' ); // empty stream
+});
+
+
+/**
  * Installiert die WebDriver-Treiber fuer die  Protractor-Tests
  */
 
@@ -700,6 +764,8 @@ gulp.task('install', (callback) => {
         'install-google-credentials-js',
         'install-microsoft-credentials-ts',
         'install-microsoft-credentials-js',
+        'install-rasa-credentials-ts',
+        'install-rasa-credentials-js',
         // 'install-webdriver',
         'install-electron',
         // 'install-cordova',
