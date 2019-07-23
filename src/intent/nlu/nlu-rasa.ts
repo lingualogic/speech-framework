@@ -275,8 +275,8 @@ export class NLURasa extends NLUPlugin {
             if ( aEvent.entities ) {
                 console.log('NluRasa._getRecognitionIntentResult:', aEvent.entities);
                 for ( let entity of aEvent.entities ) {
-                    let concept = { concept: entity.entity, value: entity.value, literal: entity.value, confidence: entity.confidence };
-                    console.log('NluNuance._getRecognitionIntentResult: concept = ', concept);
+                    let concept = { concept: entity.entity, value: entity.value, literal: entity.text, confidence: entity.confidence };
+                    console.log('NluRasa._getRecognitionIntentResult: concept = ', concept);
                     intentData.conceptList.push( concept );
                 }
             }

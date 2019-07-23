@@ -1,10 +1,10 @@
 /**
  * Speech-Rasa
  * 
- * Version: 0.1.0
- * Build:   0001
+ * Version: 0.1.1
+ * Build:   0002
  * TYPE:    ALPHA
- * Datum:   09.07.2019
+ * Datum:   22.07.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -43,7 +43,7 @@ function __extends(t, n) {
     new r());
 }
 
-var RASA_VERSION_NUMBER = '0.1.0', RASA_VERSION_BUILD = '0001', RASA_VERSION_TYPE = 'ALPHA', RASA_VERSION_DATE = '09.07.2019', RASA_VERSION_STRING = RASA_VERSION_NUMBER + '.' + RASA_VERSION_BUILD + ' vom ' + RASA_VERSION_DATE + ' (' + RASA_VERSION_TYPE + ')', RASA_API_VERSION = RASA_VERSION_STRING, RasaTransaction = function() {
+var RASA_VERSION_NUMBER = '0.1.1', RASA_VERSION_BUILD = '0002', RASA_VERSION_TYPE = 'ALPHA', RASA_VERSION_DATE = '22.07.2019', RASA_VERSION_STRING = RASA_VERSION_NUMBER + '.' + RASA_VERSION_BUILD + ' vom ' + RASA_VERSION_DATE + ' (' + RASA_VERSION_TYPE + ')', RASA_API_VERSION = RASA_VERSION_STRING, RasaTransaction = function() {
     function t(n, r) {
         void 0 === n && (n = ''), void 0 === r && (r = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = n, this.type = r, 
@@ -420,13 +420,15 @@ var RASA_VERSION_NUMBER = '0.1.0', RASA_VERSION_BUILD = '0001', RASA_VERSION_TYP
         if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
         -1;
         try {
-            return 'string' == typeof t.rasaAppKey && t.rasaAppKey && (this.mRasaConfig.appKey = t.rasaAppKey), 
+            return 'string' == typeof t.rasaServerUrl && t.rasaServerUrl && (this.mRasaConfig.serverUrl = t.rasaServerUrl), 
+            'string' == typeof t.rasaAppKey && t.rasaAppKey && (this.mRasaConfig.appKey = t.rasaAppKey), 
             0;
         } catch (t) {
             return this._exception('setConfig', t), -1;
         }
     }, n.prototype.getConfig = function() {
         return {
+            rasaServerUrl: this.mRasaConfig.serverUrl,
             rasaAppKey: this.mRasaConfig.appKey
         };
     }, n.prototype.isOnline = function() {

@@ -40,6 +40,11 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
     });
 
 
+    gulp.task('cordova-install-electron', (done) => {
+        exec(`cd ${cordovaAppDir} && cordova platform add electron`, done);
+    });
+
+
     gulp.task('cordova-install-android', (done) => {
         exec(`cd ${cordovaAppDir} && cordova platform add android`, done);
     });
@@ -63,6 +68,7 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
             'cordova-copy-original',
             // fuer alle Betriebssysteme verfuegbar
             'cordova-install-browser',
+            'cordova-install-electron',
             'cordova-install-android',
             // koennen nur unter Mac-Rechner installiert werden !
             // werden deshalb separat installiert
@@ -88,8 +94,11 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         return del( cordovaWwwDir );
     });
 
-    gulp.task('cordova-copy-aws-sdk', () => {
-        return gulp.src( path.join( globalLibDir, 'aws-sdk-speech.min.js'))
+    gulp.task('cordova-copy-lib', () => {
+        return gulp.src([
+            path.join( globalLibDir, 'aws-sdk-speech.min.js'),
+            path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js')
+        ])
             .pipe(gulp.dest( path.join( cordovaWwwDir, 'js')));
     });
 
@@ -102,7 +111,8 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         return gulp.src([
             path.join( globalCredentialsDir, 'nuance-credentials.js'),
             path.join( globalCredentialsDir, 'amazon-credentials.js'),
-            path.join( globalCredentialsDir, 'google-credentials.js')
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js')
         ])
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
@@ -119,9 +129,10 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
             .on( 'end', done );
     });
 
-    gulp.task('cordova-replace-aws-sdk', (done) => {
+    gulp.task('cordova-replace-lib', (done) => {
         gulp.src( path.join( cordovaWwwDir, 'index.html' ))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-speech.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-speech.min.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on( 'end', done );
     });
@@ -138,6 +149,7 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/amazon-credentials.js"></script>', '<script type="text/javascript" src="js/amazon-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
     });
@@ -153,12 +165,12 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
     gulp.task('cordova-generate', (done) => {
         runSquence(
             'cordova-prepare',
-            'cordova-copy-aws-sdk',
+            'cordova-copy-lib',
             'cordova-copy-dist',
             'cordova-copy-credentials',
             'cordova-copy-src',
             'cordova-replace-cordova',
-            'cordova-replace-aws-sdk',
+            'cordova-replace-lib',
             'cordova-replace-speech',
             'cordova-replace-credentials',
             'cordova-remove-absolute-assets',
@@ -212,6 +224,10 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         exec(`cd ${cordovaAppDir} && cordova run android --debug`, done);
     });
 
+    gulp.task('cordova-run-electron', (done) => {
+        exec(`cd ${cordovaAppDir} && cordova run electron --nobuild`, done);
+    });
+
     gulp.task('cordova-run-ios', (done) => {
         exec(`cd ${cordovaAppDir} && cordova run ios --debug`, done);
     });
@@ -243,6 +259,24 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         runSquence(
             'cordova-generate',
             'cordova-run-android',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+    gulp.task('cordova-electron', (done) => {
+        runSquence(
+            'cordova-generate',
+            'cordova-run-electron',
             (err) => {
                 if(err) {
                     // eslint-disable-next-line

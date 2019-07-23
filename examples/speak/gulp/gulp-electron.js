@@ -54,8 +54,11 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
         ]);
     });
 
-    gulp.task('electron-copy-aws-sdk', () => {
-        return gulp.src(path.join( globalLibDir, 'aws-sdk-speech.min.js'))
+    gulp.task('electron-copy-lib', () => {
+        return gulp.src([
+            path.join( globalLibDir, 'aws-sdk-speech.min.js'),
+            path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js')
+        ])
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
@@ -68,7 +71,8 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
         return gulp.src([ 
             path.join( globalCredentialsDir, 'nuance-credentials.js'),
             path.join( globalCredentialsDir, 'amazon-credentials.js'),
-            path.join( globalCredentialsDir, 'google-credentials.js')
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js')
         ])
             .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
     });
@@ -78,9 +82,10 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
             .pipe(gulp.dest(electronWwwDir));
     });
 
-    gulp.task('electron-replace-aws-sdk', (done) => {
+    gulp.task('electron-replace-lib', (done) => {
         gulp.src(path.join(electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/aws-sdk-speech.min.js"></script>', '<script type="text/javascript" src="js/aws-sdk-speech.min.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest(electronWwwDir))
             .on('end', done);
     });
@@ -97,6 +102,7 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/amazon-credentials.js"></script>', '<script type="text/javascript" src="js/amazon-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
             .pipe(gulp.dest( electronWwwDir))
             .on('end', done);
     });
@@ -133,17 +139,35 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
     });
 
 
-    gulp.task('electron-build', (done) => {
+    gulp.task('electron-generate', (done) => {
         runSquence(
             'electron-prepare',
-            'electron-copy-aws-sdk',
+            'electron-copy-lib',
             'electron-copy-dist',
             'electron-copy-credentials',
             'electron-copy-src',
-            'electron-replace-aws-sdk',
+            'electron-replace-lib',
             'electron-replace-speech',
             'electron-replace-credentials',
             'electron-remove-absolute-assets',
+            (err) => {
+                if(err) {
+                    // eslint-disable-next-line
+                    console.log('failed to build dist to cordova project');
+                    done(err);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log('DONE!');
+                done();
+            }
+        );
+    });
+
+
+    gulp.task('electron-build', (done) => {
+        runSquence(
+            'electron-generate',
             'electron-mkdir-app',
             'electron-build-app',
             (err) => {
@@ -163,7 +187,7 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, srcDir, globalCrede
 
     gulp.task('electron-run', (done) => {
         runSquence(
-            'electron-build',
+            'electron-generate',
             'electron-run-app',
             (err) => {
                 if(err) {

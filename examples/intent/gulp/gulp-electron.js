@@ -60,18 +60,12 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
-    gulp.task('electron-copy-nuance-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
-            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
-    });
-
-    gulp.task('electron-copy-google-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
-            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
-    });
-
-    gulp.task('electron-copy-rasa-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'rasa-credentials.js'))
+    gulp.task('electron-copy-credentials', () => {
+        return gulp.src([
+            path.join( globalCredentialsDir, 'nuance-credentials.js'),
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'rasa-credentials.js')            
+        ])
             .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
     });
 
@@ -87,22 +81,10 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
             .on('end', done);
     });
 
-    gulp.task('electron-replace-nuance-credentials', (done) => {
+    gulp.task('electron-replace-credentials', (done) => {
         gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
-            .pipe(gulp.dest( electronWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('electron-replace-google-credentials', (done) => {
-        gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
-            .pipe(gulp.dest( electronWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('electron-replace-rasa-credentials', (done) => {
-        gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
             .pipe(gulp.dest( electronWwwDir))
             .on('end', done);
@@ -144,14 +126,10 @@ module.exports = ({ gulp, exec, globalDistDir,  globalCredentialsDir, srcDir, el
         runSquence(
             'electron-prepare',
             'electron-copy-dist',
-            'electron-copy-nuance-credentials',
-            'electron-copy-google-credentials',
-            'electron-copy-rasa-credentials',
+            'electron-copy-credentials',
             'electron-copy-src',
             'electron-replace-speech',
-            'electron-replace-nuance-credentials',
-            'electron-replace-google-credentials',
-            'electron-replace-rasa-credentials',
+            'electron-replace-credentials',
             'electron-remove-absolute-assets',
             (err) => {
                 if(err) {

@@ -27,13 +27,13 @@ Das RasaOptionInterface defniert folgende optionale Parameter:
 
 	export interface RasaOptionInterface {
 	    /** legt den konkreten Port fest, der geladen werden soll, wird hier RasaMock angegeben, wird der Mock geladen */
-	    RasaPortName?: string;
+	    rasaPortName?: string;
 	    /** legt die URL fuer die Verbindung zum Server fest */
-	    RasaServerUrl?: string;
+	    rasaServerUrl?: string;
 	    /** legt dynamische Konfigurierbarkeit fest */
-	    RasaDynamicCredentialsFlag?: boolean;
+	    rasaDynamicCredentialsFlag?: boolean;
 	    /** legt den App Key (Token) fuer die Verbindung zum Server fest, das gleiche Token muss beim Start des Servers angegeben werden */
-	    RasaAppKey?: string;
+	    rasaAppKey?: string;
 	    /** legt die Fehlerausgabe fest */
 	    errorOutputFlag?: boolean;
 	}
@@ -41,6 +41,7 @@ Das RasaOptionInterface defniert folgende optionale Parameter:
 Die wichtigsten Parameter werden hier nochmal aufgeführt:
 
 * **RasaPortName:** hier kann man "RasaPort" oder "RasaMock" als Portname angeben. RasaMock verbindet sich nicht mit dem Rasa Cloud-Dienst kann für die Unit-Tests verwendet werden.
+* **RasaServerUrl:** hier kann man "http://localhost:5005" für einen lokalen Rasa-Server angeben, oder eine andere URL für einen Remote Rasa-Server.
 * **RasaDynamicCredentialsFlag:** wird hier true angegeben, können die Rasa-Credentials für den AppKey auch später über Rasa.setConfig( aConfigData ) übergeben werden. Wird hier false angegeben oder der Parameter nicht eingetragen, muss der folgende Parameter RasaAppKey eingetragen sein.
 * **rasaAppKey:** hier wird der AppKey (Token) des eigenen Rasa-Servers angegeben. Muss vorhanden sein, wenn rasaDynamicCredentialsFlag false ist oder nicht eingetragen wurde. Der gleiche Token wird beim Start des Rasa-Servers übergeben.
 
@@ -89,6 +90,8 @@ können die Rasa-Credentials nach der Initialisierung des Rasa Subsystems einget
 Das RasaConfigDataInterface beinhaltet folgende Parameter:
 
 	export interface RasaConfigDataInterface {
+	    /** legt die URL fuer die Verbindung zum Server fest */
+	    rasaServerUrl?: string;
 	    /** legt den AppKey (Token) fuer die Verbindung zum Server fest */
 	    RasaAppKey: string;
 	}

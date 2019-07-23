@@ -14,18 +14,12 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
         rimraf( distDir, done);
     });
 
-    gulp.task('dist-copy-nuance-credentials', () => {
-        return gulp.src( path.join( globalCredentialsDir, 'nuance-credentials.js'))
-            .pipe( gulp.dest(path.join( distDir, 'js')));
-    });
-
-    gulp.task('dist-copy-google-credentials', () => {
-        return gulp.src( path.join( globalCredentialsDir, 'google-credentials.js'))
-            .pipe( gulp.dest(path.join( distDir, 'js')));
-    });
-
-    gulp.task('dist-copy-rasa-credentials', () => {
-        return gulp.src( path.join( globalCredentialsDir, 'rasa-credentials.js'))
+    gulp.task('dist-copy-credentials', () => {
+        return gulp.src([
+            path.join( globalCredentialsDir, 'nuance-credentials.js'),
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'rasa-credentials.js')            
+        ])
             .pipe( gulp.dest(path.join( distDir, 'js')));
     });
 
@@ -39,22 +33,10 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
             .pipe( gulp.dest( distDir ));
     });
 
-    gulp.task( 'dist-replace-nuance-credentials', (done) => {
+    gulp.task( 'dist-replace-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
-            .pipe(gulp.dest( distDir ))
-            .on('end', done);
-    });
-
-    gulp.task( 'dist-replace-google-credentials', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
-            .pipe(gulp.dest( distDir ))
-            .on('end', done);
-    });
-
-    gulp.task( 'dist-replace-rasa-credentials', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
@@ -87,12 +69,8 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, di
         runSquence(
             'dist-prepare',
             'dist-copy-src',
-            'dist-copy-nuance-credentials',
-            'dist-replace-nuance-credentials',
-            'dist-copy-google-credentials',
-            'dist-replace-google-credentials',
-            'dist-copy-rasa-credentials',
-            'dist-replace-rasa-credentials',
+            'dist-copy-credentials',
+            'dist-replace-credentials',
             'dist-copy-speech',
             'dist-replace-speech',
             'dist-remove-absolute-assets',

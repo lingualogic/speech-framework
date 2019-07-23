@@ -14,23 +14,19 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCred
         rimraf( distDir, done);
     });
 
-    gulp.task('dist-copy-google-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
+    gulp.task('dist-copy-credentials', () => {
+        return gulp.src([
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js'),
+            path.join( globalCredentialsDir, 'nuance-credentials.js')
+        ])
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
-    gulp.task('dist-copy-microsoft-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'microsoft-credentials.js'))
-            .pipe(gulp.dest(path.join( distDir, 'js')));
-    });
-
-    gulp.task('dist-copy-nuance-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
-            .pipe(gulp.dest(path.join( distDir, 'js')));
-    });
-
-    gulp.task('dist-copy-azure-sdk', () => {
-        return gulp.src(path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js'))
+    gulp.task('dist-copy-lib', () => {
+        return gulp.src([
+            path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js')
+        ])
             .pipe(gulp.dest(path.join( distDir, 'js')));
     });
 
@@ -44,28 +40,16 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCred
             .pipe(gulp.dest( distDir ));
     });
 
-    gulp.task('dist-replace-google-credentials', (done) => {
+    gulp.task('dist-replace-credentials', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
-            .pipe(gulp.dest( distDir ))
-            .on('end', done);
-    });
-
-    gulp.task('dist-replace-microsoft-credentials', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
-            .pipe(gulp.dest( distDir ))
-            .on('end', done);
-    });
-
-    gulp.task('dist-replace-nuance-credentials', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
 
-    gulp.task('dist-replace-azure-sdk', (done) => {
+    gulp.task('dist-replace-lib', (done) => {
         gulp.src(path.join( distDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest( distDir ))
@@ -99,14 +83,10 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCred
         runSquence(
             'dist-prepare',
             'dist-copy-src',
-            'dist-copy-google-credentials',
-            'dist-copy-microsoft-credentials',
-            'dist-copy-nuance-credentials',
-            'dist-replace-google-credentials',
-            'dist-replace-microsoft-credentials',
-            'dist-replace-nuance-credentials',
-            'dist-copy-azure-sdk',
-            'dist-replace-azure-sdk',
+            'dist-copy-credentials',
+            'dist-replace-credentials',
+            'dist-copy-lib',
+            'dist-replace-lib',
             'dist-copy-speech',
             'dist-replace-speech',
             'dist-remove-absolute-assets',

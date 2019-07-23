@@ -60,23 +60,17 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, globalCredentialsDi
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
-    gulp.task('electron-copy-azure-sdk', () => {
+    gulp.task('electron-copy-lib', () => {
         return gulp.src(path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js'))
             .pipe(gulp.dest(path.join(electronWwwDir, 'js')));
     });
 
-    gulp.task('electron-copy-google-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
-            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
-    });
-
-    gulp.task('electron-copy-microsoft-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'microsoft-credentials.js'))
-            .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
-    });
-
-    gulp.task('electron-copy-nuance-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
+    gulp.task('electron-copy-credentials', () => {
+        return gulp.src([
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js'),
+            path.join( globalCredentialsDir, 'nuance-credentials.js')
+        ])
             .pipe(gulp.dest(path.join( electronWwwDir, 'js')));
     });
 
@@ -92,29 +86,17 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, globalCredentialsDi
             .on('end', done);
     });
 
-    gulp.task('electron-replace-azure-sdk', (done) => {
+    gulp.task('electron-replace-lib', (done) => {
         gulp.src(path.join(electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest(electronWwwDir))
             .on('end', done);
     });
 
-    gulp.task('electron-replace-google-credentials', (done) => {
+    gulp.task('electron-replace-credentials', (done) => {
         gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
-            .pipe(gulp.dest( electronWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('electron-replace-microsoft-credentials', (done) => {
-        gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
-            .pipe(gulp.dest( electronWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('electron-replace-nuance-credentials', (done) => {
-        gulp.src(path.join( electronWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(gulp.dest( electronWwwDir))
             .on('end', done);
@@ -126,7 +108,6 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, globalCredentialsDi
             .pipe(gulp.dest(electronWwwDir))
             .on('end', done);
     });
-
     
     gulp.task('electron-mkdir-app', (done) => {
         exec(`cd ${electronDir} && mkdir app`, done);
@@ -156,16 +137,12 @@ module.exports = ({ gulp, exec, globalLibDir, globalDistDir, globalCredentialsDi
         runSquence(
             'electron-prepare',
             'electron-copy-speech',
-            'electron-copy-azure-sdk',
-            'electron-copy-google-credentials',
-            'electron-copy-microsoft-credentials',
-            'electron-copy-nuance-credentials',
+            'electron-copy-lib',
+            'electron-copy-credentials',
             'electron-copy-src',
             'electron-replace-speech',
-            'electron-replace-azure-sdk',
-            'electron-replace-google-credentials',
-            'electron-replace-microsoft-credentials',
-            'electron-replace-nuance-credentials',
+            'electron-replace-lib',
+            'electron-replace-credentials',
             'electron-remove-absolute-assets',
             (err) => {
                 if(err) {

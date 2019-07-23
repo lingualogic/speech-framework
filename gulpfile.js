@@ -704,6 +704,7 @@ gulp.task('install-rasa-credentials-ts', function() {
             .pipe( inject.append( " */\n" ))
             .pipe( inject.append( "\n" ))
             .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "export const RASA_SERVER_URL = '';\n" ))
             .pipe( inject.append( "export const RASA_APP_KEY = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
@@ -723,12 +724,13 @@ gulp.task('install-rasa-credentials-js', function() {
         // Datei ist nicht vorhanden und kann erzeugt werden
         return gulp.src([ 'credentials/rasa-credentials.js' ])
             .pipe( file( 'rasa-credentials.js', ''))
-            .pipe(inject.append( "/**\n" ))
-            .pipe(inject.append( " * Rasa Credentials\n" ))
-            .pipe(inject.append( " */\n" ))
-            .pipe(inject.append( "\n" ))
-            .pipe(inject.append( "\n" ))
-            .pipe(inject.append( "var RASA_APP_KEY = '';\n" ))
+            .pipe( inject.append( "/**\n" ))
+            .pipe( inject.append( " * Rasa Credentials\n" ))
+            .pipe( inject.append( " */\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "\n" ))
+            .pipe( inject.append( "var RASA_SERVER_URL = '';\n" ))            
+            .pipe( inject.append( "var RASA_APP_KEY = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
     return gulp.src( '' ); // empty stream

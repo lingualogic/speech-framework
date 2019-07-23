@@ -3,7 +3,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.13.0055 (Alpha) vom 18.07.2019
+ * Version: 0.5.13.0056 (Alpha) vom 23.07.2019
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const

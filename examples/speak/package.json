@@ -19,6 +19,7 @@
         "electron": "gulp electron-run",
         "cordova": "gulp cordova-browser",
         "cordova:android": "gulp cordova-android",
+        "cordova:electron": "gulp cordova-electron",
         "cordova:ios": "gulp cordova-ios",
         "cordova:osx": "gulp cordova-osx"
     },

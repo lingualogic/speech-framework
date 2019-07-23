@@ -92,23 +92,17 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
-    gulp.task('cordova-copy-azure-sdk', () => {
+    gulp.task('cordova-copy-lib', () => {
         return gulp.src(path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js'))
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
-    gulp.task('cordova-copy-google-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'google-credentials.js'))
-            .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
-    });
-
-    gulp.task('cordova-copy-microsoft-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'microsoft-credentials.js'))
-            .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
-    });
-
-    gulp.task('cordova-copy-nuance-credentials', () => {
-        return gulp.src(path.join( globalCredentialsDir, 'nuance-credentials.js'))
+    gulp.task('cordova-copy-credentials', () => {
+        return gulp.src([
+            path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js'),
+            path.join( globalCredentialsDir, 'nuance-credentials.js')
+        ])
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
     });
 
@@ -131,29 +125,17 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
             .on('end', done);
     });
 
-    gulp.task('cordova-replace-azure-sdk', (done) => {
+    gulp.task('cordova-replace-lib', (done) => {
         gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
     });
 
-    gulp.task('cordova-replace-google-credentials', (done) => {
+    gulp.task('cordova-replace-credentials', (done) => {
         gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
-            .pipe(gulp.dest( cordovaWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('cordova-replace-microsoft-credentials', (done) => {
-        gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
-            .pipe(gulp.dest( cordovaWwwDir))
-            .on('end', done);
-    });
-
-    gulp.task('cordova-replace-nuance-credentials', (done) => {
-        gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
@@ -171,17 +153,13 @@ module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCrede
         runSquence(
             'cordova-prepare',
             'cordova-copy-speech',
-            'cordova-copy-azure-sdk',
-            'cordova-copy-google-credentials',
-            'cordova-copy-microsoft-credentials',
-            'cordova-copy-nuance-credentials',
+            'cordova-copy-lib',
+            'cordova-copy-credentials',
             'cordova-copy-src',
             'cordova-replace-cordova',
             'cordova-replace-speech',
-            'cordova-replace-azure-sdk',
-            'cordova-replace-google-credentials',
-            'cordova-replace-microsoft-credentials',
-            'cordova-replace-nuance-credentials',
+            'cordova-replace-lib',
+            'cordova-replace-credentials',
             'cordova-remove-absolute-assets',
             (err) => {
                 if(err) {
