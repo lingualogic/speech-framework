@@ -37,7 +37,7 @@ import { ASRPlugin} from './asr-plugin';
 
 // Konstanten
 
-const ASR_BREAK_TIMEOUT = 5000;     // eine Sekunde warten auf Recognition-Start
+const ASR_BREAK_TIMEOUT = 5000;     // warten auf Recognition-Start
 
 
 // TODO: Eine Grammatik ist im Moment noch nicht implementiert

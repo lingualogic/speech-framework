@@ -388,15 +388,17 @@ var ApiAiBaseError = function(t) {
             if (n && e === t.Method.GET) {
                 c += "?";
                 var h = 0;
-                for (var p in n) n.hasOwnProperty(p) && (h++ && (c += "&"), c += encodeURIComponent(p) + "=" + encodeURIComponent(n[p]));
+                for (var g in n) n.hasOwnProperty(g) && (h++ && (c += "&"), c += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
             } else n && (r || (r = {}), r["Content-Type"] = "application/json; charset=utf-8", 
             l = JSON.stringify(n));
-            for (var p in i) p in a && (a[p] = i[p]);
-            if (a.open(t.Method[e], c, !0), r) for (var p in r) r.hasOwnProperty(p) && a.setRequestHeader(p, r[p]);
+            for (var g in i) g in a && (a[g] = i[g]);
+            if (a.open(t.Method[e], c, !0), r) for (var g in console.log('Dialogflow.XhrRequest: Headers', r), 
+            r) r.hasOwnProperty(g) && a.setRequestHeader(g, r[g]);
             l ? a.send(l) : a.send(), a.onload = function() {
-                a.status >= 200 && a.status < 300 ? s(a) : u(a);
+                a.status >= 200 && a.status < 300 ? s(a) : (console.log('Dialogflow.XhrRequest: onLoad->reject ', a), 
+                u(a));
             }, a.onerror = function() {
-                u(a);
+                console.log('Dialogflow.XhrRequest: onError ', a), u(a);
             };
         });
     }, t.get = function(e, o, n, r) {
@@ -588,6 +590,8 @@ var ApiAiClient = function() {
                     e._onError(new Error('NLU-Exception: ' + t.message));
                 }
                 e._onStop();
+            }, function(t) {
+                console.log('GoogleNlu._start: Promise-Error ', t), e._onError(new Error('NLU-Error: ' + t.message));
             });
         } catch (t) {
             this._exception('_start', t);

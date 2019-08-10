@@ -732,7 +732,7 @@ var Factory = function(t) {
         0;
         if (!window.SpeechSDK) return this._error('init', 'Microsoft SpeechSDK ist nicht vorhanden'), 
         -1;
-        if (console.log('MicrosoftPort.init: option = ', o), o && 'boolean' == typeof o.microsoftDynamicCredentialsFlag && o.microsoftDynamicCredentialsFlag) console.log('MicrosoftPort.init: dynamic credentials eingeschaltet'), 
+        if (o && 'boolean' == typeof o.microsoftDynamicCredentialsFlag && o.microsoftDynamicCredentialsFlag) console.log('MicrosoftPort.init: dynamic credentials eingeschaltet'), 
         this.mDynamicCredentialsFlag = !0; else if (!this._checkCredentials(o)) return this._error('init', 'keine Region und/oder SubscriptionKey als Parameter uebergeben'), 
         -1;
         var n = FactoryManager.get(AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory);

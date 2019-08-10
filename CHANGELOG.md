@@ -1,12 +1,18 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.13.0057 Alpha (10.08.2019)
+
+### Features
+
+* **Vue:** Anpassung für Speech-Vue SDK
+
 
 ## 0.5.13.0056 Alpha (23.07.2019)
 
 ### Features
 
-* **Rasa:** due URL des Rasa-Servers wird jetzt in den rasa-credentials mit eingetragen
+* **Rasa:** die URL des Rasa-Servers wird jetzt in den rasa-credentials mit eingetragen
 
 
 ## 0.5.13.0055 Alpha (18.07.2019)
