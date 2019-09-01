@@ -30,6 +30,8 @@ export const LISTEN_MOCK_NAME = 'ListenMock';
 
 export const LISTEN_HTML5_ASR = 'ASRHtml5';
 export const LISTEN_NUANCE_ASR = 'ASRNuance';
+export const LISTEN_GOOGLE_ASR = 'ASRGoogle';
+export const LISTEN_MICROSOFT_ASR = 'ASRMicrosoft';
 
 
 // Sprach-Konstanten

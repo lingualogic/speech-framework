@@ -17,13 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { ErrorBase } from '../../core/error/error-base.ts';
+import { PortManager } from '../../core/port/port-manager.ts';
 
 import { Port } from '../../core/port/port.ts';
 
 import { FileHtml5Reader } from '../../common/html5/file-html5-reader.ts';
 
-import { PortManager } from '../../core/port/port-manager.ts';
+import { ErrorBase } from '../../core/error/error-base.ts';
+
+import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
 
 var RASA_TYPE_NAME = 'Rasa', RASA_PORT_NAME = 'RasaPort', RASA_MOCK_NAME = 'RasaMock', RASA_SERVER_URL = 'http://localhost:5005', RASA_DEFAULT_URL = RASA_SERVER_URL, RASA_NLU_ACTION = 'NLU', RASA_CONFIG_PATH = 'assets/', RASA_CONFIG_FILE = 'rasa.json', RASA_CONFIG_LOAD = !1, RASA_DE_LANGUAGE = 'de-DE', RASA_DEFAULT_LANGUAGE = RASA_DE_LANGUAGE, extendStatics = function(t, n) {
     return (extendStatics = Object.setPrototypeOf || {
@@ -162,74 +164,6 @@ var RASA_VERSION_NUMBER = '0.1.1', RASA_VERSION_BUILD = '0002', RASA_VERSION_TYP
         configurable: !0
     }), n.prototype.isCredentials = function() {
         return !!this.mConfigAppKey;
-    }, n;
-}(ErrorBase), NetHtml5Connect = function(t) {
-    function n(n) {
-        var r = t.call(this, n || 'NetHtml5Connect') || this;
-        return r.mInitFlag = !1, r.mOnOnlineFunc = null, r.mOnOfflineFunc = null, r.mOnErrorFunc = null, 
-        r._setErrorOutputFunc(function(t) {
-            return r._onError(new Error(t));
-        }), r;
-    }
-    return __extends(n, t), n.prototype.init = function(t) {
-        var n = this;
-        try {
-            window && (window.ononline = function() {
-                return n._onOnline();
-            }, window.onoffline = function() {
-                return n._onOffline();
-            });
-        } catch (t) {
-            return this._exception('init', t), -1;
-        }
-        return this.mInitFlag = !0, 0;
-    }, n.prototype.isInit = function() {
-        return this.mInitFlag;
-    }, n.prototype.done = function() {
-        return window.ononline = null, window.onoffline = null, this.mOnOnlineFunc = null, 
-        this.mOnOfflineFunc = null, this.mOnErrorFunc = null, this.mInitFlag = !1, 0;
-    }, n.prototype.isOnline = function() {
-        return !!navigator && navigator.onLine;
-    }, Object.defineProperty(n.prototype, "onOnline", {
-        set: function(t) {
-            this.mOnOnlineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(n.prototype, "onOffline", {
-        set: function(t) {
-            this.mOnOfflineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(n.prototype, "onError", {
-        set: function(t) {
-            this.mOnErrorFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), n.prototype._onOnline = function() {
-        if ('function' == typeof this.mOnOnlineFunc) try {
-            return this.mOnOnlineFunc();
-        } catch (t) {
-            return this._exception('_onOnline', t), -1;
-        }
-        return 0;
-    }, n.prototype._onOffline = function() {
-        if ('function' == typeof this.mOnOfflineFunc) try {
-            return this.mOnOfflineFunc();
-        } catch (t) {
-            return this._exception('_onOffline', t), -1;
-        }
-        return 0;
-    }, n.prototype._onError = function(t) {
-        if ('function' == typeof this.mOnErrorFunc) try {
-            return this.mOnErrorFunc(t);
-        } catch (t) {
-            return this.isErrorOutput() && console.log('===> EXCEPTION NetHtml5Connect._onError: ', t.message), 
-            -1;
-        }
-        return 0;
     }, n;
 }(ErrorBase), RasaNetwork = function(t) {
     function n() {
@@ -562,9 +496,9 @@ var RASA_VERSION_NUMBER = '0.1.1', RASA_VERSION_BUILD = '0002', RASA_VERSION_TYP
         return this.rasaNLUFlag = !0, this.isErrorOutput() && (this.rasaNLUFlag ? console.log('RasaMock: NLU ist vorhanden') : console.log('RasaMock: NLU ist nicht vorhanden')), 
         this._onInit(0), t.prototype.init.call(this, n);
     }, n.prototype.done = function(n) {
-        return void 0 === n && (n = !1), t.prototype.done.call(this), this.rasaNLUFlag = !1, 
-        this.disconnectFlag = !0, this.defaultOptions = null, this.codec = '', this.mTransaction = null, 
-        this.mRunningFlag = !1, 0;
+        return t.prototype.done.call(this), this.rasaNLUFlag = !1, this.disconnectFlag = !0, 
+        this.defaultOptions = null, this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 
+        0;
     }, n.prototype.reset = function(n) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, n);
     }, n.prototype._onStop = function(n, r) {
@@ -733,4 +667,4 @@ var RASA_VERSION_NUMBER = '0.1.1', RASA_VERSION_BUILD = '0002', RASA_VERSION_TYP
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
-export { RASA_TYPE_NAME, RASA_NLU_ACTION, Rasa };
+export { RASA_NLU_ACTION, RASA_TYPE_NAME, Rasa };

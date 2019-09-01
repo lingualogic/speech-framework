@@ -9,7 +9,7 @@ const inject = require('gulp-inject-string');
 const runSquence = require('run-sequence');
 
 
-module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
+module.exports = ({ gulp, exec, srcDir, globalLibDir, globalDistDir, globalCredentialsDir, appDir, cordovaDir, cordovaAppDir, cordovaWwwDir }) => {
 
 
     /** 
@@ -88,7 +88,12 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
         return del( cordovaWwwDir );
     });
 
-    gulp.task('cordova-copy-dist', () => {
+    gulp.task('cordova-copy-lib', () => {
+        return gulp.src(path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js'))
+            .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
+    });
+
+    gulp.task('cordova-copy-speech', () => {
         return gulp.src( path.join( globalDistDir, 'speech-framework.js'))
             .pipe(gulp.dest( path.join( cordovaWwwDir, 'js')));
     });
@@ -97,6 +102,7 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
         return gulp.src([
             path.join( globalCredentialsDir, 'nuance-credentials.js'),
             path.join( globalCredentialsDir, 'google-credentials.js'),
+            path.join( globalCredentialsDir, 'microsoft-credentials.js'),
             path.join( globalCredentialsDir, 'rasa-credentials.js')            
         ])
             .pipe(gulp.dest(path.join( cordovaWwwDir, 'js')));
@@ -114,6 +120,13 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
             .on( 'end', done );
     });
 
+    gulp.task('cordova-replace-lib', (done) => {
+        gulp.src(path.join( cordovaWwwDir, 'index.html'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
+            .pipe(gulp.dest( cordovaWwwDir))
+            .on('end', done);
+    });
+
     gulp.task('cordova-replace-speech', (done) => {
         gulp.src( path.join( cordovaWwwDir, 'index.html' ))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../dist/speech-framework.js"></script>', '<script type="text/javascript" src="js/speech-framework.js"></script>'))
@@ -125,6 +138,7 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
         gulp.src(path.join( cordovaWwwDir, 'index.html'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
+            .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/rasa-credentials.js"></script>', '<script type="text/javascript" src="js/rasa-credentials.js"></script>'))
             .pipe(gulp.dest( cordovaWwwDir))
             .on('end', done);
@@ -141,10 +155,12 @@ module.exports = ({ gulp, exec, srcDir, globalDistDir, globalCredentialsDir, app
     gulp.task('cordova-generate', (done) => {
         runSquence(
             'cordova-prepare',
-            'cordova-copy-dist',
+            'cordova-copy-lib',
+            'cordova-copy-speech',
             'cordova-copy-credentials',
             'cordova-copy-src',
             'cordova-replace-cordova',
+            'cordova-replace-lib',
             'cordova-replace-speech',
             'cordova-replace-credentials',
             'cordova-remove-absolute-assets',

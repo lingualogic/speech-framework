@@ -33,6 +33,8 @@ export const SPEAK_AUDIO_FLAG = false;
 export const SPEAK_HTML5_TTS = 'TTSHtml5';
 export const SPEAK_AMAZON_TTS = 'TTSAmazon';
 export const SPEAK_NUANCE_TTS = 'TTSNuance';
+export const SPEAK_GOOGLE_TTS = 'TTSGoogle';
+export const SPEAK_MICROSOFT_TTS = 'TTSMicrosoft';
 
 
 // Sprach-Konstanten

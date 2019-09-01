@@ -5,12 +5,13 @@
  *
  * Installierte NLU:
  *
- *      NLUNuance   - Default Nuance-Service NLU
- *      NLUGoogle   - Google Dialogflow NLU (Version1-API, bis Oktober 2019)
- *      NLURasa     - Rasa NLU 
- *      NLUHtml5    - Web-NLU (Grammatik muss definiert werden)
+ *      NLUNuance    - Default Nuance-Service NLU
+ *      NLUGoogle    - Google Dialogflow NLU (Version1-API, bis Oktober 2019)
+ *      NLUMicrosoft - Microsoft NLU
+ *      NLURasa      - Rasa NLU 
+ *      NLUHtml5     - Web-NLU (Grammatik muss definiert werden)
  *
- * Letzte Aenderung: 08.05.2019
+ * Letzte Aenderung: 28.08.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -39,6 +40,7 @@ import {
     NLU_HTML5_NAME,
     NLU_NUANCE_NAME,
     NLU_GOOGLE_NAME,
+    NLU_MICROSOFT_NAME,
     NLU_RASA_NAME
 } from './nlu-const';
 import {
@@ -75,6 +77,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
     mNLUHtml5: NLUInterface = null;
     mNLUNuance: NLUInterface = null;
     mNLUGoogle: NLUInterface = null;
+    mNLUMicrosoft: NLUInterface = null;
     mNLURasa: NLUInterface = null;
 
 
@@ -140,6 +143,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         // eintragen der verfuegbaren NLU-Plugins
         this.insertPlugin( NLU_NUANCE_NAME, this.mNLUFactory.create( NLU_NUANCE_NAME, false ));
         this.insertPlugin( NLU_GOOGLE_NAME, this.mNLUFactory.create( NLU_GOOGLE_NAME, false ));
+        this.insertPlugin( NLU_MICROSOFT_NAME, this.mNLUFactory.create( NLU_MICROSOFT_NAME, false ));
         this.insertPlugin( NLU_RASA_NAME, this.mNLUFactory.create( NLU_RASA_NAME, false ));
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this.insertPlugin( NLU_HTML5_NAME, this.mNLUFactory.create( NLU_HTML5_NAME, false ));
@@ -225,6 +229,32 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
 
     /**
+     * Initialisierung des Microsoft-NLU Plugins
+     *
+     * @param {*} aOption - optionale Parameter
+     */
+
+    _initNLUMicrosoft( aOption: any ): void {
+        this.mNLUMicrosoft = this.findPlugin( NLU_MICROSOFT_NAME ) as NLUInterface;
+        if ( this.mNLUMicrosoft ) {
+            this.mNLUMicrosoft.init( aOption );
+            if ( this.mNLUMicrosoft.isActive()) {
+                if ( this.isErrorOutput()) {
+                    console.log('NLUGroup._initNLUMicrosoft: NLU eingefuegt');
+                }
+                return;
+            }
+            this.removePlugin( NLU_MICROSOFT_NAME );
+            this.mNLUMicrosoft.done();
+            this.mNLUMicrosoft = null;
+        }
+        if ( this.isErrorOutput()) {
+            console.log('NLUGroup._initNLUMicrosoft: NLU nicht eingefuegt');
+        }
+    }
+
+
+    /**
      * Initialisierung des Rasa-NLU Plugins
      *
      * @param {*} aOption - optionale Parameter
@@ -284,6 +314,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
 
         this._initNLUNuance( option );  // Default-NLU
         this._initNLUGoogle( option );  // Dialogflow-NLU Version-1 bis Oktober 2019
+        this._initNLUMicrosoft( option );  // Microsoft-NLU
         this._initNLURasa( option );    // Rasa-NLU
         // TODO: Html5 erst eintragen, wenn Grammatik programmiert wurde
         // this._initNLUHtml5( option );
@@ -322,6 +353,7 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
         this.mNLUHtml5 = null;
         this.mNLUNuance = null;
         this.mNLUGoogle = null;
+        this.mNLUMicrosoft = null;
         this.mNLURasa = null;
         this.mCurrentNLU = null;
         return super.done();
@@ -545,6 +577,10 @@ export class NLUGroup extends PluginGroup implements NLUInterface {
                 nlu = this.mNLUGoogle;
                 break;
 
+            case NLU_MICROSOFT_NAME:
+                nlu = this.mNLUMicrosoft;
+                break;
+    
             case NLU_RASA_NAME:
                 nlu = this.mNLURasa;
                 break;

@@ -43,6 +43,7 @@ describe('Intent', () => {
 
     let nuanceFlag = false;
     let googleFlag = false;
+    let microsoftFlag = false;
     let rasaFlag = false;
     let intent = null;
     let nluCount = 0;
@@ -52,6 +53,7 @@ describe('Intent', () => {
         console.log('Intent (gemockt) E2E-Tests gestartet...');
         // console.log('Nuance vorhanden:', speech.Nuance);
         // console.log('Google vorhanden:', speech.Google);
+        // console.log('Microsoft vorhanden:', speech.Microsoft);
         // console.log('Rasa vorhanden:', speech.Rasa);
         // eslint-disable-next-line
         if ( speech.Nuance ) {
@@ -90,22 +92,41 @@ describe('Intent', () => {
                 })).toBe( 0 );
             } else {
                 // eslint-disable-next-line
-                if ( speech.Rasa ) {
-                    console.log('IntentTest: Rasa wird erzeugt');
-                    // Google initialisieren
+                if ( speech.Microsoft ) {
+                    // console.log('IntentTest: Microsoft wird erzeugt');
+                    // Microsoft initialisieren
                     // eslint-disable-next-line
-                    expect( speech.Rasa.init({ rasaPortName: 'RasaMock', rasaAppKey: 'testAppKey', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
+                    expect( speech.Microsoft.init({ microsoftPortName: 'MicrosoftMock', microsoftRegion: 'testRegion', microsoftSubscriptionKey: 'TestSubscriptionKey', microsoftLuisEndpoint: 'TestLuisEndpoint', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
                     // eslint-disable-next-line
-                    expect( speech.Rasa.open(() => {
+                    expect( speech.Microsoft.open(() => {
                         // eslint-disable-next-line
                         speech.SpeechMain.init();
                         // eslint-disable-next-line
                         intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
                         expect( intent ).toBeTruthy();
-                        rasaFlag = true;
+                        microsoftFlag = true;
                         nluCount++;
                         done();
                     })).toBe( 0 );
+                } else {
+                    // eslint-disable-next-line
+                    if ( speech.Rasa ) {
+                        // console.log('IntentTest: Rasa wird erzeugt');
+                        // Google initialisieren
+                        // eslint-disable-next-line
+                        expect( speech.Rasa.init({ rasaPortName: 'RasaMock', rasaAppKey: 'testAppKey', errorOutputFlag: ERROR_INTENT_OUTPUT })).toBe( 0 );
+                        // eslint-disable-next-line
+                        expect( speech.Rasa.open(() => {
+                            // eslint-disable-next-line
+                            speech.SpeechMain.init();
+                            // eslint-disable-next-line
+                            intent = speech.IntentFactory.create( speech.INTENT_COMPONENT_NAME, { errorOutputFlag: ERROR_INTENT_OUTPUT });
+                            expect( intent ).toBeTruthy();
+                            rasaFlag = true;
+                            nluCount++;
+                            done();
+                        })).toBe( 0 );
+                    }
                 }
             }
         } 
@@ -124,6 +145,10 @@ describe('Intent', () => {
         } else if ( speech.Google ) {
             // eslint-disable-next-line
             speech.Google.done();
+            // eslint-disable-next-line
+        } else if ( speech.Microsoft ) {
+            // eslint-disable-next-line
+            speech.Microsoft.done();
             // eslint-disable-next-line
         } else if ( speech.Rasa ) {
             // eslint-disable-next-line
@@ -577,6 +602,8 @@ describe('Intent', () => {
             } else if ( googleFlag ) {
                 expect( data.confidence ).toBe( 1.0 );
                 expect( data.speech ).toBe( 'TestSpeech' );
+            } else if ( microsoftFlag ) {
+                expect( data.confidence ).toBe( 1.0 );
             } else if ( rasaFlag ) {
                 expect( data.confidence ).toBe( 1.0 );
             }
@@ -703,6 +730,24 @@ describe('Intent', () => {
             }
         });
 
+        it('sollte Microsoft NLU zurueckgeben', () => {
+            if ( microsoftFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_MICROSOFT_NLU )).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.getNLU()).toBe( speech.INTENT_MICROSOFT_NLU );
+            }
+        });
+
+        it('sollte Rasa NLU zurueckgeben', () => {
+            if ( rasaFlag ) {
+                // eslint-disable-next-line
+                expect( intent.setNLU( speech.INTENT_RASA_NLU )).toBe( 0 );
+                // eslint-disable-next-line
+                expect( intent.getNLU()).toBe( speech.INTENT_RASA_NLU );
+            }
+        });
+
     });
 
     // getNLUList
@@ -714,17 +759,15 @@ describe('Intent', () => {
             if ( nuanceFlag ) {
                 // eslint-disable-next-line
                 expect( nluList[ 0 ]).toBe( speech.INTENT_NUANCE_NLU );
-                if ( googleFlag ) {
-                    // eslint-disable-next-line
-                    expect( nluList[ 1 ]).toBe( speech.INTENT_GOOGLE_NLU );
-                }
             } else  if ( googleFlag ) {
                 // eslint-disable-next-line
                 expect( nluList[ 0 ]).toBe( speech.INTENT_GOOGLE_NLU );
-            }
-            if ( nluList.length > nluList ) {
+            } else  if ( microsoftFlag ) {
                 // eslint-disable-next-line
-                expect( nluList[ 2 ]).toBe( speech.INTENT_HTML5_NLU );
+                expect( nluList[ 0 ]).toBe( speech.INTENT_MICROSOFT_NLU );4
+            } else  if ( rasaFlag ) {
+                // eslint-disable-next-line
+                expect( nluList[ 0 ]).toBe( speech.INTENT_RASA_NLU );4
             }
         });
 
@@ -745,6 +788,10 @@ describe('Intent', () => {
                 expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
             } else if ( googleFlag ) {
                 expect( errorText ).toBe( 'NLUGoogle.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( microsoftFlag ) {
+                expect( errorText ).toBe( 'NLUMicrosoft.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( rasaFlag ) {
+                expect( errorText ).toBe( 'NLURasa.setLanguage: keine gueltige Sprache uebergeben' );
             }
         });
 
@@ -759,6 +806,10 @@ describe('Intent', () => {
                 expect( errorText ).toBe( 'NLUNuance.setLanguage: keine gueltige Sprache uebergeben' );
             } else if ( googleFlag ) {
                 expect( errorText ).toBe( 'NLUGoogle.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( microsoftFlag ) {
+                expect( errorText ).toBe( 'NLUMicrosoft.setLanguage: keine gueltige Sprache uebergeben' );
+            } else if ( rasaFlag ) {
+                expect( errorText ).toBe( 'NLURasa.setLanguage: keine gueltige Sprache uebergeben' );
             }
         });
 

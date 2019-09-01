@@ -21,5 +21,7 @@ export interface MicrosoftConfigDataInterface {
     microsoftRegion: string;
     /** legt den SubscriptionKey fuer die Verbindung zum Server fest */
     microsoftSubscriptionKey: string;
+    /** legt den Endpunkt fuer Luis (NLU) fuer die Verbindung zum Server fest */
+    microsoftLuisEndpoint: string;
 }
 

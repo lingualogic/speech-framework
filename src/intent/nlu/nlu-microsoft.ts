@@ -1,7 +1,7 @@
 /**
- * Diese Komponente dient der Spracherkennung mit Hilfe von Google Dialogflow-NLU
+ * Diese Komponente dient der Spracherkennung mit Hilfe von Microsoft-NLU
  *
- * Letzte Aenderung: 12.05.2019
+ * Letzte Aenderung: 28.08.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -20,37 +20,37 @@ import { PortManager } from './../../core/port/port-manager';
 import { PortInterface } from './../../core/port/port.interface';
 
 
-// google
+// microsoft
 
-import { GOOGLE_TYPE_NAME, GOOGLE_NLU_ACTION } from './../../cloud/google/google-const';
+import { MICROSOFT_TYPE_NAME, MICROSOFT_NLU_ACTION } from './../../cloud/microsoft/microsoft-const';
 
 
 // nlu
 
-import { NLU_GOOGLE_NAME } from './nlu-const';
+import { NLU_MICROSOFT_NAME } from './nlu-const';
 import { NLUPlugin } from './nlu-plugin';
 
 
 /**
- * Diese Klasse kapselt die Google Texteingabe
+ * Diese Klasse kapselt die Microsoft Texteingabe
  */
 
-export class NLUGoogle extends NLUPlugin {
+export class NLUMicrosoft extends NLUPlugin {
 
-    // externes Google-Objekt
+    // externes Microsoft-Objekt
 
-    mGooglePort: PortInterface = null;
+    mMicrosoftPort: PortInterface = null;
 
 
     /**
-     * NLUGoogle Objekt erzeugen
+     * NLUMicrosoft Objekt erzeugen
      *
      * @param {string} aPluginName - Name des Plugins, fuer den PluginManager
      * @param {boolean} aRegisterFlag - bestimmt, ob Plugin in PluginManager eingetragen wird
      */
 
     constructor( aPluginName?: string, aRegisterFlag = true ) {
-        super( aPluginName || NLU_GOOGLE_NAME, aRegisterFlag );
+        super( aPluginName || NLU_MICROSOFT_NAME, aRegisterFlag );
     }
 
 
@@ -61,7 +61,7 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     getClass(): string {
-        return 'NLUGoogle';
+        return 'NLUMicrosoft';
     }
 
 
@@ -73,10 +73,10 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     done(): number {
-        // pruefen auf Google-Port
-        if ( this.mGooglePort ) {
-            this.mGooglePort.removeAllEvent( NLU_GOOGLE_NAME );
-            this.mGooglePort = null;
+        // pruefen auf Microsoft-Port
+        if ( this.mMicrosoftPort ) {
+            this.mMicrosoftPort.removeAllEvent( NLU_MICROSOFT_NAME );
+            this.mMicrosoftPort = null;
         }
         return super.done();
     }
@@ -94,12 +94,12 @@ export class NLUGoogle extends NLUPlugin {
 
     _setErrorOutput( aErrorOutputFlag: boolean ): void {
         super._setErrorOutput( aErrorOutputFlag );
-        if ( this.mGooglePort ) {
-            // console.log('TTSNuance._setErrorOutput:', aErrorOutputFlag);
+        if ( this.mMicrosoftPort ) {
+            // console.log('NLUMicrosoft._setErrorOutput:', aErrorOutputFlag);
             if ( aErrorOutputFlag ) {
-                this.mGooglePort.setErrorOutputOn();
+                this.mMicrosoftPort.setErrorOutputOn();
             } else {
-                this.mGooglePort.setErrorOutputOff();
+                this.mMicrosoftPort.setErrorOutputOff();
             }
         }
     }
@@ -109,16 +109,16 @@ export class NLUGoogle extends NLUPlugin {
 
 
     /**
-     * Feststellen, ob Google SpeechRecognition API vorhanden ist
+     * Feststellen, ob Microsoft SpeechRecognition API vorhanden ist
      *
      * @private
      * @return {boolean} true, wenn SpeechRecognition existiert, false sonst
      */
 
     _detectRecognition(): boolean {
-        this.mGooglePort = PortManager.find( GOOGLE_TYPE_NAME );
-        if ( !this.mGooglePort ) {
-            this._error( '_detectRecognition', 'kein Google-Port vorhanden' );
+        this.mMicrosoftPort = PortManager.find( MICROSOFT_TYPE_NAME );
+        if ( !this.mMicrosoftPort ) {
+            this._error( '_detectRecognition', 'kein Microsoft-Port vorhanden' );
             return false;
         }
         return true;
@@ -135,7 +135,7 @@ export class NLUGoogle extends NLUPlugin {
 
     _onInternResult( aResult: any ): number {
         // console.log('NLUGoogle._onInternResult:', aResult);
-        if ( aResult.type === GOOGLE_NLU_ACTION ) {
+        if ( aResult.type === MICROSOFT_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
         return 0;
@@ -152,34 +152,34 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _initRecognition( aOption?: any ): number {
-        if ( !this.mGooglePort ) {
-            this._error( '_initRecognition', 'kein Google-Port vorhanden' );
+        if ( !this.mMicrosoftPort ) {
+            this._error( '_initRecognition', 'kein Microsoft-Port vorhanden' );
             return -1;
         }
-        if ( !this.mGooglePort.isInit()) {
-            this._error( '_initRecognition', 'Google-Port ist nicht initialisiert' );
+        if ( !this.mMicrosoftPort.isInit()) {
+            this._error( '_initRecognition', 'Microsoft-Port ist nicht initialisiert' );
             return -1;
         }
-        if ( !this.mGooglePort.isOpen()) {
-            this._error( '_initRecognition', 'Google-Port ist nicht geoeffnet' );
+        if ( !this.mMicrosoftPort.isOpen()) {
+            this._error( '_initRecognition', 'Microsoft-Port ist nicht geoeffnet' );
             return -1;
         }
-        this.mGooglePort.addStartEvent( NLU_GOOGLE_NAME, (aEventData: EventDataInterface) => {
+        this.mMicrosoftPort.addStartEvent( NLU_MICROSOFT_NAME, (aEventData: EventDataInterface) => {
             // console.log('NLUGoogle._initRecognition: startEvent = ', aEventData);
             this._onRecognitionStart();
             return 0;
         });
-        this.mGooglePort.addStopEvent( NLU_GOOGLE_NAME, (aEventData: EventDataInterface) => {
+        this.mMicrosoftPort.addStopEvent( NLU_MICROSOFT_NAME, (aEventData: EventDataInterface) => {
             // console.log('NLUGoogle._initRecognition: stopEvent = ', aEventData);
             this._onRecognitionEnd();
             return 0;
         });
-        this.mGooglePort.addResultEvent( NLU_GOOGLE_NAME, (aEventData: EventDataInterface) => {
+        this.mMicrosoftPort.addResultEvent( NLU_MICROSOFT_NAME, (aEventData: EventDataInterface) => {
             // console.log('NLUGoogle._initRecognition: resultEvent = ', aEventData);
             this._onInternResult( aEventData );
             return 0;
         });
-        this.mGooglePort.addErrorEvent( NLU_GOOGLE_NAME, (aError: any) => {
+        this.mMicrosoftPort.addErrorEvent( NLU_MICROSOFT_NAME, (aError: any) => {
             // console.log('NLUGoogle._initRecognition: errorEvent = ', aError.message);
             this._onRecognitionError( aError );
             return 0;
@@ -199,8 +199,8 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _isRecognition(): boolean {
-        if ( this.mGooglePort ) {
-            return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
+        if ( this.mMicrosoftPort ) {
+            return this.mMicrosoftPort.isAction( MICROSOFT_NLU_ACTION );
         }
         return false;
     }
@@ -214,8 +214,8 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     isIntent(): boolean {
-        if ( this.mGooglePort ) {
-            return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
+        if ( this.mMicrosoftPort ) {
+            return this.mMicrosoftPort.isAction( MICROSOFT_NLU_ACTION );
         }
         return false;
     }
@@ -255,7 +255,7 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _getRecognitionIntentResult( aEvent: any ): any {
-        // console.log('NLUGoogle._getRecognitionIntentResult:', aEvent);
+        console.log('NLUMicrosoft._getRecognitionIntentResult:', aEvent);
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
         // es sollte der Intent und die Confidence uebergeben werden!
         const intentData = {
@@ -268,31 +268,19 @@ export class NLUGoogle extends NLUPlugin {
         };
         try {
             // Mapping der Daten auf IntentData
-            intentData.intent = aEvent.metadata.intentName;
-            intentData.confidence = aEvent.score;
-            // intentData.confidence = 1.0;
+            intentData.intent = aEvent.topScoringIntent.intent;
+            intentData.confidence = aEvent.topScoringIntent.score;
             // Konzepte kopieren, wenn vorhanden
-            /**** TODO: Konzepte muessen in Google erst noch ausprobiert werden
-            if ( aEvent[0].concepts ) {
-                console.log('NluNuance._getRecognitionIntentResult:', aEvent[0].concepts);
-                for ( let conceptName in aEvent[0].concepts ) {
-                    let concept = { concept: conceptName, value: '', literal: ''}
-                    console.log('NluNuance._getRecognitionIntentResult: concept = ', conceptName);
-                    concept.value = aEvent[0].concepts[conceptName][0].value;
-                    concept.literal = aEvent[0].concepts[conceptName][0].literal;
+            if ( aEvent.entities ) {
+                console.log('NluMicrosoft._getRecognitionIntentResult:', aEvent.entities);
+                for ( let entity of aEvent.entities ) {
+                    let concept = { concept: entity.type, value: entity.entity, literal: entity.entity, confidence: entity.score };
+                    console.log('NluMicrosoft._getRecognitionIntentResult: concept = ', concept);
                     intentData.conceptList.push( concept );
                 }
             }
-            ****/
-            if ( aEvent.parameters ) {
-                for ( var property in aEvent.parameters ) {
-                    if ( aEvent.parameters.hasOwnProperty( property )) {
-                        intentData.conceptList.push({ concept: property, value: aEvent.parameters[property], literal: aEvent.parameters[property], confidence: 1 });
-                    }
-                }
-            }            
-            intentData.literal = aEvent.resolvedQuery;
-            intentData.speech = aEvent.fulfillment.speech;
+            intentData.literal = aEvent.query;
+            // intentData.speech = aEvent.fulfillment.speech;
         } catch ( aException ) {
             this._exception( '_getRecognitionIntentResult', aException );
             intentData.error = 'Exception:' + aException.message;
@@ -321,10 +309,10 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _startRecognitionIntent( aText: string ): number {
-        if ( !this.mGooglePort ) {
+        if ( !this.mMicrosoftPort ) {
             return -1;
         }
-        return this.mGooglePort.start( NLU_GOOGLE_NAME, GOOGLE_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
+        return this.mMicrosoftPort.start( NLU_MICROSOFT_NAME, MICROSOFT_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
     }
 
 
@@ -335,10 +323,10 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _stopRecognition(): number {
-        if ( !this.mGooglePort ) {
+        if ( !this.mMicrosoftPort ) {
             return -1;
         }
-        return this.mGooglePort.stop( NLU_GOOGLE_NAME );
+        return this.mMicrosoftPort.stop( NLU_MICROSOFT_NAME );
     }
 
 
@@ -359,10 +347,10 @@ export class NLUGoogle extends NLUPlugin {
 
     _isRecognitionRunning(): boolean {
         // console.log('TTSNuance._isSynthesisRunning');
-        if ( this.mGooglePort ) {
+        if ( this.mMicrosoftPort ) {
             // TODO: solange mehrere Actions verwendet werden in der NLU, wird die Action nicht uebergeben
-            // return this.mGooglePort.isRunning( NLU_NUANCE_NAME, NUANCE_NLU_ACTION );
-            return this.mGooglePort.isRunning( NLU_GOOGLE_NAME );
+            // return this.mMicrosoftPort.isRunning( NLU_NUANCE_NAME, NUANCE_NLU_ACTION );
+            return this.mMicrosoftPort.isRunning( NLU_MICROSOFT_NAME );
         }
         return false;
     }

@@ -129,7 +129,7 @@ gulp.task('copy-index', function() {
     return gulp.src([
         'build/index.d.ts',
         'build/speech-framework.js',
-        'src/speech-version.json'
+        'config/speech-version.json'
     ])
         .pipe( gulp.dest('dist'));
 }); 
@@ -656,6 +656,7 @@ gulp.task('install-microsoft-credentials-ts', function() {
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "export const MICROSOFT_REGION = '';\n" ))
             .pipe(inject.append( "export const MICROSOFT_SUBSCRIPTION_KEY = '';\n" ))
+            .pipe(inject.append( "export const MICROSOFT_LUIS_ENDPOINT = '';\n" ))
             .pipe( gulp.dest(  'credentials' ));
     }
     return gulp.src( '' ); // empty stream
@@ -681,6 +682,7 @@ gulp.task('install-microsoft-credentials-js', function() {
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "var MICROSOFT_REGION = '';\n" ))
             .pipe(inject.append( "var MICROSOFT_SUBSCRIPTION_KEY = '';\n" ))
+            .pipe(inject.append( "var MICROSOFT_LUIS_ENDPOINT = '';\n" ))
             .pipe( gulp.dest(  'credentials' ));
     }
     return gulp.src( '' ); // empty stream

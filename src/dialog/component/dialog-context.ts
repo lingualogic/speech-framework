@@ -120,7 +120,7 @@ export class DialogContext extends ErrorBase {
             } else {
                 delete property[ aContextName ];
             }
-            // console.log('SpeechContext.removeScrollableItem:', this.mContext);
+            // console.log('SpeechContext.remove:', aComponentName, this.mContext);
             return 0;
         } catch ( aException ) {
             this._exception( 'remove', aException );

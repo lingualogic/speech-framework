@@ -36,6 +36,8 @@ Das MicrosoftOptionInterface defniert folgende optionale Parameter:
 	    microsoftRegion?: string;
 	    /** legt den SubscriptionKey fuer die Verbindung zum Server fest */
 	    microsoftSubscriptionKey?: string;
+	    /** legt den Endpunkt fuer Luis (NLU) fuer die Verbindung zum Server fest */
+	    microsoftLuisEndpoint: string;
 	    /** legt die Fehlerausgabe fest */
 	    errorOutputFlag?: boolean;
 	}
@@ -46,11 +48,12 @@ Die wichtigsten Parameter werden hier nochmal aufgeführt:
 * **microsoftDynamicCredentialsFlag:** wird hier true angegeben, können die Microsoft-Credentials Region und SubscribtionKey auch später über Microsoft.setConfig( aConfigData ) übergeben werden. Wird hier false angegeben oder der Parameter nicht eingetragen, müssen die folgenden Parameter microsoftRegion und microsoftSubscriptionKey eingetragen sein.
 * **microsoftRegion:** hier wird die Region des Microsoft Azure-Servers angegeben. Muss vorhanden sein, wenn microsoftDynamicCredentialsFlag false ist oder nicht eingetragen wurde.
 * **microsoftSubscriptionKey:** hier wird der SubscriptionKey von Microsoft als Credentials angegeben. Muss vorhanden sein, wenn microsoftDynamicCredentialsFlag false ist oder nicht eingetragen wurde.
+* **microsoftLuisEndpoint:** hier wird der LUIS-Endpunkt von Microsoft als Credentials angegeben. Muss vorhanden sein, wenn Microsoft LUIS als NLU verwendet werden soll.
 
 
 ### Microsoft.isInit(): boolean
 
-Mit dem Aufruf:
+Mit dem Aufruf:8
 
 	if ( Microsoft.isInit()) {...}
 	
@@ -96,6 +99,8 @@ Das MicrosoftConfigDataInterface beinhaltet folgende Parameter:
 	    microsoftRegion: string;
 	    /** legt den SubscriptionKey fuer die Verbindung zum Server fest */
 	    microsoftSubscriptionKey: string;
+	    /** legt den Endpunkt fuer Luis (NLU) fuer die Verbindung zum Server fest */
+	    microsoftLuisEndpoint: string;
 	}
 
 

@@ -74,8 +74,9 @@ export class Base implements BaseInterface {
         // console.log('Base.init:', aOption);
 
         // pruefen auf Fehlerausgabe
+        // TODO: Hier sollte eine Konstante zur Festlegung des ErrorOutputFlags eingesetzt werden
 
-        let errorOutputFlag = true;
+        let errorOutputFlag = false;
         if ( aOption && typeof aOption.errorOutputFlag === 'boolean' ) {
             errorOutputFlag = aOption.errorOutputFlag;
         }

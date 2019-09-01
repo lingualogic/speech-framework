@@ -27,6 +27,8 @@ export interface MicrosoftOptionInterface {
     microsoftRegion?: string;
     /** legt den SubscriptionKey fuer die Verbindung zum Server fest */
     microsoftSubscriptionKey?: string;
+    /** legt den LUIS (NLU) Endpunkt fuer die Verbindung zum Server fest */
+    microsoftLuisEndpoint?: string;
     /** legt die User-ID fuer die Verbindung zum Server fest */
     microsoftUserId?: string;
     /** legt den NLU-TAG fuer die Verbindung zum Server fest */

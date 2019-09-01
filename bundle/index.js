@@ -3,7 +3,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.13.0057 (Alpha) vom 10.08.2019
+ * Version: 0.5.14.0058 (Beta) vom 31.08.2019
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const
@@ -34,6 +34,8 @@ exports.SPEAK_DE_LANGUAGE = speak_const_1.SPEAK_DE_LANGUAGE;
 exports.SPEAK_EN_LANGUAGE = speak_const_1.SPEAK_EN_LANGUAGE;
 exports.SPEAK_HTML5_TTS = speak_const_1.SPEAK_HTML5_TTS;
 exports.SPEAK_NUANCE_TTS = speak_const_1.SPEAK_NUANCE_TTS;
+exports.SPEAK_AMAZON_TTS = speak_const_1.SPEAK_AMAZON_TTS;
+exports.SPEAK_MICROSOFT_TTS = speak_const_1.SPEAK_MICROSOFT_TTS;
 var speak_factory_1 = require("./speech-framework");
 exports.SpeakFactory = speak_factory_1.SpeakFactory;
 // listen
@@ -44,6 +46,7 @@ exports.LISTEN_DE_LANGUAGE = listen_const_1.LISTEN_DE_LANGUAGE;
 exports.LISTEN_EN_LANGUAGE = listen_const_1.LISTEN_EN_LANGUAGE;
 exports.LISTEN_HTML5_ASR = listen_const_1.LISTEN_HTML5_ASR;
 exports.LISTEN_NUANCE_ASR = listen_const_1.LISTEN_NUANCE_ASR;
+exports.LISTEN_MICROSOFT_ASR = listen_const_1.LISTEN_MICROSOFT_ASR;
 var listen_factory_1 = require("./speech-framework");
 exports.ListenFactory = listen_factory_1.ListenFactory;
 // intent
@@ -54,6 +57,8 @@ exports.INTENT_DE_LANGUAGE = intent_const_1.INTENT_DE_LANGUAGE;
 exports.INTENT_EN_LANGUAGE = intent_const_1.INTENT_EN_LANGUAGE;
 exports.INTENT_NUANCE_NLU = intent_const_1.INTENT_NUANCE_NLU;
 exports.INTENT_GOOGLE_NLU = intent_const_1.INTENT_GOOGLE_NLU;
+exports.INTENT_MICROSOFT_NLU = intent_const_1.INTENT_MICROSOFT_NLU;
+exports.INTENT_RASA_NLU = intent_const_1.INTENT_RASA_NLU;
 var intent_factory_1 = require("./speech-framework");
 exports.IntentFactory = intent_factory_1.IntentFactory;
 // dialog

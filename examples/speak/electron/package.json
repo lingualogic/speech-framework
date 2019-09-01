@@ -1,7 +1,7 @@
 {
   "name": "speakapp",
   "productName": "SpeechSpeakApp",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "author": "LinguaLogic Team",
   "license": "MIT",
   "main": "main.js"

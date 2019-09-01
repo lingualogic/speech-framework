@@ -17,11 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { ErrorBase } from '../../core/error/error-base.ts';
+import { PortManager } from '../../core/port/port-manager.ts';
 
 import { FactoryManager } from '../../core/factory/factory-manager.ts';
-
-import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
 import { Port } from '../../core/port/port.ts';
 
@@ -29,9 +27,15 @@ import { FileHtml5Reader } from '../../common/html5/file-html5-reader.ts';
 
 import { AudioHtml5Reader } from '../../common/html5/audio-html5-reader.ts';
 
-import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from '../../common/html5/audiocontext-factory.ts';
+import { AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory } from '../../common/html5/audiocontext-factory.ts';
 
-import { PortManager } from '../../core/port/port-manager.ts';
+import { USERMEDIA_FACTORY_NAME, UserMediaFactory } from '../../common/html5/usermedia-factory.ts';
+
+import { ErrorBase } from '../../core/error/error-base.ts';
+
+import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
+
+import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
 var NUANCE_TYPE_NAME = 'Nuance', NUANCE_PORT_NAME = 'NuancePort', NUANCE_MOCK_NAME = 'NuanceMock', NUANCE_SERVER_URL = 'wss://ws.dev.nuance.com/v2', NUANCE_DEFAULT_URL = NUANCE_SERVER_URL, NUANCE_NLU_ACTION = 'NLU', NUANCE_ASR_ACTION = 'ASR', NUANCE_ASRNLU_ACTION = 'ASRNLU', NUANCE_TTS_ACTION = 'TTS', NUANCE_CONFIG_PATH = 'assets/', NUANCE_CONFIG_FILE = 'nuance.json', NUANCE_CONFIG_LOAD = !1, NUANCE_DE_LANGUAGE = 'deu-DEU', NUANCE_DEFAULT_LANGUAGE = NUANCE_DE_LANGUAGE, NUANCE_TTS_VOICE4 = 'Petra-ML', NUANCE_TTS_VOICE = NUANCE_TTS_VOICE4, NUANCE_DEFAULT_VOICE = NUANCE_TTS_VOICE, NUANCE_AUDIOTTS_ID = 789, NUANCE_PCM_CODEC = 'audio/L16;rate=16000', NUANCE_DEFAULT_CODEC = NUANCE_PCM_CODEC, NUANCE_AUDIOBUFFER_SIZE = 2048, NUANCE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
     return (extendStatics = Object.setPrototypeOf || {
@@ -51,54 +55,7 @@ function __extends(t, e) {
     new n());
 }
 
-var Factory = function(t) {
-    function e(e, n) {
-        void 0 === n && (n = !0);
-        var r = t.call(this, e || 'Factory') || this;
-        if (n && 0 !== FactoryManager.insert(r.getName(), r)) throw new Error('Factory ' + r.getName() + ' existiert bereits im FactoryManager');
-        return r;
-    }
-    return __extends(e, t), e.prototype.isMock = function() {
-        return !1;
-    }, e.prototype.getType = function() {
-        return 'any';
-    }, e.prototype.getName = function() {
-        return 'Factory';
-    }, e.prototype.create = function(t, e) {
-        return void 0 === e && (e = !0), null;
-    }, e;
-}(ErrorBase), USERMEDIA_FACTORY_NAME = 'UserMediaFactory', USERMEDIA_TYPE_NAME = 'UserMedia', UserMediaFactory = function(t) {
-    function e(e, n) {
-        return void 0 === n && (n = !0), t.call(this, e || USERMEDIA_FACTORY_NAME, n) || this;
-    }
-    return __extends(e, t), e.prototype.isMock = function() {
-        return !1;
-    }, e.prototype.getType = function() {
-        return USERMEDIA_TYPE_NAME;
-    }, e.prototype.getName = function() {
-        return USERMEDIA_FACTORY_NAME;
-    }, e.prototype.create = function(t, e) {
-        void 0 === e && (e = !0);
-        try {
-            if (void 0 === navigator.mediaDevices && (console.log('UserMediaFactory: no mediaDevices'), 
-            navigator.mediaDevices = {}), void 0 === navigator.mediaDevices.getUserMedia) {
-                console.log('UserMediaFactory: no getUserMedia');
-                var n = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null;
-                if (!n) return null;
-                navigator.mediaDevices.getUserMedia = function(t) {
-                    return new Promise(function(e, r) {
-                        n.call(navigator, t, e, r);
-                    });
-                };
-            }
-            return function(t) {
-                return navigator.mediaDevices.getUserMedia(t);
-            };
-        } catch (t) {
-            return this._exception('create', t), null;
-        }
-    }, e;
-}(Factory), NUANCE_VERSION_NUMBER = '0.1.7', NUANCE_VERSION_BUILD = '0008', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '07.04.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
+var NUANCE_VERSION_NUMBER = '0.1.7', NUANCE_VERSION_BUILD = '0008', NUANCE_VERSION_TYPE = 'ALPHA', NUANCE_VERSION_DATE = '07.04.2019', NUANCE_VERSION_STRING = NUANCE_VERSION_NUMBER + '.' + NUANCE_VERSION_BUILD + ' vom ' + NUANCE_VERSION_DATE + ' (' + NUANCE_VERSION_TYPE + ')', NUANCE_API_VERSION = NUANCE_VERSION_STRING, NuanceTransaction = function() {
     function t(e, n) {
         void 0 === e && (e = ''), void 0 === n && (n = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = n, 
@@ -218,74 +175,6 @@ var Factory = function(t) {
         configurable: !0
     }), e.prototype.isCredentials = function() {
         return !(!this.mConfigAppKey || !this.mConfigAppId);
-    }, e;
-}(ErrorBase), NetHtml5Connect = function(t) {
-    function e(e) {
-        var n = t.call(this, e || 'NetHtml5Connect') || this;
-        return n.mInitFlag = !1, n.mOnOnlineFunc = null, n.mOnOfflineFunc = null, n.mOnErrorFunc = null, 
-        n._setErrorOutputFunc(function(t) {
-            return n._onError(new Error(t));
-        }), n;
-    }
-    return __extends(e, t), e.prototype.init = function(t) {
-        var e = this;
-        try {
-            window && (window.ononline = function() {
-                return e._onOnline();
-            }, window.onoffline = function() {
-                return e._onOffline();
-            });
-        } catch (t) {
-            return this._exception('init', t), -1;
-        }
-        return this.mInitFlag = !0, 0;
-    }, e.prototype.isInit = function() {
-        return this.mInitFlag;
-    }, e.prototype.done = function() {
-        return window.ononline = null, window.onoffline = null, this.mOnOnlineFunc = null, 
-        this.mOnOfflineFunc = null, this.mOnErrorFunc = null, this.mInitFlag = !1, 0;
-    }, e.prototype.isOnline = function() {
-        return !!navigator && navigator.onLine;
-    }, Object.defineProperty(e.prototype, "onOnline", {
-        set: function(t) {
-            this.mOnOnlineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "onOffline", {
-        set: function(t) {
-            this.mOnOfflineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "onError", {
-        set: function(t) {
-            this.mOnErrorFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), e.prototype._onOnline = function() {
-        if ('function' == typeof this.mOnOnlineFunc) try {
-            return this.mOnOnlineFunc();
-        } catch (t) {
-            return this._exception('_onOnline', t), -1;
-        }
-        return 0;
-    }, e.prototype._onOffline = function() {
-        if ('function' == typeof this.mOnOfflineFunc) try {
-            return this.mOnOfflineFunc();
-        } catch (t) {
-            return this._exception('_onOffline', t), -1;
-        }
-        return 0;
-    }, e.prototype._onError = function(t) {
-        if ('function' == typeof this.mOnErrorFunc) try {
-            return this.mOnErrorFunc(t);
-        } catch (t) {
-            return this.isErrorOutput() && console.log('===> EXCEPTION NetHtml5Connect._onError: ', t.message), 
-            -1;
-        }
-        return 0;
     }, e;
 }(ErrorBase), NuanceNetwork = function(t) {
     function e() {
@@ -1350,10 +1239,10 @@ var Factory = function(t) {
         this._onInit(0), t.prototype.init.call(this, e)) : (this._error('init', 'keine WebSocket vorhanden'), 
         this._onInit(-1), -1);
     }, e.prototype.done = function(e) {
-        return void 0 === e && (e = !1), t.prototype.done.call(this), this.webSocketFlag = !0, 
-        this.audioContextFlag = !0, this.getUserMediaFlag = !0, this.nuanceNLUFlag = !1, 
-        this.nuanceASRFlag = !1, this.nuanceTTSFlag = !1, this.disconnectFlag = !0, this.defaultOptions = null, 
-        this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 0;
+        return t.prototype.done.call(this), this.webSocketFlag = !0, this.audioContextFlag = !0, 
+        this.getUserMediaFlag = !0, this.nuanceNLUFlag = !1, this.nuanceASRFlag = !1, this.nuanceTTSFlag = !1, 
+        this.disconnectFlag = !0, this.defaultOptions = null, this.codec = '', this.mTransaction = null, 
+        this.mRunningFlag = !1, 0;
     }, e.prototype.reset = function(e) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._onStop = function(e, n) {
@@ -1485,7 +1374,7 @@ var Factory = function(t) {
     }, e.prototype._stopNLU = function(t) {
         return this._onStop(t.plugin, t.type), 0;
     }, e.prototype._startASR = function(t, e, n, r, o) {
-        if (void 0 === r && (r = !1), void 0 === o && (o = !1), !this.nuanceASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+        if (!this.nuanceASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
@@ -1595,4 +1484,4 @@ var Factory = function(t) {
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
-export { NUANCE_TYPE_NAME, NUANCE_TTS_ACTION, NUANCE_ASR_ACTION, NUANCE_ASRNLU_ACTION, NUANCE_NLU_ACTION, Nuance };
+export { NUANCE_ASRNLU_ACTION, NUANCE_ASR_ACTION, NUANCE_NLU_ACTION, NUANCE_TTS_ACTION, NUANCE_TYPE_NAME, Nuance };

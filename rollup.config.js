@@ -10,7 +10,7 @@ import { minify } from 'uglify-es';
 
 // SpeechFramework
 
-import * as speechVersion from './src/speech-version.json';
+import * as speechVersion from './config/speech-version.json';
 
 const SPEECH_VERSION_STRING = speechVersion.SPEECH_VERSION_NUMBER + '.' + speechVersion.SPEECH_VERSION_BUILD + ' (' + speechVersion.SPEECH_VERSION_TYPE + ') vom ' + speechVersion.SPEECH_VERSION_DATE;
 

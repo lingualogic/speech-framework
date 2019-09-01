@@ -9,6 +9,7 @@ const protractor = require('gulp-protractor').protractor;
 const rootDir = path.resolve(__dirname);
 const globalCredentialsDir = './../../credentials';
 const globalDistDir = './../../dist';
+const globalLibDir = './../../lib';
 const distDir = 'dist';
 const srcDir = 'src';
 const assetsDir = 'src/assets';
@@ -43,6 +44,7 @@ const settings = {
     rootDir,
     globalCredentialsDir,
     globalDistDir,
+    globalLibDir,
     distDir,
     srcDir,
     assetsDir,

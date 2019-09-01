@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.13.0057 (Alpha) vom 10.08.2019
+ * Version: 0.5.14.0058 (Beta) vom 31.08.2019
  */
 
 
@@ -36,7 +36,7 @@ export { AudioFactory } from './src/audio/audio-factory';
 
 // speak
 
-export { SPEAK_TYPE_NAME, SPEAK_COMPONENT_NAME, SPEAK_DE_LANGUAGE, SPEAK_EN_LANGUAGE, SPEAK_HTML5_TTS, SPEAK_NUANCE_TTS } from './src/speak/speak-const';
+export { SPEAK_TYPE_NAME, SPEAK_COMPONENT_NAME, SPEAK_DE_LANGUAGE, SPEAK_EN_LANGUAGE, SPEAK_HTML5_TTS, SPEAK_NUANCE_TTS, SPEAK_AMAZON_TTS, SPEAK_MICROSOFT_TTS } from './src/speak/speak-const';
 export { SpeakOptionInterface } from './src/speak/speak-option.interface';
 export { SpeakInterface } from './src/speak/speak.interface';
 export { SpeakFactory } from './src/speak/speak-factory';
@@ -44,7 +44,7 @@ export { SpeakFactory } from './src/speak/speak-factory';
 
 // listen
 
-export { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME, LISTEN_DE_LANGUAGE, LISTEN_EN_LANGUAGE, LISTEN_HTML5_ASR, LISTEN_NUANCE_ASR } from './src/listen/listen-const';
+export { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME, LISTEN_DE_LANGUAGE, LISTEN_EN_LANGUAGE, LISTEN_HTML5_ASR, LISTEN_NUANCE_ASR, LISTEN_MICROSOFT_ASR } from './src/listen/listen-const';
 export { ListenOptionInterface } from './src/listen/listen-option.interface';
 export { ListenInterface } from './src/listen/listen.interface';
 export { ListenFactory } from './src/listen/listen-factory';
@@ -52,7 +52,7 @@ export { ListenFactory } from './src/listen/listen-factory';
 
 // intent
 
-export { INTENT_TYPE_NAME, INTENT_COMPONENT_NAME, INTENT_DE_LANGUAGE, INTENT_EN_LANGUAGE, INTENT_NUANCE_NLU, INTENT_GOOGLE_NLU } from './src/intent/intent-const';
+export { INTENT_TYPE_NAME, INTENT_COMPONENT_NAME, INTENT_DE_LANGUAGE, INTENT_EN_LANGUAGE, INTENT_NUANCE_NLU, INTENT_GOOGLE_NLU, INTENT_MICROSOFT_NLU, INTENT_RASA_NLU } from './src/intent/intent-const';
 export { IntentDataInterface } from './src/intent/intent-data.interface';
 export { IntentOptionInterface } from './src/intent/intent-option.interface';
 export { IntentInterface } from './src/intent/intent.interface';

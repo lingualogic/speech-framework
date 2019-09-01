@@ -273,6 +273,9 @@ function IntentApp() {
     try {
         console.log('IntentApp: create...');
         var option = {
+            microsoftRegion: MICROSOFT_REGION,
+            microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,
+            microsoftLuisEndpoint: MICROSOFT_LUIS_ENDPOINT,
             rasaAppKey: RASA_APP_KEY,
             googleAppKey: GOOGLE_APP_KEY,
             nuanceAppId: APP_ID,
@@ -290,6 +293,18 @@ function IntentApp() {
             });
         } else {
             console.log('IntentApp.init: kein Google vorhanden');
+        }
+
+        // erzeugt das Microsoft-Modul
+
+        if ( speech.Microsoft ) {
+            speech.Microsoft.init( option );
+            speech.Microsoft.open((aError, aPortName, aPortResult) => {
+                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                console.log('IntentApp.init: Microsoft', aPortResult);
+            });
+        } else {
+            console.log('IntentApp.init: kein Microsoft vorhanden');
         }
 
         // erzeugt das Rasa-Modul

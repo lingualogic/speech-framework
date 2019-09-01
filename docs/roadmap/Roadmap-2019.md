@@ -6,14 +6,21 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### September: Version 0.5.15
+
+beinhaltet:
+
+* **Google:** Server-Funktion für sicheren Google-Cloud Zugriff (Dialogflow V2)
+
+
+## Veröffentlichte Versionen
+
+
 ### August: Version 0.5.14
 
 beinhaltet:
 
 * **Microsoft:** Integration des Microsoft Cloud-Dienstes für eine NLU
-
-
-## Veröffentlichte Versionen
 
 
 ### Juli: Version 0.5.13

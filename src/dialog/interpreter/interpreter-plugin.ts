@@ -775,7 +775,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     async _runState( aDialogState: DialogStateInterface ) {
-        // debug('_runState: start');
+        // console.log('_runState: start');
         const nodeId = aDialogState.getFirstDialogNodeId();
         if ( !nodeId ) {
             this._error( 'runState', 'kein Knoten vorhanden' );
@@ -791,18 +791,19 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
         while ( node && this.mDialogRunFlag ) {
             // console.log('DialogInterpreter.runState: node=', node);
             // Knoten mit Timeout ausfuehren
-            // debug('_runState: begin', node.getNodeId());
+            // console.log('_runState: begin', node.getNodeId());
             try {
                 await this._runAsyncNode( node, nextTimeout );
             } catch (aException) {
                 this._exception( '_runState', aException );
             }
-            // debug('_runState: end', node.getNodeId());
+            // console.log('_runState: end', node.getNodeId());
             nextId = node.getNextId();
             nextTimeout = node.getTimeout();
             // pruefen auf naechsten Knoten
             if ( !nextId ) {
                 // pruefen auf vorhandenen Timeout
+                // console.log('_runState: lastTimeout=', nextTimeout, this.mNoWaitNodeFlag);
                 if ( nextTimeout > 0 && this.mNoWaitNodeFlag === false ) {
                     // temporaerer Wait-Knoten hinfuegen, um den Timeout
                     // abzuwarten.
@@ -922,11 +923,12 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runGroup( aNode: DialogNodeInterface ): void {
-        // debug('_runGroup:', aNode.getNodeId());
+        // console.log('_runGroup:', aNode.getNodeId());
         // einstellen des Gruppenmodus
         this.mGroupId = aNode.getNodeId();
         this.mGroupProperty = aNode.getProperty();
         this.mGroupActionFlag = false;
+        this.mNoWaitNodeFlag = false;
     }
 
 
@@ -937,7 +939,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _clearGroup(): void {
-        // debug('_clearGroup');
+        // console.log('_clearGroup');
         this.mGroupId = 0;
         this.mGroupProperty = '';
         this.mGroupActionFlag = false;
@@ -956,31 +958,32 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _isGroupProperty( aNodeProperty: any, aNodeObjectName: string ): boolean {
-        // debug('_isGroupProperty:', aNodeProperty, aNodeObjectName, this.mStateContext);
+        // console.log('_isGroupProperty:', aNodeProperty, aNodeObjectName, this.mStateContext);
         if ( !this.mStateContext ) {
-            // debug('isGroupProperty: kein StateContext');
+            // console.log('isGroupProperty: kein StateContext');
             return false;
         }
         const property = this.mStateContext.property;
-        // debug('_isGroupProperty: property=', property);
+        // console.log('_isGroupProperty: property=', property);
         if ( !property ) {
-            // debug('_isGroupProperty: keine Eigenschaft vorhanden');
+            // console.log('_isGroupProperty: keine Eigenschaft vorhanden');
             return false;
         }
         const nodeProperty = property[ aNodeProperty ];
-        // debug('_isGroupProperty: nodeProperty=', nodeProperty);
+        // console.log('_isGroupProperty: nodeProperty=', nodeProperty);
         if ( !nodeProperty ) {
-            // debug('_isGroupProperty: keine Knoteneigenschaft vorhanden');
+            // console.log('_isGroupProperty: keine Knoteneigenschaft vorhanden');
             return false;
         }
         // Schleife fuer alle IDs der Knoten-Eigenschaft
         for ( const propertyItem of nodeProperty ) {
+            // console.log('_isGroupProperty: propertyItem=', propertyItem, ' NodeName=', aNodeObjectName);
             if ( propertyItem === aNodeObjectName ) {
-                // debug('_isGroupProperty: Knoten gefunden');
+                // console.log('_isGroupProperty: Knoten gefunden');
                 return true;
             }
         }
-        // debug('_isGroupProperty: Knoten nicht gefunden');
+        // console.log('_isGroupProperty: Knoten nicht gefunden');
         return false;
     }
 
@@ -1003,6 +1006,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
         // pruefen auf optionalen Knoten
         if ( aNode.getParentId() === this.mGroupId ) {
             // pruefen auf vorhandene Eigenschaft
+            // console.log('_checkRunNode: GroupPropery=', this.mGroupProperty, ' NodeProperty=', aNode.getProperty());
             if ( this.mGroupProperty.length > 0 && this.mGroupProperty === aNode.getProperty()) {
                 // pruefen auf vorhandene Eigenschaft zum Knoten im Zustand
                 return this._isGroupProperty( aNode.getProperty(), aNode.getObjectName());
@@ -1026,10 +1030,11 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runAction( aNode: DialogNodeInterface ): void {
-        // debug('_runAction:', aNode.getName(), aNode.getObjectType(), aNode.getObjectName());
+        // console.log('_runAction:', aNode.getName(), aNode.getObjectType(), aNode.getObjectName());
         // pruefen auf auszugebenden Knoten
         if ( this._checkRunNode(aNode)) {
             // Action-Event erzeugen
+            // console.log('_runAction: wird ausgefuehrt');
             this._onDialogAction( aNode );
             this.mGroupActionFlag = true;
         }
@@ -1044,13 +1049,13 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runSpeak( aNode: DialogNodeInterface ): void {
-        // debug('_runSpeak:', aNode.getTimeout(), aNode.getText());
+        // console.log('_runSpeak:', aNode.getTimeout(), aNode.getText());
         if ( this.isSpeakRunning()) {
             this._error( '_runSpeak', 'Speak laeuft bereits' );
             return;
         }
         // pruefen auf ausfuehrbaren Knoten
-        // debug('_runSpeak:', aNode.getParentId(), this.mGroupId, this.mGroupActionFlag);
+        // console.log('_runSpeak:', aNode.getParentId(), this.mGroupId, this.mGroupActionFlag);
         if ( this.mGroupId !== 0 && aNode.getParentId() === this.mGroupId ) {
             if ( this.mGroupActionFlag === false ) {
                 this.mNoWaitNodeFlag = true;
@@ -1060,6 +1065,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
             this._clearGroup();
         }
         // Speak-Event erzeugen
+        // console.log('_runSpeak: wird ausgefuehrt');
         this._onDialogSpeak( aNode );
         this._setSpeakRunFlag();
     }
@@ -1073,11 +1079,11 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runWait( aNode: DialogNodeInterface ): void {
-        // debug('_runWait');
+        // console.log('_runWait');
     }
 
 
-    // Bind-Funkktionen
+    // Bind-Funktionen
 
 
     setGetDialogStateFunc( aGetDialogStateFunc: StoreGetDialogStateFunc ): number {

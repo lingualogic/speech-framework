@@ -345,7 +345,7 @@ export class NLUNuance extends NLUPlugin {
             if ( aEvent[0].concepts ) {
                 console.log('NluNuance._getRecognitionIntentResult:', aEvent[0].concepts);
                 for ( let conceptName in aEvent[0].concepts ) {
-                    let concept = { concept: conceptName, value: '', literal: ''}
+                    let concept = { concept: conceptName, value: '', literal: '', confidence: 1 };
                     console.log('NluNuance._getRecognitionIntentResult: concept = ', conceptName);
                     concept.value = aEvent[0].concepts[conceptName][0].value;
                     concept.literal = aEvent[0].concepts[conceptName][0].literal;

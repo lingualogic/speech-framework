@@ -17,11 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { ErrorBase } from '../../core/error/error-base.ts';
+import { PortManager } from '../../core/port/port-manager.ts';
 
 import { FactoryManager } from '../../core/factory/factory-manager.ts';
-
-import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
 import { Port } from '../../core/port/port.ts';
 
@@ -29,9 +27,15 @@ import { FileHtml5Reader } from '../../common/html5/file-html5-reader.ts';
 
 import { AudioHtml5Reader } from '../../common/html5/audio-html5-reader.ts';
 
-import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from '../../common/html5/audiocontext-factory.ts';
+import { AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory } from '../../common/html5/audiocontext-factory.ts';
 
-import { PortManager } from '../../core/port/port-manager.ts';
+import { USERMEDIA_FACTORY_NAME, UserMediaFactory } from '../../common/html5/usermedia-factory.ts';
+
+import { ErrorBase } from '../../core/error/error-base.ts';
+
+import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
+
+import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
 var GOOGLE_TYPE_NAME = 'Google', GOOGLE_PORT_NAME = 'GooglePort', GOOGLE_MOCK_NAME = 'GoogleMock', GOOGLE_SERVER_URL = 'ws://localhost:7050', GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL, GOOGLE_NLU_ACTION = 'NLU', GOOGLE_ASR_ACTION = 'ASR', GOOGLE_ASRNLU_ACTION = 'ASRNLU', GOOGLE_TTS_ACTION = 'TTS', GOOGLE_CONFIG_PATH = 'assets/', GOOGLE_CONFIG_FILE = 'google.json', GOOGLE_CONFIG_LOAD = !1, GOOGLE_DE_LANGUAGE = 'de-DE', GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE, GOOGLE_TTS_VOICE4 = 'Petra-ML', GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4, GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE, GOOGLE_PCM_CODEC = 'audio/L16;rate=16000', GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC, GOOGLE_AUDIOBUFFER_SIZE = 2048, GOOGLE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
     return (extendStatics = Object.setPrototypeOf || {
@@ -51,54 +55,7 @@ function __extends(t, e) {
     new o());
 }
 
-var ApiAiConstants, Factory = function(t) {
-    function e(e, o) {
-        void 0 === o && (o = !0);
-        var n = t.call(this, e || 'Factory') || this;
-        if (o && 0 !== FactoryManager.insert(n.getName(), n)) throw new Error('Factory ' + n.getName() + ' existiert bereits im FactoryManager');
-        return n;
-    }
-    return __extends(e, t), e.prototype.isMock = function() {
-        return !1;
-    }, e.prototype.getType = function() {
-        return 'any';
-    }, e.prototype.getName = function() {
-        return 'Factory';
-    }, e.prototype.create = function(t, e) {
-        return void 0 === e && (e = !0), null;
-    }, e;
-}(ErrorBase), USERMEDIA_FACTORY_NAME = 'UserMediaFactory', USERMEDIA_TYPE_NAME = 'UserMedia', UserMediaFactory = function(t) {
-    function e(e, o) {
-        return void 0 === o && (o = !0), t.call(this, e || USERMEDIA_FACTORY_NAME, o) || this;
-    }
-    return __extends(e, t), e.prototype.isMock = function() {
-        return !1;
-    }, e.prototype.getType = function() {
-        return USERMEDIA_TYPE_NAME;
-    }, e.prototype.getName = function() {
-        return USERMEDIA_FACTORY_NAME;
-    }, e.prototype.create = function(t, e) {
-        void 0 === e && (e = !0);
-        try {
-            if (void 0 === navigator.mediaDevices && (console.log('UserMediaFactory: no mediaDevices'), 
-            navigator.mediaDevices = {}), void 0 === navigator.mediaDevices.getUserMedia) {
-                console.log('UserMediaFactory: no getUserMedia');
-                var o = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || null;
-                if (!o) return null;
-                navigator.mediaDevices.getUserMedia = function(t) {
-                    return new Promise(function(e, n) {
-                        o.call(navigator, t, e, n);
-                    });
-                };
-            }
-            return function(t) {
-                return navigator.mediaDevices.getUserMedia(t);
-            };
-        } catch (t) {
-            return this._exception('create', t), null;
-        }
-    }, e;
-}(Factory), GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '0003', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '24.06.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
+var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '0003', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '24.06.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
     function t(e, o) {
         void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = o, 
@@ -220,74 +177,6 @@ var ApiAiConstants, Factory = function(t) {
     }), e.prototype.isCredentials = function() {
         return !!this.mConfigAppKey;
     }, e;
-}(ErrorBase), NetHtml5Connect = function(t) {
-    function e(e) {
-        var o = t.call(this, e || 'NetHtml5Connect') || this;
-        return o.mInitFlag = !1, o.mOnOnlineFunc = null, o.mOnOfflineFunc = null, o.mOnErrorFunc = null, 
-        o._setErrorOutputFunc(function(t) {
-            return o._onError(new Error(t));
-        }), o;
-    }
-    return __extends(e, t), e.prototype.init = function(t) {
-        var e = this;
-        try {
-            window && (window.ononline = function() {
-                return e._onOnline();
-            }, window.onoffline = function() {
-                return e._onOffline();
-            });
-        } catch (t) {
-            return this._exception('init', t), -1;
-        }
-        return this.mInitFlag = !0, 0;
-    }, e.prototype.isInit = function() {
-        return this.mInitFlag;
-    }, e.prototype.done = function() {
-        return window.ononline = null, window.onoffline = null, this.mOnOnlineFunc = null, 
-        this.mOnOfflineFunc = null, this.mOnErrorFunc = null, this.mInitFlag = !1, 0;
-    }, e.prototype.isOnline = function() {
-        return !!navigator && navigator.onLine;
-    }, Object.defineProperty(e.prototype, "onOnline", {
-        set: function(t) {
-            this.mOnOnlineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "onOffline", {
-        set: function(t) {
-            this.mOnOfflineFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "onError", {
-        set: function(t) {
-            this.mOnErrorFunc = t;
-        },
-        enumerable: !0,
-        configurable: !0
-    }), e.prototype._onOnline = function() {
-        if ('function' == typeof this.mOnOnlineFunc) try {
-            return this.mOnOnlineFunc();
-        } catch (t) {
-            return this._exception('_onOnline', t), -1;
-        }
-        return 0;
-    }, e.prototype._onOffline = function() {
-        if ('function' == typeof this.mOnOfflineFunc) try {
-            return this.mOnOfflineFunc();
-        } catch (t) {
-            return this._exception('_onOffline', t), -1;
-        }
-        return 0;
-    }, e.prototype._onError = function(t) {
-        if ('function' == typeof this.mOnErrorFunc) try {
-            return this.mOnErrorFunc(t);
-        } catch (t) {
-            return this.isErrorOutput() && console.log('===> EXCEPTION NetHtml5Connect._onError: ', t.message), 
-            -1;
-        }
-        return 0;
-    }, e;
 }(ErrorBase), GoogleNetwork = function(t) {
     function e() {
         return t.call(this, 'GoogleNetwork') || this;
@@ -384,17 +273,17 @@ var ApiAiBaseError = function(t) {
     return t.ajax = function(e, o, n, r, i) {
         return void 0 === n && (n = null), void 0 === r && (r = null), void 0 === i && (i = {}), 
         new Promise(function(s, u) {
-            var a = t.createXMLHTTPObject(), c = o, l = null;
+            var a = t.createXMLHTTPObject(), l = o, c = null;
             if (n && e === t.Method.GET) {
-                c += "?";
+                l += "?";
                 var h = 0;
-                for (var g in n) n.hasOwnProperty(g) && (h++ && (c += "&"), c += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
+                for (var g in n) n.hasOwnProperty(g) && (h++ && (l += "&"), l += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
             } else n && (r || (r = {}), r["Content-Type"] = "application/json; charset=utf-8", 
-            l = JSON.stringify(n));
+            c = JSON.stringify(n));
             for (var g in i) g in a && (a[g] = i[g]);
-            if (a.open(t.Method[e], c, !0), r) for (var g in console.log('Dialogflow.XhrRequest: Headers', r), 
+            if (a.open(t.Method[e], l, !0), r) for (var g in console.log('Dialogflow.XhrRequest: Headers', r), 
             r) r.hasOwnProperty(g) && a.setRequestHeader(g, r[g]);
-            l ? a.send(l) : a.send(), a.onload = function() {
+            c ? a.send(c) : a.send(), a.onload = function() {
                 a.status >= 200 && a.status < 300 ? s(a) : (console.log('Dialogflow.XhrRequest: onLoad->reject ', a), 
                 u(a));
             }, a.onerror = function() {
@@ -1416,10 +1305,10 @@ var ApiAiClient = function() {
         this._onInit(0), t.prototype.init.call(this, e)) : (this._error('init', 'keine WebSocket vorhanden'), 
         this._onInit(-1), -1);
     }, e.prototype.done = function(e) {
-        return void 0 === e && (e = !1), t.prototype.done.call(this), this.webSocketFlag = !0, 
-        this.audioContextFlag = !0, this.getUserMediaFlag = !0, this.googleNLUFlag = !1, 
-        this.googleASRFlag = !1, this.googleTTSFlag = !1, this.disconnectFlag = !0, this.defaultOptions = null, 
-        this.codec = '', this.mTransaction = null, this.mRunningFlag = !1, 0;
+        return t.prototype.done.call(this), this.webSocketFlag = !0, this.audioContextFlag = !0, 
+        this.getUserMediaFlag = !0, this.googleNLUFlag = !1, this.googleASRFlag = !1, this.googleTTSFlag = !1, 
+        this.disconnectFlag = !0, this.defaultOptions = null, this.codec = '', this.mTransaction = null, 
+        this.mRunningFlag = !1, 0;
     }, e.prototype.reset = function(e) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._onStop = function(e, o) {
@@ -1549,7 +1438,7 @@ var ApiAiClient = function() {
     }, e.prototype._stopNLU = function(t) {
         return this._onStop(t.plugin, t.type), 0;
     }, e.prototype._startASR = function(t, e, o, n, r) {
-        if (void 0 === n && (n = !1), void 0 === r && (r = !1), !this.googleASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
+        if (!this.googleASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
         -1;
         try {
             return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
@@ -1658,4 +1547,4 @@ var ApiAiClient = function() {
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
-export { GOOGLE_TYPE_NAME, GOOGLE_TTS_ACTION, GOOGLE_ASR_ACTION, GOOGLE_ASRNLU_ACTION, GOOGLE_NLU_ACTION, Google };
+export { GOOGLE_ASRNLU_ACTION, GOOGLE_ASR_ACTION, GOOGLE_NLU_ACTION, GOOGLE_TTS_ACTION, GOOGLE_TYPE_NAME, Google };
