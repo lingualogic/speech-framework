@@ -79,8 +79,7 @@ export default {
         }}, minify),
 
         nodeResolve({
-            jsnext: true,
-            main: false
+            mainFields: ['module', 'main']            
         }),
 
         commonjs({

@@ -41,6 +41,7 @@ export type DialogWriteFileDataFunc = (aFileData: string) => number;
 
 // Events
 
+export type OnDialogJsonFunc = () => number;
 export type OnDialogParseFunc = () => number;
 export type OnDialogSetFunc = (aDialogName: string) => number;
 export type OnDialogStartFunc = (aResult: number) => number;

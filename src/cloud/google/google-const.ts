@@ -1,7 +1,7 @@
 /**
  * Globale Konstanten fuer Google
  *
- * Letzte Aenderung: 02.04.2019
+ * Letzte Aenderung: 02.10.2019
  * Status: rot
  *
  * @module cloud/google
@@ -46,6 +46,9 @@ export const GOOGLE_DE_LANGUAGE = 'de-DE';
 export const GOOGLE_EN_LANGUAGE = 'en-US';
 export const GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE;
 
+// NLU
+
+export const GOOGLE_NLU2_FLAG = true;
 
 // ASR
 

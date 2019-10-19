@@ -910,6 +910,8 @@ export class NLUPlugin extends Plugin implements NLUInterface {
                 break;
 
             default:
+                // TODO: Eventuell muss hier language='' wegen Rollup-Problem hin
+                language = '';
                 break;
         }
         return language;

@@ -575,7 +575,10 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
      */
 
     getLanguage(): string {
+        console.log('ASRGroup.getLanguage:', this.mCurrentASR.getClass());
         if ( this.mCurrentASR ) {
+            console.log('ASRGroup.getLanguage:', this.mCurrentASR.getLanguage);
+            console.log('ASRGroup.getLanguage:', this.mCurrentASR.getLanguage());
             return this.mCurrentASR.getLanguage();
         }
         return '';

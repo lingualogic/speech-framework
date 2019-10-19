@@ -37,7 +37,7 @@ import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
 
 import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
-var GOOGLE_TYPE_NAME = 'Google', GOOGLE_PORT_NAME = 'GooglePort', GOOGLE_MOCK_NAME = 'GoogleMock', GOOGLE_SERVER_URL = 'ws://localhost:7050', GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL, GOOGLE_NLU_ACTION = 'NLU', GOOGLE_ASR_ACTION = 'ASR', GOOGLE_ASRNLU_ACTION = 'ASRNLU', GOOGLE_TTS_ACTION = 'TTS', GOOGLE_CONFIG_PATH = 'assets/', GOOGLE_CONFIG_FILE = 'google.json', GOOGLE_CONFIG_LOAD = !1, GOOGLE_DE_LANGUAGE = 'de-DE', GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE, GOOGLE_TTS_VOICE4 = 'Petra-ML', GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4, GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE, GOOGLE_PCM_CODEC = 'audio/L16;rate=16000', GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC, GOOGLE_AUDIOBUFFER_SIZE = 2048, GOOGLE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
+var GOOGLE_TYPE_NAME = 'Google', GOOGLE_PORT_NAME = 'GooglePort', GOOGLE_MOCK_NAME = 'GoogleMock', GOOGLE_SERVER_URL = 'ws://localhost:7050', GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL, GOOGLE_NLU_ACTION = 'NLU', GOOGLE_ASR_ACTION = 'ASR', GOOGLE_ASRNLU_ACTION = 'ASRNLU', GOOGLE_TTS_ACTION = 'TTS', GOOGLE_CONFIG_PATH = 'assets/', GOOGLE_CONFIG_FILE = 'google.json', GOOGLE_CONFIG_LOAD = !1, GOOGLE_DE_LANGUAGE = 'de-DE', GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE, GOOGLE_NLU2_FLAG = !0, GOOGLE_TTS_VOICE4 = 'Petra-ML', GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4, GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE, GOOGLE_PCM_CODEC = 'audio/L16;rate=16000', GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC, GOOGLE_AUDIOBUFFER_SIZE = 2048, GOOGLE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
     return (extendStatics = Object.setPrototypeOf || {
         __proto__: []
     } instanceof Array && function(t, e) {
@@ -55,6 +55,111 @@ function __extends(t, e) {
     new o());
 }
 
+function __awaiter(t, e, o, n) {
+    return new (o || (o = Promise))(function(r, i) {
+        function s(t) {
+            try {
+                a(n.next(t));
+            } catch (t) {
+                i(t);
+            }
+        }
+        function u(t) {
+            try {
+                a(n.throw(t));
+            } catch (t) {
+                i(t);
+            }
+        }
+        function a(t) {
+            t.done ? r(t.value) : new o(function(e) {
+                e(t.value);
+            }).then(s, u);
+        }
+        a((n = n.apply(t, e || [])).next());
+    });
+}
+
+function __generator(t, e) {
+    var o, n, r, i, s = {
+        label: 0,
+        sent: function() {
+            if (1 & r[0]) throw r[1];
+            return r[1];
+        },
+        trys: [],
+        ops: []
+    };
+    return i = {
+        next: u(0),
+        throw: u(1),
+        return: u(2)
+    }, "function" == typeof Symbol && (i[Symbol.iterator] = function() {
+        return this;
+    }), i;
+    function u(i) {
+        return function(u) {
+            return function(i) {
+                if (o) throw new TypeError("Generator is already executing.");
+                for (;s; ) try {
+                    if (o = 1, n && (r = 2 & i[0] ? n.return : i[0] ? n.throw || ((r = n.return) && r.call(n), 
+                    0) : n.next) && !(r = r.call(n, i[1])).done) return r;
+                    switch (n = 0, r && (i = [ 2 & i[0], r.value ]), i[0]) {
+                      case 0:
+                      case 1:
+                        r = i;
+                        break;
+
+                      case 4:
+                        return s.label++, {
+                            value: i[1],
+                            done: !1
+                        };
+
+                      case 5:
+                        s.label++, n = i[1], i = [ 0 ];
+                        continue;
+
+                      case 7:
+                        i = s.ops.pop(), s.trys.pop();
+                        continue;
+
+                      default:
+                        if (!(r = (r = s.trys).length > 0 && r[r.length - 1]) && (6 === i[0] || 2 === i[0])) {
+                            s = 0;
+                            continue;
+                        }
+                        if (3 === i[0] && (!r || i[1] > r[0] && i[1] < r[3])) {
+                            s.label = i[1];
+                            break;
+                        }
+                        if (6 === i[0] && s.label < r[1]) {
+                            s.label = r[1], r = i;
+                            break;
+                        }
+                        if (r && s.label < r[2]) {
+                            s.label = r[2], s.ops.push(i);
+                            break;
+                        }
+                        r[2] && s.ops.pop(), s.trys.pop();
+                        continue;
+                    }
+                    i = e.call(t, s);
+                } catch (t) {
+                    i = [ 6, t ], n = 0;
+                } finally {
+                    o = r = 0;
+                }
+                if (5 & i[0]) throw i[1];
+                return {
+                    value: i[0] ? i[1] : void 0,
+                    done: !0
+                };
+            }([ i, u ]);
+        };
+    }
+}
+
 var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '0003', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '24.06.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
     function t(e, o) {
         void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
@@ -67,9 +172,9 @@ var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '000
         var o = t.call(this, 'GoogleConfig') || this;
         return o.mInitFlag = !1, o.mConfigPath = GOOGLE_CONFIG_PATH, o.mConfigFile = GOOGLE_CONFIG_FILE, 
         o.mConfigLoadFlag = GOOGLE_CONFIG_LOAD, o.mConfigServerUrl = GOOGLE_DEFAULT_URL, 
-        o.mConfigAppId = '', o.mConfigAppKey = '', o.mConfigUserId = '', o.mConfigNluTag = '', 
-        o.mFileReader = null, o.mOnInitFunc = null, o.mOnErrorFunc = null, o.mFileReader = e, 
-        o._setErrorOutputFunc(function(t) {
+        o.mConfigDialogflowTokenServerUrl = '', o.mConfigDialogflowProjectId = '', o.mConfigAppId = '', 
+        o.mConfigAppKey = '', o.mConfigUserId = '', o.mConfigNluTag = '', o.mFileReader = null, 
+        o.mOnInitFunc = null, o.mOnErrorFunc = null, o.mFileReader = e, o._setErrorOutputFunc(function(t) {
             return o._onError(new Error(t));
         }), o;
     }
@@ -78,6 +183,8 @@ var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '000
         'string' == typeof t.googleConfigFile && (this.mConfigFile = t.googleConfigFile), 
         'boolean' == typeof t.googleConfigLoadFlag && (this.mConfigLoadFlag = t.googleConfigLoadFlag), 
         'string' == typeof t.googleServerUrl && (this.mConfigServerUrl = t.googleServerUrl), 
+        'string' == typeof t.dialogflowTokenServerUrl && (this.mConfigDialogflowTokenServerUrl = t.dialogflowTokenServerUrl), 
+        'string' == typeof t.dialogflowProjectId && (this.mConfigDialogflowProjectId = t.dialogflowProjectId), 
         'string' == typeof t.googleAppId && (this.mConfigAppId = t.googleAppId), 'string' == typeof t.googleAppKey && (this.mConfigAppKey = t.googleAppKey), 
         'string' == typeof t.googleUserId && (this.mConfigUserId = t.googleUserId), 'string' == typeof t.googleNluTag && (this.mConfigNluTag = t.googleNluTag), 
         'string' == typeof t.googleNluTag && (this.mConfigNluTag = t.googleNluTag));
@@ -86,6 +193,7 @@ var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '000
     }, e.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = GOOGLE_CONFIG_PATH, this.mConfigFile = GOOGLE_CONFIG_FILE, 
         this.mConfigLoadFlag = GOOGLE_CONFIG_LOAD, this.mConfigServerUrl = GOOGLE_DEFAULT_URL, 
+        this.mConfigDialogflowTokenServerUrl = '', this.mConfigDialogflowProjectId = '', 
         this.mConfigAppId = '', this.mConfigAppKey = '', this.mConfigUserId = '', this.mConfigNluTag = '', 
         this.mFileReader = null, this.mOnInitFunc = null, 0;
     }, e.prototype.isInit = function() {
@@ -138,6 +246,24 @@ var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '000
         },
         enumerable: !0,
         configurable: !0
+    }), Object.defineProperty(e.prototype, "dialogflowTokenServerUrl", {
+        get: function() {
+            return this.mConfigDialogflowTokenServerUrl;
+        },
+        set: function(t) {
+            this.mConfigDialogflowTokenServerUrl = t;
+        },
+        enumerable: !0,
+        configurable: !0
+    }), Object.defineProperty(e.prototype, "dialogflowProjectId", {
+        get: function() {
+            return this.mConfigDialogflowProjectId;
+        },
+        set: function(t) {
+            this.mConfigDialogflowProjectId = t;
+        },
+        enumerable: !0,
+        configurable: !0
     }), Object.defineProperty(e.prototype, "appId", {
         get: function() {
             return this.mConfigAppId;
@@ -175,7 +301,7 @@ var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '000
         enumerable: !0,
         configurable: !0
     }), e.prototype.isCredentials = function() {
-        return !!this.mConfigAppKey;
+        return !!(this.mConfigAppKey || this.mConfigDialogflowTokenServerUrl && this.mConfigDialogflowProjectId);
     }, e;
 }(ErrorBase), GoogleNetwork = function(t) {
     function e() {
@@ -481,6 +607,107 @@ var ApiAiClient = function() {
                 e._onStop();
             }, function(t) {
                 console.log('GoogleNlu._start: Promise-Error ', t), e._onError(new Error('NLU-Error: ' + t.message));
+            });
+        } catch (t) {
+            this._exception('_start', t);
+        }
+    }, e.prototype._stop = function() {}, e;
+}(GoogleDevice), DIALOGFLOW_SERVER_URL = 'https://dialogflow.googleapis.com/v2/projects', GoogleNLU2 = function(t) {
+    function e(e, o) {
+        var n = t.call(this, 'GoogleNLU2', e, o) || this;
+        return n.mAccessToken = '', n.mAccessTokenDate = new Date(), n.mAccessTokenDuration = 0, 
+        n;
+    }
+    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
+        return e.getTime() - t.getTime();
+    }, e.prototype.getAccessTokenFromServer = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return [ 4, fetch(this.mConfig.dialogflowTokenServerUrl, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }) ];
+
+                  case 1:
+                    return [ 4, e.sent().json() ];
+
+                  case 2:
+                    return t = e.sent(), console.log('AccessToken: ', t), this.mAccessTokenDate = new Date(), 
+                    this.mAccessToken = t.token || '', this.mAccessTokenDuration = t.time || 0, console.log('AccessToken: ', this.mAccessToken, this.mAccessTokenDuration), 
+                    [ 2 ];
+                }
+            });
+        });
+    }, e.prototype.getAccessToken = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
+
+                  case 1:
+                    e.sent(), e.label = 2;
+
+                  case 2:
+                    return [ 2, this.mAccessToken ];
+                }
+            });
+        });
+    }, e.prototype.getDetectIntent = function(t, e) {
+        return __awaiter(this, void 0, void 0, function() {
+            var o, n;
+            return __generator(this, function(r) {
+                switch (r.label) {
+                  case 0:
+                    return [ 4, this.getAccessToken() ];
+
+                  case 1:
+                    return o = r.sent(), [ 4, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: {
+                            Authorization: "Bearer " + o,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            queryInput: {
+                                text: {
+                                    text: t,
+                                    languageCode: e
+                                }
+                            }
+                        })
+                    }) ];
+
+                  case 2:
+                    return [ 4, r.sent().json() ];
+
+                  case 3:
+                    return n = r.sent(), console.log('GoogleNLU2.getDetectIntent: ', n), [ 2, n ];
+                }
+            });
+        });
+    }, e.prototype._start = function(t) {
+        var e = this;
+        try {
+            if (!this.mConfig.dialogflowTokenServerUrl) return void this._error('_start', 'kein Tokenserver vorhanden');
+            if (!this.mConfig.dialogflowProjectId) return void this._error('_start', 'keine ProjektID vorhanden');
+            this.getDetectIntent(t.text, t.language).then(function(t) {
+                try {
+                    e._onResult(t);
+                } catch (t) {
+                    e._onError(new Error('NLU-Exception: ' + t.message));
+                }
+                e._onStop();
+            }, function(t) {
+                e._onError(new Error('NLU-Error: ' + t.message)), e._onStop();
             });
         } catch (t) {
             this._exception('_start', t);
@@ -880,9 +1107,10 @@ var ApiAiClient = function() {
         var n = t.call(this, e || GOOGLE_PORT_NAME, o) || this;
         return n.mAudioContext = null, n.mGetUserMedia = null, n.mGoogleServerFlag = !1, 
         n.mGoogleConfig = null, n.mGoogleNetwork = null, n.mGoogleWebSocket = null, n.mGoogleConnect = null, 
-        n.mGoogleTTS = null, n.mGoogleASR = null, n.mGoogleNLU = null, n.mDynamicCredentialsFlag = !1, 
-        n.mTransaction = null, n.mRunningFlag = !1, n.mDefaultOptions = null, n.mActionTimeoutId = 0, 
-        n.mActionTimeout = GOOGLE_ACTION_TIMEOUT, n;
+        n.mGoogleTTS = null, n.mGoogleASR = null, n.mGoogleNLU = null, n.mGoogleNLU2 = null, 
+        n.mGoogleNLU2Flag = GOOGLE_NLU2_FLAG, n.mDynamicCredentialsFlag = !1, n.mTransaction = null, 
+        n.mRunningFlag = !1, n.mDefaultOptions = null, n.mActionTimeoutId = 0, n.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 
+        n;
     }
     return __extends(e, t), e.prototype.isServer = function() {
         return this.mGoogleServerFlag;
@@ -895,7 +1123,15 @@ var ApiAiClient = function() {
     }, e.prototype.getVersion = function() {
         return GOOGLE_API_VERSION;
     }, e.prototype._checkCredentials = function(t) {
-        return !!t && ('string' == typeof t.googleAppKey && !!t.googleAppKey);
+        if (console.log('GooglePort._checkCredentials: ', t), !t) return !1;
+        var e = !0;
+        if ('string' != typeof t.dialogflowTokenServerUrl && (e = !1), t.dialogflowTokenServerUrl || (e = !1), 
+        'string' != typeof t.dialogflowProjectId && (e = !1), t.dialogflowProjectId || (e = !1), 
+        console.log('GooglePort._checkCredentials: NLU2 = ', e), !e) {
+            if ('string' != typeof t.googleAppKey) return !1;
+            if (!t.googleAppKey) return !1;
+        }
+        return this.mGoogleNLU2Flag = e, !0;
     }, e.prototype._initAllObject = function(t) {
         var e = this, o = new FileHtml5Reader();
         o.init();
@@ -927,6 +1163,16 @@ var ApiAiClient = function() {
         }, this.mGoogleNLU.onError = function(t) {
             return e._onError(t.error, t.plugin, t.type);
         }, this.mGoogleNLU.onClose = function(t) {
+            return e._onClose();
+        }, this.mGoogleNLU2 = new GoogleNLU2(this.mGoogleConfig, this.mGoogleConnect), this.mGoogleNLU2.onStart = function(t) {
+            return e._onStart(t.plugin, t.type);
+        }, this.mGoogleNLU2.onStop = function(t) {
+            return e._onStop(t.plugin, t.type);
+        }, this.mGoogleNLU2.onResult = function(t) {
+            return e._onResult(t.result, t.plugin, t.type);
+        }, this.mGoogleNLU2.onError = function(t) {
+            return e._onError(t.error, t.plugin, t.type);
+        }, this.mGoogleNLU2.onClose = function(t) {
             return e._onClose();
         }, this.isServer() && this.mAudioContext) {
             this.mGoogleTTS = new GoogleTTS(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext), 
@@ -972,6 +1218,7 @@ var ApiAiClient = function() {
         }
         var r = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
         return r && (this.mGetUserMedia = r.create()), 0 !== this._initAllObject(e) ? -1 : 0 !== t.prototype.init.call(this, e) ? -1 : (this.isErrorOutput() && (this.mGoogleNLU ? console.log('GooglePort: NLU ist vorhanden') : console.log('GooglePort: NLU ist nicht vorhanden'), 
+        this.mGoogleNLU2 ? console.log('GooglePort: NLU2 ist vorhanden') : console.log('GooglePort: NLU2 ist nicht vorhanden'), 
         this.mGoogleTTS ? console.log('GooglePort: TTS ist vorhanden') : console.log('GooglePort: TTS ist nicht vorhanden'), 
         this.mGoogleASR ? console.log('GooglePort: ASR ist vorhanden') : console.log('GooglePort: ASR ist nicht vorhanden')), 
         0);
@@ -981,17 +1228,18 @@ var ApiAiClient = function() {
         this.mGoogleConnect = null), this.mGoogleWebSocket && (this.mGoogleWebSocket.done(), 
         this.mGoogleWebSocket = null), this.mGoogleNetwork && (this.mGoogleNetwork.done(), 
         this.mGoogleNetwork = null), this.mGoogleConfig && (this.mGoogleConfig.done(), this.mGoogleConfig = null), 
-        this.mGoogleTTS = null, this.mGoogleASR = null, this.mGoogleNLU = null, this.mGoogleServerFlag = !1, 
-        this.mDynamicCredentialsFlag = !1, this.mTransaction = null, this.mRunningFlag = !1, 
-        this.mDefaultOptions = null, this.mActionTimeoutId = 0, this.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 
-        0;
+        this.mGoogleTTS = null, this.mGoogleASR = null, this.mGoogleNLU = null, this.mGoogleNLU2 = null, 
+        this.mGoogleServerFlag = !1, this.mDynamicCredentialsFlag = !1, this.mTransaction = null, 
+        this.mRunningFlag = !1, this.mDefaultOptions = null, this.mActionTimeoutId = 0, 
+        this.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 0;
     }, e.prototype.reset = function(e) {
         return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
     }, e.prototype._setErrorOutput = function(e) {
         t.prototype._setErrorOutput.call(this, e), this.mGoogleConfig && this.mGoogleConfig._setErrorOutput(e), 
         this.mGoogleNetwork && this.mGoogleNetwork._setErrorOutput(e), this.mGoogleWebSocket && this.mGoogleWebSocket._setErrorOutput(e), 
         this.mGoogleConnect && this.mGoogleConnect._setErrorOutput(e), this.mGoogleTTS && this.mGoogleTTS._setErrorOutput(e), 
-        this.mGoogleASR && this.mGoogleASR._setErrorOutput(e), this.mGoogleNLU && this.mGoogleNLU._setErrorOutput(e);
+        this.mGoogleASR && this.mGoogleASR._setErrorOutput(e), this.mGoogleNLU && this.mGoogleNLU._setErrorOutput(e), 
+        this.mGoogleNLU2 && this.mGoogleNLU2._setErrorOutput(e);
     }, e.prototype._breakAction = function() {
         this.mActionTimeoutId = 0, this.mTransaction && (this._error('_breakAction', 'Timeout fuer Action erreicht'), 
         this._onStop(this.mTransaction.plugin, this.mTransaction.type));
@@ -1028,13 +1276,17 @@ var ApiAiClient = function() {
         -1;
         try {
             return 'string' == typeof t.googleAppKey && t.googleAppKey && (this.mGoogleConfig.appKey = t.googleAppKey), 
+            'string' == typeof t.dialogflowTokenServerUrl && t.dialogflowTokenServerUrl && (this.mGoogleConfig.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl), 
+            'string' == typeof t.dialogflowProjectId && t.dialogflowProjectId && (this.mGoogleConfig.dialogflowProjectId = t.dialogflowProjectId), 
             0;
         } catch (t) {
             return this._exception('setConfig', t), -1;
         }
     }, e.prototype.getConfig = function() {
         return {
-            googleAppKey: this.mGoogleConfig.appKey
+            googleAppKey: this.mGoogleConfig.appKey,
+            dialogflowTokenServerUrl: this.mGoogleConfig.dialogflowTokenServerUrl,
+            dialogflowProjectId: this.mGoogleConfig.dialogflowProjectId
         };
     }, e.prototype.isOnline = function() {
         return !!this.mGoogleNetwork && this.mGoogleNetwork.isOnline();
@@ -1109,7 +1361,7 @@ var ApiAiClient = function() {
         var e = !1;
         switch (t) {
           case GOOGLE_NLU_ACTION:
-            e = !!this.mGoogleNLU;
+            e = !(!this.mGoogleNLU && !this.mGoogleNLU2);
             break;
 
           case GOOGLE_ASR_ACTION:
@@ -1202,23 +1454,23 @@ var ApiAiClient = function() {
     }, e.prototype._startNLU = function(t, e, o) {
         if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
         if (!o) return this._error('_startNLU', 'keine Sprache uebergeben'), -1;
-        if (!this.mGoogleNLU) return this._error('_startNLU', 'keine Google NLU-Anbindung vorhanden'), 
+        if (!this.mGoogleNLU || !this.mGoogleNLU2) return this._error('_startNLU', 'keine Google NLU-Anbindung vorhanden'), 
         -1;
         try {
             var n = {
                 text: e,
                 language: o
             };
-            return this.mGoogleNLU.start(t, n);
+            return this.mGoogleNLU2Flag ? this.mGoogleNLU2.start(t, n) : this.mGoogleNLU.start(t, n);
         } catch (t) {
             return this._exception('_startNLU', t), -1;
         }
         return -1;
     }, e.prototype._stopNLU = function(t) {
-        if (!this.mGoogleNLU) return this._error('_stopNLU', 'keine Google NLU-Anbindung vorhanden'), 
+        if (!this.mGoogleNLU || !this.mGoogleNLU2) return this._error('_stopNLU', 'keine Google NLU-Anbindung vorhanden'), 
         -1;
         try {
-            return this.mGoogleNLU.stop(t);
+            return this.mGoogleNLU2Flag ? this.mGoogleNLU2.stop(t) : this.mGoogleNLU.stop(t);
         } catch (t) {
             return this._exception('_stopNLU', t), -1;
         }
@@ -1281,7 +1533,8 @@ var ApiAiClient = function() {
         n.googleASRFlag = !0, n.googleTTSFlag = !0, n.disconnectFlag = !0, n.defaultOptions = null, 
         n.codec = '', n.intentName = 'TestIntent', n.intentConfidence = 1, n.intentSpeech = 'TestSpeech', 
         n.mDynamicCredentialsFlag = !1, n.mTransaction = null, n.mRunningFlag = !1, n.googleAppId = '', 
-        n.googleAppKey = '', n.googleNluTag = '', n;
+        n.googleAppKey = '', n.googleNluTag = '', n.dialogflowTokenServerUrl = '', n.dialogflowProjectId = '', 
+        n;
     }
     return __extends(e, t), e.prototype.isMock = function() {
         return !0;
@@ -1317,13 +1570,16 @@ var ApiAiClient = function() {
         if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
         -1;
         try {
-            return this.googleAppKey = t.googleAppKey, 0;
+            return this.googleAppKey = t.googleAppKey, this.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl, 
+            this.dialogflowProjectId = t.dialogflowProjectId, 0;
         } catch (t) {
             return this._exception('setConfig', t), -1;
         }
     }, e.prototype.getConfig = function() {
         return {
-            googleAppKey: this.googleAppKey
+            googleAppKey: this.googleAppKey,
+            dialogflowTokenServerUrl: this.dialogflowTokenServerUrl,
+            dialogflowProjectId: this.dialogflowProjectId
         };
     }, e.prototype.isOpen = function() {
         return !this.disconnectFlag;
@@ -1542,7 +1798,9 @@ var ApiAiClient = function() {
         return t.mCurrentPort ? t.mCurrentPort.setConfig(e) : -1;
     }, t.getConfig = function() {
         return t.mCurrentPort ? t.mCurrentPort.getConfig() : {
-            googleAppKey: ''
+            googleAppKey: '',
+            dialogflowTokenServerUrl: '',
+            dialogflowProjectId: ''
         };
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();

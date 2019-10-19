@@ -2,7 +2,7 @@
 
 Das Speech-Framework ist eine Typescript Browser-Bibliothek zur Integration von Sprachdiensten, wie Sprachausgabe (TTS), Spracherkennung (ASR), Sprachverstehen (NLU), Dialogverarbeitung (NLP) und Aktionsausführung in eine Web-Seite oder Web-App. Kern des Speech-Frameworks ist ein **Bot**, der Dialoge eines Dialogskripts ausführen kann.
 
-Daneben git es einzeln verwendbare Dienste: 
+Daneben git es einzeln verwendbare Dienste:
 
 * **Speak** für die Sprachausgabe (Html5 SpeechSynthesis, Nuance-TTS, Amazon-TTS, Microsoft-TTS)
 * **Listen** für die Spracherennung (Html5 SpeechRecognition, Nuance-ASR, Microsoft-ASR)
@@ -15,7 +15,7 @@ Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) u
 
 ## Letzte Version
 
-* 0.5.14.0058 Beta vom 31.08.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.15.0059 Beta vom 19.10.2019 [Release Notizen](./CHANGELOG.md)
 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
 
@@ -87,10 +87,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.14.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.15.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.14.tgz
+    $ npm install speech-framework-0.5.15.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -140,7 +140,8 @@ Für das Intent-Beispiel ist folgender Befehl einzugeben:
 
 ## Bekannte Probleme
 
-* Nuance hat seine Sprqachdienste abgeschaltet und steht als Cloud-Dienst nicht mehr zur Verfügung
+* Googles Dialogflow schaltet seine Version 1 Ende Oktober ab.
+* Nuance hat seine Sprachdienste abgeschaltet und steht als Cloud-Dienst nicht mehr zur Verfügung
 * die verschiedenen Browser verhalten sich unterschiedlich, so dass nicht in jedem Browser alle Funktionen des Speech-Frameworks zur Verfügung stehen.
 * unter iOS funktioniert die Cordova-Version von Listen mit Nuance Cloud-Dienst oder Amazon Cloud-Dienst nicht, da die Apple WebView die getUserMedia-API nicht unterstützt.
 

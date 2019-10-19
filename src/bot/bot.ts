@@ -38,6 +38,7 @@ import { ActionInterface } from './../action/action.interface';
 
 import {
     OnDialogSetFunc,
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogStartFunc,
     OnDialogStopFunc,
@@ -49,6 +50,7 @@ import {
     OnDialogSpeakStopFunc
 } from './../dialog/dialog-function.type';
 import { DialogStateContextInterface } from './../dialog/dialog-state-context.interface';
+import { DialogDataInterface } from './../dialog/dialog-data.interface';
 
 
 // bot
@@ -100,6 +102,10 @@ export class Bot extends Base implements BotInterface {
         return this.mBotComponent.addDialogSetEvent( aPluginName, aEventFunc );
     }
 
+    addDialogJsonEvent( aPluginName: string, aEventFunc: OnDialogJsonFunc ): number {
+        return this.mBotComponent.addDialogJsonEvent( aPluginName, aEventFunc );
+    }
+
     addDialogParseEvent( aPluginName: string, aEventFunc: OnDialogParseFunc ): number {
         return this.mBotComponent.addDialogParseEvent( aPluginName, aEventFunc );
     }
@@ -143,6 +149,10 @@ export class Bot extends Base implements BotInterface {
 
     removeDialogSetEvent( aPluginName: string ): number {
         return this.mBotComponent.removeDialogSetEvent( aPluginName );
+    }
+
+    removeDialogJsonEvent( aPluginName: string ): number {
+        return this.mBotComponent.removeDialogJsonEvent( aPluginName );
     }
 
     removeDialogParseEvent( aPluginName: string ): number {
@@ -253,6 +263,19 @@ export class Bot extends Base implements BotInterface {
 
     getAction(): ActionInterface {
         return this.mBotComponent.getAction();
+    }
+
+
+    // Json-Funktionen
+
+
+    transformJsonFile( aJsonFileName: string ): number {
+        return this.mBotComponent.transformJsonFile( aJsonFileName );
+    }
+
+
+    transformJsonData( aJsonData: DialogDataInterface[]): number {
+        return this.mBotComponent.transformJsonData( aJsonData );
     }
 
 

@@ -259,6 +259,7 @@ gulp.task('copy-dialog', function() {
     return gulp.src([
         'build/src/dialog/dialog-action.interface.d.ts',
         'build/src/dialog/dialog-const.d.ts',
+        'build/src/dialog/dialog-data.interface.d.ts',
         'build/src/dialog/dialog-factory.d.ts',
         'build/src/dialog/dialog-function.type.d.ts',
         'build/src/dialog/dialog-option.interface.d.ts',
@@ -607,6 +608,8 @@ gulp.task('install-google-credentials-ts', function() {
             .pipe( inject.append( "\n" ))
             .pipe( inject.append( "\n" ))
             .pipe( inject.append( "export const GOOGLE_APP_KEY = '';\n" ))
+            .pipe( inject.append( "export const DIALOGFLOW_TOKENSERVER_URL = '';\n" ))
+            .pipe( inject.append( "export const DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
     return gulp.src( '' ); // empty stream
@@ -631,6 +634,8 @@ gulp.task('install-google-credentials-js', function() {
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "var GOOGLE_APP_KEY = '';\n" ))
+            .pipe(inject.append( "var DIALOGFLOW_TOKENSERVER_URL = '';\n" ))
+            .pipe(inject.append( "var DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
     return gulp.src( '' ); // empty stream

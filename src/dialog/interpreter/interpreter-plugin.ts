@@ -500,7 +500,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
 
     startDialog(): number {
         try {
-            // console.log('startDialog:', this.mDialogName, this.mStateName);
+            console.log('InterpreterPlugin.startDialog:', this.mDialogName, this.mStateName);
             if ( this.isDialogRunning()) {
                 this._error( 'startDialog', 'Dialog laeuft bereits' );
                 return -1;
@@ -527,7 +527,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     stopDialog(): number {
-        // debug('stopDialog');
+        // console.log('InterpreterPlugin.stopDialog');
         try {
             this._clearGroup();
             this._clearNodePromise();
@@ -562,7 +562,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     setState( aStateName: string, aStateContext: DialogStateContextInterface ): number {
-        // debug('setState:', aStateName, aStateContext);
+        // console.log('InterpreterPlugin.setState:', aStateName, aStateContext);
         if ( !aStateName ) {
             this._error( 'setState', 'kein StateName uebergeben' );
             return -1;
@@ -775,7 +775,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     async _runState( aDialogState: DialogStateInterface ) {
-        // console.log('_runState: start');
+        // console.log('_runState: start ', aDialogState);
         const nodeId = aDialogState.getFirstDialogNodeId();
         if ( !nodeId ) {
             this._error( 'runState', 'kein Knoten vorhanden' );
@@ -998,7 +998,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _checkRunNode( aNode: DialogNodeInterface ): boolean {
-        // debug('_checkRunNode:', this.mGroupId);
+        // console.log('InterpreterPlugin._checkRunNode:', this.mGroupId);
         // pruefen auf vorhandenen Gruppenknoten
         if ( this.mGroupId === 0 ) {
             return true;
@@ -1030,7 +1030,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runAction( aNode: DialogNodeInterface ): void {
-        // console.log('_runAction:', aNode.getName(), aNode.getObjectType(), aNode.getObjectName());
+        // console.log('InterpreterPlugin._runAction:', aNode.getName(), aNode.getObjectType(), aNode.getObjectName());
         // pruefen auf auszugebenden Knoten
         if ( this._checkRunNode(aNode)) {
             // Action-Event erzeugen
@@ -1049,7 +1049,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runSpeak( aNode: DialogNodeInterface ): void {
-        // console.log('_runSpeak:', aNode.getTimeout(), aNode.getText());
+        // console.log('InterpreterPlugin._runSpeak:', aNode.getTimeout(), aNode.getText());
         if ( this.isSpeakRunning()) {
             this._error( '_runSpeak', 'Speak laeuft bereits' );
             return;
@@ -1079,7 +1079,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _runWait( aNode: DialogNodeInterface ): void {
-        // console.log('_runWait');
+        // console.log('InterpreterPlugin._runWait', aNode.getTimeout());
     }
 
 

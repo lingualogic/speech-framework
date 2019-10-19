@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.14.0058 (Beta) vom 31.08.2019
+ * Version: 0.5.15.0059 (Beta) vom 19.10.2019
  */
 
 
@@ -64,6 +64,7 @@ export { IntentFactory } from './src/intent/intent-factory';
 export { DIALOG_TYPE_NAME, DIALOG_COMPONENT_NAME, DIALOG_MAIN_NAME, DIALOG_ROOTSTATE_NAME } from './src/dialog/dialog-const';
 export { DialogActionInterface } from './src/dialog/dialog-action.interface';
 export { DialogSpeakInterface } from './src/dialog/dialog-speak.interface';
+export { DialogDataInterface } from './src/dialog/dialog-data.interface';
 export { DialogOptionInterface } from './src/dialog/dialog-option.interface';
 export { DialogInterface } from './src/dialog/dialog.interface';
 export { DialogFactory } from './src/dialog/dialog-factory';

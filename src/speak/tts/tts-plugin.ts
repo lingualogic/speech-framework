@@ -530,6 +530,8 @@ export class TTSPlugin extends Plugin implements TTSInterface {
                 break;
 
             default:
+                // TODO: Eventuell muss hier language='' wegen Rollup-Problem hin
+                language = '';
                 break;
         }
         return language;

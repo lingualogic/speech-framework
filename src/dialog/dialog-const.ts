@@ -1,11 +1,11 @@
 /**
  * globale Dialog Konstanten
  *
- * API-Version: 1.0
- * Datum:   07.09.2018
+ * API-Version: 1.1
+ * Datum:   07.09.2019
  *
- * Letzte Aenderung: 07.09.2018
- * Status: gelb
+ * Letzte Aenderung: 07.09.2019
+ * Status: rot
  *
  * @module dialog
  * @author SB
@@ -57,3 +57,9 @@ export const DIALOG_ACTION_NODE = 'action';
 export const DIALOG_SPEAK_NODE = 'speak';
 export const DIALOG_WAIT_NODE = 'wait';
 
+
+// vorhandene Kommandos
+
+export const DIALOG_ACTION_COMMAND = 'ACTION';
+export const DIALOG_SPEAK_COMMAND = 'SPEAK';
+export const DIALOG_WAIT_COMMAND = 'WAIT';

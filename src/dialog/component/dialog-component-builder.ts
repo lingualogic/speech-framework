@@ -1,7 +1,7 @@
 /**
  * DialogComponentBuilder
  *
- * Letzte Aenderung: 07.09.2018
+ * Letzte Aenderung: 07.09.2019
  * Status: gelb
  *
  * @module dialog/component
@@ -26,6 +26,13 @@ import { FileReaderInterface } from '../../file/reader/file-reader.interface';
 import { STORE_FACTORY_NAME, STORE_PLUGIN_NAME } from '../store/store-const';
 import { StoreFactory } from '../store/store-factory';
 import { StoreInterface } from '../store/store.interface';
+
+
+// json
+
+import { JSON_FACTORY_NAME, JSON_PLUGIN_NAME } from '../json/json-const';
+import { JsonFactory } from '../json/json-factory';
+import { JsonInterface } from '../json/json.interface';
 
 
 // parser
@@ -113,9 +120,10 @@ export class DialogComponentBuilder extends Builder {
             const dialog = this._buildComponent();
             const fileReader = this._getPlugin( FILEREADER_PLUGIN_NAME, FILEREADER_FACTORY_NAME, FileReaderFactory ) as FileReaderInterface;
             const store = this._getPlugin( STORE_PLUGIN_NAME, STORE_FACTORY_NAME, StoreFactory ) as StoreInterface;
+            const json = this._getPlugin( JSON_PLUGIN_NAME, JSON_FACTORY_NAME, JsonFactory ) as JsonInterface;
             const parser = this._getPlugin( PARSER_PLUGIN_NAME, PARSER_FACTORY_NAME, ParserFactory ) as ParserInterface;
             const interpreter = this._getPlugin( INTERPRETER_PLUGIN_NAME, INTERPRETER_FACTORY_NAME, InterpreterFactory ) as InterpreterInterface;
-            if ( this._binder( dialog, fileReader, store, parser, interpreter ) !== 0 ) {
+            if ( this._binder( dialog, fileReader, store, json, parser, interpreter ) !== 0 ) {
                 this._error( 'build', 'Komponenten nicht verbunden' );
                 return null;
             }
@@ -151,7 +159,7 @@ export class DialogComponentBuilder extends Builder {
      * @return {number} errorCode(0,-1)
      */
 
-    _binder( aDialog: DialogComponentInterface, aFileReader: FileReaderInterface, aStore: StoreInterface, aParser: ParserInterface, aInterpreter: InterpreterInterface ): number {
+    _binder( aDialog: DialogComponentInterface, aFileReader: FileReaderInterface, aStore: StoreInterface, aJson: JsonInterface, aParser: ParserInterface, aInterpreter: InterpreterInterface ): number {
         if ( !aDialog ) {
             this._error( '_binder', 'Dialog nicht vorhanden' );
             return -1;
@@ -162,6 +170,10 @@ export class DialogComponentBuilder extends Builder {
         }
         if ( !aStore ) {
             this._error( '_binder', 'Store nicht vorhanden' );
+            return -1;
+        }
+        if ( !aJson ) {
+            this._error( '_binder', 'Json nicht vorhanden' );
             return -1;
         }
         if ( !aParser ) {
@@ -175,19 +187,27 @@ export class DialogComponentBuilder extends Builder {
         // Plugins eintragen
         if ( aDialog.insertPlugin( aFileReader.getName(), aFileReader ) !== 0 ) { return -1; }
         if ( aDialog.insertPlugin( aStore.getName(), aStore ) !== 0 ) { return -1; }
+        if ( aDialog.insertPlugin( aJson.getName(), aJson ) !== 0 ) { return -1; }
         if ( aDialog.insertPlugin( aParser.getName(), aParser ) !== 0 ) { return -1; }
         if ( aDialog.insertPlugin( aInterpreter.getName(), aInterpreter ) !== 0 ) { return -1; }
         // binden der FileReader-Funktionen
         if ( aDialog.setReadFileFunc( aFileReader.getReadFunc()) !== 0 ) { return -1; }
         aFileReader.onRead = aDialog.getWriteFileDataFunc();
         aFileReader.onError = aDialog.onError;
+        // binden von Store an Json
+        aJson.setNewDialogFunc( aStore.getNewDialogFunc());
+        aJson.setNewDialogStateFunc( aStore.getNewDialogStateFunc());
         // binden von Store an Parser
         aParser.setNewDialogFunc(aStore.getNewDialogFunc());
         aParser.setNewDialogStateFunc(aStore.getNewDialogStateFunc());
-        aParser.onError = aDialog.onError;
         // binden von Store an Interpreter
         aInterpreter.setGetDialogStateFunc(aStore.getGetDialogStateFunc());
         aInterpreter.onError = aDialog.onError;
+        // binden von Json und Dialog
+        aDialog.setTransformJsonFileFunc(aJson.getTransformJsonFileFunc());
+        aDialog.setTransformJsonDataFunc(aJson.getTransformJsonDataFunc());
+        aJson.onJsonEnd = aDialog.onDialogJson;
+        aJson.onError = aDialog.onError;
         // binden von Parser und Dialog
         aDialog.setParseSpeechDefFileFunc(aParser.getParseSpeechDefFileFunc());
         aDialog.setParseSpeechDefDataFunc(aParser.getParseSpeechDefDataFunc());

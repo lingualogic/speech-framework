@@ -156,6 +156,8 @@ export class TTSNuance extends TTSPlugin {
                 break;
 
             default:
+                // TODO: Eventuell muss hier language='' wegen Rollup-Problem hin
+                language = '';
                 break;
         }
         return language;

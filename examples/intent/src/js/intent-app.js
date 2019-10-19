@@ -278,6 +278,8 @@ function IntentApp() {
             microsoftLuisEndpoint: MICROSOFT_LUIS_ENDPOINT,
             rasaAppKey: RASA_APP_KEY,
             googleAppKey: GOOGLE_APP_KEY,
+            dialogflowTokenServerUrl: DIALOGFLOW_TOKENSERVER_URL,
+            dialogflowProjectId: DIALOGFLOW_PROJECT_ID,
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             nuanceNluTag: NLU_TAG

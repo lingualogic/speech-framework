@@ -51,6 +51,7 @@ export const SPEECH_ACTIONSTOP_EVENT = 'actionStop';
 export const SPEECH_DIALOGSET_EVENT = 'dialogSet';
 export const SPEECH_DIALOGSTART_EVENT = 'dialogStart';
 export const SPEECH_DIALOGSTOP_EVENT = 'dialogStop';
+export const SPEECH_DIALOGJSON_EVENT = 'dialogJson';
 export const SPEECH_DIALOGPARSE_EVENT = 'dialogParse';
 export const SPEECH_DIALOGSTATESET_EVENT = 'dialogStateSet';
 

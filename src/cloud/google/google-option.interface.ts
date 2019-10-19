@@ -23,6 +23,10 @@ export interface GoogleOptionInterface {
     googleServerFlag?: boolean;
     /** legt die URL fuer die Verbindung zum Server fest */
     googleServerUrl?: string;
+    /** legt die URL fuer die Verbindung zum Dialogflow-TokenServer fest */
+    dialogflowTokenServerUrl?: string;
+    /** legt die Projekt-ID von Dialogflow fest */
+    dialogflowProjectId?: string;
     /** legt dynamische Konfigurierbarkeit fest */
     googleDynamicCredentialsFlag?: boolean;
     /** legt die App-ID fuer die Verbindung zum Server fest */

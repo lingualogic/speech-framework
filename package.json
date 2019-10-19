@@ -1,6 +1,6 @@
 {
     "name": "speech",
-    "version": "0.5.14",
+    "version": "0.5.15",
     "description": "Speech-Framework",
     "author": "LinguaLogic Team",
     "license": "MIT",
@@ -49,7 +49,7 @@
         "karma-opera-launcher": "^1.0.0",
         "karma-safari-launcher": "^1.0.0",
         "protractor": "^5.4.2",
-        "rollup": "^1.20.3",
+        "rollup": "1.20.3",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-json": "^4.0.0",
         "rollup-plugin-node-resolve": "^5.2.0",
@@ -60,7 +60,7 @@
         "tslint": "^5.11.0",
         "typedoc": "^0.14.2",
         "typedoc-plugin-external-module-name": "^2.0.0",
-        "typescript": "^3.2.2",
+        "typescript": "3.4.1",
         "uglify-es": "^3.3.9"
     }
 }

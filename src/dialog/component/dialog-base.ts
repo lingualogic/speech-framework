@@ -2,8 +2,8 @@
  * DialogBase definiert die Basisfunktionalitaet fuer eine Dialog-Komponente.
  * Von dieser Klasse koennen weitere Varianten der Dialog-Komponente abgeleitet werden.
  *
- * Letzte Aenderung: 25.04.2019
- * Status: gelb
+ * Letzte Aenderung: 08.09.2019
+ * Status: rot
  *
  * @module dialog/component
  * @author SB
@@ -13,6 +13,7 @@
 // global
 
 import {
+    SPEECH_DIALOGJSON_EVENT,
     SPEECH_DIALOGPARSE_EVENT,
     SPEECH_DIALOGSET_EVENT,
     SPEECH_DIALOGSTART_EVENT,
@@ -43,6 +44,11 @@ import { BaseComponent } from '../../base/component/base-component';
 import { OnFileReaderReadFunc } from '../../file/reader/file-reader.interface';
 
 
+// json
+
+import { TransformJsonFileFunc, TransformJsonDataFunc } from '../json/json.interface';
+
+
 // parser
 
 import { ParserSpeechDefFileFunc, ParserSpeechDefDataFunc } from '../parser/parser.interface';
@@ -52,6 +58,7 @@ import { ParserSpeechDefFileFunc, ParserSpeechDefDataFunc } from '../parser/pars
 
 import { DIALOG_API_VERSION } from '../dialog-version';
 import {
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogSetFunc,
     OnDialogStartFunc,
@@ -72,6 +79,7 @@ import {
     DIALOG_MAIN_NAME,
     DIALOG_ROOTSTATE_NAME
 } from '../dialog-const';
+import { DialogDataInterface } from '../dialog-data.interface';
 import { DialogActionInterface } from '../dialog-action.interface';
 import { DialogSpeakInterface } from '../dialog-speak.interface';
 import { DialogStateContextInterface } from '../dialog-state-context.interface';
@@ -92,12 +100,16 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
     // Funktionen
 
+    mTransformJsonFileFunc: TransformJsonFileFunc = null;
+    mTransformJsonDataFunc: TransformJsonDataFunc = null;
+
     mParseSpeechDefFileFunc: ParserSpeechDefFileFunc = null;
     mParseSpeechDefDataFunc: ParserSpeechDefDataFunc = null;
     mReadFileFunc: OnFileReaderReadFunc = null;
 
     // Events
 
+    mDialogJsonEvent = new EventFunctionList( SPEECH_DIALOGJSON_EVENT );
     mDialogParseEvent = new EventFunctionList( SPEECH_DIALOGPARSE_EVENT );
     mDialogSetEvent = new EventFunctionList( SPEECH_DIALOGSET_EVENT );
     mDialogStartEvent = new EventFunctionList( SPEECH_DIALOGSTART_EVENT );
@@ -128,6 +140,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         super( aComponentName, aRegisterFlag );
         // eintragen der Fehlerfunktion
         this.mDialogContext._setErrorOutputFunc( this._getErrorOutputFunc());
+        this.mDialogJsonEvent._setErrorOutputFunc( this._getErrorOutputFunc());
         this.mDialogParseEvent._setErrorOutputFunc( this._getErrorOutputFunc());
         this.mDialogSetEvent._setErrorOutputFunc( this._getErrorOutputFunc());
         this.mDialogStartEvent._setErrorOutputFunc( this._getErrorOutputFunc());
@@ -139,6 +152,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         this.mDialogSpeakStartEvent._setErrorOutputFunc( this._getErrorOutputFunc());
         this.mDialogSpeakStopEvent._setErrorOutputFunc( this._getErrorOutputFunc());
         // eintragen des Komponentennamens
+        this.mDialogJsonEvent.setComponentName( aComponentName );
         this.mDialogParseEvent.setComponentName( aComponentName );
         this.mDialogSetEvent.setComponentName( aComponentName );
         this.mDialogStartEvent.setComponentName( aComponentName );
@@ -225,7 +239,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
      */
 
     _initLoadDialogFile(): number {
-        // console.log('DialogComponent.init: Dialogdatei wird geladen');
+        // console.log('DialogBase._initLoadDialogFile: Dialogdatei wird geladen ', this.mDialogLoadFlag);
         if ( this.mDialogLoadFlag && this.loadDialogFile() !== 0 ) {
             this._error( 'init', 'Dialogdatei nicht geladen' );
             this._clearInit();
@@ -358,6 +372,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
     _setErrorOutput( aErrorOutputFlag: boolean ): void {
         super._setErrorOutput( aErrorOutputFlag );
+        this.mDialogJsonEvent._setErrorOutput( aErrorOutputFlag );
         this.mDialogParseEvent._setErrorOutput( aErrorOutputFlag );
         this.mDialogSetEvent._setErrorOutput( aErrorOutputFlag );
         this.mDialogStartEvent._setErrorOutput( aErrorOutputFlag );
@@ -409,6 +424,19 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
 
     // Event-Funktionen
+
+
+    /**
+     * Ereignisfunktion fuer Dialog json 
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onDialogJson(): number {
+        // console.log('DialogComponent._onDialogJson');
+        return this.mDialogJsonEvent.dispatch();
+    }
 
 
     /**
@@ -559,6 +587,17 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
 
 
     /**
+     * Rueckgabe der DialogJson-Ereignisfunktion, um ein Ereignis extern auszuloesen
+     *
+     * @readonly
+     */
+
+    get onDialogJson() {
+        return () => this._onDialogJson();
+    }
+
+
+    /**
      * Rueckgabe der DialogParse-Ereignisfunktion, um ein Ereignis extern auszuloesen
      *
      * @readonly
@@ -682,6 +721,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         // console.log('DialogProxy.addEventListener:', aPluginName, aEventName, aEventFunc);
         let result = 0;
         switch ( aEventName ) {
+            case SPEECH_DIALOGJSON_EVENT:
+                result = this.mDialogJsonEvent.addListener( aPluginName, aEventFunc );
+                break;
+
             case SPEECH_DIALOGPARSE_EVENT:
                 result = this.mDialogParseEvent.addListener( aPluginName, aEventFunc );
                 break;
@@ -742,6 +785,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         // console.log('DialogProxy.removeEventListener:', aPluginName, aEventName);
         let result = 0;
         switch ( aEventName ) {
+            case SPEECH_DIALOGJSON_EVENT:
+                result = this.mDialogJsonEvent.removeListener( aPluginName );
+                break;
+
             case SPEECH_DIALOGPARSE_EVENT:
                 result = this.mDialogParseEvent.removeListener( aPluginName );
                 break;
@@ -794,6 +841,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
     // add-Funktionen
 
 
+    addDialogJsonEvent( aPluginName: string, aEventFunc: OnDialogJsonFunc ): number {
+        return this.addEventListener( aPluginName, SPEECH_DIALOGJSON_EVENT, aEventFunc );
+    }
+
     addDialogParseEvent( aPluginName: string, aEventFunc: OnDialogParseFunc ): number {
         return this.addEventListener( aPluginName, SPEECH_DIALOGPARSE_EVENT, aEventFunc );
     }
@@ -842,6 +893,10 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
     // remove-Funktionen
 
 
+    removeDialogJsonEvent( aPluginName: string ): number {
+        return this.removeEventListener( aPluginName, SPEECH_DIALOGJSON_EVENT );
+    }
+
     removeDialogParseEvent( aPluginName: string ): number {
         return this.removeEventListener( aPluginName, SPEECH_DIALOGPARSE_EVENT );
     }
@@ -889,6 +944,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
     removeAllEvent( aPluginName: string ): number {
         // console.log('DialogBase.removeAllEvent: start', aPluginName);
         let result = super.removeAllEvent( aPluginName );
+        if ( this.removeDialogJsonEvent( aPluginName ) !== 0 )       { result = -1; }
         if ( this.removeDialogParseEvent( aPluginName ) !== 0 )      { result = -1; }
         if ( this.removeDialogSetEvent( aPluginName ) !== 0 )        { result = -1; }
         if ( this.removeDialogStartEvent( aPluginName ) !== 0 )      { result = -1; }
@@ -919,6 +975,18 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
     }
 
 
+    setTransformJsonFileFunc( aTransformJsonFileFunc: TransformJsonFileFunc ): number {
+        this.mTransformJsonFileFunc = aTransformJsonFileFunc;
+        return 0;
+    }
+
+
+    setTransformJsonDataFunc( aTransformJsonDataFunc: TransformJsonDataFunc ): number {
+        this.mTransformJsonDataFunc = aTransformJsonDataFunc;
+        return 0;
+    }
+
+
     setParseSpeechDefFileFunc( aParseSpeechDefFileFunc: ParserSpeechDefFileFunc ): number {
         this.mParseSpeechDefFileFunc = aParseSpeechDefFileFunc;
         return 0;
@@ -929,7 +997,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
         this.mParseSpeechDefDataFunc = aParseSpeechDefDataFunc;
         return 0;
     }
-
+    
 
     // Dialog-Funktionen
 
@@ -937,6 +1005,52 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
     _stop(): void {
         this.mActivDialogFlag = false;
         this._onDialogActionStop();
+    }
+
+
+    /**
+     * Transformieren der Json-Datei
+     *
+     * @param {string} aJsonFileName - Name der Json-Datei, die eingelesen werden soll
+     *
+     * @return {number} errorCode(0,-1) - Fehlercode
+     */
+
+    transformJsonFile( aJsonFileName: string ): number {
+        if ( !this.isActive()) {
+            this._error('transformJsonFile', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
+        if ( typeof this.mTransformJsonFileFunc === 'function' ) {
+            return this.mTransformJsonFileFunc( aJsonFileName );
+        }
+        return -1;
+    }
+
+
+    /**
+     * Transform der uebergebenen Json-Daten
+     *
+     * @param {string} aJsonData - Json-Daten
+     *
+     * @return {number} errorCode(0,-1) - Fehlercode
+     */
+
+    transformJsonData( aJsonData: DialogDataInterface[]): number {
+        if ( !this.isActive()) {
+            this._error('transformJsonData', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
+        try {
+            if ( typeof this.mTransformJsonDataFunc !== 'function' ) {
+                this._error( 'transformJsonData', 'keine JsonData funktion' );
+                return -1;
+            }
+            return this.mTransformJsonDataFunc( aJsonData );
+        } catch ( aException ) {
+            this._exception( 'transformJsonData', aException);
+            return -1;
+        }
     }
 
 

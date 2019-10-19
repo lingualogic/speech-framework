@@ -360,7 +360,7 @@ export class ParserPlugin extends Plugin implements ParserInterface {
                         nodeObject = stateObject.newDialogNode( DIALOG_WAIT_NODE, id, groupId, nextId );
                         nodeObject.setTimeout( timeout );
                         nodeObject.setProperty( groupProperty );
-                        // debug('parse SPEAK:', id, stateId, groupId, nextId, text, timeout);
+                        // debug('parse WAIT:', id, stateId, groupId, nextId, timeout);
                         break;
 
                     case '':

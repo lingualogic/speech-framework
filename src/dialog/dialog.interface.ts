@@ -1,11 +1,11 @@
 /**
  * Oeffentliche Dialog Schnittstelle
  *
- * API-Version: 1.2
- * Datum:   26.03.2019
+ * API-Version: 1.3
+ * Datum:   07.09.2019
  *
- * Letzte Aenderung: 26.03.2019
- * Status: gelb
+ * Letzte Aenderung: 07.09.2019
+ * Status: rot
  *
  * @module dialog
  * @author SB
@@ -25,6 +25,7 @@ import { BaseInterface } from './../base/base.interface';
 // dialog
 
 import {
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogSetFunc,
     OnDialogStartFunc,
@@ -37,7 +38,7 @@ import {
     OnDialogSpeakStopFunc
 } from './dialog-function.type';
 import { DialogStateContextInterface } from './dialog-state-context.interface';
-
+import { DialogDataInterface } from './dialog-data.interface';
 
 // Global API
 
@@ -50,6 +51,19 @@ export interface DialogInterface extends BaseInterface {
 
 
     // Event-Funktionen
+
+
+    /**
+     * Traegt eine Ereignisfunktion in das DialogJson Ereignis ein.
+     * DialogJson wird ausgeloest, wenn Json-Daten umgewandelt worden sind.
+     *
+     * @param {string} aPluginName - Name des Plugins, welches die Funktion eintragt
+     * @param {OnDialogJsonFunc} aEventFunc - Funktion, die Ereignis verarbeitet
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    addDialogJsonEvent( aPluginName: string, aEventFunc: OnDialogJsonFunc ): number;
 
 
     /**
@@ -187,6 +201,17 @@ export interface DialogInterface extends BaseInterface {
 
 
     /**
+     * Entfernt die Ereignisfunktion aus dem DialogJson Ereignis.
+     *
+     * @param aPluginName - Name des Plugins, von dem die Funktion entfernt werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    removeDialogJsonEvent( aPluginName: string ): number;
+
+
+    /**
      * Entfernt die Ereignisfunktion aus dem DialogParse Ereignis.
      *
      * @param aPluginName - Name des Plugins, von dem die Funktion entfernt werden soll
@@ -294,6 +319,31 @@ export interface DialogInterface extends BaseInterface {
      */
 
     removeDialogSpeakStopEvent( aPluginName: string ): number;
+
+
+    // Json-Funktionen
+
+
+    /**
+     * Umwandlung einer Json-Datei
+     *
+     * @param aJsonFileName - Name der Json-Datei, die umgewandelt werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    transformJsonFile( aDefFileName: string ): number;
+
+
+    /**
+     * Umwandlung der JSON-Daten
+     *
+     * @param aJsonData - Json-Daten, die umgewandelt werden sollen
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    transformJsonData( aJsonData: DialogDataInterface[]): number;
 
 
     // Parser-Funktionen

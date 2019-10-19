@@ -14,6 +14,7 @@
 import {
     SPEECH_ERROR_EVENT,
     SPEECH_DIALOGSET_EVENT,
+    SPEECH_DIALOGJSON_EVENT,
     SPEECH_DIALOGPARSE_EVENT,
     SPEECH_DIALOGSTART_EVENT,
     SPEECH_DIALOGSTOP_EVENT,
@@ -65,6 +66,7 @@ import { ActionComponentInterface } from '../../action/component/action-componen
 import { DIALOG_COMPONENT_NAME } from '../../dialog/dialog-const';
 import {
     OnDialogSetFunc,
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogStartFunc,
     OnDialogStopFunc,
@@ -78,6 +80,7 @@ import {
 import { DialogActionInterface } from '../../dialog/dialog-action.interface';
 import { DialogSpeakInterface } from '../../dialog/dialog-speak.interface';
 import { DialogComponentInterface } from '../../dialog/component/dialog-component.interface';
+import { DialogDataInterface } from '../../dialog/dialog-data.interface';
 
 
 // bot
@@ -326,6 +329,10 @@ export class BotComponent extends BaseComponent implements BotComponentInterface
         return this.addEventListener( aPluginName, SPEECH_DIALOGSET_EVENT, aEventFunc );
     }
 
+    addDialogJsonEvent( aPluginName: string, aEventFunc: OnDialogJsonFunc ): number {
+        return this.addEventListener( aPluginName, SPEECH_DIALOGJSON_EVENT, aEventFunc );
+    }
+
     addDialogParseEvent( aPluginName: string, aEventFunc: OnDialogParseFunc ): number {
         return this.addEventListener( aPluginName, SPEECH_DIALOGPARSE_EVENT, aEventFunc );
     }
@@ -369,6 +376,10 @@ export class BotComponent extends BaseComponent implements BotComponentInterface
 
     removeDialogSetEvent( aPluginName: string ): number {
         return this.removeEventListener( aPluginName, SPEECH_DIALOGSET_EVENT );
+    }
+
+    removeDialogJsonEvent( aPluginName: string ): number {
+        return this.removeEventListener( aPluginName, SPEECH_DIALOGJSON_EVENT );
     }
 
     removeDialogParseEvent( aPluginName: string ): number {
@@ -650,6 +661,27 @@ export class BotComponent extends BaseComponent implements BotComponentInterface
 
     getAction(): ActionInterface {
         return this.mAction;
+    }
+
+
+    // Json-Funktionen
+
+
+    transformJsonFile( aJsonFileName: string ): number {
+        if ( !this.isActive()) {
+            this._error('transformJsonFile', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
+        return this.mDialog.transformJsonFile( aJsonFileName );
+    }
+
+
+    transformJsonData( aJsonData: DialogDataInterface[]): number {
+        if ( !this.isActive()) {
+            this._error('transformJsonData', 'Komponente ist nicht aktiviert');
+            return -1;
+        }
+        return this.mDialog.transformJsonData( aJsonData );
     }
 
 

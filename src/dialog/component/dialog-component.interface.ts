@@ -1,8 +1,8 @@
 /**
  * DialogComponent Schnittstelle
  *
- * Letzte Aenderung: 18.10.2018
- * Status: gelb
+ * Letzte Aenderung: 07.09.2019
+ * Status: rot
  *
  * @module dialog/component
  * @author SB
@@ -19,6 +19,11 @@ import { BaseComponentInterface } from '../../base/component/base-component.inte
 import { OnFileReaderReadFunc } from '../../file/reader/file-reader.interface';
 
 
+// json
+
+import { TransformJsonFileFunc, TransformJsonDataFunc } from '../json/json.interface';
+
+
 // parser
 
 import { ParserSpeechDefFileFunc, ParserSpeechDefDataFunc } from '../parser/parser.interface';
@@ -27,6 +32,7 @@ import { ParserSpeechDefFileFunc, ParserSpeechDefDataFunc } from '../parser/pars
 // dialog
 
 import {
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogSetFunc,
     OnDialogStartFunc,
@@ -53,6 +59,7 @@ export interface DialogComponentInterface extends BaseComponentInterface, Dialog
 
     onNetOpen: () => number;
 
+    onDialogJson: OnDialogJsonFunc;
     onDialogParse: OnDialogParseFunc;
     onDialogSet: OnDialogSetFunc;
     onDialogStart: OnDialogStartFunc;
@@ -67,6 +74,9 @@ export interface DialogComponentInterface extends BaseComponentInterface, Dialog
 
     // Binding-Funktionen
 
+
+    setTransformJsonFileFunc( aTransformJsonFileFunc: TransformJsonFileFunc ): number;
+    setTransformJsonDataFunc( aTransformJsonDataFunc: TransformJsonDataFunc ): number;
 
     setParseSpeechDefFileFunc( aParseSpeechDefFileFunc: ParserSpeechDefFileFunc ): number;
     setParseSpeechDefDataFunc( aParseSpeechDefDataFunc: ParserSpeechDefDataFunc ): number;

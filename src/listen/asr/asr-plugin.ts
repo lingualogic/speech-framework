@@ -695,8 +695,11 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                 break;
 
             default:
+                // TODO: Eventuell muss hier language='' wegen Rollup-Problem hin
+                language = '';
                 break;
         }
+        console.log('ASRPlugin.getLanguage:', language);
         return language;
     }
 

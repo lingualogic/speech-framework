@@ -1,7 +1,7 @@
 /**
  * Dialog API Wrapper fuer DialogComponent
  *
- * Letzte Aenderung: 26.03.2019
+ * Letzte Aenderung: 07.09.2019
  * Status: rot
  *
  * @module dialog
@@ -23,6 +23,7 @@ import { Base } from './../base/base';
 
 import { DIALOG_TYPE_NAME } from './dialog-const';
 import {
+    OnDialogJsonFunc,
     OnDialogParseFunc,
     OnDialogSetFunc,
     OnDialogStartFunc,
@@ -36,6 +37,7 @@ import {
 } from './dialog-function.type';
 import { DialogStateContextInterface } from './dialog-state-context.interface';
 import { DialogOptionInterface } from './dialog-option.interface';
+import { DialogDataInterface } from './dialog-data.interface';
 import { DialogInterface } from './dialog.interface';
 import { DialogComponentInterface } from './component/dialog-component.interface';
 
@@ -76,6 +78,10 @@ export class Dialog extends Base implements DialogInterface {
 
     // Event-Funktionen
 
+
+    addDialogJsonEvent( aPluginName: string, aEventFunc: OnDialogJsonFunc ): number {
+        return this.mDialogComponent.addDialogJsonEvent( aPluginName, aEventFunc );
+    }
 
     addDialogParseEvent( aPluginName: string, aEventFunc: OnDialogParseFunc ): number {
         return this.mDialogComponent.addDialogParseEvent( aPluginName, aEventFunc );
@@ -119,6 +125,10 @@ export class Dialog extends Base implements DialogInterface {
 
     addErrorEvent( aPluginName: string, aEventFunc: OnSpeechErrorFunc ): number {
         return this.mDialogComponent.addErrorEvent( aPluginName, aEventFunc );
+    }
+
+    removeDialogJsonEvent( aPluginName: string ): number {
+        return this.mDialogComponent.removeDialogJsonEvent( aPluginName );
     }
 
     removeDialogParseEvent( aPluginName: string ): number {
@@ -166,6 +176,19 @@ export class Dialog extends Base implements DialogInterface {
 
     removeAllEvent( aPluginName: string ): number {
         return this.mDialogComponent.removeAllEvent( aPluginName );
+    }
+
+
+    // Json-Funktionen
+
+
+    transformJsonFile( aJsonFileName: string ): number {
+        return this.mDialogComponent.transformJsonFile( aJsonFileName );
+    }
+
+
+    transformJsonData( aJsonData: DialogDataInterface[]): number {
+        return this.mDialogComponent.transformJsonData( aJsonData );
     }
 
 

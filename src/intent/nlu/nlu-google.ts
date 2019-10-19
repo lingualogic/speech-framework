@@ -1,7 +1,7 @@
 /**
  * Diese Komponente dient der Spracherkennung mit Hilfe von Google Dialogflow-NLU
  *
- * Letzte Aenderung: 12.05.2019
+ * Letzte Aenderung: 02.10.2019
  * Status: rot
  *
  * @module intent/nlu
@@ -267,32 +267,47 @@ export class NLUGoogle extends NLUPlugin {
             error: ''
         };
         try {
-            // Mapping der Daten auf IntentData
-            intentData.intent = aEvent.metadata.intentName;
-            intentData.confidence = aEvent.score;
-            // intentData.confidence = 1.0;
-            // Konzepte kopieren, wenn vorhanden
-            /**** TODO: Konzepte muessen in Google erst noch ausprobiert werden
-            if ( aEvent[0].concepts ) {
-                console.log('NluNuance._getRecognitionIntentResult:', aEvent[0].concepts);
-                for ( let conceptName in aEvent[0].concepts ) {
-                    let concept = { concept: conceptName, value: '', literal: ''}
-                    console.log('NluNuance._getRecognitionIntentResult: concept = ', conceptName);
-                    concept.value = aEvent[0].concepts[conceptName][0].value;
-                    concept.literal = aEvent[0].concepts[conceptName][0].literal;
-                    intentData.conceptList.push( concept );
-                }
-            }
-            ****/
-            if ( aEvent.parameters ) {
-                for ( var property in aEvent.parameters ) {
-                    if ( aEvent.parameters.hasOwnProperty( property )) {
-                        intentData.conceptList.push({ concept: property, value: aEvent.parameters[property], literal: aEvent.parameters[property], confidence: 1 });
+            // pruefen auf Dialogflow-V2
+            if ( aEvent.queryResult ) {
+                intentData.intent = aEvent.queryResult.intent.displayName;
+                intentData.confidence = aEvent.queryResult.intentDetectionConfidence;
+                intentData.literal = aEvent.queryResult.queryText;
+                intentData.speech = aEvent.queryResult.fulfillmentText;
+                if ( aEvent.queryResult.parameters ) {
+                    for ( var property in aEvent.queryResult.parameters ) {
+                        if ( aEvent.queryResult.parameters.hasOwnProperty( property )) {
+                            intentData.conceptList.push({ concept: property, value: aEvent.queryResult.parameters[property], literal: aEvent.queryResult.parameters[property], confidence: 1 });
+                        }
+                    }
+                }            
+            } else {
+                // Mapping der Daten auf IntentData
+                intentData.intent = aEvent.metadata.intentName;
+                intentData.confidence = aEvent.score;
+                // intentData.confidence = 1.0;
+                // Konzepte kopieren, wenn vorhanden
+                /**** TODO: Konzepte muessen in Google erst noch ausprobiert werden
+                if ( aEvent[0].concepts ) {
+                    console.log('NluNuance._getRecognitionIntentResult:', aEvent[0].concepts);
+                    for ( let conceptName in aEvent[0].concepts ) {
+                        let concept = { concept: conceptName, value: '', literal: ''}
+                        console.log('NluNuance._getRecognitionIntentResult: concept = ', conceptName);
+                        concept.value = aEvent[0].concepts[conceptName][0].value;
+                        concept.literal = aEvent[0].concepts[conceptName][0].literal;
+                        intentData.conceptList.push( concept );
                     }
                 }
-            }            
-            intentData.literal = aEvent.resolvedQuery;
-            intentData.speech = aEvent.fulfillment.speech;
+                ****/
+                if ( aEvent.parameters ) {
+                    for ( var property in aEvent.parameters ) {
+                        if ( aEvent.parameters.hasOwnProperty( property )) {
+                            intentData.conceptList.push({ concept: property, value: aEvent.parameters[property], literal: aEvent.parameters[property], confidence: 1 });
+                        }
+                    }
+                }            
+                intentData.literal = aEvent.resolvedQuery;
+                intentData.speech = aEvent.fulfillment.speech;
+            }
         } catch ( aException ) {
             this._exception( '_getRecognitionIntentResult', aException );
             intentData.error = 'Exception:' + aException.message;

@@ -19,5 +19,9 @@
 export interface GoogleConfigDataInterface {
     /** legt den App Key fuer die Verbindung zum Server fest */
     googleAppKey: string;
+    /** legt die URL fuer den Dialogflow Tokenserver fest */
+    dialogflowTokenServerUrl: string;
+    /** legt die   ProjektID fuer Dialogflow fest */
+    dialogflowProjectId: string;
 }
 
