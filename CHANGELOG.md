@@ -1,12 +1,26 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.16.0060 Beta (17.12.2019)
+
+### Features
+
+* **Google:** Erweiterung der Google-Komponente um TTS mit Anbindung an den Google Token-Server.
+
+
+
 ## 0.5.15.0059 Beta (19.10.2019)
 
 ### Features
 
 * **Dialog:** Erweiterung der Dialog-Komponente um das Einlesen von JSON-Daten anstelle einer Def-Datei.
 * **Google:** Erweiterung der Google-Komponente um Dialogflow Version 2.
+
+
+### Fix
+
+* **Dialog:** Der Kontext in Dialog wurde geloescht, wenn ein neuer State gesetzt wurde. Jetzt wird der Kontext nicht mehr geloescht.
+ 
 
 
 ## 0.5.14.0058 Beta (31.08.2019)
@@ -16,11 +30,13 @@
 * **Microsoft:** der Microsoft Cloud-Dienst (LUIS) für die NLU wurde eingebaut, um Microsofts NLU für die Sprachanalyse verwenden zu können
 
 
+
 ## 0.5.13.0057 Alpha (10.08.2019)
 
 ### Features
 
 * **Vue:** Anpassung für Speech-Vue SDK
+
 
 
 ## 0.5.13.0056 Alpha (23.07.2019)
@@ -30,11 +46,13 @@
 * **Rasa:** die URL des Rasa-Servers wird jetzt in den rasa-credentials mit eingetragen
 
 
+
 ## 0.5.13.0055 Alpha (18.07.2019)
 
 ### Features
 
 * **Rasa:** der Rasa Cloud-Dienst für die NLU wurde eingebaut, um einen eigenen Rasa-Server nutzen zu können
+
 
 
 ## 0.5.12.0054 Alpha (08.07.2019)
@@ -44,11 +62,13 @@
 * **Microsoft:** der Microsoft Cloud-Dienst für die TTS wurde eingebaut, um Microsofts TTS für die Sprachsynthese verwenden zu können
 
 
+
 ## 0.5.11.0053 Alpha (25.06.2019)
 
 ### Features
 
 * **Microsoft:** der Microsoft Cloud-Dienst für die ASR wurde eingebaut, um Microsofts ASR für die Spracherkennung verwenden zu können
+
 
 
 ## 0.5.10.0052 Alpha (07.06.2019)

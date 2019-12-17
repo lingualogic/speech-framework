@@ -452,6 +452,7 @@ function SpeakApp() {
         // Google-Zurgiffsdaten als Optionen eintragen
         var googleOption = {
             googleAppKey: GOOGLE_APP_KEY,
+            googleServerUrl: GOOGLE_SERVER_URL,
             errorOutputFlag: true
         };
         // erzeugt das Google-Modul
@@ -467,35 +468,7 @@ function SpeakApp() {
         } else {
             console.log('Google nicht vorhanden');
         }
-        // Nuance-Zurgiffsdaten als Optionen eintragen
-        var nuanceOption = {
-            nuanceAppId: APP_ID,
-            nuanceAppKey: APP_KEY,
-            errorOutputFlag: false
-        };
-        // console.log('pruefen auf speech.Nuance', speech.Nuance );
-        // erzeugt das Nuance-Modul
-        if ( speech.Nuance ) {
-            // console.log('start von Nuance.init');
-            if ( speech.Nuance.init( nuanceOption ) === 0 ) {
-                // console.log('start von Nuance.open');
-                if ( speech.Nuance.open((aError, aPortName, aPortResult) => {
-                    console.log('SpeakApp.init: Nuance', aPortResult);
-                    initSpeak();
-                    console.log('SpeakApp.init: nach initSpeak');
-                }) !== 0 ) {
-                    console.log('SpeakApp.init: Nuance.open = -1');
-                    initSpeak();
-                }
-            } else {
-                console.log('SpeakApp.init: Nuance.init = -1');
-                initSpeak();
-            }
-        } else {
-            console.log('SpeakApp.init: Nuance nicht vorhanden');
-            initSpeak();
-            console.log('SpeakApp.init: nach initSpeak');
-        }
+        initSpeak();
     } catch ( aException ) {
         console.log('SpeakApp.init: Exception', aException.message);
         return;

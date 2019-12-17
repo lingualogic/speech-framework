@@ -2,7 +2,7 @@
  * Dieses Programm transformiert die Speech-Def Dateien in
  * Dialog Datenobjekte im Dialog-Store.
  *
- * Letzte Aenderung: 07.09.2018
+ * Letzte Aenderung: 29.10.2018
  * Status: gelb
  *
  * @module dialog/parser
@@ -341,6 +341,8 @@ export class ParserPlugin extends Plugin implements ParserInterface {
                         }
                         nodeObject = stateObject.newDialogNode( DIALOG_SPEAK_NODE, id, groupId, nextId );
                         nodeObject.setTimeout( timeout );
+                        // Eintragen des Knotens als Name fuer die Audiodatei
+                        nodeObject.setName( id.toString());
                         nodeObject.setText( text );
                         nodeObject.setProperty( groupProperty );
                         // debug('parse SPEAK:', id, stateId, groupId, nextId, text, timeout);

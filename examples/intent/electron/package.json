@@ -1,7 +1,7 @@
 {
   "name": "intentapp",
   "productName": "SpeechIntentApp",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "author": "LinguaLogic Team",
   "license": "MIT",
   "main": "main.js"

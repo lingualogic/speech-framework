@@ -58,7 +58,7 @@
   "include": [
     "index.ts",
     "src/**/*.ts",
-    "credentials/*.ts"
+    "credentials/*.ts", "src/cloud/google/device/base64-binary.js"
   ],
   "exclude": [
     "lib",

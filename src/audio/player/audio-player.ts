@@ -1,7 +1,7 @@
 /**
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 09.04.2019
+ * Letzte Aenderung: 06.11.2019
  * Status: rot
  *
  * @module audio/player
@@ -288,6 +288,27 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
 
         try {
             if ( this.mAudioContext ) {
+                // TODO: experimentelle Version fuer Audio-Unlock mit Abfangen von User-Ereignissen
+                
+                /* 
+                 * Kommentar:
+                 *
+                 * Hier wurde mit document.body eine Verbindung zum DOM geschlagen, was eine schlechte Idee ist
+                 * Dies ist erst mal ein Work-Around, um in Safari die Audio-Ausgabe zu ermoeglichen. Muss
+                 * spaeter durch eine bessere Loesung ersetzt werden.
+                 */
+            
+                const events = ['touchstart','touchend', 'mousedown','keydown'];
+                const body = document.body;
+                const unlock = () => { 
+                    if ( this.mAudioContext.state === 'suspended' ) {
+                        this.mAudioContext.resume().then( clean ); 
+                    } else {
+                        clean();
+                    }
+                }
+                const clean = () => { events.forEach( event => body.removeEventListener( event, unlock )); }                
+                events.forEach( event => body.addEventListener( event, unlock, false ));
                 this.mAudioContext.onstatechange = () => {
                     this._onAudioUnlock();
                 }
@@ -479,18 +500,21 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _unlockAudio( aCallbackFunc: (aUnlockFlag: boolean) => void): void {
-        // console.log('AudioPlayer._unlockAudio: start');
+        // console.log('AudioPlayer._unlockAudio: start', this.mAudioContext);
         // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
         if ( this.mAudioContext ) {
             if ( this.mAudioContext.state === 'running' ) {
+                // console.log('AudioPlayer._unlockAudio: running');
                 aCallbackFunc( true );
                 return;
             }
             if ( this.mAudioContext.state === 'suspended' ) {
-                // console.log('NuancePort._unlockAudio: start', this.mAudioContext.state);
-                let timeoutId = setTimeout( () => aCallbackFunc( false ), AUDIO_UNLOCK_TIMEOUT );
+                // console.log('AudioPlayer._unlockAudio: suspended state = ', this.mAudioContext.state);
+                let timeoutId = setTimeout( () => { console.log('AudioPlayer._unlockAudio: timeout'); aCallbackFunc( false ); }, AUDIO_UNLOCK_TIMEOUT );
+                // Resume aufrufen
+                console.log('AudioPlayer._unlockAudio: call resume state = ', this.mAudioContext.state);
                 this.mAudioContext.resume().then(() => {
-                    // console.log('NuancePort._unlockAudio: state = ', this.mAudioContext.state);
+                    // console.log('AudioPlayer._unlockAudio: resume state = ', this.mAudioContext.state);
                     clearTimeout( timeoutId );
                     aCallbackFunc( true );
                 }, (aError: any) => {

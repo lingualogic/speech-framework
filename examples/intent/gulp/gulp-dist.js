@@ -73,7 +73,7 @@ module.exports = ({ gulp, exec, rootDir, globalCredentialsDir, globalDistDir, gl
     });
 
     gulp.task('dist-run-app', (done) => {
-        exec(`cd ${rootDir}/${distDir} && http-server -o -c-1`, done);
+        exec(`cd ${rootDir}/${distDir} && http-server -p 4200 -o -c-1`, done);
     });
 
 

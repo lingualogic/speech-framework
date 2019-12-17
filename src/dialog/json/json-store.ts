@@ -1,7 +1,7 @@
 /**
  * Dieses Programm speichert die JSON-Daten und erlaubt den Zugriff darauf.
  *
- * Letzte Aenderung: 08.09.2019
+ * Letzte Aenderung: 24.10.2019
  * Status: rot
  *
  * @module dialog/json
@@ -186,9 +186,11 @@ export class JsonStore extends ErrorBase {
 
     newState( aStateName: string ): number {
         if ( !this.mDialog || !this.mStateList ) {
+            this._error( 'newState', 'kein Dialog vorhanden' );
             return -1;
         }
         if ( this.checkState( aStateName )) {
+            this._error( 'newState', 'kein State Name uebergeben' );
             return -1;
         }
         // State erzeugen
@@ -210,9 +212,11 @@ export class JsonStore extends ErrorBase {
     deleteState( aStateName: string ): number {
         // console.log('DataService.deleteState:', aStateName, this.mStateList);
         if ( !this.mDialog || !this.mStateList ) {
+            this._error( 'deleteState', 'kein Dialog vorhanden' );
             return -1;
         }
         if ( !this.checkState( aStateName )) {
+            this._error( 'deleteState', 'kein State vorhanden' );
             return -1;
         }
         // State entfernen
@@ -264,6 +268,7 @@ export class JsonStore extends ErrorBase {
         this.mStateName = '';
         this.mIntent = null;
         this.mIntentName = '';
+        this._error( 'setCurrentState', 'kein State vorhanden' );
         return -1;
     }
 
@@ -297,15 +302,17 @@ export class JsonStore extends ErrorBase {
      */
 
     newStateIntent( aIntentName: string ): number {
-      if ( !aIntentName ) {
-        return -1;
-      }
-      if ( !this.mState ) {
-          return -1;
-      }
-      // Intent in State eintragen
-      this.mState.intentList.push( aIntentName );
-      return 0;
+        if ( !aIntentName ) {
+            this._error( 'newStateIntent', 'kein Intent Name uebergeben' );
+            return -1;
+        }
+        if ( !this.mState ) {
+            this._error( 'newStateIntent', 'kein State vorhanden' );
+            return -1;
+        }
+        // Intent in State eintragen
+        this.mState.intentList.push( aIntentName );
+        return 0;
   }
 
 
@@ -318,9 +325,11 @@ export class JsonStore extends ErrorBase {
     deleteStateIntent( aIntentName: string ): number {
         // console.log('DataService.deleteStateIntent:', aIntentName, this.mState);
         if ( !this.mState ) {
+            this._error( 'deleteStateIntent', 'kein State vorhanden' );
             return -1;
         }
         if ( !this.checkStateIntent( aIntentName )) {
+            this._error( 'deleteStateIntent', 'kein Intent vorhanden' );
             return -1;
         }
         // Intent entfernen
@@ -367,6 +376,7 @@ export class JsonStore extends ErrorBase {
         this.mIntent = null;
         this.mIntentName = '';
         this.mCommandList = null;
+        this._error( 'setCurrentIntent', 'kein Intent vorhanden' );
         return -1;
     }
 
@@ -402,9 +412,11 @@ export class JsonStore extends ErrorBase {
 
     newCommand( aCommandName: string ): number {
         if ( !aCommandName ) {
-          return -1;
+            this._error( 'newCommand', 'kein Kommandoname uebergeben' );
+            return -1;
         }
         if ( !this.mIntent ) {
+            this._error( 'newCommand', 'kein Intent vorhanden' );
             return -1;
         }
         // Kommando in Intent eintragen
@@ -426,6 +438,7 @@ export class JsonStore extends ErrorBase {
     deleteCommand( aCommandIndex: number ): number {
         // console.log('DataService.deleteCommand:', aCommandIndex, this.mIntent);
         if ( !this.mIntent ) {
+            this._error( 'deleteCommand', 'kein Intent vorhanden' );
             return -1;
         }
         // Command entfernen
@@ -463,6 +476,7 @@ export class JsonStore extends ErrorBase {
         this.mText = null;
         this.mTextName = '';
         // console.log('dataService.setCurrentText: nicht gefunden');
+        this._error( 'setCurrentText', 'kein Text gefunden' );
         return -1;
     }
 
@@ -490,9 +504,11 @@ export class JsonStore extends ErrorBase {
 
     newText( aTextName: string ): number {
         if ( !aTextName ) {
-          return -1;
+            this._error( 'newText', 'kein Text Name uebergeben' );
+            return -1;
         }
         if ( !this.mTextList ) {
+            this._error( 'newText', 'keine Textliste vorhanden' );
             return -1;
         }
         const text: DialogTextInterface = {
@@ -508,6 +524,7 @@ export class JsonStore extends ErrorBase {
     deleteText( aTextId: string ): number {
         // console.log('DataService.deleteText:', aTextId, this.mTextList);
         if ( !this.mTextList ) {
+            this._error( 'deleteText', 'keine Textliste vorhanden' );
             return -1;
         }
         const newTextList = this.mTextList.filter((value, index, arr) => {
@@ -551,6 +568,7 @@ export class JsonStore extends ErrorBase {
 
     setText( aTextId: string, aText: string, aTime: number ): number {
         if ( !aTextId || !aText || !this.mTextList ) {
+            this._error( 'setText', 'keine Textdaten uebergeben' );
             return -1;
         }
         for ( const text of this.mTextList ) {

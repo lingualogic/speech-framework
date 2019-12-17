@@ -55,7 +55,7 @@ export class DialogObject {
      */
 
     newDialogState( aStateName: string, aStateId: number ): DialogStateInterface {
-        // debug('newDialogState:', aStateName, aStateId);
+        // console.log('DialogObject.newDialogState:', aStateName, aStateId);
         const dialogState = new DialogState( this.mDialogName, aStateName, aStateId );
         this.mDialogStateList.set( aStateName, dialogState );
         return dialogState;
@@ -71,7 +71,7 @@ export class DialogObject {
      */
 
     getDialogState( aStateName: string ): DialogStateInterface {
-        // debug('getDialogState:', aStateName);
+        // console.log('DialogObject.getDialogState:', aStateName);
         return this.mDialogStateList.get( aStateName );
     }
 

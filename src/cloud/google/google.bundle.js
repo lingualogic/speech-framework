@@ -1,10 +1,10 @@
 /**
  * Speech-Google
  * 
- * Version: 0.1.2
- * Build:   0003
+ * Version: 0.1.3
+ * Build:   0004
  * TYPE:    ALPHA
- * Datum:   24.06.2019
+ * Datum:   03.11.2019
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -160,7 +160,7 @@ function __generator(t, e) {
     }
 }
 
-var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.2', GOOGLE_VERSION_BUILD = '0003', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '24.06.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
+var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.3', GOOGLE_VERSION_BUILD = '0004', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '03.11.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
     function t(e, o) {
         void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = o, 
@@ -638,9 +638,8 @@ var ApiAiClient = function() {
                     return [ 4, e.sent().json() ];
 
                   case 2:
-                    return t = e.sent(), console.log('AccessToken: ', t), this.mAccessTokenDate = new Date(), 
-                    this.mAccessToken = t.token || '', this.mAccessTokenDuration = t.time || 0, console.log('AccessToken: ', this.mAccessToken, this.mAccessTokenDuration), 
-                    [ 2 ];
+                    return t = e.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
+                    this.mAccessTokenDuration = t.time || 0, [ 2 ];
                 }
             });
         });
@@ -1070,36 +1069,124 @@ var ApiAiClient = function() {
             this.mSource = null, this.mAudioBuffer = null;
         }
     }, e;
-}(ErrorBase), GoogleTTS = function(t) {
+}(ErrorBase), GOOGLE_TTSSERVER_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize', GoogleTTS2 = function(t) {
     function e(e, o, n) {
-        var r = t.call(this, 'GoogleTTS', e, o) || this;
-        return r.mAudioContext = null, r.mAudioPlayer = null, r.mAudioContext = n, r;
+        var r = t.call(this, 'GoogleTTS2', e, o) || this;
+        return r.mAccessToken = '', r.mAccessTokenDate = new Date(), r.mAccessTokenDuration = 0, 
+        r.mAudioContext = null, r.mAudioPlayer = null, r.mAudioContext = n, r;
     }
-    return __extends(e, t), e.prototype._start = function(t) {
-        var e = this;
-        return console.log('GoogleTTS._start:', t), t.onmessage = function(t) {
-            console.log('===> Nachricht: ', t);
-        }, t.ondata = function(t) {
-            console.log('===> Daten '), e.mAudioPlayer = new GoogleAudioPlayer(e.mAudioContext), 
-            e.mAudioPlayer.start();
-            var o = {
-                onaudiostart: function() {
-                    console.log('Audioplayer gestartet');
-                },
-                onaudioend: function() {
-                    console.log('Audioplayer beenden'), e._stop();
+    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
+        return e.getTime() - t.getTime();
+    }, e.prototype.getAccessTokenFromServer = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return [ 4, fetch(this.mConfig.serverUrl, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }) ];
+
+                  case 1:
+                    return [ 4, e.sent().json() ];
+
+                  case 2:
+                    return t = e.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
+                    this.mAccessTokenDuration = t.time || 0, [ 2 ];
                 }
-            };
-            e.mAudioPlayer.decodeAudio(o, t);
-        }, this.mConnect.connect(t), this.mConnect.sendJSON({
-            event: 'googleTTSAudioStart',
-            text: t.text,
-            language: t.language,
-            voice: t.voice
-        }), 0;
+            });
+        });
+    }, e.prototype.getAccessToken = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
+
+                  case 1:
+                    e.sent(), e.label = 2;
+
+                  case 2:
+                    return [ 2, this.mAccessToken ];
+                }
+            });
+        });
+    }, e.prototype.getTextToSpeech = function(t, e, o, n) {
+        return __awaiter(this, void 0, void 0, function() {
+            var r;
+            return __generator(this, function(i) {
+                switch (i.label) {
+                  case 0:
+                    return [ 4, this.getAccessToken() ];
+
+                  case 1:
+                    return r = i.sent(), [ 4, fetch(GOOGLE_TTSSERVER_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: {
+                            Authorization: "Bearer " + r,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            input: {
+                                text: t
+                            },
+                            voice: {
+                                languageCode: e,
+                                name: o
+                            },
+                            audioConfig: {
+                                audioEncoding: n
+                            }
+                        })
+                    }) ];
+
+                  case 2:
+                    return [ 4, i.sent().json() ];
+
+                  case 3:
+                    return [ 2, i.sent() ];
+                }
+            });
+        });
+    }, e.prototype.decodeBase64 = function(t) {
+        if (window.atob) {
+            for (var e = window.atob(t), o = e.length, n = new Uint8Array(o), r = 0; r < o; r++) n[r] = e.charCodeAt(r);
+            return n.buffer;
+        }
+        return new ArrayBuffer(1);
+    }, e.prototype._start = function(t) {
+        var e = this;
+        try {
+            return this.mConfig.serverUrl ? (this.getTextToSpeech(t.text, t.language, t.voice, 'MP3').then(function(t) {
+                try {
+                    e.mAudioPlayer = new GoogleAudioPlayer(e.mAudioContext), e.mAudioPlayer.start();
+                    var o = {
+                        onaudiostart: function() {
+                            console.log('Audioplayer gestartet');
+                        },
+                        onaudioend: function() {
+                            console.log('Audioplayer beenden'), e._stop();
+                        }
+                    }, n = t.audioContent;
+                    e.mAudioPlayer.decodeAudio(o, e.decodeBase64(n)), e._onResult(t);
+                } catch (t) {
+                    e._onError(new Error('TTS2-Exception: ' + t.message));
+                }
+                e._onStop();
+            }, function(t) {
+                e._onError(new Error('TTS2-Error: ' + t.message)), e._onStop();
+            }), 0) : void this._error('_start', 'kein Tokenserver vorhanden');
+        } catch (t) {
+            return this._exception('_start', t), -1;
+        }
     }, e.prototype._stop = function() {
-        return console.log('GoogleTTS._stop'), this.mAudioPlayer && (this.mAudioPlayer.stopAudio(), 
-        this._onStop()), 0;
+        return this.mAudioPlayer && (this.mAudioPlayer.stopAudio(), this._onStop()), 0;
     }, e;
 }(GoogleDevice), AUDIO_UNLOCK_TIMEOUT = 2e3, GOOGLE_ACTION_TIMEOUT = 6e4, GooglePort = function(t) {
     function e(e, o) {
@@ -1174,8 +1261,8 @@ var ApiAiClient = function() {
             return e._onError(t.error, t.plugin, t.type);
         }, this.mGoogleNLU2.onClose = function(t) {
             return e._onClose();
-        }, this.isServer() && this.mAudioContext) {
-            this.mGoogleTTS = new GoogleTTS(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext), 
+        }, this.mAudioContext) {
+            this.mGoogleTTS = new GoogleTTS2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext), 
             this.mGoogleTTS.onStart = function(t) {
                 return e._onStart(t.plugin, t.type);
             }, this.mGoogleTTS.onStop = function(t) {
@@ -1186,9 +1273,9 @@ var ApiAiClient = function() {
                 return e._onError(t.error, t.plugin, t.type);
             }, this.mGoogleTTS.onClose = function(t) {
                 return e._onClose();
-            };
+            }, console.log('GooglePort._initAllObject: googleTTS = ', this.mGoogleTTS);
             try {
-                this.mGetUserMedia && (this.mGoogleASR = new GoogleASR(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, n), 
+                this.isServer() && this.mGetUserMedia && (this.mGoogleASR = new GoogleASR(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, n), 
                 this.mGoogleASR.onStart = function(t) {
                     return e._onStart(t.plugin, t.type);
                 }, this.mGoogleASR.onStop = function(t) {
@@ -1276,6 +1363,7 @@ var ApiAiClient = function() {
         -1;
         try {
             return 'string' == typeof t.googleAppKey && t.googleAppKey && (this.mGoogleConfig.appKey = t.googleAppKey), 
+            'string' == typeof t.googleServerUrl && t.googleServerUrl && (this.mGoogleConfig.serverUrl = t.googleServerUrl), 
             'string' == typeof t.dialogflowTokenServerUrl && t.dialogflowTokenServerUrl && (this.mGoogleConfig.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl), 
             'string' == typeof t.dialogflowProjectId && t.dialogflowProjectId && (this.mGoogleConfig.dialogflowProjectId = t.dialogflowProjectId), 
             0;
@@ -1285,6 +1373,7 @@ var ApiAiClient = function() {
     }, e.prototype.getConfig = function() {
         return {
             googleAppKey: this.mGoogleConfig.appKey,
+            googleServerUrl: this.mGoogleConfig.serverUrl,
             dialogflowTokenServerUrl: this.mGoogleConfig.dialogflowTokenServerUrl,
             dialogflowProjectId: this.mGoogleConfig.dialogflowProjectId
         };
@@ -1533,8 +1622,8 @@ var ApiAiClient = function() {
         n.googleASRFlag = !0, n.googleTTSFlag = !0, n.disconnectFlag = !0, n.defaultOptions = null, 
         n.codec = '', n.intentName = 'TestIntent', n.intentConfidence = 1, n.intentSpeech = 'TestSpeech', 
         n.mDynamicCredentialsFlag = !1, n.mTransaction = null, n.mRunningFlag = !1, n.googleAppId = '', 
-        n.googleAppKey = '', n.googleNluTag = '', n.dialogflowTokenServerUrl = '', n.dialogflowProjectId = '', 
-        n;
+        n.googleAppKey = '', n.googleNluTag = '', n.googleServerUrl = '', n.dialogflowTokenServerUrl = '', 
+        n.dialogflowProjectId = '', n;
     }
     return __extends(e, t), e.prototype.isMock = function() {
         return !0;
@@ -1570,14 +1659,16 @@ var ApiAiClient = function() {
         if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
         -1;
         try {
-            return this.googleAppKey = t.googleAppKey, this.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl, 
-            this.dialogflowProjectId = t.dialogflowProjectId, 0;
+            return this.googleAppKey = t.googleAppKey, this.googleServerUrl = t.googleServerUrl, 
+            this.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl, this.dialogflowProjectId = t.dialogflowProjectId, 
+            0;
         } catch (t) {
             return this._exception('setConfig', t), -1;
         }
     }, e.prototype.getConfig = function() {
         return {
             googleAppKey: this.googleAppKey,
+            googleServerUrl: this.googleServerUrl,
             dialogflowTokenServerUrl: this.dialogflowTokenServerUrl,
             dialogflowProjectId: this.dialogflowProjectId
         };
@@ -1799,6 +1890,7 @@ var ApiAiClient = function() {
     }, t.getConfig = function() {
         return t.mCurrentPort ? t.mCurrentPort.getConfig() : {
             googleAppKey: '',
+            googleServerUrl: '',
             dialogflowTokenServerUrl: '',
             dialogflowProjectId: ''
         };

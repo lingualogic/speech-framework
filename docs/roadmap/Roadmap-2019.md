@@ -6,14 +6,21 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
-### November: Version 0.5.16
+### Dezember: Version 0.5.17
+
+beinhaltet:
+
+* **Google:** Server-Funktion für sicheren Google-Cloud Zugriff für die ASR
+
+
+## Veröffentlichte Versionen
+
+
+### Dezember: Version 0.5.16
 
 beinhaltet:
 
 * **Google:** Server-Funktion für sicheren Google-Cloud Zugriff für die TTS
-
-
-## Veröffentlichte Versionen
 
 
 ### Oktober: Version 0.5.15

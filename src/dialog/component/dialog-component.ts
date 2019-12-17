@@ -1,7 +1,7 @@
 /**
  * DialogComponent definiert einen DialogManager fuer Aktionen und Sprachausgaben
  *
- * Letzte Aenderung: 26.03.2019
+ * Letzte Aenderung: 03.12.2019
  * Status: gelb
  *
  * @module dialog/component
@@ -238,6 +238,10 @@ export class DialogComponent extends DialogBase {
             return -1;
         }
         try {
+            // Kontext uebergeben, wenn nicht vorhanden, um Loeschen des Kontextes zu vermeiden
+            if ( !aContext ) {
+                aContext = this._getContext();
+            }
             return this.mInterpreter.setState( aState, aContext );
         } catch ( aException ) {
             this._exception( 'setDialogState', aException );
@@ -268,6 +272,7 @@ export class DialogComponent extends DialogBase {
             return -1;
         }
         try {
+            // console.log('DialogCompoment.setDialogStateContext:', aContext);
             return this.mInterpreter.setStateContext( aContext );
         } catch (aException) {
             this._exception( 'setDialogStateContext', aException );

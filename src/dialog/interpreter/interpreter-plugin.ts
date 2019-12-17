@@ -1,7 +1,7 @@
 /**
  * Interpreter Plugin interpretiert Dialogprogramme fuer die Dialogausgabe
  *
- * Letzte Aenderung: 07.09.2018
+ * Letzte Aenderung: 12.11.2019
  * Status: gelb
  *
  * @module dialog/interpreter
@@ -295,7 +295,8 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
                 const speak: DialogSpeakInterface = {
                     event: SPEECH_DIALOGSPEAK_EVENT,
                     state: this.mStateName,
-                    id: aNode.getNodeId().toString(),
+                    // Name fuer Audiodatei eintragen, wird zuerst aus getName ausgelesen
+                    id: aNode.getName() || aNode.getNodeId().toString(),
                     text: aNode.getText(),
                     timeout: aNode.getTimeout()
                 };
@@ -466,7 +467,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     setDialog( aDialogName: string ): number {
-        // console.log('InterpreterPlugin.setDialog:', aDialogName);
+        // console.log('InterpreterPlugin.setDialog:', aDialogName, this.mDialogName);
         if ( !aDialogName ) {
             this._error( 'setDialog', 'kein Dialogname uebergeben' );
             return -1;
@@ -500,7 +501,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
 
     startDialog(): number {
         try {
-            console.log('InterpreterPlugin.startDialog:', this.mDialogName, this.mStateName);
+            // console.log('InterpreterPlugin.startDialog:', this.mDialogName, this.mStateName);
             if ( this.isDialogRunning()) {
                 this._error( 'startDialog', 'Dialog laeuft bereits' );
                 return -1;
@@ -593,7 +594,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     setStateContext( aStateContext: DialogStateContextInterface): number {
-        // debug('setStateContext:', aStateContext);
+        // console.log('InterpreterPlugin.setStateContext:', aStateContext);
         if ( !this.isDialogRunning()) {
             this.mStateContext = aStateContext;
             return 0;
@@ -871,7 +872,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
         // Abbruchfunktion fuer Promise
         const cancelName = 'cancel';
         promise[ cancelName ] = () => {
-            // debug('_runAsyncNode: promise.cancel');
+            // console.log('InterpreterPlugin._runAsyncNode: promise.cancel', aNode);
             promiseCancel();
         };
         this._setNodePromise( promise );
@@ -998,7 +999,7 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      */
 
     _checkRunNode( aNode: DialogNodeInterface ): boolean {
-        // console.log('InterpreterPlugin._checkRunNode:', this.mGroupId);
+        // console.log('InterpreterPlugin._checkRunNode:', this.mGroupId, this.mGroupProperty);
         // pruefen auf vorhandenen Gruppenknoten
         if ( this.mGroupId === 0 ) {
             return true;

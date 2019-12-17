@@ -608,6 +608,7 @@ gulp.task('install-google-credentials-ts', function() {
             .pipe( inject.append( "\n" ))
             .pipe( inject.append( "\n" ))
             .pipe( inject.append( "export const GOOGLE_APP_KEY = '';\n" ))
+            .pipe( inject.append( "export const GOOGLE_SERVER_URL = '';\n" ))
             .pipe( inject.append( "export const DIALOGFLOW_TOKENSERVER_URL = '';\n" ))
             .pipe( inject.append( "export const DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
@@ -634,6 +635,7 @@ gulp.task('install-google-credentials-js', function() {
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "\n" ))
             .pipe(inject.append( "var GOOGLE_APP_KEY = '';\n" ))
+            .pipe(inject.append( "var GOOGLE_SERVER_URL = '';\n" ))
             .pipe(inject.append( "var DIALOGFLOW_TOKENSERVER_URL = '';\n" ))
             .pipe(inject.append( "var DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));

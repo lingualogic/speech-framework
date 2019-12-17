@@ -2,7 +2,7 @@
  * Dieses Programm transformiert externe JSON-Daten in
  * Dialog Datenobjekte im Dialog-Store.
  *
- * Letzte Aenderung: 11.09.2019
+ * Letzte Aenderung: 17.11.2019
  * Status: rot
  *
  * @module dialog/json
@@ -259,6 +259,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
             // Dialogdaten in json-store eintragen
 
             if ( this.mJsonStore.setDialogList( aJsonData ) !== 0 ) {
+                this._error( 'transformJsonData', 'Json Daten nicht in Dialoglist eingetragen' );
                 return -1;
             }
 
@@ -289,13 +290,16 @@ export class JsonPlugin extends Plugin implements JsonInterface {
     _transformDialog( aDialogName: string ): number {
         try {
             if ( this.mJsonStore.setCurrentDialog( aDialogName ) !== 0 ) {
+                this._error( '_transformDialog', 'kein Dialog vorhanden' );
                 return -1;
             }
             // Dialog eintragen
             this.mDialogObject = this._newDialog( aDialogName );
             if ( !this.mDialogObject ) {
+                this._error( '_transformDialog', 'kein Dialog erzeugt' );
                 return -1;
             }
+
             // console.log('parse DIALOG: ', aDialogName, this.mDialogObject);
 
             // Schleife fuer alle States
@@ -323,6 +327,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
     _transformState( aDialogName: string, aStateName: string ): number {
         try {
             if ( this.mJsonStore.setCurrentState( aStateName ) !== 0 ) {
+                this._error( '_transformState', 'kein State vorhanden' );
                 return -1;
             }
             // State eintragen
@@ -331,9 +336,11 @@ export class JsonPlugin extends Plugin implements JsonInterface {
             this.mFirstNodeId = 0;
             this.mStateObject = this._newDialogState( aDialogName, aStateName, stateId);
             if ( !this.mStateObject ) {
+                this._error( '_transformState', 'kein State erzeugt' );
                 return -1;
             }
-            console.log('parse STATE:', stateId, aStateName, aDialogName);
+
+            // console.log('parse STATE:', stateId, aStateName, aDialogName);
 
             // Schleife fuer alle Intents
             this.mEndFlag = false;
@@ -364,6 +371,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
     _transformIntent( aStateId: number, aIntentName: string ): number {
         try {
             if ( this.mJsonStore.setCurrentIntent( aIntentName ) !== 0 ) {
+                this._error( '_transformIntent', 'kein Intent vorhanden' );
                 return -1;
             }
 
@@ -371,11 +379,13 @@ export class JsonPlugin extends Plugin implements JsonInterface {
 
             let intent = this.mJsonStore.intent;
             if ( !intent ) {
+                this._error( '_transformIntent', 'kein Intent erzeugt' );
                 return -1;
             }
 
             // pruefen auf Optional-Gruppe
 
+            // console.log('JsonPlugin._transformIntent: intent = ', intent);
             if ( intent.optional ) {
                 this.mNodeIdCount++;
                 const id = this.mNodeIdCount;
@@ -384,9 +394,22 @@ export class JsonPlugin extends Plugin implements JsonInterface {
                 }
                 this.mGroupProperty = 'optional';
                 let nextId = id + 1;
-                if ( this.mEndFlag ) {
-                    nextId = 0;
+                this.mGroupId = id;
+                const nodeObject = this.mStateObject.newDialogNode( DIALOG_GROUP_NODE, id, 0, nextId );
+                nodeObject.setProperty( this.mGroupProperty );
+                // console.log('parse GROUP:', id, aStateId, nextId, this.mGroupProperty);
+            }
+
+            // pruefen auf Scrollable-Gruppe
+
+            if ( intent.scrollable ) {
+                this.mNodeIdCount++;
+                const id = this.mNodeIdCount;
+                if ( this.mFirstNodeId === 0 ) {
+                    this.mFirstNodeId = id;
                 }
+                this.mGroupProperty = 'scrollable';
+                let nextId = id + 1;
                 this.mGroupId = id;
                 const nodeObject = this.mStateObject.newDialogNode( DIALOG_GROUP_NODE, id, 0, nextId );
                 nodeObject.setProperty( this.mGroupProperty );
@@ -397,9 +420,16 @@ export class JsonPlugin extends Plugin implements JsonInterface {
 
             let commandList = this.mJsonStore.commandList;
             let commandListCount = commandList.length;
+            let endFlag = false;
+            let count = 0;
             for( let command of commandList ) {
                 // console.log('JsonPlugin.transformIntent:', count, command.name );
-                if ( this._transformCommand( aStateId, command ) !== 0 ) {
+                count++;
+                // letzten Knoten feststellen
+                if ( count >= commandListCount && this.mEndFlag ) {
+                    endFlag = true;
+                }
+                if ( this._transformCommand( aStateId, command, endFlag ) !== 0 ) {
                     return -1;
                 }
             }
@@ -407,6 +437,13 @@ export class JsonPlugin extends Plugin implements JsonInterface {
             // pruefen auf Optional-Gruppe
 
             if ( intent.optional ) {
+                this.mGroupId = 0;
+                this.mGroupProperty = '';
+            }
+
+            // pruefen auf Scrollable-Gruppe
+
+            if ( intent.scrollable ) {
                 this.mGroupId = 0;
                 this.mGroupProperty = '';
             }
@@ -423,7 +460,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
      * Eintragen des Kommandos in den State
      */
 
-    _transformCommand( aStateId: number, aCommand: DialogCommandInterface ): number {
+    _transformCommand( aStateId: number, aCommand: DialogCommandInterface, aEndFlag: boolean ): number {
         try {
             this.mNodeIdCount++;
             const id = this.mNodeIdCount;
@@ -431,7 +468,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
                 this.mFirstNodeId = id;
             }
             let nextId = id + 1;
-            if ( this.mEndFlag ) {
+            if ( aEndFlag ) {
                 nextId = 0;
             }
             // Aktion eintragen
@@ -452,6 +489,8 @@ export class JsonPlugin extends Plugin implements JsonInterface {
                 const timeout = this.mJsonStore.findTextTime( aCommand.textId );
                 const nodeObject = this.mStateObject.newDialogNode( DIALOG_SPEAK_NODE, id, this.mGroupId, nextId );4
                 nodeObject.setTimeout( timeout * 1000 );
+                // Textname eintragen fuer Audio-Datei
+                nodeObject.setName( aCommand.textId );
                 nodeObject.setText( text );
                 nodeObject.setProperty( this.mGroupProperty );
                 // console.log('parse SPEAK:', id, aStateId, this.mGroupId, nextId, text, timeout);
@@ -466,6 +505,7 @@ export class JsonPlugin extends Plugin implements JsonInterface {
             } 
             // falscher Wert
             else {
+                this._error( '_transformCommand', 'falsches Kommando' );
                 return -1;
             }
             return 0;

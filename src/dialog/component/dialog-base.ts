@@ -1326,6 +1326,7 @@ export class DialogBase extends BaseComponent implements DialogComponentInterfac
             this._error('clearContext', 'Komponente ist nicht aktiviert');
             return -1;
         }
+        // console.log('DialogBase.clearContext:', this.mDialogContext);
         this.mDialogContext.clear();
         return 0;
     }
