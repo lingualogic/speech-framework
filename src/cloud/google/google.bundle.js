@@ -1,10 +1,10 @@
 /**
  * Speech-Google
  * 
- * Version: 0.1.3
- * Build:   0004
+ * Version: 0.1.4
+ * Build:   0005
  * TYPE:    ALPHA
- * Datum:   03.11.2019
+ * Datum:   12.02.2020
  * Autor:   LinguaLogic Team
  * Lizenz:  MIT
  * 
@@ -160,7 +160,7 @@ function __generator(t, e) {
     }
 }
 
-var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.3', GOOGLE_VERSION_BUILD = '0004', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '03.11.2019', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
+var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.4', GOOGLE_VERSION_BUILD = '0005', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '12.02.2020', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
     function t(e, o) {
         void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
         this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = o, 
@@ -790,21 +790,20 @@ var ApiAiClient = function() {
             this.outputBuffer = [], this.lastOutput = [];
         }
     }, t;
-}(), GoogleAudioRecorder = function(t) {
-    function e(e, o, n) {
-        var r = t.call(this, 'GoogleAudioRecorder') || this;
-        r.mWebSocket = null, r.mAudioContext = null, r.mAudioCodec = null, r.mResampler = null, 
-        r.mBufferSize = GOOGLE_AUDIOBUFFER_SIZE, r.mSampleRate = GOOGLE_AUDIOSAMPLE_RATE, 
-        r.mCodec = GOOGLE_DEFAULT_CODEC, r.mAudioInputNode = null, r.mAnalyseNode = null, 
-        r.mRecordingNode = null, r.mUserMediaStream = null, r.mBytesRecorded = 0, r.mRecordingFlag = !1, 
-        r.mOnVolumeFunc = null, r.mOnEndedFunc = null, r.mWebSocket = e, r.mAudioContext = o, 
-        r.mOnVolumeFunc = n, r.mAudioCodec = new GoogleAudioCodec();
+}(), GoogleAudioRecorder2 = function(t) {
+    function e(e, o) {
+        var n = t.call(this, 'GoogleAudioRecorder2') || this;
+        n.mAudioContext = null, n.mAudioCodec = null, n.mResampler = null, n.mBufferSize = GOOGLE_AUDIOBUFFER_SIZE, 
+        n.mSampleRate = GOOGLE_AUDIOSAMPLE_RATE, n.mCodec = GOOGLE_DEFAULT_CODEC, n.mAudioInputNode = null, 
+        n.mAnalyseNode = null, n.mRecordingNode = null, n.mUserMediaStream = null, n.mChannelDataList = [], 
+        n.mBytesRecorded = 0, n.mRecordingFlag = !1, n.mOnVolumeFunc = null, n.mOnEndedFunc = null, 
+        n.mAudioContext = e, n.mOnVolumeFunc = o, n.mAudioCodec = new GoogleAudioCodec();
         try {
-            r.mResampler = new GoogleResampler(r.mAudioContext.sampleRate, r.mSampleRate, 1, r.mBufferSize, void 0);
+            n.mResampler = new GoogleResampler(n.mAudioContext.sampleRate, n.mSampleRate, 1, n.mBufferSize, void 0);
         } catch (t) {
-            throw r._exception('constructor', t), new Error('GoogleAudioRecorder nicht initialisiert');
+            throw n._exception('constructor', t), new Error('GoogleAudioRecorder2 nicht initialisiert');
         }
-        return r;
+        return n;
     }
     return __extends(e, t), e.prototype._closeMediaStream = function() {
         try {
@@ -816,9 +815,17 @@ var ApiAiClient = function() {
             this._exception('_closeMediaStream', t);
         }
         this.mUserMediaStream = null;
+    }, e.prototype.getAudioData = function(t) {
+        for (var e = 0, o = 0, n = t; o < n.length; o++) {
+            e += (a = n[o]).length;
+        }
+        for (var r = new Int16Array(e), i = 0, s = 0, u = t; s < u.length; s++) for (var a = u[s], l = 0; l < a.length; l++) r[i] = a[l], 
+        i++;
+        return r.buffer;
     }, e.prototype._onEnded = function() {
+        var t = this.getAudioData(this.mChannelDataList);
         if ('function' == typeof this.mOnEndedFunc) try {
-            this.mOnEndedFunc();
+            this.mOnEndedFunc(t);
         } catch (t) {
             return this._exception('_onEnded', t), -1;
         }
@@ -835,15 +842,14 @@ var ApiAiClient = function() {
         try {
             if (!this.mRecordingFlag) return this.mAudioInputNode.disconnect(this.mAnalyseNode), 
             this.mAnalyseNode.disconnect(this.mRecordingNode), this.mRecordingNode.disconnect(this.mAudioContext.destination), 
-            this._closeMediaStream(), this._onEnded(), void this.mWebSocket.send(JSON.stringify({
-                event: 'googleASRAudioStop'
-            }));
+            this._closeMediaStream(), void this._onEnded();
             var o = t.inputBuffer.getChannelData(0), n = this.mResampler.resampler(o);
             this.mBytesRecorded += n.length;
             var r = new Uint8Array(this.mAnalyseNode.frequencyBinCount);
             if (this.mAnalyseNode.getByteTimeDomainData(r), this.mAudioCodec.findPcmCodec(this.mCodec)) this.mAudioCodec.encodePCM(n, this.mCodec).forEach(function(t) {
-                e.mWebSocket.send(t.buffer);
+                e.mChannelDataList.push(t);
             }); else this.mAudioCodec.findOpusCodec(this.mCodec);
+            this._onVolume(r);
         } catch (t) {
             this._exception('_onAudioProcess', t);
         }
@@ -851,16 +857,14 @@ var ApiAiClient = function() {
         var o = this;
         this.mUserMediaStream = t, this.mCodec = e, this.mAudioContext.resume().then(function() {
             try {
-                o.mWebSocket.send(JSON.stringify({
-                    event: 'googleASRAudioStart'
-                })), o.mRecordingFlag = !0, o.mAudioInputNode = o.mAudioContext.createMediaStreamSource(o.mUserMediaStream), 
+                o.mRecordingFlag = !0, o.mAudioInputNode = o.mAudioContext.createMediaStreamSource(o.mUserMediaStream), 
                 o.mAnalyseNode = o.mAudioContext.createAnalyser(), o.mRecordingNode = o.mAudioContext.createScriptProcessor(o.mBufferSize, 1, 2), 
                 o.mRecordingNode.onaudioprocess = function(t) {
                     return o._onAudioProcess(t);
                 }, o.mAudioInputNode.connect(o.mAnalyseNode), o.mAnalyseNode.connect(o.mRecordingNode), 
                 o.mRecordingNode.connect(o.mAudioContext.destination);
             } catch (t) {
-                o._exception('start', t);
+                console.log('GoogleAudioRecorder2.start: Exception', t), o._exception('start', t);
             }
         }, function(t) {
             t && t.message && o._error('start.resume', t.message);
@@ -868,37 +872,140 @@ var ApiAiClient = function() {
     }, e.prototype.startAudio = function(t, e) {}, e.prototype.stop = function(t) {
         this.mOnEndedFunc = t, this.mRecordingFlag = !1;
     }, e;
-}(ErrorBase), GoogleASR = function(t) {
+}(ErrorBase), GOOGLE_ASRSERVER_URL = 'https://speech.googleapis.com/v1/speech:recognize', ASR_MAXVOLUME_COUNTER = 30, ASR_TIMEOUTVOLUME_COUNTER = 200, ASR_MINVOLUME_THRESHOLD = 127, ASR_MAXVOLUME_THRESHOLD = 128, GoogleASR2 = function(t) {
     function e(e, o, n, r, i) {
-        var s = t.call(this, 'GoogleASR', e, o) || this;
-        return s.mAudioContext = null, s.mGetUserMedia = null, s.mAudioReader = null, s.mAudioRecorder = null, 
+        var s = t.call(this, 'GoogleASR2', e, o) || this;
+        return s.mAccessToken = '', s.mAccessTokenDate = new Date(), s.mAccessTokenDuration = 0, 
+        s.mAudioContext = null, s.mGetUserMedia = null, s.mAudioReader = null, s.mAudioRecorder = null, 
         s.mUserMediaStream = null, s.mRequestId = 0, s.mVolumeCounter = 0, s.mTimeoutCounter = 0, 
         s.mRecordingFlag = !1, s.mAudioContext = n, s.mGetUserMedia = r, s.mAudioReader = i, 
         s;
     }
-    return __extends(e, t), e.prototype._onSpeechResult = function(t) {
+    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
+        return e.getTime() - t.getTime();
+    }, e.prototype.getAccessTokenFromServer = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return [ 4, fetch(this.mConfig.serverUrl, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }) ];
+
+                  case 1:
+                    return [ 4, e.sent().json() ];
+
+                  case 2:
+                    return t = e.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
+                    this.mAccessTokenDuration = t.time || 0, [ 2 ];
+                }
+            });
+        });
+    }, e.prototype.getAccessToken = function() {
+        return __awaiter(this, void 0, void 0, function() {
+            var t;
+            return __generator(this, function(e) {
+                switch (e.label) {
+                  case 0:
+                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
+
+                  case 1:
+                    e.sent(), e.label = 2;
+
+                  case 2:
+                    return [ 2, this.mAccessToken ];
+                }
+            });
+        });
+    }, e.prototype.getSpeechToText = function(t, e, o) {
+        return __awaiter(this, void 0, void 0, function() {
+            var t, e, n;
+            return __generator(this, function(r) {
+                switch (r.label) {
+                  case 0:
+                    return r.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
+
+                  case 1:
+                    return t = r.sent(), [ 4, fetch(GOOGLE_ASRSERVER_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: {
+                            Authorization: "Bearer " + t,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            config: {
+                                encoding: 'LINEAR16',
+                                languageCode: 'de-DE',
+                                sampleRateHertz: 16e3
+                            },
+                            audio: {
+                                content: o
+                            }
+                        })
+                    }) ];
+
+                  case 2:
+                    return [ 4, r.sent().json() ];
+
+                  case 3:
+                    return (e = r.sent()) && this._onOptionMessage(e), this._onStop(), [ 2, e ];
+
+                  case 4:
+                    return n = r.sent(), this._exception('getSpeechToText', n), this._onStop(), [ 3, 5 ];
+
+                  case 5:
+                    return [ 2 ];
+                }
+            });
+        });
+    }, e.prototype.decodeBase64 = function(t) {
+        if (window.atob) {
+            for (var e = window.atob(t), o = e.length, n = new Uint8Array(o), r = 0; r < o; r++) n[r] = e.charCodeAt(r);
+            return n.buffer;
+        }
+        return new ArrayBuffer(1);
+    }, e.prototype.encodeBase64 = function(t) {
+        if (window.btoa) {
+            for (var e = '', o = new Uint8Array(t), n = o.byteLength, r = 0; r < n; r++) e += String.fromCharCode(o[r]);
+            return window.btoa(e);
+        }
+        return '';
+    }, e.prototype._onSpeechResult = function(t) {
         if (t && t.length > 0) {
             t[0].transcript, t[0].confidence;
             this._onResult(t);
         }
-        this._stop();
     }, e.prototype._onSpeechEnd = function() {}, e.prototype._onOptionMessage = function(t) {
-        'SPEECH_EVENT_UNSPECIFIED' === t.speechEventType ? t.results && t.results.length > 0 && this._onSpeechResult(t.results[0].alternatives) : 'END_OF_SINGLE_UTTERANCE' === t.speechEventType && this._onSpeechEnd();
+        t.results && t.results.length > 0 && this._onSpeechResult(t.results[0].alternatives);
+    }, e.prototype.isVolume = function(t) {
+        if (this.mVolumeCounter += 1, this.mTimeoutCounter += 1, t) try {
+            for (var e = t.length, o = 0, n = 0; n < e; n++) o += t[n] * t[n];
+            var r = Math.sqrt(o / e);
+            (r < ASR_MINVOLUME_THRESHOLD || r > ASR_MAXVOLUME_THRESHOLD) && (this.mVolumeCounter = 0);
+        } catch (t) {
+            this._exception('isVolume', t);
+        }
+        return this.mVolumeCounter !== ASR_MAXVOLUME_COUNTER && this.mTimeoutCounter !== ASR_TIMEOUTVOLUME_COUNTER;
+    }, e.prototype._onEndedFunc = function(t) {
+        this.getSpeechToText('de-DE', 'LINEAR16', this.encodeBase64(t));
     }, e.prototype._startAudio = function(t) {}, e.prototype._startASR = function(t) {
         var e = this;
-        t.onmessage = function(t) {
-            return e._onOptionMessage(t);
-        }, this.mConnect.connect(t);
         try {
-            if (this.mAudioRecorder = new GoogleAudioRecorder(this.mConnect.webSocket, this.mAudioContext, function(e) {
-                t.onvolume(e);
+            if (this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function(t) {
+                e.isVolume(t) || e._stop();
             }), t.userMediaStream) this.mAudioRecorder.start(t.userMediaStream, GOOGLE_PCM_CODEC); else {
-                if (!t.audioData) return void console.log('GoogleASR._startASR: keine Audiodaten vorhanden');
+                if (!t.audioData) return void this._error('_startASR', 'keine Audiodaten vorhanden');
                 this.mAudioRecorder.startAudio(t.audioData, GOOGLE_PCM_CODEC);
             }
             this.mRecordingFlag = !0;
         } catch (t) {
-            this._exception('_start', t);
+            this._exception('_startASR', t);
         }
     }, e.prototype._start = function(t) {
         var e = this;
@@ -940,13 +1047,13 @@ var ApiAiClient = function() {
                 return this._exception('_start', t), -1;
             }
         }
-        return this._error('_stop', 'ASR ist nicht implementiert'), -1;
+        return this._error('_start', 'ASR ist nicht implementiert'), -1;
     }, e.prototype._stop = function() {
         var t = this;
         if (this.mRecordingFlag = !1, !this.mAudioRecorder) return 0;
         try {
-            return this.mAudioRecorder.stop(function() {
-                t._onStop();
+            return this.mAudioRecorder.stop(function(e) {
+                return t._onEndedFunc(e);
             }), this.mAudioRecorder = null, 0;
         } catch (t) {
             return this._exception('_stop', t), -1;
@@ -1210,11 +1317,11 @@ var ApiAiClient = function() {
     }, e.prototype.getVersion = function() {
         return GOOGLE_API_VERSION;
     }, e.prototype._checkCredentials = function(t) {
-        if (console.log('GooglePort._checkCredentials: ', t), !t) return !1;
+        if (!t) return !1;
         var e = !0;
         if ('string' != typeof t.dialogflowTokenServerUrl && (e = !1), t.dialogflowTokenServerUrl || (e = !1), 
         'string' != typeof t.dialogflowProjectId && (e = !1), t.dialogflowProjectId || (e = !1), 
-        console.log('GooglePort._checkCredentials: NLU2 = ', e), !e) {
+        !e) {
             if ('string' != typeof t.googleAppKey) return !1;
             if (!t.googleAppKey) return !1;
         }
@@ -1273,9 +1380,9 @@ var ApiAiClient = function() {
                 return e._onError(t.error, t.plugin, t.type);
             }, this.mGoogleTTS.onClose = function(t) {
                 return e._onClose();
-            }, console.log('GooglePort._initAllObject: googleTTS = ', this.mGoogleTTS);
+            };
             try {
-                this.isServer() && this.mGetUserMedia && (this.mGoogleASR = new GoogleASR(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, n), 
+                this.mGetUserMedia && (this.mGoogleASR = new GoogleASR2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, n), 
                 this.mGoogleASR.onStart = function(t) {
                     return e._onStart(t.plugin, t.type);
                 }, this.mGoogleASR.onStop = function(t) {

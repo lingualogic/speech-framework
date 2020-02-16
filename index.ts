@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.16.0060 (Beta) vom 17.12.2019
+ * Version: 0.5.17.0061 (Release) vom 16.02.2020
  */
 
 

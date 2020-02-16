@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.17.0061 Release (16.02.2020)
+
+### Features
+
+* **Google:** Erweiterung der Google-Komponente um ASR mit Anbindung an den Google Token-Server.
+
+
 ## 0.5.16.0060 Beta (17.12.2019)
 
 ### Features

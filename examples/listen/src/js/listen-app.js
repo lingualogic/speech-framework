@@ -235,48 +235,47 @@ function ListenApp() {
 
     try {
         console.log('ListenApp: create...');
-        // Nuance-Zurgiffsdaten als Optionen eintragen
-        var option = {
+        // Google-Zurgiffsdaten als Optionen eintragen
+        var googleOption = {
             googleAppKey: GOOGLE_APP_KEY,
-            microsoftRegion: MICROSOFT_REGION,
-            microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,
-            nuanceAppId: APP_ID,
-            nuanceAppKey: APP_KEY,
-            nuanceNluTag: NLU_TAG
+            googleServerUrl: GOOGLE_SERVER_URL,
+            errorOutputFlag: true
         };
         // erzeugt das Google-Modul
         if ( speech.Google ) {
-            speech.Google.init( option );
-            speech.Google.open((aError, aPortName, aPortResult) => {
-                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
-                console.log('ListenApp.init: Google', aPortResult);
-            });
+            if ( speech.Google.init( googleOption ) === 0 ) {
+                speech.Google.open((aError, aPortName, aPortResult) => {
+                    // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                    console.log('ListenApp.init: Google', aPortResult);
+                });
+            } else {
+                console.log('ListenApp.init: Google nicht initialisiert');
+            }
         } else {
-            console.log('ListenApp.init: kein Google vorhanden');
+            console.log('ListenApp.init: Google nicht vorhanden');
         }
 
+        // Microsoft-Zurgiffsdaten als Optionen eintragen
+        var microsoftOption = {
+            microsoftRegion: MICROSOFT_REGION,
+            microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,
+            errorOutputFlag: true
+        };
         // erzeugt das Microsoft-Modul
         if ( speech.Microsoft ) {
-            speech.Microsoft.init( option );
-            speech.Microsoft.open((aError, aPortName, aPortResult) => {
-                // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
-                console.log('ListenApp.init: Microsoft', aPortResult);
-            });
+            if ( speech.Microsoft.init( microsoftOption ) === 0 ) {
+                speech.Microsoft.open((aError, aPortName, aPortResult) => {
+                    // TODO: Open geschieht im Moment noch nicht asynchron, sonst muss Nuance hier eingefuegt werden
+                    console.log('ListenApp.init: Microsoft', aPortResult);
+                });
+            } else {
+                console.log('SpeakApp.init: Microsoft nicht initialisiert');                
+            }
         } else {
-            console.log('ListenApp.init: kein Microsoft vorhanden');
+            console.log('ListenApp.init: Microsoft nicht vorhanden');
         }
-
-        // erzeugt das Nuance-Modul
-        if ( speech.Nuance ) {
-            speech.Nuance.init( option );
-            speech.Nuance.open((aError, aPortName, aPortResult) => {
-                console.log('ListenApp.init: Nuance', aPortResult);
-                initListen();
-            });
-        } else {
-            console.log('ListenApp.init: kein Nuance vorhanden');
-            initListen();
-        }
+        // startet Listen
+        initListen();
     } catch ( aException ) {
         console.log('ListenApp.init: Exception', aException.message);
         return;

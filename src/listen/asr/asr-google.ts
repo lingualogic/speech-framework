@@ -159,7 +159,7 @@ export class ASRGoogle extends ASRPlugin {
             return 0;
         });
         this.mGooglePort.addResultEvent( ASR_GOOGLE_NAME, (aEventData: EventDataInterface) => {
-            // console.log('NLUGoogle._initRecognition: resultEvent = ', aEventData);
+            // console.log('ASRGoogle._initRecognition: resultEvent = ', aEventData);
             this._onRecognitionResult( aEventData.data );
             return 0;
         });

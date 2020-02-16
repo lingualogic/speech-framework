@@ -3,16 +3,6 @@
 Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Versionen und deren Features.
 
 
-## Geplante Versionen
-
-
-### Dezember: Version 0.5.17
-
-beinhaltet:
-
-* **Google:** Server-Funktion für sicheren Google-Cloud Zugriff für die ASR
-
-
 ## Veröffentlichte Versionen
 
 
@@ -20,14 +10,14 @@ beinhaltet:
 
 beinhaltet:
 
-* **Google:** Server-Funktion für sicheren Google-Cloud Zugriff für die TTS
+* **Google:** Integration des Google Cloud-Diesntes für die TTS
 
 
 ### Oktober: Version 0.5.15
 
 beinhaltet:
 
-* **Google:** Server-Funktion für sicheren Google-Cloud Zugriff (Dialogflow V2)
+* **Google:** Integration des Google Cloud-Dienstes für eine NLU (Dialogflow V2)
 
 
 ### August: Version 0.5.14

@@ -10,25 +10,25 @@ Daneben git es einzeln verwendbare Dienste:
 * **Action** für die Aktionserzeugung
 * **Dialog** für die Ausführung von Dialogskripten
 
-Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch der Nuance Cloud-Dienst verwendet werden. Dazu wird ein eigener Nuance-Mix Account benötigt. Neu sind auch der Amazon Cloud-Dienst für die Sprachausgabe (TTS), der Microsoft Cloud-Dienst für die Sprachausgabe (TTS) und die Speacheingabe (ASR), sowie der Google Cloud-Dienst für das Sprachverstehen (NLU). Hinzugekommen ist der Rasa-Server als privater Cloud-Dienst für das Sprachverstehen (NLU).
+Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch ein Cloud-Dienst verwendet werden. Dazu wird ein eigener Account des Cloud-Dienstes benötigt. Es gibt den Amazon Cloud-Dienst für die Sprachausgabe (TTS), den Microsoft Cloud-Dienst für die Sprachausgabe (TTS) und die Speacheingabe (ASR), sowie den Google Cloud-Dienst für Sprachausgabe(TTS), Spracheingabe( ASR) und Sprachverstehen (NLU). Hinzugekommen ist der Rasa-Server als selbst zu betreibenden Cloud-Dienst für das Sprachverstehen (NLU).
 
 
 ## Letzte Version
 
-* 0.5.16.0060 Beta vom 17.12.2019 [Release Notizen](./CHANGELOG.md)
+* 0.5.17.0061 Release vom 16.02.2020 [Release Notizen](./CHANGELOG.md)
 
-Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API.
+Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API. Für React-Projekte gibt es Speech-React als Wrapper und für Vue gibt es Speech-Vue als Wrapper.
 
 
 ## Voraussetzungen
 
-Wir haben das Speech-Framework auf Mac OS X 10.11, Mac OS X 10.13, Win 10 und Ubuntu 18.04 getestet. Als Plattformen können eingesetzt werden:
+Wir haben das Speech-Framework auf Mac OS X 10.14, Win 10 und Ubuntu 18.04 getestet. Als Plattformen können eingesetzt werden:
 
 * Mac OS X >= 10.11
 * Windows 10
 * aktuelles Linux (z.B. Ubuntu 18.04)
 
-Grundsätzlich ist das Speech-Framework in Chrome, Firefox, Opera, Safari und Edge nutzbar, allerdings hängt die Sprachausgabe unter diesen Browsern von der zugrunde liegenden Text-to-Speech Engine der jeweiligen Plattformen ab. Die Spracheingabe funktioniert bisher nur in Chrome ohne die Nutzung von Nuance. Mit Nuance kann die Spracheingabe in allen hier aufgeführten Browsern verwendet werden.
+Grundsätzlich ist das Speech-Framework in Chrome, Firefox, Opera, Safari und Edge nutzbar, allerdings hängt die Sprachausgabe unter diesen Browsern von der zugrunde liegenden Text-to-Speech Engine der jeweiligen Plattformen ab. Die Spracheingabe funktioniert bisher nur in Chrome ohne die Nutzung von Cloud-Diensten. Mit der Einbindung von Cloud-Diensten kann die Spracheingabe in allen hier aufgeführten Browsern verwendet werden.
 
 * Chrome >= 71   Windows/Linux/MacOS (Html5: TTS, ASR)(Nuance: TTS, ASR, NLU)
 * Firefox >= 64  Windows/Linux/MacOS (Html5: TTS)(Nuance: TTS, ASR, NLU) 
@@ -46,10 +46,6 @@ Als weitere Plattformen können Android und iOS mit Cordova verwendet werden:
 
 Für Cordova müssen weitere Programme zur Entwicklung von Android- und iOS-Apps installiert werden.
 
-Will man den Nuance Cloud-Dienst verwenden, muss ein eigener Nuance-Mix Account eingerichtet werden und die Nuance-Komponente des Speech-Frameworks separat in die eigene App eingebunden werden.
-
-Will man den Amazon Cloud-Dienst verwenden, muss ein eigener Amazon AWS Account eingerichtet werden und die Amazon-Komponente des Speech-Frameworks separat in die eigene App eingebunden werden.
-
 
 ## Installation
 
@@ -57,7 +53,6 @@ Zuerst muss das Speech-Framework Github-Repsitory unter [https://github.com/ling
 
     $ git clone https://github.com/lingualogic/speech-framework
     $ cd speech-framework
-    $ git checkout 0.5.x
 
 danach werden alle NPM-Pakete für das Speech-Framework mit folgendem Befehl installiert:
 
@@ -76,7 +71,7 @@ Die E2E-Tests können mit folgenden Befehl separat ausgeführt werden:
 
 Zusätzlich können in der Datei karma.conf.js der Browser zum Testen gewechselt und SingleRun=false gesetzt werden.
 Beim Chrome werden nicht alle Tests durchgeführt, da Audio- und Sprachausgabe gesperrt sind. Man kann die Sperrung durch drücken
-in den Browser aufheben und die Tests inklusive Audio- und Sprachausgabe.
+in den Browser aufheben und die Tests inklusive Audio- und Sprachausgabe ausführen.
 
 Alle E2E-Tests sind unter test/e2e zu finden.
 
@@ -88,10 +83,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.16.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.17.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.16.tgz
+    $ npm install speech-framework-0.5.17.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -141,10 +136,10 @@ Für das Intent-Beispiel ist folgender Befehl einzugeben:
 
 ## Bekannte Probleme
 
-* Googles Dialogflow schaltet seine Version 1 Ende Oktober ab.
+* Googles Dialogflow schaltet seine Version 1 Ende März 2020 ab.
 * Nuance hat seine Sprachdienste abgeschaltet und steht als Cloud-Dienst nicht mehr zur Verfügung
 * die verschiedenen Browser verhalten sich unterschiedlich, so dass nicht in jedem Browser alle Funktionen des Speech-Frameworks zur Verfügung stehen.
-* unter iOS funktioniert die Cordova-Version von Listen mit Nuance Cloud-Dienst oder Amazon Cloud-Dienst nicht, da die Apple WebView die getUserMedia-API nicht unterstützt.
+* unter iOS funktioniert die Cordova-Version von Listen mit Amazon Cloud-Dienst nicht, da die Apple WebView die getUserMedia-API nicht unterstützt.
 
 
 ## Projektverantwortliche (LinguaLogic Team)
@@ -159,6 +154,7 @@ Technische Umsetzung: **Stefan Brauer** (stefan@lingualogic.de)
 
 ## In Projekten verwendet
 
+* [**Nepos-App**](https://nepos.app) - Beispiel für den SpeakService und Dialog von [nepos.de](https://nepos.de)
 * [**whoelse-Prototyp**](https://app.whoelse.ai) - Beispiel für den IntentService von [uns.ai](https://uns.ai)
 
 

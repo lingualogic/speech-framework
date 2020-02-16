@@ -425,10 +425,10 @@ function SpeakApp() {
                     console.log('SpeakApp.init: Amazon', aPortResult);
                 });
             } else {
-                console.log('Amazon nicht initialisiert');
+                console.log('SpeakApp.init: Amazon nicht initialisiert');
             }
         } else {
-            console.log('Amazon nicht vorhanden');
+            console.log('SpeakApp.init: Amazon nicht vorhanden');
         }
         // Microsoft-Zurgiffsdaten als Optionen eintragen
         var microsoftOption = {
@@ -444,10 +444,10 @@ function SpeakApp() {
                     console.log('SpeakApp.init: Microsoft', aPortResult);
                 });
             } else {
-                console.log('Microsoft nicht initialisiert');
+                console.log('SpeakApp.init: Microsoft nicht initialisiert');
             }
         } else {
-            console.log('Microsoft nicht vorhanden');
+            console.log('SpeakApp.init: Microsoft nicht vorhanden');
         }
         // Google-Zurgiffsdaten als Optionen eintragen
         var googleOption = {
@@ -463,11 +463,12 @@ function SpeakApp() {
                     console.log('SpeakApp.init: Google', aPortResult);
                 });
             } else {
-                console.log('Google nicht initialisiert');
+                console.log('SpeakApp.init: Google nicht initialisiert');
             }
         } else {
-            console.log('Google nicht vorhanden');
+            console.log('SpeakApp.init: Google nicht vorhanden');
         }
+        // startet Speak
         initSpeak();
     } catch ( aException ) {
         console.log('SpeakApp.init: Exception', aException.message);
