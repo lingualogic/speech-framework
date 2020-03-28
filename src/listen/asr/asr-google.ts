@@ -154,7 +154,7 @@ export class ASRGoogle extends ASRPlugin {
             return 0;
         });
         this.mGooglePort.addStopEvent( ASR_GOOGLE_NAME, (aEventData: EventDataInterface) => {
-            // console.log('ASRGoogle._initRecognition: stopEvent = ', aEventData);
+            // onsole.log('ASRGoogle._initRecognition: stopEvent = ', aEventData);
             this._onRecognitionEnd();
             return 0;
         });
@@ -165,6 +165,10 @@ export class ASRGoogle extends ASRPlugin {
         });
         this.mGooglePort.addErrorEvent( ASR_GOOGLE_NAME, (aError: any) => {
             // console.log('ASRGoogle._initRecognition: errorEvent = ', aError.message);
+            // pruefen auf Token-Fehler, dann kann die NLU nicht arbeiten !
+            if ( aError.message === 'GoogleASR2.getAccessTokenFromServer: Failed to fetch' ) {
+                this.setActiveOff();
+            }
             this._onRecognitionError( aError );
             return 0;
         });
@@ -225,6 +229,7 @@ export class ASRGoogle extends ASRPlugin {
      */
 
     _stopRecognition(): number {
+        // console.log('ASRGoogle._stopRecognition');
         if ( this.mGooglePort ) {
             return this.mGooglePort.stop( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION );
         }
@@ -255,6 +260,7 @@ export class ASRGoogle extends ASRPlugin {
     _isRecognitionRunning(): boolean {
         // console.log('TTSGoogle._isRecognitionRunning');
         if ( this.mGooglePort ) {
+            // console.log('ASRGoogle._isRecognitionRunning: ', this.mGooglePort.isRunning( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION ));
             return this.mGooglePort.isRunning( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION );
         }
         return false;

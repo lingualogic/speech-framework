@@ -118,6 +118,13 @@ gulp.task('typedoc', (cb) => {
 gulp.task('test', shell.task('karma start karma.conf.js'));
 
 
+/** 
+ * Installationstext des veroeffentlichten NPM-Packages
+ */
+
+gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.18.tgz'));
+
+
 // Kopiert Quellcode
 
 
@@ -825,6 +832,13 @@ gulp.task('build-rollup', shell.task('rollup -c ./rollup.config.js'));
 gulp.task('dist-pack', shell.task('cd dist && npm pack'));
 
 
+/**
+ * Veroeffentlichen der auszuliefernde Client-Bibliothek in NPMJS-Repository
+ */
+
+gulp.task('dist-publish', shell.task('cd dist && npm publish'));
+
+
 
 // Intent-Beispiel erzeugen
 
@@ -1043,3 +1057,33 @@ gulp.task('build', function(callback) {
     );
 });
 
+
+/** 
+ * Erzeugt die lauffaehige Speech-Bibliothek fuer NPM
+ */
+
+gulp.task('build-npm', function(callback) {
+    runSequence(
+        'build',
+        'test-install',
+        'build-clean',
+        'build-dir',
+        'build-transpile',
+        'build-rollup',
+        'dist-copy-src',
+        callback
+    );
+});
+
+
+/** 
+ * Erzeugt und veroeffentlicht das NPM-Package 
+ */
+
+gulp.task('publish-npm', function(callback) {
+    runSequence(
+        'build-npm',
+        'dist-publish',
+        callback
+    );
+});

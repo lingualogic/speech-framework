@@ -2,7 +2,7 @@
   "name": "listenapp",
   "productName": "SpeechListenApp",
   "displayName": "Speech-ListenApp",
-  "version": "0.5.17",
+  "version": "0.5.18",
   "author": "LinguaLogic Team",
   "license": "MIT",
   "main": "main.js"

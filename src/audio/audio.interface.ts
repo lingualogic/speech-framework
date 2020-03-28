@@ -1,8 +1,8 @@
 /**
  * Public Audio Schnittstelle
  *
- * API-Version: 1.1
- * Datum:       30.01.2019
+ * API-Version: 1.2
+ * Datum:       24.03.2020
  *
  * @module audio
  * @author SB
@@ -211,6 +211,14 @@ export interface AudioInterface {
 
 
     playFile( aFileName: string ): number;
+
+    /**
+     * Abspielen von Audiodaten
+     *
+     * @param aAudioData - Base64 String fuer Audiodaten
+     */
+
+    playData( aAudioData: string ): number;
     stopPlay(): number;
 
     // @deprecated

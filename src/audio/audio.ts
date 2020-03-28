@@ -208,6 +208,15 @@ export class Audio implements AudioInterface {
         return this.mAudioPlayer.playFile( aFileName );
     }
 
+    /**
+     * Abspielen von Audiodaten
+     *
+     * @param aAudioData - Base64 String fuer Audiodaten
+     */
+
+    playData( aAudioData: string ): number {
+        return this.mAudioPlayer.playPcmData( atob( aAudioData ));
+    }
 
     stopPlay(): number {
         return this.mAudioPlayer.stop();

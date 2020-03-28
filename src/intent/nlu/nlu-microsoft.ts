@@ -255,7 +255,7 @@ export class NLUMicrosoft extends NLUPlugin {
      */
 
     _getRecognitionIntentResult( aEvent: any ): any {
-        console.log('NLUMicrosoft._getRecognitionIntentResult:', aEvent);
+        // console.log('NLUMicrosoft._getRecognitionIntentResult:', aEvent);
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
         // es sollte der Intent und die Confidence uebergeben werden!
         const intentData = {
@@ -272,10 +272,10 @@ export class NLUMicrosoft extends NLUPlugin {
             intentData.confidence = aEvent.topScoringIntent.score;
             // Konzepte kopieren, wenn vorhanden
             if ( aEvent.entities ) {
-                console.log('NluMicrosoft._getRecognitionIntentResult:', aEvent.entities);
+                // console.log('NluMicrosoft._getRecognitionIntentResult:', aEvent.entities);
                 for ( let entity of aEvent.entities ) {
                     let concept = { concept: entity.type, value: entity.entity, literal: entity.entity, confidence: entity.score };
-                    console.log('NluMicrosoft._getRecognitionIntentResult: concept = ', concept);
+                    // console.log('NluMicrosoft._getRecognitionIntentResult: concept = ', concept);
                     intentData.conceptList.push( concept );
                 }
             }

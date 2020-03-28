@@ -257,7 +257,7 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
         if (this.mTransaction.transactionId !== t.transactionId) return this._error('stop', 'Transaktions-ID stimmt nicht ueberein'), 
         -1;
         try {
-            return this._stop(), this._onStop(), 0;
+            return this._stop(), 0;
         } catch (t) {
             return this._exception('stop', t), -1;
         }
@@ -274,7 +274,6 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
     }
     return __extends(o, t), o.prototype._start = function(t) {
         var o = this;
-        console.log('MicrosoftNLU._start: ', t);
         try {
             var r = this.mConfig.luisEndpoint;
             if (!r) return this._onError(new Error('NLU-Error: kein Luis-Endpunkt vorhanden')), 
@@ -282,7 +281,7 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
             var n = new XMLHttpRequest(), i = r + t.text;
             n.responseType = 'json', n.onload = function(t) {
                 try {
-                    console.log('MicrosoftNLU._start: onload ', n.response), o._onResult(n.response);
+                    o._onResult(n.response);
                 } catch (t) {
                     o._onError(new Error('NLU-Exception: ' + t.message));
                 }
@@ -486,8 +485,8 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
         var o = this;
         try {
             if (!this.mAudioContext) return void console.log('MicrosoftAudioPlayer.playByStream: kein AudioContext vorhanden');
-            if (console.log('MicrosoftAudioPlayer.playByStream: start'), 0 === t.length || this.mAudioStopFlag) return this.mBeginSpeakFlag = !0, 
-            this._onAudioStop(), void (this.mAudioSource = null);
+            if (0 === t.length || this.mAudioStopFlag) return this.mBeginSpeakFlag = !0, this._onAudioStop(), 
+            void (this.mAudioSource = null);
             this.mAudioSource = this.mAudioContext.createBufferSource(), this.mAudioSource.onended = function() {
                 return o.stop();
             };
@@ -496,24 +495,24 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
             !n) return void this._error('playByStream', 'kein Audiobuffer erzeugt');
             this.mAudioSource.buffer = n, this.mAudioSource.connect(this.mAudioContext.destination), 
             this.mAudioSource.start ? this.mAudioSource.start(0) : this.mAudioSource.noteOn(0), 
-            this._onAudioStart(), console.log('MicrosoftAudioPlayer.playByStream: end');
+            this._onAudioStart();
         } catch (t) {
             this.mBeginSpeakFlag = !0, this._onAudioStop(), this.mAudioSource = null, this._exception('playByStream', t);
         }
     }, o.prototype.decode = function(t, o) {
         try {
-            if (console.log('MicrosoftAudioPlayer.decode: start'), this.mAudioCodec.findPcmCodec(t.codec)) {
+            if (this.mAudioCodec.findPcmCodec(t.codec)) {
                 var r = this.mAudioCodec.decodePCM(o);
-                this.mAudioArray.push(r), this.mQueue.push(r), console.log('MicrosoftAudioPlayer.decode: end'), 
-                this.mBeginSpeakFlag && (this.mBeginSpeakFlag = !1, this.playByStream(this.mAudioArray));
+                this.mAudioArray.push(r), this.mQueue.push(r), this.mBeginSpeakFlag && (this.mBeginSpeakFlag = !1, 
+                this.playByStream(this.mAudioArray));
             } else this._error('decode', 'Kein Decoder vorhanden fuer ' + t.codec);
         } catch (t) {
             this._exception('decode', t);
         }
     }, o.prototype.stop = function() {
         try {
-            console.log('MicrosoftAudioPlayer.stop'), this.mAudioStopFlag = !0, this.mAudioSource && (this.mAudioSource.stop(0), 
-            this.mAudioSource.disconnect(0), this._onAudioStop());
+            this.mAudioStopFlag = !0, this.mAudioSource && (this.mAudioSource.stop(0), this.mAudioSource.disconnect(0), 
+            this._onAudioStop());
         } catch (t) {
             this._exception('stop', t);
         }
@@ -555,7 +554,7 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
             return s.open('POST', e), s.setRequestHeader('Authorization', 'Bearer ' + r), s.setRequestHeader('cache-control', 'no-cache'), 
             s.setRequestHeader('X-Microsoft-OutputFormat', MICROSOFT_AUDIO_FORMAT), s.setRequestHeader('Content-Type', 'application/ssml+xml'), 
             s.responseType = 'arraybuffer', s.onload = function() {
-                console.log('Response:', s), i.mAudioPlayer.decode(t, s.response);
+                i.mAudioPlayer.decode(t, s.response);
             }, s.onerror = function(t) {
                 i._error('_sentToTTS', t.message);
             }, s.send(n), 0;
@@ -564,7 +563,7 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
         }
     }, o.prototype._start = function(t) {
         var o = this;
-        if (console.log('MicrosoftTTS._start: Start', t), !t || !t.text || 'string' != typeof t.text) return this._error('_start', 'kein Text uebergeben'), 
+        if (!t || !t.text || 'string' != typeof t.text) return this._error('_start', 'kein Text uebergeben'), 
         -1;
         try {
             if (this.mAudioPlayer = new MicrosoftAudioPlayer(this.mAudioContext), !this.mAudioPlayer) return this._error('_start', 'AudioPlayer wurde nicht erzeugt'), 
@@ -716,8 +715,9 @@ var MICROSOFT_VERSION_NUMBER = '0.1.1', MICROSOFT_VERSION_BUILD = '0002', MICROS
     }, o.prototype._onOffline = function() {
         return 0;
     }, o.prototype._onStop = function(o, r) {
-        return this._clearActionTimeout(), this.mTransaction = null, this.mRunningFlag = !1, 
-        t.prototype._onStop.call(this, o, r);
+        this._clearActionTimeout();
+        var n = t.prototype._onStop.call(this, o, r);
+        return this.mTransaction = null, this.mRunningFlag = !1, n;
     }, o.prototype._unlockAudio = function(t) {
         if (this.mAudioContext) {
             if ('running' === this.mAudioContext.state) return void t(!0);

@@ -1,6 +1,6 @@
 {
     "name": "speech",
-    "version": "0.5.17",
+    "version": "0.5.18",
     "description": "Speech-Framework",
     "author": "LinguaLogic Team",
     "license": "MIT",
@@ -11,6 +11,8 @@
         "postinstall": "gulp install",
         "build": "gulp build",
         "build:examples": "gulp build-examples",
+        "build:npm": "gulp build-npm",
+        "publish:npm": "gulp publish-npm",
         "docs": "gulp typedoc",
         "test": "gulp test",
         "e2e": "gulp test",

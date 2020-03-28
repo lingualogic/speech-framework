@@ -1,12 +1,21 @@
 {
     "name": "speech-framework",
-    "version": "0.5.17",
+    "version": "0.5.18",
     "description": "Speech-Framework",
     "author": "LinguaLogic Team",
     "license": "MIT",
     "private": true,
     "main": "index.js",
     "typings": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lingualogic/speech-framework.git"
+    },
+    "bugs": {
+        "url": "https://github.com/lingualogic/speech-framework/issues"
+    },
+    "homepage": "https://lingualogic.de",
+    "keywords": [ "speech", "voice", "vui" ], 
     "scripts": {},
     "dependencies": {},
     "devDependencies": {}

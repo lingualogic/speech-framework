@@ -23,3 +23,18 @@ export const AUDIO_MP3_FORMAT = 'mp3';
 export const AUDIO_WAV_FORMAT = 'wav';
 
 export const AUDIO_DEFAULT_FORMAT = AUDIO_MP3_FORMAT;
+
+// Navigation Codec
+
+export const AUDIO_PCM_CODEC = 'audio/L16;rate=16000';
+export const AUDIO_DEFAULT_CODEC = AUDIO_PCM_CODEC;
+
+// Audio-Konstanten
+
+export const AUDIO_AUDIOBUFFER_SIZE = 2048;
+export const AUDIO_AUDIOSAMPLE_RATE = 16000;
+
+// Minimum-Samplerate fuer Safari
+
+export const AUDIO_MIN_SAMPLERATE = 22500;
+

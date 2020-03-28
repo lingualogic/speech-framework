@@ -2,7 +2,7 @@
  * Hier wird die Google-Sprachausgabe implementiert. Ist GooglePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 17.05.2019
+ * Letzte Aenderung: 27.03.2020
  * Status: rot
  *
  * @module speak/tts
@@ -182,6 +182,10 @@ export class TTSGoogle extends TTSPlugin {
         });
         this.mPort.addErrorEvent( TTS_GOOGLE_NAME, (aError: any) => {
             // console.log('TTSGoogle._initSynthesis: errorEvent = ', aError.message);
+            // pruefen auf Token-Fehler, dann kann die NLU nicht arbeiten !
+            if ( aError.message === 'GoogleTTS2.getAccessTokenFromServer: Failed to fetch' ) {
+                this.setActiveOff();
+            }
             this._onSynthesisError({ error: aError.message });
             return 0;
         });

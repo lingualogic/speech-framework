@@ -1,10 +1,10 @@
 /**
  * AudioPlayer Schnittstelle
  *
- * API-Version: 1.0
- * Datum:       28.06.2018
+ * API-Version: 1.1
+ * Datum:       24.03.2020
  *
- * Letzte Aenderung: 01.10.2018
+ * Letzte Aenderung: 24.03.2020
  * Status: gelb
  *
  * @module audio/player
@@ -53,6 +53,7 @@ export interface AudioPlayerInterface extends PluginInterface {
     isPlay(): boolean;
     isCancel(): boolean;
 
+    playPcmData( aAudioData: any ): number;
     play( aAudioFilePath: string, aAudioId: string ): number;
     playFile( aFileName: string ): number;
     stop(): number;

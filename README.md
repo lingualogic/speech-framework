@@ -11,11 +11,12 @@ Daneben git es einzeln verwendbare Dienste:
 * **Dialog** für die Ausführung von Dialogskripten
 
 Im Speech-Framework kann für die Sprachausgabe (TTS), die Spracheingabe (ASR) und das Sprachverstehen (NLU) auch ein Cloud-Dienst verwendet werden. Dazu wird ein eigener Account des Cloud-Dienstes benötigt. Es gibt den Amazon Cloud-Dienst für die Sprachausgabe (TTS), den Microsoft Cloud-Dienst für die Sprachausgabe (TTS) und die Speacheingabe (ASR), sowie den Google Cloud-Dienst für Sprachausgabe(TTS), Spracheingabe( ASR) und Sprachverstehen (NLU). Hinzugekommen ist der Rasa-Server als selbst zu betreibenden Cloud-Dienst für das Sprachverstehen (NLU).
+Für die Google Cloud-Dienste wird zusätzlich der Speech-Tokenserver benötigt.
 
 
 ## Letzte Version
 
-* 0.5.17.0061 Release vom 16.02.2020 [Release Notizen](./CHANGELOG.md)
+* 0.5.18.0062 Release vom 28.03.2020 [Release Notizen](./CHANGELOG.md)
 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API. Für React-Projekte gibt es Speech-React als Wrapper und für Vue gibt es Speech-Vue als Wrapper.
 
@@ -38,7 +39,7 @@ Grundsätzlich ist das Speech-Framework in Chrome, Firefox, Opera, Safari und Ed
 
 NodeJS muss installiert sein.
 
-* NodeJS >= 10.X (LTS-Version)
+* NodeJS >= 10.X
 
 Als weitere Plattformen können Android und iOS mit Cordova verwendet werden:
 
@@ -83,12 +84,15 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.17.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.18.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.17.tgz
+    $ npm install speech-framework-0.5.18.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
+Alternativ kann das Speech-Framework auch über das offizielle globale NPM-Repository installiert werden:
+
+    $ npm install speech-framework
 
 
 ## Deinstallation

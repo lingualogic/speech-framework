@@ -1,7 +1,7 @@
 /**
  * Diese Komponente dient der Spracherkennung mit Hilfe von Google Dialogflow-NLU
  *
- * Letzte Aenderung: 02.10.2019
+ * Letzte Aenderung: 26.03.2030
  * Status: rot
  *
  * @module intent/nlu
@@ -22,7 +22,7 @@ import { PortInterface } from './../../core/port/port.interface';
 
 // google
 
-import { GOOGLE_TYPE_NAME, GOOGLE_NLU_ACTION } from './../../cloud/google/google-const';
+import { GOOGLE_TYPE_NAME, GOOGLE_NLU_ACTION, GOOGLE_ASRNLU_ACTION } from './../../cloud/google/google-const';
 
 
 // nlu
@@ -138,6 +138,14 @@ export class NLUGoogle extends NLUPlugin {
         if ( aResult.type === GOOGLE_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
+        if ( aResult.type === GOOGLE_ASRNLU_ACTION ) {
+            // Unterscheiden von Transkription als String und Intent als Objekt
+            if ( typeof aResult.data[ 0 ] === 'string' ) {
+                return this._onRecognitionResult( aResult.data );
+            } else {
+                return this._onRecognitionIntentResult( aResult.data );
+            }
+        }
         return 0;
     }
 
@@ -181,6 +189,10 @@ export class NLUGoogle extends NLUPlugin {
         });
         this.mGooglePort.addErrorEvent( NLU_GOOGLE_NAME, (aError: any) => {
             // console.log('NLUGoogle._initRecognition: errorEvent = ', aError.message);
+            // pruefen auf Token-Fehler, dann kann die NLU nicht arbeiten !
+            if ( aError.message === 'GoogleNLU2.getAccessTokenFromServer: Failed to fetch' ) {
+                this.setActiveOff();
+            }
             this._onRecognitionError( aError );
             return 0;
         });
@@ -200,6 +212,7 @@ export class NLUGoogle extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mGooglePort ) {
+            console.log('NLUGoogle._isRecognition:', this.mGooglePort.isAction( GOOGLE_NLU_ACTION ));
             return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
         }
         return false;
@@ -229,6 +242,9 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     isListen(): boolean {
+        if ( this.mGooglePort ) {
+            return this.mGooglePort.isAction( GOOGLE_ASRNLU_ACTION );
+        }
         return false;
     }
 
@@ -241,7 +257,7 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _getRecognitionResult( aEvent: any ): any {
-        // console.log('NLUNuance._getRecognitionResult:', aEvent);
+        console.log('NLUGoogle._getRecognitionResult:', aEvent);
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
         return aEvent;
     }
@@ -264,12 +280,17 @@ export class NLUGoogle extends NLUPlugin {
             conceptList: [],
             literal: '',
             speech: '',
+            audioFormat: '',
+            audio: '',
             error: ''
         };
         try {
             // pruefen auf Dialogflow-V2
             if ( aEvent.queryResult ) {
-                intentData.intent = aEvent.queryResult.intent.displayName;
+                console.log('NLUGoogle._getRecognitionIntentResult:', aEvent);
+                if ( aEvent.queryResult.intent ) {
+                    intentData.intent = aEvent.queryResult.intent.displayName;
+                }
                 intentData.confidence = aEvent.queryResult.intentDetectionConfidence;
                 intentData.literal = aEvent.queryResult.queryText;
                 intentData.speech = aEvent.queryResult.fulfillmentText;
@@ -279,7 +300,11 @@ export class NLUGoogle extends NLUPlugin {
                             intentData.conceptList.push({ concept: property, value: aEvent.queryResult.parameters[property], literal: aEvent.queryResult.parameters[property], confidence: 1 });
                         }
                     }
-                }            
+                }
+                if ( aEvent.outputAudio ) {
+                    intentData.audio = aEvent.outputAudio;
+                    intentData.audioFormat = aEvent.outputAudioConfig.audioEncoding;
+                }
             } else {
                 // Mapping der Daten auf IntentData
                 intentData.intent = aEvent.metadata.intentName;
@@ -324,7 +349,10 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _startRecognition(): number {
-        return -1;
+        if ( !this.mGooglePort ) {
+            return -1;
+        }
+        return this.mGooglePort.start( NLU_GOOGLE_NAME, GOOGLE_ASRNLU_ACTION, { language: this._getNLULanguage()});
     }
 
 

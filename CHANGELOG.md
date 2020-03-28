@@ -1,6 +1,17 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.18.0062 Release (28.03.2020)
+
+### Features
+
+* **Google:** Vollständige Einbindung von Dialogflow V2 in den CloudPort von Google, einschließlich Spracheingabe und Sprachausgabe.
+
+### Fix
+
+* **Google:** Fehlerkorrektur in der Google-Komponente, um den Stop-Event in ASR und TTS zu erzeugen.
+
+
 ## 0.5.17.0061 Release (16.02.2020)
 
 ### Features

@@ -309,7 +309,7 @@ export class BaseComponent extends Component implements BaseComponentInterface {
      */
 
     _onStop(): number {
-        // console.log('ActionComponent._onActionStop');
+        // console.log('BaseComponent._onStop');
         return this.mStopEvent.dispatch();
     }
 

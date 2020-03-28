@@ -8,7 +8,7 @@ function IntentApp() {
 
     var intent = null;
 
-
+    
     // Update DOM on a Received Event
 
     var receivedEvent = function() {
@@ -272,6 +272,9 @@ function IntentApp() {
 
     try {
         console.log('IntentApp: create...');
+
+        // Optionen
+
         var option = {
             microsoftRegion: MICROSOFT_REGION,
             microsoftSubscriptionKey: MICROSOFT_SUBSCRIPTION_KEY,

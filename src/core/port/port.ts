@@ -406,7 +406,7 @@ export class Port extends ErrorBase implements PortInterface {
      */
 
     _onStop( aDest = '', aType = '' ): number {
-        // console.log('Port._onStop:', aType);
+        // console.log('Port._onStop:', aDest, aType);
         const eventData: EventDataInterface = {
             event: PORT_STOP_EVENT,
             type: aType,

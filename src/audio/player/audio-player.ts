@@ -1,7 +1,7 @@
 /**
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 06.11.2019
+ * Letzte Aenderung: 24.03.2020
  * Status: rot
  *
  * @module audio/player
@@ -25,8 +25,10 @@ import { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from './../../comm
 
 // audio
 
-import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT, AUDIO_DEFAULT_FORMAT } from '../audio-const';
+import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT, AUDIO_DEFAULT_FORMAT, AUDIO_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE } from '../audio-const';
 import { AudioPlayerInterface, AudioPlayFunc, AudioStopFunc, OnAudioStartFunc, OnAudioStopFunc, OnAudioUnlockFunc } from './audio-player.interface';
+import { AudioCodec } from './../stream/audio-codec';
+import { AudioResampler } from './../stream/audio-resampler';
 
 
 // Konstanten
@@ -769,7 +771,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _playStart(): number {
-        // onsole.log('AudioPlayer._playStart');
+        // console.log('AudioPlayer._playStart');
         if ( !this.mAudioBuffer ) {
             return -1;
         }
@@ -814,6 +816,73 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         }
     }
 
+
+    /**
+     * PCM-Audiodaten abspielen
+     *
+     * @param {any} aAudioPcmData - PCM-Audiodaten als String
+     */
+
+    playPcmData( aAudioData: any ): number {
+        // console.log('AudioPlayer.playPcmData: start');
+        if ( !this.isActive()) {
+            // kein Fehler
+            if ( this.isErrorOutput()) {
+                console.log('AudioPlayer.playPcmData: AudioPlayer ist nicht aktiv');
+            }
+            return 0;
+        }
+        // pruefen ob ein anderes Audio abgespielt wird
+        if ( this.isLoad() || this.isPlay()) {
+            // console.log('AudioPlayer.play: laden abbrechen');
+            // laden abbrechen
+            this._cancel();
+            // Audioausgabe stoppen
+            this.stop();
+        }
+        // console.log('AudioPlayer.play: AudioContext.state = ', this.mAudioContext.state);
+        try {
+            this.mSource = null;
+            this.mAudioBuffer = null;
+            // AudioContext entsperren
+            this._unlockAudio((aUnlockFlag: boolean) => {
+                if ( aUnlockFlag ) {
+                    // TODO: Insert Decoding PCM
+                    const audioCodec = new AudioCodec();
+                    const audioArray = [];
+                    const decodePCM16KData = audioCodec.decodePCM( aAudioData );
+                    audioArray.push( decodePCM16KData );
+                    // AudioBuffer direkt erzeugen
+                    // const data = audioArray; // audioArray.shift();
+                    const data = decodePCM16KData;
+                    let audioBuffer = this._getAudioBufferFirst( data );
+                    // fuer die Browser ohne AudioBuffer Constructor
+                    if ( !audioBuffer ) {
+                        audioBuffer = this._getAudioBufferSecond( data );
+                    }
+                    // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
+                    // hier wird der Resampler eingesetzt
+                    if ( !audioBuffer ) {
+                        audioBuffer = this._getAudioBufferResample( data );
+                    }
+                    if ( !audioBuffer ) {
+                        this._error( 'playByStream', 'kein Audiobuffer erzeugt');
+                        return;
+                    }
+                    this.mAudioBuffer = audioBuffer;
+                    this._playStart();
+                } else {
+                    this._error( 'play', 'AudioContext ist nicht entsperrt' );
+                    this._onAudioStop();
+                }
+            });
+            return 0;
+        } catch (aException) {
+            this._exception( 'play', aException );
+            return -1;
+        }
+    }
+    
 
     /**
      * Audiodatei abspielen
@@ -1005,6 +1074,93 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         return () => {
             return this.stop();
         };
+    }
+
+    // AudioBuffer-Funktionen
+
+    /**
+     * Hier wird der AudioBuffer direkt ueber seinen Constructor erzeugt
+     *
+     * @private
+     * @param aData - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+
+    _getAudioBufferFirst( aData: any ): AudioBuffer {
+        console.log('AudioPlayer._getAudioBufferFirst:', aData.length);
+        let audioBuffer: AudioBuffer = null;
+        // fuer die meisten aktuellen Browser mit AudioBuffer Constructor 
+        try {
+            const audioToPlay = new Float32Array( aData.length );
+            audioToPlay.set( aData );
+            // console.log('NuanceAudioPlayer.playByStream: buffer direkt erzeugen:', audioToPlay.length);
+            audioBuffer = new AudioBuffer({ length: audioToPlay.length, numberOfChannels: 1, sampleRate: AUDIO_AUDIOSAMPLE_RATE });
+            audioBuffer.getChannelData( 0 ).set( audioToPlay );
+        } catch ( aException ) {
+            audioBuffer = null;
+            console.log('AudioPlayer._getAudioBufferFirst: Exception', aException);
+        }
+        return audioBuffer;
+    }
+
+    /**
+     * Hier wird der AudioBuffer ueber AudioContext.createBuffer() erzeugt
+     *
+     * @private
+     * @param aData  - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+
+    _getAudioBufferSecond( aData: any ): AudioBuffer {
+        let audioBuffer: AudioBuffer = null;
+        // fuer die Browser ohne AudioBuffer Constructor
+        try {
+            const audioToPlay = new Float32Array( aData.length );
+            audioToPlay.set( aData );
+            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 16000 Samplerate:', audioToPlay.length);
+            audioBuffer = this.mAudioContext.createBuffer( 1, audioToPlay.length, AUDIO_AUDIOSAMPLE_RATE );
+            audioBuffer.getChannelData( 0 ).set( audioToPlay );
+        } catch ( aException ) {
+            audioBuffer = null;
+            console.log('AudioPlayer._getAudioBufferSecond: Exception', aException);
+        }
+        return audioBuffer;
+    }
+
+    /**
+     * Hier wird der Audiobuffer mit Resample erzeugt, um in Safari abgespielt zu werden
+     * SapmpleRate wird von PCM 16000 Hz auf 22500 Hz angehoben, da createBuffer in Safari 
+     * erst ab dieser Frequenz arbeitet.
+     *
+     * @private
+     * @param aData - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+
+    _getAudioBufferResample( aData: any ): AudioBuffer {
+        let audioBuffer: AudioBuffer = null;
+        // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
+        // hier wird der Resampler eingesetzt
+        try {
+            // notwendig ist ein groesseres FloatArray 22500/16000 = 1.4 
+            const audioToPlay = new Float32Array( aData.length * 1.4 );
+            audioToPlay.set( aData );
+
+            // Resampler, um die Frequenz des AudioBuffers anzuheben auf 22500 Hz fuer Safari
+
+            const resampler = new AudioResampler( AUDIO_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, audioToPlay.length, undefined );
+            const _audioToPlay = resampler.resampler( audioToPlay );
+            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 22500 Samplerate:', _audioToPlay.length);
+            audioBuffer = this.mAudioContext.createBuffer( 1, _audioToPlay.length, AUDIO_MIN_SAMPLERATE );
+            audioBuffer.getChannelData( 0 ).set( _audioToPlay );
+        } catch ( aException ) {
+            audioBuffer = null;
+            console.log('AudioPlayer._getAudioBufferResample: Exception', aException);
+        }
+        return audioBuffer;
     }
 
 }

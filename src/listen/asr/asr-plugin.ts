@@ -260,7 +260,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onListenStop(): number {
-        // console.log('ASRPlugin._onListenStop');
+        // console.log('ASRPlugin._onListenStop:', this.mOnListenStopFunc);
         try {
             if ( typeof this.mOnListenStopFunc === 'function' ) {
                 return this.mOnListenStopFunc();
@@ -423,7 +423,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onRecognitionEnd(): number {
-        // console.log('ASRPlugin._onRecognitionEnd');
+        console.log('ASRPlugin._onRecognitionEnd');
         return this._stopListen();
     }
 
@@ -436,7 +436,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onRecognitionSpeechStart(): number {
-        // console.log('ASRPlugin._onRecognitionSpeechStart');
+        console.log('ASRPlugin._onRecognitionSpeechStart');
         this._clearRecognitionTimeout();
         return 0;
     }
@@ -450,7 +450,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onRecognitionSpeechEnd(): number {
-        // console.log('ASRPlugin._onRecognitionSpeechEnd');
+        console.log('ASRPlugin._onRecognitionSpeechEnd');
         return this._stopListen();
     }
 
@@ -699,7 +699,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                 language = '';
                 break;
         }
-        console.log('ASRPlugin.getLanguage:', language);
+        // console.log('ASRPlugin.getLanguage:', language);
         return language;
     }
 
@@ -738,6 +738,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     isListenRunning(): boolean {
+        // console.log('ASRPlugin.isListenRunning: RunningFlag=', this.mListenRunningFlag, ' RecognitionRunning=', this._isRecognitionRunning());
         return this.mListenRunningFlag && this._isRecognitionRunning();
     }
 
@@ -820,6 +821,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _stopListen(): number {
+        // console.log('ASRPlugin._stopListen: start');
         // ListenStop senden
 
         let result = 0;
@@ -831,6 +833,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                 result = -1;
             }
         }
+        // console.log('ASRPlugin._stopListen: end', result);
         return result;
     }
 
