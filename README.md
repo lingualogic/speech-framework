@@ -16,7 +16,7 @@ Für die Google Cloud-Dienste wird zusätzlich der Speech-Tokenserver benötigt.
 
 ## Letzte Version
 
-* 0.5.18.0062 Release vom 28.03.2020 [Release Notizen](./CHANGELOG.md)
+* 0.5.19.0063 Release vom 11.04.2020 [Release Notizen](./CHANGELOG.md)
 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API. Für React-Projekte gibt es Speech-React als Wrapper und für Vue gibt es Speech-Vue als Wrapper.
 
@@ -84,12 +84,13 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.18.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.19.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.18.tgz
+    $ npm install speech-framework-0.5.19.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
+
 Alternativ kann das Speech-Framework auch über das offizielle globale NPM-Repository installiert werden:
 
     $ npm install speech-framework

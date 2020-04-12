@@ -212,7 +212,7 @@ export class NLUGoogle extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mGooglePort ) {
-            console.log('NLUGoogle._isRecognition:', this.mGooglePort.isAction( GOOGLE_NLU_ACTION ));
+            // console.log('NLUGoogle._isRecognition:', this.mGooglePort.isAction( GOOGLE_NLU_ACTION ));
             return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
         }
         return false;
@@ -257,7 +257,7 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _getRecognitionResult( aEvent: any ): any {
-        console.log('NLUGoogle._getRecognitionResult:', aEvent);
+        // console.log('NLUGoogle._getRecognitionResult:', aEvent);
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
         return aEvent;
     }
@@ -287,7 +287,7 @@ export class NLUGoogle extends NLUPlugin {
         try {
             // pruefen auf Dialogflow-V2
             if ( aEvent.queryResult ) {
-                console.log('NLUGoogle._getRecognitionIntentResult:', aEvent);
+                // console.log('NLUGoogle._getRecognitionIntentResult:', aEvent);
                 if ( aEvent.queryResult.intent ) {
                     intentData.intent = aEvent.queryResult.intent.displayName;
                 }

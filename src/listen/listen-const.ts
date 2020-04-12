@@ -45,3 +45,10 @@ export const LISTEN_DEFAULT_LANGUAGE = LISTEN_DE_LANGUAGE;
 /** Undefiniert */
 export const LISTEN_UNDEFINE_LANGUAGE = '';
 
+
+// Sprachmodi
+
+export const LISTEN_COMMAND_MODE = 'Command';
+export const LISTEN_DICTATE_MODE = 'Dictate';
+export const LISTEN_DEFAULT_MODE = LISTEN_COMMAND_MODE;
+export const LISTEN_UNDEFINE_MODE = '';

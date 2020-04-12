@@ -28,4 +28,5 @@ export type ListenStopFunc = () => number;
 export type OnListenStartFunc = () => number;
 export type OnListenStopFunc = () => number;
 export type OnListenResultFunc = (aText: string) => number;
+export type OnListenNoMatchFunc = () => number;
 

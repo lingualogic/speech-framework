@@ -6,15 +6,22 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 ## Geplante Versionen
 
 
+### Mai: Version 0.5.20
+
+beinhaltet:
+
+* **Speak:** Einbau eines Reader-Modus in Speak zum Vorlesen von Texten.
+
+
+## Veröffentlichte Versionen
+
+
 ### April: Version 0.5.19
 
 beinhaltet:
 
-* **Reader:** Einbau eines Readers zum Vorlesen von Texten.
-* **Listen:** Einbau von Mkrofon-Events in Listen zur Anzeige, wann das Mikrofon an und aus geht.
-
-
-## Veröffentlichte Versionen
+* **Listen:** Einbau von Dictate-Mode zum Diktieren von Texten.
+              Einbau von Mkrofon-Events in Listen zur Anzeige, wann das Mikrofon an und aus geht.
 
 
 ### März: Version 0.5.18

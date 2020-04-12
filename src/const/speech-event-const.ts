@@ -29,7 +29,17 @@ export const SPEECH_SPEAKAUDIOUNLOCK_EVENT = 'speakAudioUnlock';
 export const SPEECH_LISTENSTART_EVENT = 'listenStart';
 export const SPEECH_LISTENSTOP_EVENT = 'listenStop';
 export const SPEECH_LISTENRESULT_EVENT = 'listenResult';
+export const SPEECH_LISTENINTERIMRESULT_EVENT = 'listenInterimResult';
+export const SPEECH_LISTENNOMATCH_EVENT = 'listenNoMatch';
 export const SPEECH_LISTENINTENT_EVENT = 'listenIntent';
+export const SPEECH_LISTENRECOGNITIONSTART_EVENT = 'listenRecognitionStart';
+export const SPEECH_LISTENRECOGNITIONSTOP_EVENT = 'listenRecognitionStop';
+export const SPEECH_LISTENAUDIOSTART_EVENT = 'listenAudioStart';
+export const SPEECH_LISTENAUDIOSTOP_EVENT = 'listenAudioStop';
+export const SPEECH_LISTENSOUNDSTART_EVENT = 'listenSoundStart';
+export const SPEECH_LISTENSOUNDSTOP_EVENT = 'listenSoundStop';
+export const SPEECH_LISTENSPEECHSTART_EVENT = 'listenSpeechStart';
+export const SPEECH_LISTENSPEECHSTOP_EVENT = 'listenSpeechStop';
 
 
 // intent

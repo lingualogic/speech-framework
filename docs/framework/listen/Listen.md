@@ -37,6 +37,11 @@ Die ASR-Funktionen erlauben den Wechsel der ASR. Im Moment sind die Html5-ASR un
 Die Language-Funktionen erlauben den Wechsel der Sprache. Im Moment sind Deutsch und Englisch implementiert.
 
 
+### Mode-Funktionen
+
+Die Mode-Funktionen erlauben den Wechsel des Eingabemodus. Im Moment sind Command und Dictate implementiert. Mit dem Command Modus kann man eine kurze Spracheingabe machen. Der Modus wird automatisch beendet. Mit dem Dictate Modus kann man Texte diktieren, die Zeichensetzung für "Punkt", "Komma" usw. funktioniert ebenfalls. Der Dictate Modus wird nicht automatisch beendet.
+
+
 ### Listen-Funktionen
 
 Zusätzlich zur stop-Funktion ist noch eine abort-Funktion hinzugekommen, um die Spracherkennung sofort abzubrechen.

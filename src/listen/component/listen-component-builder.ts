@@ -1,7 +1,7 @@
 /**
  * ListenComponentBuilder fuer lokale ListenComponent
  *
- * Letzte Aenderung: 11.10.2018
+ * Letzte Aenderung: 07.04.2020
  * Status: gruen
  *
  * @module listen/component
@@ -148,7 +148,17 @@ export class ListenComponentBuilder extends Builder {
         aASR.onInit = aListen.onInit;
         aASR.onListenStart = aListen.onStart;
         aASR.onListenStop = aListen.onStop;
+        aASR.onListenRecognitionStart = aListen.onListenRecognitionStart;
+        aASR.onListenRecognitionStop = aListen.onListenRecognitionStop;
+        aASR.onListenAudioStart = aListen.onListenAudioStart;
+        aASR.onListenAudioStop = aListen.onListenAudioStop;
+        aASR.onListenSoundStart = aListen.onListenSoundStart;
+        aASR.onListenSoundStop = aListen.onListenSoundStop;
+        aASR.onListenSpeechStart = aListen.onListenSpeechStart;
+        aASR.onListenSpeechStop = aListen.onListenSpeechStop;
         aASR.onListenResult = aListen.onListenResult;
+        aASR.onListenInterimResult = aListen.onListenInterimResult;
+        aASR.onListenNoMatch = aListen.onListenNoMatch;
         aASR.onError = aListen.onError;
         return 0;
     }

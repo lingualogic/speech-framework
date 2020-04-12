@@ -992,14 +992,14 @@ var ApiAiClient = function() {
         });
     }, e.prototype.getDetectIntentAudio = function(t, e) {
         return __awaiter(this, void 0, void 0, function() {
-            var e, o, n;
-            return __generator(this, function(r) {
-                switch (r.label) {
+            var e, o;
+            return __generator(this, function(n) {
+                switch (n.label) {
                   case 0:
-                    return r.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
+                    return n.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
 
                   case 1:
-                    return e = r.sent(), [ 4, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
+                    return e = n.sent(), [ 4, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
                         method: 'POST',
                         mode: 'cors',
                         headers: {
@@ -1019,13 +1019,13 @@ var ApiAiClient = function() {
                     }) ];
 
                   case 2:
-                    return [ 4, r.sent().json() ];
+                    return [ 4, n.sent().json() ];
 
                   case 3:
-                    return o = r.sent(), console.log('GoogleNLU2.getDetectIntentAudio: ', o), [ 2, o ];
+                    return [ 2, n.sent() ];
 
                   case 4:
-                    return n = r.sent(), this._exception('getDetectIntentText', n), [ 2, new Promise(function(t, e) {
+                    return o = n.sent(), this._exception('getDetectIntentText', o), [ 2, new Promise(function(t, e) {
                         e(new Error('Exception in getDetectIntentAudio'));
                     }) ];
 
@@ -1742,7 +1742,7 @@ var ApiAiClient = function() {
         var e = !1;
         switch (t) {
           case GOOGLE_NLU_ACTION:
-            console.log('GooglePort.isAction: isInit = ', this.mGoogleNLU2.isInit()), e = !!(this.mGoogleNLU && this.mGoogleNLU2 && this.mGoogleNLU2.isInit());
+            e = !!(this.mGoogleNLU && this.mGoogleNLU2 && this.mGoogleNLU2.isInit());
             break;
 
           case GOOGLE_ASRNLU_ACTION:
@@ -1826,14 +1826,12 @@ var ApiAiClient = function() {
     }, e.prototype._initRecognition = function(t) {
         var e = this;
         return this.mDefaultOptions = {
-            onopen: function() {
-                console.log('Websocket Opened');
-            },
+            onopen: function() {},
             onclose: function() {
-                console.log('Websocket Closed'), e._onClose();
+                e._onClose();
             },
             onerror: function(t) {
-                console.error(t), e._onError(t);
+                e._onError(t);
             }
         }, 0;
     }, e.prototype._startNLU = function(t, e, o) {

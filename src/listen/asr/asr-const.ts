@@ -37,3 +37,10 @@ export const ASR_TIMEOUT_TIME = 30000;
 export const ASR_DE_LANGUAGE = 'de-DE';
 export const ASR_EN_LANGUAGE = 'en-US';
 export const ASR_DEFAULT_LANGUAGE = ASR_DE_LANGUAGE;
+
+
+// Sprachmodi
+
+export const ASR_COMMAND_MODE = 'Command';
+export const ASR_DICTATE_MODE = 'Dictate';
+export const ASR_DEFAULT_MODE = ASR_COMMAND_MODE;

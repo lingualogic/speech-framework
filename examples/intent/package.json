@@ -1,6 +1,6 @@
 {
     "name": "intentapp",
-    "version": "0.5.18",
+    "version": "0.5.19",
     "productName": "IntentApp",
     "description": "IntentApp",
     "author": "LinguaLogic Team",
@@ -8,7 +8,7 @@
     "private": true,
     "main": "src/index.html",
     "scripts": {
-        "install": "cd cordova && npm install && gulp cordova-install",
+        "install:cordova": "cd cordova && npm install && gulp cordova-install",
         "install:ios": "cd cordova && npm install && gulp cordova-install-ios",
         "install:osx": "cd cordova && npm install && gulp cordova-install-osx",
         "build": "gulp dist-build",

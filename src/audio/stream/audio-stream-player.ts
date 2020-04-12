@@ -3,7 +3,7 @@
  *
  * Zur Zeit wird nur PCM-Codec unterstuetzt.
  *
- * Letzte Aenderung: 24.03.2020
+ * Letzte Aenderung: 09.04.2020
  * Status: rot
  *
  * @module audio/stream

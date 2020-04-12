@@ -26,23 +26,47 @@ wird das Google Subsystem als Anbindung an den Google Cloud-Dienst initialisiert
 Das GoogleOptionInterface defniert folgende optionale Parameter:
 
 	export interface GoogleOptionInterface {
-	    /** legt den konkreten Port fest, der geladen werden soll, wird hier GoogleMock angegeben, wird der Mock geladen */
+	    /** legt den konkreten Port fest, der geladen werden soll, wird hier AmazonMock angegeben, wird der Mock geladen */
 	    googlePortName?: string;
+	    /** legt fest, ob Verbindung zum Server aufgebaut wird */
+	    googleServerFlag?: boolean;
 	    /** legt die URL fuer die Verbindung zum Server fest */
 	    googleServerUrl?: string;
+	    /** legt die URL fuer die Verbindung zum Dialogflow-TokenServer fest */
+	    dialogflowTokenServerUrl?: string;
+	    /** legt die Projekt-ID von Dialogflow fest */
+	    dialogflowProjectId?: string;
 	    /** legt dynamische Konfigurierbarkeit fest */
 	    googleDynamicCredentialsFlag?: boolean;
-	    /** legt den App Key fuer die Verbindung zum Server fest */
+	    /** legt die App-ID fuer die Verbindung zum Server fest */
+	    googleAppId?: string;
+	    /** legt den App-Key fuer die Verbindung zum Server fest */
 	    googleAppKey?: string;
+	    /** legt die User-ID fuer die Verbindung zum Server fest */
+	    googleUserId?: string;
+	    /** legt den NLU-TAG fuer die Verbindung zum Server fest */
+	    googleNluTag?: string;
+	    /** legt den Pfad fuer die nuance.json Datei fest. Muss immer mit / abgeschlossen werden */
+	    googleConfigPath?: string;
+	    /** legt den Dateinamen fuer die nuance.json Datei fest */
+	    googleConfigFile?: string;
+	    /** legt fest, ob die Config-Datei geladen wird */
+	    googleConfigLoadFlag?: boolean;
 	    /** legt die Fehlerausgabe fest */
 	    errorOutputFlag?: boolean;
 	}
-
+	
 Die wichtigsten Parameter werden hier nochmal aufgeführt:
 
 * **googlePortName:** hier kann man "GooglePort" oder "GoogleMock" als Portname angeben. GoogleMock verbindet sich nicht mit dem Google Cloud-Dienst kann für die Unit-Tests verwendet werden.
 * **googleDynamicCredentialsFlag:** wird hier true angegeben, können die Google-Credentials für den AppKey auch später über Google.setConfig( aConfigData ) übergeben werden. Wird hier false angegeben oder der Parameter nicht eingetragen, muss der folgende Parameter googleAppKey eingetragen sein.
 * **googleAppKey:** hier wird der AppKey der Google Cloud oder von Dialogflow angegeben. Muss vorhanden sein, wenn googeDynamicCredentialsFlag false ist oder nicht eingetragen wurde.
+* **googleServerUrl:** Hier wird die Tokenserver-URL fuer das Holen des Google-Tokens angegeben.
+
+Wird die NLU von Dialogflow verwendet, müssen folgende Parameter zusätzlich eingegeben werden:
+
+* **dialogflowTokenServerUrl:** Hier wird die Tokenserver-URL fuer das Holen des Dialogflow-Tokens angegeben.
+* **dialogflowProjectId:** Hier wird die Projekt-ID des Dialogflow-Assistenten eingegeben.
 
 
 ### Google.isInit(): boolean

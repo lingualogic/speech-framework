@@ -40,7 +40,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 // Helper
 
 function _listenASR( aListen, aText ) {
-    // console.log('===> _listenASR: begin', aResultText);
+    // console.log('===> _listenASR: begin', aText);
     return new Promise((response,reject) => {
         let resultText = '';
         // console.log('===> _listenASR: begin promise');
@@ -63,15 +63,15 @@ function _listenASR( aListen, aText ) {
             response( resultText );
         });
         aListen.addErrorEvent( TEST_LISTEN_NAME, (aErrorEvent) => {
-            // console.log('===> _listenASR: error Event');
+            // console.log('===> _listenASR: error Event', aErrorEvent);
             aListen.removeListenResultEvent( TEST_LISTEN_NAME );
             aListen.removeStopEvent( TEST_LISTEN_NAME );
             aListen.removeErrorEvent( TEST_LISTEN_NAME );
             reject( aErrorEvent );
         });
-        // console.log('===> _listenASR: startListen');
+        console.log('===> _listenASR: startListen');
         if ( aListen.start() !== 0 ) {
-            // console.log('===> _listenASR-Fehler:', aEqualText);
+            // console.log('===> _listenASR-Error: start Error');
             aListen.removeListenResultEvent( TEST_LISTEN_NAME );
             aListen.removeStopEvent( TEST_LISTEN_NAME );
             aListen.removeErrorEvent( TEST_LISTEN_NAME );
@@ -352,6 +352,236 @@ describe('Listen', () => {
 
     });
 
+    // addListenInterimResultEvent
+
+    describe('Funktion addListenInterimResultEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenInterimResultEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenNoMatchEvent
+
+    describe('Funktion addListenNoMatchEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenNoMatchEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenRecognitionStartEvent
+
+    describe('Funktion addListenRecognitionStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenRecognitionStartEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenRecognitionStopEvent
+
+    describe('Funktion addListenRecognitionStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenRecognitionStopEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenAudioStartEvent
+
+    describe('Funktion addListenAudioStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenAudioStartEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenAudioStopEvent
+
+    describe('Funktion addListenAudioStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenAudioStopEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+    
+    // addListenSoundStartEvent
+
+    describe('Funktion addListenSoundStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenSoundStartEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenSoundStopEvent
+
+    describe('Funktion addListenSoundStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenSoundStopEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenSpeechStartEvent
+
+    describe('Funktion addListenSpeechStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenSpeechStartEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
+    // addListenSpeechStopEvent
+
+    describe('Funktion addListenSpeechStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin uebergeben wurde', () => {
+            expect( listen.addListenSpeechStopEvent( '', () => 0 )).toBe( -1 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn keine funktion uebergeben wurde', () => {
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, null )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben', () => {
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+        });
+
+        it('sollte -1 zurueckgeben, wenn zweimal eigetragen', () => {
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( -1 );
+        });
+
+    });
+
     // removeInitEvent
 
     describe('Funktion removeInitEvent', () => {
@@ -447,6 +677,196 @@ describe('Listen', () => {
 
     });
 
+    // removeListenInterimResultEvent
+
+    describe('Funktion removeListenInterimResultEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenInterimResultEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenInterimResultEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenInterimResultEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenNoMatchEvent
+
+    describe('Funktion removeListenNoMatchEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenNoMatchEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenNoMatchEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenNoMatchEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenRecognitionStartEvent
+
+    describe('Funktion removeListenRecognitionStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenRecognitionStartEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenRecognitionStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenRecognitionStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenRecognitionStopEvent
+
+    describe('Funktion removeListenRecognitionStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenRecognitionStopEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenRecognitionStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenRecognitionStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenAudioStartEvent
+
+    describe('Funktion removeListenAudioStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenAudioStartEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenAudioStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenAudioStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenAudioStopEvent
+
+    describe('Funktion removeListenAudioStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenAudioStopEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenAudioStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenAudioStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenSoundStartEvent
+
+    describe('Funktion removeListenSoundStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenSoundStartEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenSoundStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenSoundStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenSoundStopEvent
+
+    describe('Funktion removeListenSoundStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenSoundStopEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenSoundStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenSoundStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenSpeechStartEvent
+
+    describe('Funktion removeListenSpeechStartEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenSpeechStartEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenSpeechStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenSpeechStartEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
+    // removeListenSpeechStopEvent
+
+    describe('Funktion removeListenSpeechStopEvent', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein plugin name uebergeben wurde', () => {
+            expect( listen.removeListenSpeechStopEvent( '' )).toBe( -1 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn kein Event hinzugefuegt wurde', () => {
+            expect( listen.removeListenSpeechStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Event hinzugefuegt wurde', () => {
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.removeListenSpeechStopEvent( TEST_LISTEN_NAME )).toBe( 0 );
+        });
+
+    });
+
     // removeAllEvent
 
     describe('Funktion removeAllEvent', () => {
@@ -465,12 +885,32 @@ describe('Listen', () => {
             expect( listen.addStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addErrorEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addListenResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.removeAllEvent( TEST_LISTEN_NAME )).toBe( 0 );
             expect( listen.addInitEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addErrorEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
             expect( listen.addListenResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenInterimResultEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenNoMatchEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenRecognitionStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenAudioStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSoundStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStartEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
+            expect( listen.addListenSpeechStopEvent( TEST_LISTEN_NAME, () => 0 )).toBe( 0 );
         });
 
     });
@@ -498,6 +938,7 @@ describe('Listen', () => {
                     return 0;
                 });
                 // zu erkennende Texte
+                expect( listen.setMode( speech.LISTEN_COMMAND_MODE )).toBe( 0 );
                 expect( await _listenASR( listen, 'Dies ist ein erster Testtext' )).toBe( 'Dies ist ein erster Testtext' );
                 expect( await _listenASR( listen, 'Dies ist ein zweiter Testtext' )).toBe( 'Dies ist ein zweiter Testtext' );
                 expect( await _listenASR( listen, 'Dies ist ein dritter Testtext' )).toBe( 'Dies ist ein dritter Testtext' );
@@ -552,6 +993,7 @@ describe('Listen', () => {
                     done();
                     return 0;
                 });
+                expect( listen.setMode( speech.LISTEN_COMMAND_MODE )).toBe( 0 );
                 expect( listen.start()).toBe( 0 );
                 // zu erkennende Texte
                 listen.test( 'say', { sayText: 'Dies ist ein Testtext' });
@@ -595,6 +1037,7 @@ describe('Listen', () => {
                     stopCall = true;
                     return 0;
                 });
+                expect( listen.setMode( speech.LISTEN_COMMAND_MODE )).toBe( 0 );
                 expect( listen.start()).toBe( 0 );
                 expect( listen.stop()).toBe( 0 );
                 // zu erkennende Texte
@@ -770,6 +1213,76 @@ describe('Listen', () => {
             expect( languageList[ 0 ]).toBe( speech.LISTEN_DE_LANGUAGE );
             // eslint-disable-next-line
             expect( languageList[ 1 ]).toBe( speech.LISTEN_EN_LANGUAGE );
+        });
+
+    });
+
+    // setModi
+
+    describe('Funktion setMode', () => {
+
+        it('sollte -1 zurueckgeben, wenn kein Modus eingetragen wird', () => {
+            let errorText = '';
+            expect( listen.addErrorEvent( TEST_LISTEN_NAME, (aError) => {
+                errorText = aError.message;
+                // console.log('===> Listen-E2E setMode ErrorEvent:', errorText);                
+            })).toBe( 0 );
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( '' )).toBe( -1 );
+            expect( errorText ).toBe( 'ASRGroup.setMode: Kein Eingabemodus uebergeben' );
+        });
+
+        it('sollte 0 zurueckgeben, wenn unbekannter Modus eingetragen wird', () => {
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( 'noMode' )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Command eingetragen wird', () => {
+            // eslint-disable-next-line
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( speech.LISTEN_COMMAND_MODE )).toBe( 0 );
+        });
+
+        it('sollte 0 zurueckgeben, wenn Dictate eingetragen wird', () => {
+            // eslint-disable-next-line
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( speech.LISTEN_DICTATE_MODE )).toBe( 0 );
+        });
+
+    });
+
+    // getMode
+
+    describe('Funktion getMode', () => {
+
+        it('sollte Command zurueckgeben, wenn Command eingestellt wurde', () => {
+            // eslint-disable-next-line
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( speech.LISTEN_COMMAND_MODE )).toBe( 0 );
+            // eslint-disable-next-line
+            expect( listen.getMode()).toBe( speech.LISTEN_COMMAND_MODE );
+        });
+
+        it('sollte Dictate zurueckgeben, wenn Dictate eingestellt wurde', () => {
+            // eslint-disable-next-line
+            expect( listen.setASR( speech.LISTEN_HTML5_ASR )).toBe( 0 );
+            expect( listen.setMode( speech.LISTEN_DICTATE_MODE )).toBe( 0 );
+            // eslint-disable-next-line
+            expect( listen.getMode()).toBe( speech.LISTEN_DICTATE_MODE );
+        });
+
+    });
+
+    // getModeList
+
+    describe('Funktion getModeList', () => {
+
+        it('sollte Modusliste zurueckgeben', () => {
+            const modeList = listen.getModeList();
+            // eslint-disable-next-line
+            expect( modeList[ 0 ]).toBe( speech.LISTEN_COMMAND_MODE );
+            // eslint-disable-next-line
+            expect( modeList[ 1 ]).toBe( speech.LISTEN_DICTATE_MODE );
         });
 
     });

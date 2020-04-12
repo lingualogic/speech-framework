@@ -3,8 +3,8 @@
  * Hier werden die vorhandenen ASR verwaltet und es kann
  * zwischen ihnen gewechselt werden.
  *
- * Letzte Aenderung: 16.05.2019
- * Status: rot
+ * Letzte Aenderung: 31.03.2020
+ * Status: gelb
  *
  * Installierte ASR:
  *
@@ -44,7 +44,8 @@ import {
     ASRStopListenFunc,
     OnASRListenStartFunc,
     OnASRListenStopFunc,
-    OnASRListenResultFunc
+    OnASRListenResultFunc,
+    OnASRListenNoMatchFunc
 } from './asr.interface';
 import { ASRFactory } from './asr-factory';
 
@@ -425,6 +426,155 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
 
 
     /**
+     * Spracheingabe Zwischenergebnisrueckgabe Callback-Funktion eintragen
+     *
+     * @param {OnASRListenResultFunc} aOnListenInterimResultFunc - Callback fuer Result Ergebnis
+     */
+
+    set onListenInterimResult( aOnListenInterimResultFunc: OnASRListenResultFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenInterimResult = aOnListenInterimResultFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Start-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenStartFunc - Callback-Funktion fuer Startereignis
+     */
+
+    set onListenNoMatch( aOnListenNoMatchFunc: OnASRListenNoMatchFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenNoMatch = aOnListenNoMatchFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Recognition Start-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenRecognitionStartFunc - Callback-Funktion fuer Recognition Startereignis
+     */
+
+    set onListenRecognitionStart( aOnListenRecognitionStartFunc: OnASRListenStartFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenRecognitionStart = aOnListenRecognitionStartFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Recognition Stop-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenRecognitionStopFunc - Callback-Funktion fuer Recognition Stopereignis
+     */
+
+    set onListenRecognitionStop( aOnListenRecognitionStopFunc: OnASRListenStopFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenRecognitionStop = aOnListenRecognitionStopFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Audio Start-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenAudioStartFunc - Callback-Funktion fuer Audio Startereignis
+     */
+
+    set onListenAudioStart( aOnListenAudioStartFunc: OnASRListenStartFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenAudioStart = aOnListenAudioStartFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Audio Stop-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenAudioStopFunc - Callback-Funktion fuer Audio Stopereignis
+     */
+
+    set onListenAudioStop( aOnListenAudioStopFunc: OnASRListenStopFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenAudioStop = aOnListenAudioStopFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Sound Start-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenSoundStartFunc - Callback-Funktion fuer Sound Startereignis
+     */
+
+    set onListenSoundStart( aOnListenSoundStartFunc: OnASRListenStartFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenSoundStart = aOnListenSoundStartFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Sound Stop-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenSoundStopFunc - Callback-Funktion fuer Sound Stopereignis
+     */
+
+    set onListenSoundStop( aOnListenSoundStopFunc: OnASRListenStopFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenSoundStop = aOnListenSoundStopFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+    /**
+     * Speech Start-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenSpeechStartFunc - Callback-Funktion fuer Speech Startereignis
+     */
+
+    set onListenSpeechStart( aOnListenSpeechStartFunc: OnASRListenStartFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenSpeechStart = aOnListenSpeechStartFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
+     * Speech Stop-Ereignis Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenSpeechStopFunc - Callback-Funktion fuer Speech Stopereignis
+     */
+
+    set onListenSpeechStop( aOnListenSpeechStopFunc: OnASRListenStopFunc ) {
+        let asr = this.firstPlugin() as ASRInterface;
+        while ( asr ) {
+            asr.onListenSpeechStop = aOnListenSpeechStopFunc;
+            asr = this.nextPlugin() as ASRInterface;
+        }
+    }
+
+
+    /**
      * Fehler-Ereignis Funktion eintragen
      *
      * @param {OnSpeechErrorFunc} aOnSpeechErrorFunc - Callback-Funktion fuer Fehler-Ereignis
@@ -597,6 +747,118 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
     }
 
 
+    // Modus-Funktionen
+
+
+    /**
+     * Gibt den aktuell einstestellten Eingabemodus der Spracherkennung zurueck
+     *
+     * @return {string} Rueckgabe des Eingabemodus
+     */
+
+    isMode( aMode: string ): boolean {
+        // console.log('ASRGroup.isMode:', this.mCurrentASR, aMode );
+        if ( this.mCurrentASR ) {
+            return this.mCurrentASR.isMode( aMode );
+        }
+        return false;
+    }
+
+
+    /**
+     * pruefen, ob der Eingabemode Command eingestellt ist
+     * Dann kurzen Text nicht laenger als 30 Sekunden von der Spracherkennung zu verarbeiten
+     * 
+     * @return {boolean} True, wenn Eingabemode Command eingestellt ist
+     */
+
+    isCommandMode(): boolean {
+        if ( this.mCurrentASR ) {
+            return this.mCurrentASR.isCommandMode();
+        }
+        return false;
+    }
+
+
+    /**
+     * pruefen, ob der Eingabemode Dictate eingestellt ist
+     * Dann kontinuierlich Text von der Spracherkennung zu verarbeiten
+     * 
+     * @return {boolean} True, wenn Eingabemode Dictate eingestellt ist
+     */
+
+    isDictateMode(): boolean {
+        if ( this.mCurrentASR ) {
+            return this.mCurrentASR.isDictateMode();
+        }
+        return false;
+    }
+
+
+    /**
+     * Traegt eine neue Eingabemodus fuer die Spracherkennung ein
+     *
+     * @param {string} aMode - Command oder Dictate
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    setMode( aMode: string ): number {
+        // console.log('ASRGroup.setMode:', aMode );
+        if ( !aMode ) {
+            this._error( 'setMode', 'Kein Eingabemodus uebergeben' );
+            return -1;
+        }
+        let result = 0;
+        let asr = this.firstPlugin() as ASRInterface;
+        // pruefen, ob eine ASR vorhanden ist
+        if ( !asr ) {
+            this._error( 'setMode', 'Keine ASR vorhanden' );
+            return -1;
+        }
+        while ( asr ) {
+            // console.log('ASRGroup.setMode: ', asr.getASR(), aMode, asr.isMode( aMode ));
+            if ( asr.isMode( aMode )) {
+                // console.log('ASRGroup.setMode: ', asr.getASR(), aMode);
+                if ( asr.setMode( aMode ) !== 0 ) {
+                    result = -1;
+                }
+            }
+            asr = this.nextPlugin() as ASRInterface;
+        }
+        return result;
+    }
+
+
+    /**
+     * Gibt den aktuell einstestellten Eingabemodus der Spracherkennung zurueck
+     *
+     * @return {string} Rueckgabe des Eingabemodus
+     */
+
+    getMode(): string {
+        // console.log('ASRGroup.getMode:', this.mCurrentASR );
+        if ( this.mCurrentASR ) {
+            return this.mCurrentASR.getMode();
+        }
+        return '';
+    }
+
+
+    /**
+     * Rueckgabe aller vorhandenen Eingabemodi fuer die Spracherkennung
+     *
+     * @return {Array<string>} Liste der Eingabemodi
+     */
+
+    getModeList(): Array<string> {
+        if ( this.mCurrentASR ) {
+            return this.mCurrentASR.getModeList();
+        }
+        return [];
+    }
+
+
     // Listen-Funktionen
 
 
@@ -710,6 +972,17 @@ export class ASRGroup extends PluginGroup implements ASRInterface {
             return 0;
         }
         return this.mCurrentASR.abortListen();
+    }
+
+
+    /**
+     * Rueckgabe der Abort-Funktion, um mit anderen Komponenten verbunden zu werden.
+     *
+     * @return {ASRStopListenFunc} Instanz der Abort-Funktion
+     */
+
+    getAbortListenFunc(): ASRStopListenFunc {
+        return () => this.abortListen();
     }
 
 

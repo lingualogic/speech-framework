@@ -860,7 +860,7 @@ describe('Bot', () => {
 
     // parseSpeechDefFile
 
-    describe('call parseSpeechDefFile', () => {
+    describe('Funktion parseSpeechDefFile', () => {
 
         it('should return -1, if no valid dialog file', (done) => {
             // console.log('Test 1.1 Start');

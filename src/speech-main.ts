@@ -6,7 +6,7 @@
  * einmal zur Initialisierung des Speech-Frameworks ausgefuehrt werden !
  *
  * Konfiguration: stable
- * Version: 0.5.18.0062 (Release) vom 28.03.2020
+ * Version: 0.5.19.0063 (release) vom 11.04.2020
  *
  * Komponenten:
  *

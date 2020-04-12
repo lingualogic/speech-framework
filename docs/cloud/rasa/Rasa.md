@@ -3,7 +3,7 @@
 Der Rasa Cloud-Dienst verbindet das Speech-Framework über die generische Port-Schnittstelle mit dem Rasa-Server. Der Rasa Cloud-Dienst dient zur Sprachanalyse und später auch als Bot.
 Um ihn verwenden zu können, ist ein eigener Rasa-Server lokal oder im Internet einzurichten. Für die Sprachanalyse müssen entsprechende Sprachmodelle in Rasa erstellt und trainiert werden. Diese erlauben die Zuordnung zwischen einer Spracheingabe und einem Intent. Der Intent kann in der Web-App weiterverarbeitet werden.
 
-![Rasa-Architektur](./rasa-1.gif)
+![Rasa-Architektur](./Rasa-1.gif)
 
 In der oberen Grafik wird die Architektur des Rasa Cloud-Dienstes als Wrapper für den Rasa Server dargestellt. Über die statische Rasa-Verwaltungsklasse kann auf RasaPort mit Hilfe des generischen Port-APIs zugegriffen werden. Die RasaFactory erzeugt einen RasaPort, der seinerseits die Wrapper-Klassen für die RasaNLU und den RasaBot beinhaltet. Diese greifen direkt auf den Rasa-Server zu.
 
@@ -12,7 +12,7 @@ In der oberen Grafik wird die Architektur des Rasa Cloud-Dienstes als Wrapper f�
 
 Die Rasa-API besteht aus der statischen Klasse Rasa und ihrer statischen Klassenfunktionen. In der folgenden Abbildung sind alle öffentlichen Klassenfunktionen aufgeführt.
 
-![Rasa-API](./rasa-2.gif)
+![Rasa-API](./Rasa-2.gif)
 
 
 ### Rasa.init( optionList: RasaOptionInterface ): number

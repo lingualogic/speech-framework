@@ -1,8 +1,8 @@
 /**
  *  ASRPlugin definiert die Basisklasse aller ASRs
  *
- * Letzte Aenderung: 21.03.2019
- * Status: rot
+ * Letzte Aenderung: 09.04.2020
+ * Status: gruen
  *
  * @module listen/asr
  * @author SB
@@ -22,7 +22,10 @@ import {
     ASR_TIMEOUT_TIME,
     ASR_DE_LANGUAGE,
     ASR_EN_LANGUAGE,
-    ASR_DEFAULT_LANGUAGE
+    ASR_DEFAULT_LANGUAGE,
+    ASR_COMMAND_MODE,
+    ASR_DICTATE_MODE,
+    ASR_DEFAULT_MODE
 } from './asr-const';
 import {
     ASRInterface,
@@ -30,7 +33,8 @@ import {
     ASRStopListenFunc,
     OnASRListenStartFunc,
     OnASRListenStopFunc,
-    OnASRListenResultFunc
+    OnASRListenResultFunc,
+    OnASRListenNoMatchFunc
 } from './asr.interface';
 
 
@@ -44,6 +48,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Flag fuer laufende Spracherkennung
      * @private
      */
+
     mListenRunningFlag = false;
 
 
@@ -51,7 +56,16 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Sprache fuer die Spracheingabe
      * @private
      */
-    mListenLanguage = ASR_DEFAULT_LANGUAGE;
+
+     mListenLanguage = ASR_DEFAULT_LANGUAGE;
+
+
+    /**
+     * Modus fuer die Spracheingabe
+     * @private
+     */
+
+    mListenMode = ASR_DEFAULT_MODE;
 
 
     /**
@@ -59,6 +73,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * registriert wird, wird nach 30 Sekunden Listen beendet.
      * @private
      */
+
     mListenTimeoutId = 0;
 
 
@@ -66,6 +81,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Timeout-Zeit in Millisekunden, die vergeht, bis der Timeout ausgeloest wird
      * @private
      */
+
     mListenTimeoutTime = ASR_TIMEOUT_TIME;
 
 
@@ -76,6 +92,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Callback-Funktion fuer ListenStart-Event
      * @private
      */
+
     mOnListenStartFunc: OnASRListenStartFunc = null;
 
 
@@ -83,6 +100,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Callback-Funktion fuer ListenStop-Event
      * @private
      */
+
     mOnListenStopFunc: OnASRListenStopFunc = null;
 
 
@@ -90,8 +108,86 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Callback-Funktion fuer ListenResult-Event
      * @private
      */
+
     mOnListenResultFunc: OnASRListenResultFunc = null;
 
+
+    /**
+     * Callback-Funktion fuer ListenInterimResult-Event
+     * @private
+     */
+
+    mOnListenInterimResultFunc: OnASRListenResultFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenNoMatch-Event
+     * @private
+     */
+
+    mOnListenNoMatchFunc: OnASRListenNoMatchFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenRecognitionStart-Event
+     * @private
+     */
+
+    mOnListenRecognitionStartFunc: OnASRListenStartFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenRecognitionStop-Event
+     * @private
+     */
+
+    mOnListenRecognitionStopFunc: OnASRListenStopFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenAudioStart-Event
+     * @private
+     */
+
+    mOnListenAudioStartFunc: OnASRListenStartFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenAudioStop-Event
+     * @private
+     */
+
+    mOnListenAudioStopFunc: OnASRListenStopFunc = null;
+
+    /**
+     * Callback-Funktion fuer ListenSoundStart-Event
+     * @private
+     */
+
+    mOnListenSoundStartFunc: OnASRListenStartFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenSoundStop-Event
+     * @private
+     */
+
+    mOnListenSoundStopFunc: OnASRListenStopFunc = null;
+
+    /**
+     * Callback-Funktion fuer ListenSpeechStart-Event
+     * @private
+     */
+
+    mOnListenSpeechStartFunc: OnASRListenStartFunc = null;
+
+
+    /**
+     * Callback-Funktion fuer ListenSpeechStop-Event
+     * @private
+     */
+
+    mOnListenSpeechStopFunc: OnASRListenStopFunc = null;
 
     /**
      * ASRPlugin erzeugen
@@ -183,15 +279,26 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     done(): number {
         if ( this.isListenRunning()) {
-            this.stopListen();
+            this.abortListen();
         }
         this._clearRecognitionTimeout();
         this.mListenTimeoutTime = ASR_TIMEOUT_TIME;
         this.mListenRunningFlag = false;
         this.mListenLanguage = ASR_DEFAULT_LANGUAGE;
+        this.mListenMode = ASR_DEFAULT_MODE;
         this.mOnListenStartFunc = null;
         this.mOnListenStopFunc = null;
         this.mOnListenResultFunc = null;
+        this.mOnListenInterimResultFunc = null;
+        this.mOnListenNoMatchFunc = null;
+        this.mOnListenRecognitionStartFunc = null;
+        this.mOnListenRecognitionStopFunc = null;
+        this.mOnListenAudioStartFunc = null;
+        this.mOnListenAudioStopFunc = null;
+        this.mOnListenSoundStartFunc = null;
+        this.mOnListenSoundStopFunc = null;
+        this.mOnListenSpeechStartFunc = null;
+        this.mOnListenSpeechStopFunc = null;
         return super.done();
     }
 
@@ -260,7 +367,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onListenStop(): number {
-        // console.log('ASRPlugin._onListenStop:', this.mOnListenStopFunc);
+        // console.log('ASRPlugin._onListenStop');
         try {
             if ( typeof this.mOnListenStopFunc === 'function' ) {
                 return this.mOnListenStopFunc();
@@ -297,6 +404,218 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
 
     /**
+     * ListenResult-Zwischenereignis Funktion aufrufen
+     *
+     * @private
+     * @param {any} aResultData - Daten aus der Spracherkennung
+     *
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenInterimResult( aResultData: any ): number {
+        // console.log('ASRPlugin._onListenInterimResult:', this.getName(), aResultData);
+        try {
+            if ( typeof this.mOnListenInterimResultFunc === 'function' ) {
+                return this.mOnListenInterimResultFunc( aResultData );
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenInterimResult', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenNoMatch Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenNoMatch(): number {
+        // console.log('ASRPlugin._onListenNoMatch');
+        try {
+            if ( typeof this.mOnListenNoMatchFunc === 'function' ) {
+                return this.mOnListenNoMatchFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenNoMatch', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenRecognitionStart Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenRecognitionStart(): number {
+        // console.log('ASRPlugin._onListenRecognitionStart');
+        try {
+            if ( typeof this.mOnListenRecognitionStartFunc === 'function' ) {
+                return this.mOnListenRecognitionStartFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenRecognitionStart', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenRecognitionStop Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenRecognitionStop(): number {
+        // console.log('ASRPlugin._onListenRecognitionStop');
+        try {
+            if ( typeof this.mOnListenRecognitionStopFunc === 'function' ) {
+                return this.mOnListenRecognitionStopFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenRecognitionStop', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenAudioStart Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenAudioStart(): number {
+        // console.log('ASRPlugin._onListenAudioStart');
+        try {
+            if ( typeof this.mOnListenAudioStartFunc === 'function' ) {
+                return this.mOnListenAudioStartFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenAudioStart', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenAudioStop Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenAudioStop(): number {
+        // console.log('ASRPlugin._onListenAudioStop');
+        try {
+            if ( typeof this.mOnListenAudioStopFunc === 'function' ) {
+                return this.mOnListenAudioStopFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenAudioStop', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenSoundStart Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenSoundStart(): number {
+        // console.log('ASRPlugin._onListenSoundStart');
+        try {
+            if ( typeof this.mOnListenSoundStartFunc === 'function' ) {
+                return this.mOnListenSoundStartFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenSoundStart', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenSoundStop Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenSoundStop(): number {
+        // console.log('ASRPlugin._onListenStop');
+        try {
+            if ( typeof this.mOnListenSoundStopFunc === 'function' ) {
+                return this.mOnListenSoundStopFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenSoundStop', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenSpeechStart Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenSpeechStart(): number {
+        // console.log('ASRPlugin._onListenSpeechStart');
+        try {
+            if ( typeof this.mOnListenSpeechStartFunc === 'function' ) {
+                return this.mOnListenSpeechStartFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenSpeechStart', aException );
+            return -1;
+        }
+    }
+
+
+    /**
+     * ListenSpeechStop Event Funktion aufrufen
+     *
+     * @private
+     * @return {number} errorCode(0,-1)
+     */
+
+    _onListenSpeechStop(): number {
+        // console.log('ASRPlugin._onListenSpeechStop');
+        try {
+            if ( typeof this.mOnListenSpeechStopFunc === 'function' ) {
+                return this.mOnListenSpeechStopFunc();
+            }
+            return 0;
+        } catch (aException) {
+            this._exception( '_onListenSpeechStop', aException );
+            return -1;
+        }
+    }
+
+
+    /**
      * Spracheingabe starten Callback-Funktion eintragen
      *
      * @param {OnASRListenStartFunc} aOnListenStartFunction - Callback fuer Spracheingabe gestartet
@@ -326,6 +645,116 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     set onListenResult( aOnListenResultFunction: OnASRListenResultFunc ) {
         this.mOnListenResultFunc = aOnListenResultFunction;
+    }
+
+
+    /**
+     * Spracheingabe Zwischenergebnisrueckgabe Callback-Funktion eintragen
+     *
+     * @param {OnASRListenResultFunc} aOnListenInterimResultFunction - Callback fuer Spracheingabe Zwischenergebnis
+     */
+
+    set onListenInterimResult( aOnListenInterimResultFunction: OnASRListenResultFunc ) {
+        this.mOnListenInterimResultFunc = aOnListenInterimResultFunction;
+    }
+
+
+    /**
+     * Spracheingabe kein Ergebnis Callback-Funktion eintragen
+     *
+     * @param {OnASRListenNoMatchFunc} aOnListenNoMatchFunction - Callback fuer Spracheingabe kein Ergebnis
+     */
+
+    set onListenNoMatch( aOnListenNoMatchFunction: OnASRListenNoMatchFunc ) {
+        this.mOnListenNoMatchFunc = aOnListenNoMatchFunction;
+    }
+
+
+    /**
+     * Spracheingabe Rekognition starten Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenRecognitionStartFunction - Callback fuer Spracheingabe Recognition gestartet
+     */
+
+    set onListenRecognitionStart( aOnListenRecognitionStartFunction: OnASRListenStartFunc ) {
+        this.mOnListenRecognitionStartFunc = aOnListenRecognitionStartFunction;
+    }
+
+
+    /**
+     * Spracheingabe Recognition stoppen Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenRecognitionStopFunction - Callback fuer Spracheingabe Recognition gestoppt
+     */
+
+    set onListenRecognitionStop( aOnListenRecognitionStopFunction: OnASRListenStopFunc ) {
+        this.mOnListenRecognitionStopFunc = aOnListenRecognitionStopFunction;
+    }
+
+
+    /**
+     * Spracheingabe Audio starten Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenAudioStartFunction - Callback fuer Spracheingabe Audio gestartet
+     */
+
+    set onListenAudioStart( aOnListenAudioStartFunction: OnASRListenStartFunc ) {
+        this.mOnListenAudioStartFunc = aOnListenAudioStartFunction;
+    }
+
+
+    /**
+     * Spracheingabe Audio stoppen Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenAudioStopFunction - Callback fuer Spracheingabe Audio gestoppt
+     */
+
+    set onListenAudioStop( aOnListenAudioStopFunction: OnASRListenStopFunc ) {
+        this.mOnListenAudioStopFunc = aOnListenAudioStopFunction;
+    }
+
+
+    /**
+     * Spracheingabe Sound starten Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenSoundStartFunction - Callback fuer Spracheingabe Sound gestartet
+     */
+
+    set onListenSoundStart( aOnListenSoundStartFunction: OnASRListenStartFunc ) {
+        this.mOnListenSoundStartFunc = aOnListenSoundStartFunction;
+    }
+
+
+    /**
+     * Spracheingabe Sound stoppen Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStopFunc} aOnListenSoundStopFunction - Callback fuer Spracheingabe Sound gestoppt
+     */
+
+    set onListenSoundStop( aOnListenSoundStopFunction: OnASRListenStopFunc ) {
+        this.mOnListenSoundStopFunc = aOnListenSoundStopFunction;
+    }
+
+
+    /**
+     * Spracheingabe Speech starten Callback-Funktion eintragen
+     *
+     * @param {OnASRListenStartFunc} aOnListenSpeechStartFunction - Callback fuer Spracheingabe Speech gestartet
+     */
+
+    set onListenSpeechStart( aOnListenSpeechStartFunction: OnASRListenStartFunc ) {
+        this.mOnListenSpeechStartFunc = aOnListenSpeechStartFunction;
+    }
+
+
+    /**
+     * Spracheingabe Speech stoppen Callback-Funktion eintragen
+     *
+     * @param {OnASRListenSpeechStopFunc} aOnListenSpeechStopFunction - Callback fuer Spracheingabe Speech gestoppt
+     */
+
+    set onListenSpeechStop( aOnListenSpeechStopFunction: OnASRListenStopFunc ) {
+        this.mOnListenSpeechStopFunc = aOnListenSpeechStopFunction;
     }
 
 
@@ -411,7 +840,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _onRecognitionStart(): number {
         // console.log('ASRPlugin._onRecognitionStart');
-        return 0;
+        return this._onListenRecognitionStart();;
     }
 
 
@@ -423,8 +852,64 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onRecognitionEnd(): number {
-        console.log('ASRPlugin._onRecognitionEnd');
+        // console.log('ASRPlugin._onRecognitionEnd');
+        this._onListenRecognitionStop();
         return this._stopListen();
+    }
+
+
+    /**
+     * Recognition-AudioStart
+     *
+     * @private
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    _onRecognitionAudioStart(): number {
+        // console.log('ASRPlugin._onRecognitionAudioStart');
+        if ( this.isDictateMode()) {
+            this._setRecognitionTimeout();
+        }
+        return this._onListenAudioStart();
+    }
+
+
+    /**
+     * Recognition-AudioEnde
+     *
+     * @private
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    _onRecognitionAudioEnd(): number {
+        // console.log('ASRPlugin._onRecognitionAudioEnd');
+        return this._onListenAudioStop();
+    }
+
+
+    /**
+     * Recognition-SoundStart
+     *
+     * @private
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    _onRecognitionSoundStart(): number {
+        // console.log('ASRPlugin._onRecognitionSoundStart');
+        return this._onListenSoundStart();
+    }
+
+
+    /**
+     * Recognition-SoundEnde
+     *
+     * @private
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    _onRecognitionSoundEnd(): number {
+        // console.log('ASRPlugin._onRecognitionSoundEnd');
+        return this._onListenSoundStop();
     }
 
 
@@ -436,22 +921,29 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     _onRecognitionSpeechStart(): number {
-        console.log('ASRPlugin._onRecognitionSpeechStart');
+        // console.log('ASRPlugin._onRecognitionSpeechStart');
         this._clearRecognitionTimeout();
-        return 0;
+        return this._onListenSpeechStart();
     }
 
 
     /**
-     * Recognition-Ende
+     * Recognition-SpeechEnde
      *
      * @private
      * @return {number} Fehlercode 0 oder -1
      */
 
     _onRecognitionSpeechEnd(): number {
-        console.log('ASRPlugin._onRecognitionSpeechEnd');
-        return this._stopListen();
+        // console.log('ASRPlugin._onRecognitionSpeechEnd');
+        let result = this._onListenSpeechStop();
+        // pruefen auf Command Mode
+        if ( this.isCommandMode()) {
+            if ( this._stopListen() !== 0 ) {
+                result = -1;
+            }
+        }
+        return result;
     }
 
 
@@ -459,15 +951,31 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      * Wandelt rohes Spracherkennungsresultat in definierte Rueckgabe um.
      *
      * @protected
-     * @param {any} aResult - rohes Ergebnis der Spracherkennung
+     * @param {any} aEvent - rohes Ergebnis der Spracherkennung
      *
      * @return {any} Rueckgabe eines aufbereiteten Ergebnisses
      */
 
-    _getRecognitionResult( aResult: any ): any {
+    _getRecognitionResult( aEvent: any ): any {
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
         // muss von erbenden Klassen ueberschrieben werden
-        return aResult;
+        return aEvent;
+    }
+
+
+    /**
+     * prueft, ob es sich um das finale Result handelt
+     *
+     * @protected
+     * @param {any} aEvent - rohes Ergebnis der Spracherkennung
+     *
+     * @return {boolean} Rueckgabe von True, wenn Result final ist, False ansonsten
+     */
+
+    _isRecognitionFinalResult( aEvent: any ): boolean {
+        // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
+        // muss von erbenden Klassen ueberschrieben werden
+        return true;
     }
 
 
@@ -484,13 +992,31 @@ export class ASRPlugin extends Plugin implements ASRInterface {
         // console.log('ASRPlugin._onRecognitionResult:', aEvent);
         let result = 0;
         try {
-            result = this._onListenResult( this._getRecognitionResult( aEvent ));
+            // console.log('ASRPlugin._onRecognitionResult:', this._isRecognitionFinalResult( aEvent ));
+            if ( this._isRecognitionFinalResult( aEvent )) {
+                // Endergebnisse liefern
+                result = this._onListenResult( this._getRecognitionResult( aEvent ));
+                // neuen Timeout setzen, wenn Diktiermodus
+                if ( this.isDictateMode()) {
+                    this._setRecognitionTimeout();
+                }
+            } else {
+                // Zwischenergebnisse liefern
+                result = this._onListenInterimResult( this._getRecognitionResult( aEvent ));
+                // neuen Timeout loeschen, wenn Diktiermodus
+                if ( this.isDictateMode()) {
+                    this._clearRecognitionTimeout();
+                }
+            }
         } catch ( aException ) {
             this._exception( '_onRecognitionResult', aException );
             result = -1;
         }
-        if ( this._stopListen() !== 0 ) {
-            result = -1;
+        // pruefen auf Command Mode
+        if ( this.isCommandMode()) {
+            if ( this._stopListen() !== 0 ) {
+                result = -1;
+            }
         }
         return result;
     }
@@ -507,7 +1033,14 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _onRecognitionNoMatch( aEvent: any ): number {
         // console.log('ASRPlugin._onRecognitionNoMatch', aEvent);
-        return this._stopListen();
+        let result = this._onListenNoMatch();
+        // Testen auf Command Mode
+        if ( this.isCommandMode()) {
+            if ( this._stopListen() !== 0 ) {
+                result = -1;
+            }
+        }
+        return result;
     }
 
 
@@ -538,7 +1071,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
                         errorEvent = new Error( 'ASR-Error: Kein Mikrofon vorhanden' );
                         break;
                     default:
-                        errorEvent = new Error( aEvent.error );
+                        errorEvent = new Error( 'ASR-Error: ' + aEvent.error );
                         break;
                 }
             }
@@ -593,7 +1126,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _isRecognitionRunning(): boolean {
         // muss von erbenden Klassen ueberschrieben werden
-        return true;
+        return false;
     }
 
 
@@ -728,6 +1261,97 @@ export class ASRPlugin extends Plugin implements ASRInterface {
     }
 
 
+    // Modus-Funktionen
+
+
+    /**
+     * pruefen auf vorhandenen Eingabemode
+     *
+     * @param {string} aMode - Command oder Dictate
+     * 
+     * @return {boolean} True, wenn ASR vorhanden ist, False sonst
+     */
+
+    isMode( aMode: string ): boolean {
+        if ( aMode === ASR_COMMAND_MODE ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * pruefen, ob der Eingabemode Command eingestellt ist
+     * Dann kurzen Text nicht laenger als 30 Sekunden von der Spracherkennung zu verarbeiten
+     * 
+     * @return {boolean} True, wenn Eingabemode Command eingestellt ist
+     */
+
+    isCommandMode(): boolean {
+        if ( this.mListenMode === ASR_COMMAND_MODE ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * pruefen, ob der Eingabemode Dictate eingestellt ist
+     * Dann kontinuierlich Text von der Spracherkennung zu verarbeiten
+     * 
+     * @return {boolean} True, wenn Eingabemode Dictate eingestellt ist
+     */
+
+    isDictateMode(): boolean {
+        if ( this.mListenMode === ASR_DICTATE_MODE ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Traegt einen neuen Eingabemodus fuer die Spracherkennung ein
+     *
+     * @param {string} aMode - Command oder Dictate
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+
+    setMode( aMode: string ): number {
+        // console.log('ASRPlugin.setMode:', aMode, this.mListenMode, this.isMode( aMode ))
+        if ( this.isMode( aMode )) {
+            this.mListenMode = aMode;
+            return 0;
+        }
+        this._error( 'setMode', 'kein gueltiger Eingabemodus uebergeben' );
+        return -1;
+    }
+
+
+    /**
+     * Gibt den aktuell einstestellten Eingabemodus zurueck
+     *
+     * @return {string} Rueckgabe des Eingabemodus (Commad, Dictate)
+     */
+
+    getMode(): string {
+        return this.mListenMode;;
+    }
+
+
+    /**
+     * Rueckgabe aller vorhandenen Eingabemodi fuer die Spracherkennung
+     *
+     * @return {Array<string>} Liste der Eingabemodi
+     */
+
+    getModeList(): Array<string> {
+        // muss von erbenden Klassen ueberschrieben werden
+        return [ ASR_COMMAND_MODE ];
+    }
+
+
     // Listen-Funktionen
 
 
@@ -752,7 +1376,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     setListenTimeout( aTimeout: number ): void {
         this.mListenTimeoutTime = aTimeout;
-        // console.log('ASRPlugin.setListenTimeout:', this.mListenTimeoutTime, aTimeout);
+        // console.log('ASRPlugin.setListenTimeout:', this.getASR(), this.mListenTimeoutTime, aTimeout);
     }
 
 
@@ -786,10 +1410,8 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
         // Spracheingabe starten
 
-        let result = 0;
         try {
-            result = this._startRecognition();
-            if ( result !== 0 ) {
+            if ( this._startRecognition() !== 0 ) {
                 return -1;
             }
         } catch ( aException ) {
@@ -824,17 +1446,16 @@ export class ASRPlugin extends Plugin implements ASRInterface {
         // console.log('ASRPlugin._stopListen: start');
         // ListenStop senden
 
-        let result = 0;
         if ( this.isListenRunning()) {
             // Timeout loeschen
             this._clearRecognitionTimeout();
             this.mListenRunningFlag = false;
             if ( this._onListenStop() !== 0 ) {
-                result = -1;
+                return -1;
             }
         }
         // console.log('ASRPlugin._stopListen: end', result);
-        return result;
+        return 0;
     }
 
 
@@ -845,7 +1466,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     stopListen(): number {
-        // console.log('ASRPlugin.stopListen');
+        // console.log('ASRPlugin._stopAbortListen:', aAbortFlag);
 
         // pruefen auf aktive Komponente
 
@@ -956,4 +1577,17 @@ export class ASRPlugin extends Plugin implements ASRInterface {
         return result;
     }
 
+
+    /**
+     * Rueckgabe der stopListen-Funktion, um die ASR mit anderen Komponenten zu verbinden
+     *
+     * @returns {ASRStopListenFunc} Rueckgabe der stopListen-Funktion
+     */
+
+    getAbortListenFunc(): ASRStopListenFunc {
+        return () => this.abortListen();
+    }
+
 }
+
+

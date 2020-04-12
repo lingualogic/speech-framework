@@ -1,7 +1,7 @@
 /**
  * ASRMock definiert eine Mock-Klasse fuer die ASR, um sie in Unit-Tests verwenden zu koennen
  *
- * Letzte Aenderung: 08.10.2018
+ * Letzte Aenderung: 31.03.2020
  * Status: gruen
  *
  * @module listen/asr
@@ -65,9 +65,16 @@ export class ASRMock extends ASRPlugin {
 
     onStartFunc = () => 0;
     onEndFunc = () => 0;
+    onRecognitionStartFunc = () => 0;
+    onRecognitionEndFunc = () => 0;
+    onAudioStartFunc = () => 0;
+    onAudioEndFunc = () => 0;
+    onSoundStartFunc = () => 0;
+    onSoundEndFunc = () => 0;
     onSpeechStartFunc = () => 0;
     onSpeechEndFunc = () => 0;
     onResultFunc = () => '';
+    onInterimResultFunc = () => '';
     onNoMatchFunc = () => 0;
     onErrorFunc = () => 0;
 
@@ -133,9 +140,16 @@ export class ASRMock extends ASRPlugin {
         this.abortRecognitionExceptionText = 'TestException abortRecognition';
         this.onStartFunc = () => 0;
         this.onEndFunc = () => 0;
+        this.onRecognitionStartFunc = () => 0;
+        this.onRecognitionEndFunc = () => 0;
+        this.onAudioStartFunc = () => 0;
+        this.onAudioEndFunc = () => 0;
+        this.onSoundStartFunc = () => 0;
+        this.onSoundEndFunc = () => 0;
         this.onSpeechStartFunc = () => 0;
         this.onSpeechEndFunc = () => 0;
         this.onResultFunc = () => '';
+        this.onInterimResultFunc = () => '';
         this.onNoMatchFunc = () => 0;
         this.onErrorFunc = () => 0;
         return super.done();
@@ -210,10 +224,15 @@ export class ASRMock extends ASRPlugin {
             throw new Error( this.startRecognitionExceptionText );
         }
         this.onStartFunc();
+        this.onRecognitionStartFunc();
+        this.onAudioStartFunc();
         this.onSpeechStartFunc();
+        this.onInterimResultFunc();
         this.onResultFunc();
         this.onNoMatchFunc();
         this.onSpeechEndFunc();
+        this.onAudioEndFunc();
+        this.onRecognitionEndFunc();
         this.onErrorFunc();
         this.onEndFunc();
         return this.startRecognitionResult;
@@ -231,6 +250,8 @@ export class ASRMock extends ASRPlugin {
             throw new Error( this.stopRecognitionExceptionText );
         }
         this.onSpeechEndFunc();
+        this.onAudioEndFunc();
+        this.onRecognitionEndFunc();
         this.onErrorFunc();
         this.onEndFunc();
         return this.stopRecognitionResult;

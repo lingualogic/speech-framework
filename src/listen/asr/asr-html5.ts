@@ -3,7 +3,7 @@
  * Funktioniert zur Zeit nur in Chrome. Ist Speech-Recognition nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 27.02.2019
+ * Letzte Aenderung: 31.03.2020
  * Status: gelb
  *
  * @module listen/asr
@@ -31,7 +31,7 @@ import { SPEECHRECOGNITION_FACTORY_NAME, SpeechRecognitionFactory } from './../.
 
 // asr
 
-import { ASR_HTML5_NAME } from './asr-const';
+import { ASR_HTML5_NAME, ASR_COMMAND_MODE, ASR_DICTATE_MODE } from './asr-const';
 import { ASRPlugin} from './asr-plugin';
 
 
@@ -59,6 +59,7 @@ export class ASRHtml5 extends ASRPlugin {
      * @member {SpeechRecognitionFactory} mRecognitionFactory
      * @private
      */
+
     mRecognitionFactory: SpeechRecognitionFactory = null;
 
 
@@ -67,6 +68,7 @@ export class ASRHtml5 extends ASRPlugin {
      * @member {SpeechRecognition} mRecognitionClass
      * @private
      */
+
     mRecognitionClass: any = null;
 
 
@@ -75,6 +77,7 @@ export class ASRHtml5 extends ASRPlugin {
      * @member {SpeechGrammarList} mGrammarListClass
      * @private
      */
+
     mGrammarListClass: any = null;
 
 
@@ -86,6 +89,7 @@ export class ASRHtml5 extends ASRPlugin {
      * @member {SpeechGrammarList} mGrammarList
      * @private
      */
+
     mGrammarList: any = null;
 
 
@@ -94,6 +98,7 @@ export class ASRHtml5 extends ASRPlugin {
      * @member {SpeechRecognition} mRecognition
      * @private
      */
+
     mRecognition: any = null;
 
 
@@ -201,6 +206,35 @@ export class ASRHtml5 extends ASRPlugin {
         }
     }
 
+    // Mode-Funktionen
+
+
+    /**
+     * pruefen auf vorhandenen Eingabemode
+     *
+     * @param {string} aMode - Command oder Dictate
+     * 
+     * @return {boolean} True, wenn ASR vorhanden ist, False sonst
+     */
+
+    isMode( aMode: string ): boolean {
+        if ( aMode === ASR_DICTATE_MODE ) {
+            return true;
+        }
+        return super.isMode( aMode );
+    }
+
+
+    /**
+     * Rueckgabe aller vorhandenen Eingabemodi fuer die Spracherkennung
+     *
+     * @return {Array<string>} Liste der Eingabemodi
+     */
+
+    getModeList(): Array<string> {
+        return [ ASR_COMMAND_MODE, ASR_DICTATE_MODE ];
+    }
+
 
     // Recognition-Funktionen
 
@@ -285,43 +319,36 @@ export class ASRHtml5 extends ASRPlugin {
             this.mRecognition.maxAlternatives = 1;            // nur eine Alternative zurueckgeben
             // TODO: Eine Grammatik ist im Moment nicht implementiert
             // this.mRecognition.grammar = this.mGrammarList;
+
+            // Recognition-Ereignisfunktionen eintragen
+
+            this.mRecognition.onstart = () => {
+                // console.log('ASRHtml5.onstart');
+                this._clearBreakTimeout();
+                this._onRecognitionStart();
+            }
+            this.mRecognition.onend = () => this._onRecognitionEnd();
+            this.mRecognition.onaudiostart = () => this._onRecognitionAudioStart();
+            this.mRecognition.onaudioend = () => this._onRecognitionAudioEnd();
+            this.mRecognition.onsoundstart = () => this._onRecognitionSoundStart();
+            this.mRecognition.msoundend = () => this._onRecognitionSoundEnd();
+            this.mRecognition.onspeechstart = () => { 
+                // console.log('ASRHtml5.onspeechstart');
+                this._clearBreakTimeout(); 
+                this._onRecognitionSpeechStart(); 
+            }
+            this.mRecognition.onspeechend = () => this._onRecognitionSpeechEnd();
+            this.mRecognition.onresult = (aEvent: any) => this._onRecognitionResult( aEvent );
+            this.mRecognition.onnomatch = (aEvent: any) => this._onRecognitionNoMatch( aEvent );
+            this.mRecognition.onerror = (aEvent: any) => { 
+                this._clearBreakTimeout(); 
+                this._onRecognitionError( aEvent ); 
+            }
+            return 0;
         } catch ( aException ) {
             this._exception( '_initRecognition', aException );
             return -1;
         }
-
-        // Recognition-Ereignisfunktionen eintragen
-
-        this.mRecognition.onstart = () => {
-            // console.log('ASRHtml5.onstart');
-            this._clearBreakTimeout();
-            this._onRecognitionStart();
-        }
-        this.mRecognition.onend = () => this._onRecognitionEnd();
-        this.mRecognition.onspeechstart = () => { 
-            // console.log('ASRHtml5.onspeechstart');
-            this._clearBreakTimeout(); 
-            this._onRecognitionSpeechStart(); 
-        }
-        this.mRecognition.onspeechend = () => {
-            // console.log('ASRHtml5.onspeechend');
-            this._onRecognitionSpeechEnd();
-        }
-        this.mRecognition.onresult = (aEvent: any) => this._onRecognitionResult( aEvent );
-        this.mRecognition.onnomatch = (aEvent: any) => this._onRecognitionNoMatch( aEvent );
-        this.mRecognition.onerror = (aEvent: any) => { 
-            this._clearBreakTimeout(); 
-            this._onRecognitionError( aEvent ); 
-        }
-
-        // Testausgaben 
-
-        // this.mRecognition.onaudiostart = () => console.log('ASRHtml5.onaudiostart');
-        // this.mRecognition.onaudioend = () => console.log('ASRHtml5.onaudioend');
-        // this.mRecognition.onsoundstart = () => console.log('ASRHtml5.onsoundstart');
-        // this.mRecognition.onsoundend = () => console.log('ASRHtml5.onsoundend');
-
-        return 0;
     }
 
 
@@ -341,6 +368,18 @@ export class ASRHtml5 extends ASRPlugin {
 
 
     /**
+     * prueft, ob die Recognition laeuft
+     */
+
+    _isRecognitionRunning(): boolean {
+        if ( this.mRecognition ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Wandelt rohes Spracherkennungsresultat in definierte Rueckgabe um.
      *
      * @protected
@@ -348,8 +387,62 @@ export class ASRHtml5 extends ASRPlugin {
      */
 
     _getRecognitionResult( aEvent: any ): any {
+        // console.log('ARSHTML._getRecognitionResult:', aEvent);
+
         // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
-        return aEvent.results[0][0].transcript;
+
+        if ( !aEvent.results ) {
+            return '';
+        }
+
+        // letzten Text holen
+        
+        const pos = aEvent.results.length - 1;
+        let resultText = aEvent.results[ pos ][ 0 ].transcript;
+
+        // Schleife fuer alle nicht finalen Texte 
+
+        let text = '';
+        for ( const result of aEvent.results ) {
+            if ( !result.isFinal ) {
+                text += result[ 0 ].transcript
+            }
+        }
+        if ( text ) {
+            resultText = text;
+        }
+
+        // TODO: alte Version mit einem Ergebnis im Command-Mode
+        // return aEvent.results[0][0].transcript;
+
+        // console.log('ASRHtml5._getRecognitionResult:', resultText)
+        return resultText;
+    }
+
+
+    /**
+     * prueft, ob es sich um das finale Result handelt
+     *
+     * @protected
+     * @param {any} aEvent - rohes Ergebnis der Spracherkennung
+     *
+     * @return {boolean} Rueckgabe von True, wenn Result final ist, False ansonsten
+     */
+
+    _isRecognitionFinalResult( aEvent: any ): boolean {
+        // hier wird das Ergebnis in ein definiertes Result-DatentransferObjekt umgewandelt
+        // muss von erbenden Klassen ueberschrieben werden
+        if ( !aEvent.results ) {
+            return true;
+        } 
+
+        const pos = aEvent.results.length - 1;
+        // wenn isFinal nicht exisitert wird finales Result angenommen
+        // console.log('ASRHtml5._isRecognitionFinalResult:', pos, aEvent.results[ pos ].isFinal);
+        if ( typeof aEvent.results[ pos ].isFinal !== 'boolean' ) {
+            return true;
+        }
+        return aEvent.results[ pos ].isFinal;
     }
 
 
@@ -365,6 +458,16 @@ export class ASRHtml5 extends ASRPlugin {
         if ( this.mRecognition ) {
             this._setBreakTimeout();
             this.mRecognition.lang = this._getASRLanguage();
+            // pruefen auf Diktiermodus, dann kontinuierliches Sprechen und Zwischenergebnisse erlauben
+            if ( this.isDictateMode()) {
+                // console.log('ASRHtml._startRecognition: Dictate Mode');
+                this.mRecognition.continuous = true;
+                this.mRecognition.interimResults = true;
+            } else {
+                // console.log('ASRHtml._startRecognition: Command Mode');
+                this.mRecognition.continuous = false;
+                this.mRecognition.interimResults = false;
+            }
             this.mRecognition.abort();
             this.mRecognition.start();
             return 0;

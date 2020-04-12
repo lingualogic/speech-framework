@@ -2,7 +2,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.18.0062 (Release) vom 28.03.2020
+ * Version: 0.5.19.0063 (release) vom 11.04.2020
  */
 
 
@@ -44,7 +44,7 @@ export { SpeakFactory } from './src/speak/speak-factory';
 
 // listen
 
-export { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME, LISTEN_DE_LANGUAGE, LISTEN_EN_LANGUAGE, LISTEN_HTML5_ASR, LISTEN_NUANCE_ASR, LISTEN_MICROSOFT_ASR } from './src/listen/listen-const';
+export { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME, LISTEN_DE_LANGUAGE, LISTEN_EN_LANGUAGE, LISTEN_COMMAND_MODE, LISTEN_DICTATE_MODE, LISTEN_HTML5_ASR, LISTEN_NUANCE_ASR, LISTEN_MICROSOFT_ASR } from './src/listen/listen-const';
 export { ListenOptionInterface } from './src/listen/listen-option.interface';
 export { ListenInterface } from './src/listen/listen.interface';
 export { ListenFactory } from './src/listen/listen-factory';

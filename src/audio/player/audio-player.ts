@@ -1,7 +1,7 @@
 /**
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 24.03.2020
+ * Letzte Aenderung: 09.04.2020
  * Status: rot
  *
  * @module audio/player
@@ -514,7 +514,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
                 // console.log('AudioPlayer._unlockAudio: suspended state = ', this.mAudioContext.state);
                 let timeoutId = setTimeout( () => { console.log('AudioPlayer._unlockAudio: timeout'); aCallbackFunc( false ); }, AUDIO_UNLOCK_TIMEOUT );
                 // Resume aufrufen
-                console.log('AudioPlayer._unlockAudio: call resume state = ', this.mAudioContext.state);
+                // console.log('AudioPlayer._unlockAudio: call resume state = ', this.mAudioContext.state);
                 this.mAudioContext.resume().then(() => {
                     // console.log('AudioPlayer._unlockAudio: resume state = ', this.mAudioContext.state);
                     clearTimeout( timeoutId );
@@ -1088,7 +1088,7 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
      */
 
     _getAudioBufferFirst( aData: any ): AudioBuffer {
-        console.log('AudioPlayer._getAudioBufferFirst:', aData.length);
+        // console.log('AudioPlayer._getAudioBufferFirst:', aData.length);
         let audioBuffer: AudioBuffer = null;
         // fuer die meisten aktuellen Browser mit AudioBuffer Constructor 
         try {

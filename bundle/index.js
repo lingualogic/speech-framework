@@ -3,7 +3,7 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.18.0062 (Release) vom 28.03.2020
+ * Version: 0.5.19.0063 (release) vom 11.04.2020
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // const
@@ -44,6 +44,8 @@ exports.LISTEN_TYPE_NAME = listen_const_1.LISTEN_TYPE_NAME;
 exports.LISTEN_COMPONENT_NAME = listen_const_1.LISTEN_COMPONENT_NAME;
 exports.LISTEN_DE_LANGUAGE = listen_const_1.LISTEN_DE_LANGUAGE;
 exports.LISTEN_EN_LANGUAGE = listen_const_1.LISTEN_EN_LANGUAGE;
+exports.LISTEN_COMMAND_MODE = listen_const_1.LISTEN_COMMAND_MODE;
+exports.LISTEN_DICTATE_MODE = listen_const_1.LISTEN_DICTATE_MODE;
 exports.LISTEN_HTML5_ASR = listen_const_1.LISTEN_HTML5_ASR;
 exports.LISTEN_NUANCE_ASR = listen_const_1.LISTEN_NUANCE_ASR;
 exports.LISTEN_MICROSOFT_ASR = listen_const_1.LISTEN_MICROSOFT_ASR;
