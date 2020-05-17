@@ -1,7 +1,7 @@
 {
     "name": "listenapp",
     "displayName": "ListenApp",
-    "version": "0.5.19",
+    "version": "0.5.20",
     "description": "Beispiel-App fuer Listen-API in Cordova",
     "author": "LinguaLogic Team",
     "license": "MIT",

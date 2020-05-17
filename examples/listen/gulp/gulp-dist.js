@@ -6,7 +6,7 @@
 const rimraf = require('rimraf');
 const path = require('path');
 const inject = require('gulp-inject-string');
-const runSquence = require('run-sequence');
+const runSquence = require('gulp4-run-sequence');
 
 module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCredentialsDir, distDir, srcDir }) => {
 
@@ -16,32 +16,32 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCred
 
     gulp.task('dist-copy-credentials', () => {
         return gulp.src([
-            path.join( globalCredentialsDir, 'google-credentials.js'),
-            path.join( globalCredentialsDir, 'microsoft-credentials.js'),
-            path.join( globalCredentialsDir, 'nuance-credentials.js')
+            `${globalCredentialsDir}/google-credentials.js`,
+            `${globalCredentialsDir}/microsoft-credentials.js`,
+            `${globalCredentialsDir}/nuance-credentials.js`
         ])
-            .pipe(gulp.dest(path.join( distDir, 'js')));
+            .pipe(gulp.dest( `${distDir}/js` ));
     });
 
     gulp.task('dist-copy-lib', () => {
         return gulp.src([
-            path.join( globalLibDir, 'microsoft.cognitiveservices.speech.sdk.bundle-min.js')
-        ])
-            .pipe(gulp.dest(path.join( distDir, 'js')));
+            `${globalLibDir}/microsoft.cognitiveservices.speech.sdk.bundle-min.js`
+        ], { allowEmpty: true })
+            .pipe(gulp.dest( `${distDir}/js` ));
     });
 
     gulp.task('dist-copy-speech', () => {
-        return gulp.src(path.join( globalDistDir, 'speech-framework.js'))
-            .pipe(gulp.dest(path.join( distDir, 'js')));
+        return gulp.src( `${globalDistDir}/speech-framework.js` )
+            .pipe(gulp.dest( `${distDir}/js` ));
     });
 
     gulp.task('dist-copy-src', () => {
-        return gulp.src(path.join(srcDir, '**', '*'))
+        return gulp.src( `${srcDir}/**/*` )
             .pipe(gulp.dest( distDir ));
     });
 
     gulp.task('dist-replace-credentials', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
+        gulp.src( `${distDir}/index.html` )
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>', '<script type="text/javascript" src="js/google-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>', '<script type="text/javascript" src="js/microsoft-credentials.js"></script>'))
             .pipe(inject.replace('<script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>', '<script type="text/javascript" src="js/nuance-credentials.js"></script>'))
@@ -50,21 +50,21 @@ module.exports = ({ gulp, exec, rootDir, globalLibDir, globalDistDir, globalCred
     });
 
     gulp.task('dist-replace-lib', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
+        gulp.src( `${distDir}/index.html` )
             .pipe(inject.replace('<script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>', '<script type="text/javascript" src="js/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
 
     gulp.task('dist-replace-speech', (done) => {
-        gulp.src(path.join( distDir, 'index.html'))
+        gulp.src( `${distDir}/index.html` )
             .pipe(inject.replace('<script type="text/javascript" src="./../../../dist/speech-framework.js"></script>', '<script type="text/javascript" src="js/speech-framework.js"></script>'))
             .pipe(gulp.dest( distDir ))
             .on('end', done);
     });
 
     gulp.task('dist-remove-absolute-assets', (done) => {
-        gulp.src(path.join( distDir, '**', '*.js'))
+        gulp.src( `${distDir}/**/*.js` )
             .pipe(inject.replace('/assets/', 'assets/'))
             .pipe(gulp.dest( distDir))
             .on('end', done);

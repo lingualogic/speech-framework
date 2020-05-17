@@ -6,7 +6,7 @@
 const del = require('del');
 const path = require('path');
 const inject = require('gulp-inject-string');
-const runSquence = require('run-sequence');
+const runSquence = require('gulp4-run-sequence');
 
 
 // Electron spezifisch

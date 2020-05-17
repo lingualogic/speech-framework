@@ -1,5 +1,7 @@
 /**
  * Automatisierung des Buildprozesses von Speech-Framework
+ * 
+ * Gulp4 Version
  */
 
 'use strict';
@@ -9,7 +11,7 @@
 
 const gulp = require('gulp');
 const shell = require('gulp-shell');
-const runSequence = require('run-sequence');
+const runSequence = require('gulp4-run-sequence');
 const typedoc = require('gulp-typedoc');
 const del = require('del');
 const fs = require('fs');
@@ -122,7 +124,7 @@ gulp.task('test', shell.task('karma start karma.conf.js'));
  * Installationstext des veroeffentlichten NPM-Packages
  */
 
-gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.19.tgz'));
+gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.20.tgz'));
 
 
 // Kopiert Quellcode
@@ -205,7 +207,7 @@ gulp.task('copy-action', function() {
         'build/src/action/action-function.type.d.ts',
         'build/src/action/action-option.interface.d.ts',
         'build/src/action/action.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/action'));
 }); 
 
@@ -232,12 +234,11 @@ gulp.task('copy-audio', function() {
 gulp.task('copy-speak', function() {
     return gulp.src([
         'build/src/speak/speak-const.d.ts',
-        'build/src/speak/speak-data.interface.d.ts',
         'build/src/speak/speak-factory.d.ts',
         'build/src/speak/speak-function.type.d.ts',
         'build/src/speak/speak-option.interface.d.ts',
         'build/src/speak/speak.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/speak'));
 }); 
 
@@ -253,7 +254,7 @@ gulp.task('copy-listen', function() {
         'build/src/listen/listen-function.type.d.ts',
         'build/src/listen/listen-option.interface.d.ts',
         'build/src/listen/listen.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/listen'));
 }); 
 
@@ -273,7 +274,7 @@ gulp.task('copy-dialog', function() {
         'build/src/dialog/dialog-speak.interface.d.ts',
         'build/src/dialog/dialog-state-context.interface.d.ts',
         'build/src/dialog/dialog.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/dialog'));
 }); 
 
@@ -286,13 +287,15 @@ gulp.task('copy-inference', function() {
     return gulp.src([
         'build/src/inference/inference-action.interface.d.ts',
         'build/src/inference/inference-const.d.ts',
+        'build/src/inference/inference-event-const.d.ts',
         'build/src/inference/inference-factory.d.ts',
         'build/src/inference/inference-function.type.d.ts',
+        'build/src/inference/inference-message-const.d.ts',
         'build/src/inference/inference-option.interface.d.ts',
         'build/src/inference/inference-speak.interface.d.ts',
         'build/src/inference/inference-state-context.interface.d.ts',
         'build/src/inference/inference.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/inference'));
 }); 
 
@@ -303,17 +306,13 @@ gulp.task('copy-inference', function() {
 
 gulp.task('copy-intent', function() {
     return gulp.src([
-        'build/src/intent/intent-action.interface.d.ts',
         'build/src/intent/intent-const.d.ts',
         'build/src/intent/intent-data.interface.d.ts',
-        'build/src/intent/intent-event-const.d.ts',
         'build/src/intent/intent-factory.d.ts',
         'build/src/intent/intent-function.type.d.ts',
         'build/src/intent/intent-option.interface.d.ts',
-        'build/src/intent/intent-speak.interface.d.ts',
-        'build/src/intent/intent-state-context.interface.d.ts',
         'build/src/intent/intent.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/intent'));
 }); 
 
@@ -328,7 +327,7 @@ gulp.task('copy-bot', function() {
         'build/src/bot/bot-factory.d.ts',
         'build/src/bot/bot-option.interface.d.ts',
         'build/src/bot/bot.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/bot'));
 }); 
 
@@ -343,7 +342,7 @@ gulp.task('copy-nuance', function() {
         'build/src/cloud/nuance/nuance-const.d.ts',
         'build/src/cloud/nuance/nuance-config-data.interface.d.ts',
         'build/src/cloud/nuance/nuance-option.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/nuance'));
 }); 
 
@@ -358,7 +357,7 @@ gulp.task('copy-amazon', function() {
         'build/src/cloud/amazon/amazon-const.d.ts',
         'build/src/cloud/amazon/amazon-config-data.interface.d.ts',
         'build/src/cloud/amazon/amazon-option.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/amazon'));
 }); 
 
@@ -373,7 +372,7 @@ gulp.task('copy-google', function() {
         'build/src/cloud/google/google-const.d.ts',
         'build/src/cloud/google/google-config-data.interface.d.ts',
         'build/src/cloud/google/google-option.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/google'));
 }); 
 
@@ -388,7 +387,7 @@ gulp.task('copy-microsoft', function() {
         'build/src/cloud/microsoft/microsoft-const.d.ts',
         'build/src/cloud/microsoft/microsoft-config-data.interface.d.ts',
         'build/src/cloud/microsoft/microsoft-option.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/microsoft'));
 }); 
 
@@ -403,7 +402,7 @@ gulp.task('copy-rasa', function() {
         'build/src/cloud/rasa/rasa-const.d.ts',
         'build/src/cloud/rasa/rasa-config-data.interface.d.ts',
         'build/src/cloud/rasa/rasa-option.interface.d.ts'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/rasa'));
 }); 
 
@@ -429,7 +428,7 @@ gulp.task('copy-lib-aws-sdk', function() {
     return gulp.src([
         'lib/AWS_SDK_LICENSE.txt',
         'lib/aws-sdk-speech.min.js'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/'));
 }); 
 
@@ -443,7 +442,7 @@ gulp.task('copy-lib-azure-sdk', function() {
         'lib/AZURE_SDK_LICENSE',
         'lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js',
         'lib/speech-processor.js'
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/'));
 }); 
 
@@ -503,9 +502,10 @@ gulp.task('install-nuance-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Nuance-Credentials Datei
         fs.accessSync( 'credentials/nuance-credentials.ts' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/nuance-credentials.ts' ])
+        return gulp.src([ 'credentials/nuance-credentials.ts' ], { allowEmpty: true })
             .pipe( file( 'nuance-credentials.ts', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Nuance Credentials\n" ))
@@ -517,7 +517,6 @@ gulp.task('install-nuance-credentials-ts', function() {
             .pipe( inject.append( "export const NLU_TAG = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -529,9 +528,10 @@ gulp.task('install-nuance-credentials-js', function() {
     try {
         // pruefen auf vorhandene Nuance-Credentials Datei
         fs.accessSync( 'credentials/nuance-credentials.js' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/nuance-credentials.js' ])
+        return gulp.src([ 'credentials/nuance-credentials.js' ], { allowEmpty: true })
             .pipe( file( 'nuance-credentials.js', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Nuance Credentials\n" ))
@@ -543,7 +543,6 @@ gulp.task('install-nuance-credentials-js', function() {
             .pipe(inject.append( "var NLU_TAG = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -555,9 +554,10 @@ gulp.task('install-amazon-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Amazon-Credentials Datei
         fs.accessSync( 'credentials/amazon-credentials.ts' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/amazon-credentials.ts' ])
+        return gulp.src([ 'credentials/amazon-credentials.ts' ], { allowEmpty: true })
             .pipe( file( 'amazon-credentials.ts', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Amazon Credentials\n" ))
@@ -568,7 +568,6 @@ gulp.task('install-amazon-credentials-ts', function() {
             .pipe( inject.append( "export const IDENTITY_POOL_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -580,9 +579,10 @@ gulp.task('install-amazon-credentials-js', function() {
     try {
         // pruefen auf vorhandene Amazon-Credentials Datei
         fs.accessSync( 'credentials/amazon-credentials.js' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/amazon-credentials.js' ])
+        return gulp.src([ 'credentials/amazon-credentials.js' ], { allowEmpty: true })
             .pipe( file( 'amazon-credentials.js', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Amazon Credentials\n" ))
@@ -593,7 +593,6 @@ gulp.task('install-amazon-credentials-js', function() {
             .pipe(inject.append( "var IDENTITY_POOL_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -605,9 +604,10 @@ gulp.task('install-google-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Google-Credentials Datei
         fs.accessSync( 'credentials/google-credentials.ts' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/google-credentials.ts' ])
+        return gulp.src([ 'credentials/google-credentials.ts' ], { allowEmpty: true })
             .pipe( file( 'google-credentials.ts', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Google Credentials\n" ))
@@ -620,7 +620,6 @@ gulp.task('install-google-credentials-ts', function() {
             .pipe( inject.append( "export const DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -632,9 +631,10 @@ gulp.task('install-google-credentials-js', function() {
     try {
         // pruefen auf vorhandene Google-Credentials Datei
         fs.accessSync( 'credentials/google-credentials.js' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/google-credentials.js' ])
+        return gulp.src([ 'credentials/google-credentials.js' ], { allowEmpty: true })
             .pipe( file( 'google-credentials.js', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Google Credentials\n" ))
@@ -647,7 +647,6 @@ gulp.task('install-google-credentials-js', function() {
             .pipe(inject.append( "var DIALOGFLOW_PROJECT_ID = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -659,9 +658,10 @@ gulp.task('install-microsoft-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Microsoft-Credentials Datei
         fs.accessSync( 'credentials/microsoft-credentials.ts' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/microsoft-credentials.ts' ])
+        return gulp.src([ 'credentials/microsoft-credentials.ts' ], { allowEmpty: true })
             .pipe( file( 'microsoft-credentials.ts', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Microsoft Credentials\n" ))
@@ -673,7 +673,6 @@ gulp.task('install-microsoft-credentials-ts', function() {
             .pipe(inject.append( "export const MICROSOFT_LUIS_ENDPOINT = '';\n" ))
             .pipe( gulp.dest(  'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -685,9 +684,10 @@ gulp.task('install-microsoft-credentials-js', function() {
     try {
         // pruefen auf vorhandene Microsoft-Credentials Datei
         fs.accessSync( 'credentials/microsoft-credentials.js' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/microsoft-credentials.js' ])
+        return gulp.src([ 'credentials/microsoft-credentials.js' ], { allowEmpty: true })
             .pipe( file( 'microsoft-credentials.js', ''))
             .pipe(inject.append( "/**\n" ))
             .pipe(inject.append( " * Microsoft Credentials\n" ))
@@ -699,7 +699,6 @@ gulp.task('install-microsoft-credentials-js', function() {
             .pipe(inject.append( "var MICROSOFT_LUIS_ENDPOINT = '';\n" ))
             .pipe( gulp.dest(  'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -711,9 +710,10 @@ gulp.task('install-rasa-credentials-ts', function() {
     try {
         // pruefen auf vorhandene Rasa-Credentials Datei
         fs.accessSync( 'credentials/rasa-credentials.ts' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/rasa-credentials.ts' ])
+        return gulp.src([ 'credentials/rasa-credentials.ts' ], { allowEmpty: true })
             .pipe( file( 'rasa-credentials.ts', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Rasa Credentials\n" ))
@@ -724,7 +724,6 @@ gulp.task('install-rasa-credentials-ts', function() {
             .pipe( inject.append( "export const RASA_APP_KEY = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -736,9 +735,10 @@ gulp.task('install-rasa-credentials-js', function() {
     try {
         // pruefen auf vorhandene Rasa-Credentials Datei
         fs.accessSync( 'credentials/rasa-credentials.js' );
+        return gulp.src( '*' ); // empty stream
     } catch (e) {
         // Datei ist nicht vorhanden und kann erzeugt werden
-        return gulp.src([ 'credentials/rasa-credentials.js' ])
+        return gulp.src([ 'credentials/rasa-credentials.js' ], { allowEmpty: true })
             .pipe( file( 'rasa-credentials.js', ''))
             .pipe( inject.append( "/**\n" ))
             .pipe( inject.append( " * Rasa Credentials\n" ))
@@ -749,7 +749,6 @@ gulp.task('install-rasa-credentials-js', function() {
             .pipe( inject.append( "var RASA_APP_KEY = '';\n" ))
             .pipe( gulp.dest( 'credentials' ));
     }
-    return gulp.src( '' ); // empty stream
 });
 
 
@@ -784,9 +783,9 @@ gulp.task('install', (callback) => {
         'install-microsoft-credentials-js',
         'install-rasa-credentials-ts',
         'install-rasa-credentials-js',
-        // 'install-webdriver',
+        'install-webdriver',
         'install-electron',
-        // 'install-cordova',
+        'install-cordova',
         callback
     );
 });
@@ -808,8 +807,11 @@ gulp.task('build-clean', function () {
  * Erzeugen von src-Ordner im Dist-Verzeichnis  
  */ 
 
-gulp.task('build-dir', shell.task('mkdir dist'));
-
+// TODO: funktioniert unter Windows nicht 
+// gulp.task('build-dir', shell.task('mkdir dist'));
+gulp.task('build-dir', function(cb) {
+    fs.mkdir( 'dist', {recursive: true}, cb);
+});
 
 /**
  * Typescript transpilieren in build-Ordner
@@ -891,7 +893,7 @@ gulp.task('build-intent-example', function(callback) {
             'build-intent',
             // 'build-intent-electron',
             // 'build-intent-android',
-            // 'test-intent',
+            'test-intent',
             callback
         );
     } catch (e) {
@@ -951,7 +953,7 @@ gulp.task('build-listen-example', function(callback) {
             'build-listen',
             // 'build-listen-electron',
             // 'build-listen-android',
-            // 'test-listen',
+            'test-listen',
             callback
         );
     } catch (e) {
@@ -1011,7 +1013,7 @@ gulp.task('build-speak-example', function(callback) {
             'build-speak',
             // 'build-speak-electron',
             // 'build-speak-android',
-            // 'test-speak',
+            'test-speak',
             callback
         );
     } catch (e) {

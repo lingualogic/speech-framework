@@ -1,2208 +1,5659 @@
-/**
- * Speech-Google
- * 
- * Version: 0.1.4
- * Build:   0005
- * TYPE:    ALPHA
- * Datum:   12.02.2020
- * Autor:   LinguaLogic Team
- * Lizenz:  MIT
- * 
- * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 import { PortManager } from '../../core/port/port-manager.ts';
-
 import { FactoryManager } from '../../core/factory/factory-manager.ts';
-
 import { Port } from '../../core/port/port.ts';
-
 import { FileHtml5Reader } from '../../common/html5/file-html5-reader.ts';
-
 import { AudioHtml5Reader } from '../../common/html5/audio-html5-reader.ts';
-
 import { AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory } from '../../common/html5/audiocontext-factory.ts';
-
 import { USERMEDIA_FACTORY_NAME, UserMediaFactory } from '../../common/html5/usermedia-factory.ts';
-
 import { ErrorBase } from '../../core/error/error-base.ts';
-
 import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
-
 import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
 
-var GOOGLE_TYPE_NAME = 'Google', GOOGLE_PORT_NAME = 'GooglePort', GOOGLE_MOCK_NAME = 'GoogleMock', GOOGLE_SERVER_URL = 'ws://localhost:7050', GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL, GOOGLE_NLU_ACTION = 'NLU', GOOGLE_ASR_ACTION = 'ASR', GOOGLE_ASRNLU_ACTION = 'ASRNLU', GOOGLE_TTS_ACTION = 'TTS', GOOGLE_CONFIG_PATH = 'assets/', GOOGLE_CONFIG_FILE = 'google.json', GOOGLE_CONFIG_LOAD = !1, GOOGLE_DE_LANGUAGE = 'de-DE', GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE, GOOGLE_NLU2_FLAG = !0, GOOGLE_TTS_VOICE4 = 'Petra-ML', GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4, GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE, GOOGLE_PCM_CODEC = 'audio/L16;rate=16000', GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC, GOOGLE_AUDIOBUFFER_SIZE = 2048, GOOGLE_AUDIOSAMPLE_RATE = 16e3, extendStatics = function(t, e) {
-    return (extendStatics = Object.setPrototypeOf || {
-        __proto__: []
-    } instanceof Array && function(t, e) {
-        t.__proto__ = e;
-    } || function(t, e) {
-        for (var o in e) e.hasOwnProperty(o) && (t[o] = e[o]);
-    })(t, e);
+/**
+ * Globale Konstanten fuer Google
+ *
+ * Letzte Aenderung: 02.10.2019
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+// Default-Konstanten
+var GOOGLE_TYPE_NAME = 'Google';
+var GOOGLE_PORT_NAME = 'GooglePort';
+var GOOGLE_MOCK_NAME = 'GoogleMock';
+// Default URL des Amazon-Service
+var GOOGLE_SERVER_URL = 'ws://localhost:7050';
+var GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL;
+// Aktionen
+var GOOGLE_NLU_ACTION = 'NLU';
+var GOOGLE_ASR_ACTION = 'ASR';
+var GOOGLE_ASRNLU_ACTION = 'ASRNLU';
+var GOOGLE_TTS_ACTION = 'TTS';
+// Konfigurationsdaten
+var GOOGLE_CONFIG_PATH = 'assets/';
+var GOOGLE_CONFIG_FILE = 'google.json';
+var GOOGLE_CONFIG_LOAD = false;
+// Sprachen
+var GOOGLE_DE_LANGUAGE = 'de-DE';
+var GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE;
+// NLU
+var GOOGLE_NLU2_FLAG = true;
+var GOOGLE_TTS_VOICE4 = 'Petra-ML';
+var GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4;
+var GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE;
+// Audio-Codec
+var GOOGLE_PCM_CODEC = 'audio/L16;rate=16000';
+var GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC;
+// Audio-Konstanten
+var GOOGLE_AUDIOBUFFER_SIZE = 2048;
+var GOOGLE_AUDIOSAMPLE_RATE = 16000;
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
 };
 
-function __extends(t, e) {
-    function o() {
-        this.constructor = t;
-    }
-    extendStatics(t, e), t.prototype = null === e ? Object.create(e) : (o.prototype = e.prototype, 
-    new o());
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-function __awaiter(t, e, o, n) {
-    return new (o || (o = Promise))(function(r, i) {
-        function s(t) {
-            try {
-                a(n.next(t));
-            } catch (t) {
-                i(t);
-            }
-        }
-        function u(t) {
-            try {
-                a(n.throw(t));
-            } catch (t) {
-                i(t);
-            }
-        }
-        function a(t) {
-            t.done ? r(t.value) : new o(function(e) {
-                e(t.value);
-            }).then(s, u);
-        }
-        a((n = n.apply(t, e || [])).next());
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 }
 
-function __generator(t, e) {
-    var o, n, r, i, s = {
-        label: 0,
-        sent: function() {
-            if (1 & r[0]) throw r[1];
-            return r[1];
-        },
-        trys: [],
-        ops: []
-    };
-    return i = {
-        next: u(0),
-        throw: u(1),
-        return: u(2)
-    }, "function" == typeof Symbol && (i[Symbol.iterator] = function() {
-        return this;
-    }), i;
-    function u(i) {
-        return function(u) {
-            return function(i) {
-                if (o) throw new TypeError("Generator is already executing.");
-                for (;s; ) try {
-                    if (o = 1, n && (r = 2 & i[0] ? n.return : i[0] ? n.throw || ((r = n.return) && r.call(n), 
-                    0) : n.next) && !(r = r.call(n, i[1])).done) return r;
-                    switch (n = 0, r && (i = [ 2 & i[0], r.value ]), i[0]) {
-                      case 0:
-                      case 1:
-                        r = i;
-                        break;
-
-                      case 4:
-                        return s.label++, {
-                            value: i[1],
-                            done: !1
-                        };
-
-                      case 5:
-                        s.label++, n = i[1], i = [ 0 ];
-                        continue;
-
-                      case 7:
-                        i = s.ops.pop(), s.trys.pop();
-                        continue;
-
-                      default:
-                        if (!(r = (r = s.trys).length > 0 && r[r.length - 1]) && (6 === i[0] || 2 === i[0])) {
-                            s = 0;
-                            continue;
-                        }
-                        if (3 === i[0] && (!r || i[1] > r[0] && i[1] < r[3])) {
-                            s.label = i[1];
-                            break;
-                        }
-                        if (6 === i[0] && s.label < r[1]) {
-                            s.label = r[1], r = i;
-                            break;
-                        }
-                        if (r && s.label < r[2]) {
-                            s.label = r[2], s.ops.push(i);
-                            break;
-                        }
-                        r[2] && s.ops.pop(), s.trys.pop();
-                        continue;
-                    }
-                    i = e.call(t, s);
-                } catch (t) {
-                    i = [ 6, t ], n = 0;
-                } finally {
-                    o = r = 0;
-                }
-                if (5 & i[0]) throw i[1];
-                return {
-                    value: i[0] ? i[1] : void 0,
-                    done: !0
-                };
-            }([ i, u ]);
-        };
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 }
 
-var ApiAiConstants, GOOGLE_VERSION_NUMBER = '0.1.4', GOOGLE_VERSION_BUILD = '0005', GOOGLE_VERSION_TYPE = 'ALPHA', GOOGLE_VERSION_DATE = '12.02.2020', GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')', GOOGLE_API_VERSION = GOOGLE_VERSION_STRING, GoogleTransaction = function() {
-    function t(e, o) {
-        void 0 === e && (e = ''), void 0 === o && (o = ''), this.transactionId = 0, this.plugin = '', 
-        this.type = '', this.result = null, this.error = null, this.plugin = e, this.type = o, 
-        t.mTransactionCounter += 1, this.transactionId = t.mTransactionCounter;
+/**
+ * Speech-Google Version und Build Konstanten
+ *
+ * @module cloud/google
+ * @author SB
+ */
+var GOOGLE_VERSION_NUMBER = '0.1.4';
+var GOOGLE_VERSION_BUILD = '0005';
+var GOOGLE_VERSION_TYPE = 'ALPHA';
+var GOOGLE_VERSION_DATE = '12.02.2020';
+// tslint:disable-next-line
+var GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')';
+var GOOGLE_API_VERSION = GOOGLE_VERSION_STRING;
+
+/**
+ * Event-Klasse fuer alle Google-Transaktionen
+ *
+ * Letzte Aenderung: 02.04.2019
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+var GoogleTransaction = /** @class */ (function () {
+    function GoogleTransaction(aPluginName, aType) {
+        if (aPluginName === void 0) { aPluginName = ''; }
+        if (aType === void 0) { aType = ''; }
+        this.transactionId = 0;
+        this.plugin = '';
+        this.type = '';
+        this.result = null;
+        this.error = null;
+        this.plugin = aPluginName;
+        this.type = aType;
+        // automatische Transaktions-ID Erzeugung
+        GoogleTransaction.mTransactionCounter += 1;
+        this.transactionId = GoogleTransaction.mTransactionCounter;
     }
-    return t.mTransactionCounter = 0, t;
-}(), GoogleConfig = function(t) {
-    function e(e) {
-        var o = t.call(this, 'GoogleConfig') || this;
-        return o.mInitFlag = !1, o.mConfigPath = GOOGLE_CONFIG_PATH, o.mConfigFile = GOOGLE_CONFIG_FILE, 
-        o.mConfigLoadFlag = GOOGLE_CONFIG_LOAD, o.mConfigServerUrl = GOOGLE_DEFAULT_URL, 
-        o.mConfigDialogflowTokenServerUrl = '', o.mConfigDialogflowProjectId = '', o.mConfigAppId = '', 
-        o.mConfigAppKey = '', o.mConfigUserId = '', o.mConfigNluTag = '', o.mFileReader = null, 
-        o.mOnInitFunc = null, o.mOnErrorFunc = null, o.mFileReader = e, o._setErrorOutputFunc(function(t) {
-            return o._onError(new Error(t));
-        }), o;
+    GoogleTransaction.mTransactionCounter = 0;
+    return GoogleTransaction;
+}());
+
+/**
+ * Google Konstanten Verwaltung
+ *
+ * Letzte Aenderung: 02.10.2019
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+var GoogleConfig = /** @class */ (function (_super) {
+    __extends(GoogleConfig, _super);
+    /**
+     * Creates an instance of AmazonConfig.
+     */
+    function GoogleConfig(aFileReader) {
+        var _this = _super.call(this, 'GoogleConfig') || this;
+        _this.mInitFlag = false;
+        // Configdatei-Daten
+        _this.mConfigPath = GOOGLE_CONFIG_PATH;
+        _this.mConfigFile = GOOGLE_CONFIG_FILE;
+        _this.mConfigLoadFlag = GOOGLE_CONFIG_LOAD;
+        // Nuance-Konfigurationsdaten
+        _this.mConfigServerUrl = GOOGLE_DEFAULT_URL;
+        _this.mConfigDialogflowTokenServerUrl = '';
+        _this.mConfigDialogflowProjectId = '';
+        _this.mConfigAppId = '';
+        _this.mConfigAppKey = '';
+        _this.mConfigUserId = '';
+        _this.mConfigNluTag = '';
+        // FileReader
+        _this.mFileReader = null;
+        // Initialisierung fertig
+        _this.mOnInitFunc = null;
+        _this.mOnErrorFunc = null;
+        _this.mFileReader = aFileReader;
+        // verbinden der Errorfunktion mit dem ErrorEvent
+        _this._setErrorOutputFunc(function (aErrorText) { return _this._onError(new Error(aErrorText)); });
+        return _this;
     }
-    return __extends(e, t), e.prototype._setOption = function(t) {
-        t && ('string' == typeof t.googleConfigPath && (this.mConfigPath = t.googleConfigPath), 
-        'string' == typeof t.googleConfigFile && (this.mConfigFile = t.googleConfigFile), 
-        'boolean' == typeof t.googleConfigLoadFlag && (this.mConfigLoadFlag = t.googleConfigLoadFlag), 
-        'string' == typeof t.googleServerUrl && (this.mConfigServerUrl = t.googleServerUrl), 
-        'string' == typeof t.dialogflowTokenServerUrl && (this.mConfigDialogflowTokenServerUrl = t.dialogflowTokenServerUrl), 
-        'string' == typeof t.dialogflowProjectId && (this.mConfigDialogflowProjectId = t.dialogflowProjectId), 
-        'string' == typeof t.googleAppId && (this.mConfigAppId = t.googleAppId), 'string' == typeof t.googleAppKey && (this.mConfigAppKey = t.googleAppKey), 
-        'string' == typeof t.googleUserId && (this.mConfigUserId = t.googleUserId), 'string' == typeof t.googleNluTag && (this.mConfigNluTag = t.googleNluTag), 
-        'string' == typeof t.googleNluTag && (this.mConfigNluTag = t.googleNluTag));
-    }, e.prototype.init = function(t) {
-        return this._setOption(t), this.mInitFlag = !0, 0;
-    }, e.prototype.done = function() {
-        return this.mInitFlag = !1, this.mConfigPath = GOOGLE_CONFIG_PATH, this.mConfigFile = GOOGLE_CONFIG_FILE, 
-        this.mConfigLoadFlag = GOOGLE_CONFIG_LOAD, this.mConfigServerUrl = GOOGLE_DEFAULT_URL, 
-        this.mConfigDialogflowTokenServerUrl = '', this.mConfigDialogflowProjectId = '', 
-        this.mConfigAppId = '', this.mConfigAppKey = '', this.mConfigUserId = '', this.mConfigNluTag = '', 
-        this.mFileReader = null, this.mOnInitFunc = null, 0;
-    }, e.prototype.isInit = function() {
+    /**
+     * Optionen eintragen
+     * @param aOption - optionale Parameter
+     */
+    GoogleConfig.prototype._setOption = function (aOption) {
+        if (!aOption) {
+            return;
+        }
+        // Parameter eintragen
+        if (typeof aOption.googleConfigPath === 'string') {
+            this.mConfigPath = aOption.googleConfigPath;
+        }
+        if (typeof aOption.googleConfigFile === 'string') {
+            this.mConfigFile = aOption.googleConfigFile;
+        }
+        if (typeof aOption.googleConfigLoadFlag === 'boolean') {
+            this.mConfigLoadFlag = aOption.googleConfigLoadFlag;
+        }
+        if (typeof aOption.googleServerUrl === 'string') {
+            this.mConfigServerUrl = aOption.googleServerUrl;
+        }
+        if (typeof aOption.dialogflowTokenServerUrl === 'string') {
+            this.mConfigDialogflowTokenServerUrl = aOption.dialogflowTokenServerUrl;
+        }
+        if (typeof aOption.dialogflowProjectId === 'string') {
+            this.mConfigDialogflowProjectId = aOption.dialogflowProjectId;
+        }
+        if (typeof aOption.googleAppId === 'string') {
+            this.mConfigAppId = aOption.googleAppId;
+        }
+        if (typeof aOption.googleAppKey === 'string') {
+            this.mConfigAppKey = aOption.googleAppKey;
+        }
+        if (typeof aOption.googleUserId === 'string') {
+            this.mConfigUserId = aOption.googleUserId;
+        }
+        if (typeof aOption.googleNluTag === 'string') {
+            this.mConfigNluTag = aOption.googleNluTag;
+        }
+        if (typeof aOption.googleNluTag === 'string') {
+            this.mConfigNluTag = aOption.googleNluTag;
+        }
+    };
+    /**
+     * Initialisierung von FileReader
+     *
+     * @param {GoogleOptionInterface} aOptions - optionale Parameter
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleConfig.prototype.init = function (aOption) {
+        // console.log('AmazonConfig.init:', aOption);
+        // Konfigurationsdaten fuer Nuance uebertragen
+        this._setOption(aOption);
+        // TODO: Muss fuer NodeJS-Version angepasst werden, sollte nicht in init eingelesen werden,
+        //       sondern als eigenstaendige Funktion aufgerufen werden!
+        /**** File-Reader wird nicht im Browser verwendet, sondern spaeter einmal nur in NodeJS
+        // FileReader pruefen
+
+        if ( !this.mFileReader ) {
+            this._error( 'init', 'kein FileReader vorhanden' );
+            this._onInit( -1 );
+            return -1;
+        }
+
+        // Readfunktion in FileReader eintragen
+
+        this.mFileReader.onRead = (aFileData: string) => this._readConfigData( aFileData );
+        this.mFileReader.onError = (aErrorText: string) => this._readError( aErrorText );
+
+        // Config-Datei einlesen
+
+        if ( this.mConfigLoadFlag ) {
+            return this.read();
+        }
+        ****/
+        this.mInitFlag = true;
+        return 0;
+    };
+    /**
+     * Freigabe der Komponente
+     */
+    GoogleConfig.prototype.done = function () {
+        this.mInitFlag = false;
+        this.mConfigPath = GOOGLE_CONFIG_PATH;
+        this.mConfigFile = GOOGLE_CONFIG_FILE;
+        this.mConfigLoadFlag = GOOGLE_CONFIG_LOAD;
+        // Nuance-Konfigurationsdaten
+        this.mConfigServerUrl = GOOGLE_DEFAULT_URL;
+        this.mConfigDialogflowTokenServerUrl = '';
+        this.mConfigDialogflowProjectId = '';
+        this.mConfigAppId = '';
+        this.mConfigAppKey = '';
+        this.mConfigUserId = '';
+        this.mConfigNluTag = '';
+        // FileReader
+        this.mFileReader = null;
+        // Initialisierung fertig
+        this.mOnInitFunc = null;
+        return 0;
+    };
+    GoogleConfig.prototype.isInit = function () {
         return this.mInitFlag;
-    }, e.prototype._onInit = function(t) {
-        0 === t && (this.mInitFlag = !0), 'function' == typeof this.mOnInitFunc && this.mOnInitFunc(t);
-    }, e.prototype._onError = function(t) {
-        if ('function' == typeof this.mOnErrorFunc) try {
-            return this.mOnErrorFunc(t), 0;
-        } catch (t) {
-            return this.isErrorOutput() && console.log('===> EXCEPTION AmazonConfig._onError: ', t.message), 
-            -1;
+    };
+    /**
+     * Sendet Event fuer fertige Initialisierung
+     *
+     * @param aResult - Fehlercode 0 oder -1
+     */
+    GoogleConfig.prototype._onInit = function (aResult) {
+        // console.log('AmazonConfig._onInit: start', aResult);
+        // Initflag wird nur gesetzt, wenn der Init-Event erfolgreich war
+        if (aResult === 0) {
+            this.mInitFlag = true;
+        }
+        if (typeof this.mOnInitFunc === 'function') {
+            // console.log('AmazonConfig._onInit: call', aResult);
+            this.mOnInitFunc(aResult);
+        }
+    };
+    /**
+     * Ereignisfunktion fuer Fehler aufrufen
+     *
+     * @private
+     * @param {any} aError - Error Datentransferobjekt
+     * @return {number} errorCode(0,-1)
+     */
+    GoogleConfig.prototype._onError = function (aError) {
+        // console.log('AmazonConfig._onError:', aError);
+        if (typeof this.mOnErrorFunc === 'function') {
+            try {
+                // console.log('AmazonConfig._onError: call', this.mOnErrorFunc);
+                this.mOnErrorFunc(aError);
+                return 0;
+            }
+            catch (aException) {
+                if (this.isErrorOutput()) {
+                    // hier darf nicht this._exception() verwendet werden, da sonst eine Endlosschleife entstehen kann!
+                    console.log('===> EXCEPTION AmazonConfig._onError: ', aException.message);
+                }
+                return -1;
+            }
         }
         return 0;
-    }, Object.defineProperty(e.prototype, "onInit", {
-        set: function(t) {
-            this.mOnInitFunc = t;
+    };
+    Object.defineProperty(GoogleConfig.prototype, "onInit", {
+        /**
+         * Initialisierungs-Event eintragen
+         */
+        set: function (aOnInitFunc) {
+            // console.log('AmazonConfig.set onInit:', aOnInitFunc);
+            this.mOnInitFunc = aOnInitFunc;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "onError", {
-        set: function(t) {
-            this.mOnErrorFunc = t;
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "onError", {
+        /**
+         * Error-Event Funktion eintragen
+         *
+         * @param {OnSpeechErrorFunc} aOnErrorFunc
+         */
+        set: function (aOnErrorFunc) {
+            // console.log('Plugin.onError:', aOnErrorFunc);
+            this.mOnErrorFunc = aOnErrorFunc;
         },
-        enumerable: !0,
-        configurable: !0
-    }), e.prototype._readConfigData = function(t) {
-        if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
-        try {
-            var e = JSON.parse(t);
-            return e.URL && (this.serverUrl = e.URL), e.APP_ID && (this.appId = e.APP_ID), e.APP_KEY && (this.appKey = e.APP_KEY), 
-            e.USER_ID && (this.userId = e.USER_ID), e.NLU_TAG && (this.nluTag = e.NLU_TAG), 
-            this._onInit(0), 0;
-        } catch (t) {
-            return this._exception('_readConfigData', t), -1;
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Einlesen der Config-Daten aus nuance.json (APP_ID, APP_KEY, NLU_TAG)
+     *
+     * @param aFileData - ConfigDaten als JSON-String
+     */
+    GoogleConfig.prototype._readConfigData = function (aFileData) {
+        // console.log('AmazonConfig._readConfigData:', aFileData);
+        if (!aFileData) {
+            this._error('_readConfigData', 'keine Daten uebergeben');
+            return -1;
         }
-    }, e.prototype._readError = function(t) {
-        this._error('_readError', t), this._onInit(-1);
-    }, e.prototype.read = function() {
-        if (!this.mFileReader) return this._error('read', 'kein FileReader vorhanden'), 
-        this._onInit(-1), -1;
-        var t = this.mConfigPath + this.mConfigFile;
-        return this.mFileReader.read(t);
-    }, Object.defineProperty(e.prototype, "serverUrl", {
-        get: function() {
+        try {
+            // String in Json-Objekt umwandeln
+            var configData = JSON.parse(aFileData);
+            if (configData.URL) {
+                this.serverUrl = configData.URL;
+            }
+            if (configData.APP_ID) {
+                this.appId = configData.APP_ID;
+            }
+            if (configData.APP_KEY) {
+                this.appKey = configData.APP_KEY;
+            }
+            if (configData.USER_ID) {
+                this.userId = configData.USER_ID;
+            }
+            if (configData.NLU_TAG) {
+                this.nluTag = configData.NLU_TAG;
+            }
+            this._onInit(0);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_readConfigData', aException);
+            return -1;
+        }
+    };
+    /**
+     * Rueckgabe eines Fehlers beim Einlesen der Daten
+     *
+     * @param aErrorText - Fehlerbeschreibung
+     */
+    GoogleConfig.prototype._readError = function (aErrorText) {
+        this._error('_readError', aErrorText);
+        this._onInit(-1);
+    };
+    /**
+     * asynchrones Einlesen der Konfigurationsdaten
+     */
+    GoogleConfig.prototype.read = function () {
+        if (!this.mFileReader) {
+            this._error('read', 'kein FileReader vorhanden');
+            this._onInit(-1);
+            return -1;
+        }
+        var fileUrl = this.mConfigPath + this.mConfigFile;
+        return this.mFileReader.read(fileUrl);
+    };
+    Object.defineProperty(GoogleConfig.prototype, "serverUrl", {
+        get: function () {
+            // console.log('AmazonConfig.getServerUrl:', this.mConfigServerUrl);
             return this.mConfigServerUrl;
         },
-        set: function(t) {
-            this.mConfigServerUrl = t;
+        // Konfigurations-Funktionen
+        set: function (aUrl) {
+            // console.log('AmazonConfig.setServerUrl:', aUrl);
+            this.mConfigServerUrl = aUrl;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "dialogflowTokenServerUrl", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "dialogflowTokenServerUrl", {
+        get: function () {
+            // console.log('GoogleConfig.getDialogflowTokenServerUrl:', this.mConfigDiaogflowTokenServerUrl);
             return this.mConfigDialogflowTokenServerUrl;
         },
-        set: function(t) {
-            this.mConfigDialogflowTokenServerUrl = t;
+        set: function (aUrl) {
+            // console.log('GoogleConfig.setDialogflowTokenServerUrl:', aUrl);
+            this.mConfigDialogflowTokenServerUrl = aUrl;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "dialogflowProjectId", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "dialogflowProjectId", {
+        get: function () {
+            // console.log('GoogleConfig.getDialogflowProjectId:', this.mConfigDiaogflowProjectId);
             return this.mConfigDialogflowProjectId;
         },
-        set: function(t) {
-            this.mConfigDialogflowProjectId = t;
+        set: function (aProjectId) {
+            // console.log('GoogleConfig.setDialogflowProjectId:', aProjectId);
+            this.mConfigDialogflowProjectId = aProjectId;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "appId", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "appId", {
+        get: function () {
             return this.mConfigAppId;
         },
-        set: function(t) {
-            this.mConfigAppId = t;
+        set: function (aAppId) {
+            this.mConfigAppId = aAppId;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "appKey", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "appKey", {
+        get: function () {
             return this.mConfigAppKey;
         },
-        set: function(t) {
-            this.mConfigAppKey = t;
+        set: function (aAppKey) {
+            this.mConfigAppKey = aAppKey;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "userId", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "userId", {
+        get: function () {
             return this.mConfigUserId;
         },
-        set: function(t) {
-            this.mConfigUserId = t;
+        set: function (aUserId) {
+            this.mConfigUserId = aUserId;
         },
-        enumerable: !0,
-        configurable: !0
-    }), Object.defineProperty(e.prototype, "nluTag", {
-        get: function() {
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "nluTag", {
+        get: function () {
             return this.mConfigNluTag;
         },
-        set: function(t) {
-            this.mConfigNluTag = t;
+        set: function (aNluTag) {
+            this.mConfigNluTag = aNluTag;
         },
-        enumerable: !0,
-        configurable: !0
-    }), e.prototype.isCredentials = function() {
-        return !!(this.mConfigAppKey || this.mConfigDialogflowTokenServerUrl && this.mConfigDialogflowProjectId);
-    }, e;
-}(ErrorBase), GoogleNetwork = function(t) {
-    function e() {
-        return t.call(this, 'GoogleNetwork') || this;
-    }
-    return __extends(e, t), e;
-}(NetHtml5Connect), GoogleWebSocket = function(t) {
-    function e() {
-        return t.call(this, 'GoogleWebSocket') || this;
-    }
-    return __extends(e, t), e.prototype.connect = function(t) {
-        return t ? 0 !== this._connect(t) ? (this._error('open', 'keine Verbindung moeglich'), 
-        -1) : 0 : (this._error('connect', 'keine URL vorhanden'), -1);
-    }, e.prototype.disconnect = function() {
-        this.onMessage = null, this.close();
-    }, e.prototype.sendJSON = function(t) {
-        this.sendMessage(t);
-    }, e;
-}(NetHtml5WebSocket), GoogleConnect = function(t) {
-    function e(e, o) {
-        var n = t.call(this, 'GoogleConnect') || this;
-        return n.mConfig = null, n.mWebSocket = null, n.mConnectFlag = !1, n.mConfig = e, 
-        n.mWebSocket = o, n;
-    }
-    return __extends(e, t), e.prototype.isConnect = function() {
-        return this.mConnectFlag;
-    }, e.prototype.connect = function(t) {
-        var e = this;
-        if (this.isConnect()) return 0;
-        if (!this.mWebSocket) return this.mConnectFlag = !0, 0;
-        try {
-            return this.mWebSocket.onMessage = function(o) {
-                if ('string' == typeof o.data) {
-                    console.log('GoogleConnect.onMessage: String-Nachricht');
-                    try {
-                        var n = JSON.parse(o.data);
-                        t.onmessage ? t.onmessage(n) : e._error('connect.onMessage', 'keine Message-Funktion vorhanden');
-                    } catch (t) {
-                        return e._exception('connect.onMessage', t), -1;
-                    }
-                } else 'object' == typeof o.data && (console.log('GoogleConnect.onMessage: Objekt-Daten'), 
-                t.ondata ? t.ondata(o.data) : e._error('connect.onMessage', 'keine Daten-Funktion vorhanden'));
-                return 0;
-            }, this.mConnectFlag = !0, 0;
-        } catch (t) {
-            return this._exception('connect', t), -1;
+        enumerable: true,
+        configurable: true
+    });
+    // pruefen auf vorhandene Credentials
+    GoogleConfig.prototype.isCredentials = function () {
+        if (this.mConfigAppKey || (this.mConfigDialogflowTokenServerUrl && this.mConfigDialogflowProjectId)) {
+            return true;
         }
-    }, e.prototype.disconnect = function() {
-        return this.mConnectFlag = !1, this.mWebSocket && (this.mWebSocket.onMessage = null), 
-        0;
-    }, e.prototype.sendJSON = function(t) {
-        return this.mWebSocket ? this.mWebSocket.sendMessage(t) : -1;
-    }, Object.defineProperty(e.prototype, "webSocket", {
-        get: function() {
-            return this.mWebSocket ? this.mWebSocket.webSocket : null;
+        return false;
+    };
+    return GoogleConfig;
+}(ErrorBase));
+
+/**
+ * Definiert die Network fuer Google
+ *
+ * Letzte Aenderung: 08.05.2019
+ * Status: rot
+ *
+ * @module cloud/google/net
+ * @author SB
+ */
+var GoogleNetwork = /** @class */ (function (_super) {
+    __extends(GoogleNetwork, _super);
+    function GoogleNetwork() {
+        return _super.call(this, 'GoogleNetwork') || this;
+    }
+    return GoogleNetwork;
+}(NetHtml5Connect));
+
+/**
+ * Definiert die WebSocket fuer den Speech-Server als Verbindung zu Google
+ *
+ * Letzte Aenderung: 16.05.2019
+ * Status: rot
+ *
+ * @module cloud/google/net
+ * @author SB
+ */
+var GoogleWebSocket = /** @class */ (function (_super) {
+    __extends(GoogleWebSocket, _super);
+    function GoogleWebSocket() {
+        return _super.call(this, 'GoogleWebSocket') || this;
+    }
+    GoogleWebSocket.prototype.connect = function (aUrl) {
+        // pruefen auf URL
+        if (!aUrl) {
+            this._error('connect', 'keine URL vorhanden');
+            return -1;
+        }
+        // console.log('GoogleWebSocket.connect: start', aUrl);
+        if (this._connect(aUrl) !== 0) {
+            // console.log('GoogleWebSocket.connect: keine Verbindung moeglich', aUrl);
+            this._error('open', 'keine Verbindung moeglich');
+            return -1;
+        }
+        // console.log('GoogleWebSocket.connect: ende', this.mTimeout);
+        return 0;
+    };
+    GoogleWebSocket.prototype.disconnect = function () {
+        // TODO: muss geloescht weerden, da sonst falsche Nachrichten an NuanceConnect versendet werden !
+        this.onMessage = null;
+        this.close();
+    };
+    // Data Helpers
+    GoogleWebSocket.prototype.sendJSON = function (aJson) {
+        this.sendMessage(aJson);
+    };
+    return GoogleWebSocket;
+}(NetHtml5WebSocket));
+
+/**
+ * Definiert die Verbindung zum Google-Service
+ *
+ * Letzte Aenderung: 07.06.2019
+ * Status: rot
+ *
+ * @module cloud/google/net
+ * @author SB
+ */
+/**
+ * Dient zur Verbindungsaufnahme mit GCloud Credentials.
+ */
+var GoogleConnect = /** @class */ (function (_super) {
+    __extends(GoogleConnect, _super);
+    /**
+     * Erzeugt eine Instanz von Connect
+     *
+     * @param aConfig - Google Config Objekt
+     */
+    function GoogleConnect(aConfig, aWebSocket) {
+        var _this = _super.call(this, 'GoogleConnect') || this;
+        // innere Komponenten
+        _this.mConfig = null;
+        // externe Komponente
+        _this.mWebSocket = null;
+        // Verbindung vorhanden
+        _this.mConnectFlag = false;
+        _this.mConfig = aConfig;
+        // kann auch Null sein, wenn Server nicht vorhanden ist !
+        _this.mWebSocket = aWebSocket;
+        return _this;
+    }
+    // Verbindungs-Funktionen
+    GoogleConnect.prototype.isConnect = function () {
+        return this.mConnectFlag;
+    };
+    /**
+     * Verbindungsaufbau mit Google-Service.
+     */
+    GoogleConnect.prototype.connect = function (aOption) {
+        var _this = this;
+        // Initialize the Google Cognito credentials provider
+        // console.log('GoogleConnect: onMessage einbinden');
+        if (this.isConnect()) {
+            // Verbindung ist bereits aufgebaut
+            return 0;
+        }
+        // pruefen, ob WebSocket vorhanden ist
+        if (!this.mWebSocket) {
+            this.mConnectFlag = true;
+            return 0;
+        }
+        // WebSocket Nachrichtenfunktion eintragen
+        try {
+            this.mWebSocket.onMessage = function (aMessage) {
+                // console.log('GoogleConnect.connect: onMessage = ', aMessage.data );
+                if (typeof aMessage.data === 'string') {
+                    console.log('GoogleConnect.onMessage: String-Nachricht');
+                    // Nachricht von Google verarbeiten
+                    try {
+                        var message = JSON.parse(aMessage.data);
+                        // console.log('GoogleConnect: onMessage.data = ', message );
+                        if (aOption.onmessage) {
+                            aOption.onmessage(message);
+                        }
+                        else {
+                            _this._error('connect.onMessage', 'keine Message-Funktion vorhanden');
+                        }
+                    }
+                    catch (aException) {
+                        _this._exception('connect.onMessage', aException);
+                        return -1;
+                    }
+                }
+                else if (typeof aMessage.data === 'object') {
+                    console.log('GoogleConnect.onMessage: Objekt-Daten');
+                    if (aOption.ondata) {
+                        aOption.ondata(aMessage.data);
+                    }
+                    else {
+                        _this._error('connect.onMessage', 'keine Daten-Funktion vorhanden');
+                    }
+                }
+                return 0;
+            };
+            // pruefen auf Credentials
+            this.mConnectFlag = true;
+            return 0;
+        }
+        catch (aException) {
+            this._exception('connect', aException);
+            return -1;
+        }
+    };
+    /**
+     * Dient der Entfernung von onMessage aus dem WebSocket.
+     */
+    GoogleConnect.prototype.disconnect = function () {
+        this.mConnectFlag = false;
+        if (this.mWebSocket) {
+            this.mWebSocket.onMessage = null;
+        }
+        return 0;
+    };
+    // Data Helpers
+    GoogleConnect.prototype.sendJSON = function (aMessage) {
+        if (this.mWebSocket) {
+            return this.mWebSocket.sendMessage(aMessage);
+        }
+        return -1;
+    };
+    Object.defineProperty(GoogleConnect.prototype, "webSocket", {
+        /**
+         * Html5-WebSocket zurueckgeben
+         */
+        get: function () {
+            if (this.mWebSocket) {
+                return this.mWebSocket.webSocket;
+            }
+            return null;
         },
-        enumerable: !0,
-        configurable: !0
-    }), e;
-}(ErrorBase);
+        enumerable: true,
+        configurable: true
+    });
+    return GoogleConnect;
+}(ErrorBase));
 
-!function(t) {
-    var e;
-    !function(t) {
-        t[t.EN = "en"] = "EN", t[t.DE = "de"] = "DE", t[t.ES = "es"] = "ES", t[t.PT_BR = "pt-BR"] = "PT_BR", 
-        t[t.ZH_HK = "zh-HK"] = "ZH_HK", t[t.ZH_CN = "zh-CN"] = "ZH_CN", t[t.ZH_TW = "zh-TW"] = "ZH_TW", 
-        t[t.NL = "nl"] = "NL", t[t.FR = "fr"] = "FR", t[t.IT = "it"] = "IT", t[t.JA = "ja"] = "JA", 
-        t[t.KO = "ko"] = "KO", t[t.PT = "pt"] = "PT", t[t.RU = "ru"] = "RU", t[t.UK = "uk"] = "UK";
-    }(e = t.AVAILABLE_LANGUAGES || (t.AVAILABLE_LANGUAGES = {})), t.VERSION = "2.0.0-beta.20", 
-    t.DEFAULT_BASE_URL = "https://api.api.ai/v1/", t.DEFAULT_API_VERSION = "20150910", 
-    t.DEFAULT_CLIENT_LANG = e.EN, t.DEFAULT_TTS_HOST = "https://api.api.ai/api/tts";
-}(ApiAiConstants || (ApiAiConstants = {}));
+var ApiAiConstants;
+(function (ApiAiConstants) {
+    var AVAILABLE_LANGUAGES;
+    (function (AVAILABLE_LANGUAGES) {
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["EN"] = "en"] = "EN";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["DE"] = "de"] = "DE";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["ES"] = "es"] = "ES";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["PT_BR"] = "pt-BR"] = "PT_BR";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["ZH_HK"] = "zh-HK"] = "ZH_HK";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["ZH_CN"] = "zh-CN"] = "ZH_CN";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["ZH_TW"] = "zh-TW"] = "ZH_TW";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["NL"] = "nl"] = "NL";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["FR"] = "fr"] = "FR";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["IT"] = "it"] = "IT";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["JA"] = "ja"] = "JA";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["KO"] = "ko"] = "KO";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["PT"] = "pt"] = "PT";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["RU"] = "ru"] = "RU";
+        AVAILABLE_LANGUAGES[AVAILABLE_LANGUAGES["UK"] = "uk"] = "UK";
+    })(AVAILABLE_LANGUAGES = ApiAiConstants.AVAILABLE_LANGUAGES || (ApiAiConstants.AVAILABLE_LANGUAGES = {}));
+    ApiAiConstants.VERSION = "2.0.0-beta.20";
+    ApiAiConstants.DEFAULT_BASE_URL = "https://api.api.ai/v1/";
+    ApiAiConstants.DEFAULT_API_VERSION = "20150910";
+    ApiAiConstants.DEFAULT_CLIENT_LANG = AVAILABLE_LANGUAGES.EN;
+    ApiAiConstants.DEFAULT_TTS_HOST = "https://api.api.ai/api/tts";
+})(ApiAiConstants || (ApiAiConstants = {}));
 
-var ApiAiBaseError = function(t) {
-    function e(e) {
-        var o = t.call(this, e) || this;
-        return o.message = e, o.stack = new Error().stack, o;
+var ApiAiBaseError = /** @class */ (function (_super) {
+    __extends(ApiAiBaseError, _super);
+    function ApiAiBaseError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.message = message;
+        _this.stack = new Error().stack;
+        return _this;
     }
-    return __extends(e, t), e;
-}(Error), ApiAiClientConfigurationError = function(t) {
-    function e(e) {
-        var o = t.call(this, e) || this;
-        return o.name = "ApiAiClientConfigurationError", o;
+    return ApiAiBaseError;
+}(Error));
+var ApiAiClientConfigurationError = /** @class */ (function (_super) {
+    __extends(ApiAiClientConfigurationError, _super);
+    function ApiAiClientConfigurationError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = "ApiAiClientConfigurationError";
+        return _this;
     }
-    return __extends(e, t), e;
-}(ApiAiBaseError), ApiAiRequestError = function(t) {
-    function e(e, o) {
-        void 0 === o && (o = null);
-        var n = t.call(this, e) || this;
-        return n.message = e, n.code = o, n.name = "ApiAiRequestError", n;
+    return ApiAiClientConfigurationError;
+}(ApiAiBaseError));
+var ApiAiRequestError = /** @class */ (function (_super) {
+    __extends(ApiAiRequestError, _super);
+    function ApiAiRequestError(message, code) {
+        if (code === void 0) { code = null; }
+        var _this = _super.call(this, message) || this;
+        _this.message = message;
+        _this.code = code;
+        _this.name = "ApiAiRequestError";
+        return _this;
     }
-    return __extends(e, t), e;
-}(ApiAiBaseError), XhrRequest = function() {
-    function t() {}
-    return t.ajax = function(e, o, n, r, i) {
-        return void 0 === n && (n = null), void 0 === r && (r = null), void 0 === i && (i = {}), 
-        new Promise(function(s, u) {
-            var a = t.createXMLHTTPObject(), c = o, l = null;
-            if (n && e === t.Method.GET) {
-                c += "?";
-                var h = 0;
-                for (var g in n) n.hasOwnProperty(g) && (h++ && (c += "&"), c += encodeURIComponent(g) + "=" + encodeURIComponent(n[g]));
-            } else n && (r || (r = {}), r["Content-Type"] = "application/json; charset=utf-8", 
-            l = JSON.stringify(n));
-            for (var g in i) g in a && (a[g] = i[g]);
-            if (a.open(t.Method[e], c, !0), r) for (var g in console.log('Dialogflow.XhrRequest: Headers', r), 
-            r) r.hasOwnProperty(g) && a.setRequestHeader(g, r[g]);
-            l ? a.send(l) : a.send(), a.onload = function() {
-                a.status >= 200 && a.status < 300 ? s(a) : (console.log('Dialogflow.XhrRequest: onLoad->reject ', a), 
-                u(a));
-            }, a.onerror = function() {
-                console.log('Dialogflow.XhrRequest: onError ', a), u(a);
+    return ApiAiRequestError;
+}(ApiAiBaseError));
+
+/**
+ * quick ts implementation of example from
+ * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise
+ * with some minor improvements
+ * @todo: test (?)
+ * @todo: add node.js implementation with node's http inside. Just to make SDK cross-platform
+ */
+var XhrRequest = /** @class */ (function () {
+    function XhrRequest() {
+    }
+    // Method that performs the ajax request
+    XhrRequest.ajax = function (method, url, args, headers, options) {
+        if (args === void 0) { args = null; }
+        if (headers === void 0) { headers = null; }
+        if (options === void 0) { options = {}; }
+        // Creating a promise
+        return new Promise(function (resolve, reject) {
+            // Instantiates the XMLHttpRequest
+            var client = XhrRequest.createXMLHTTPObject();
+            var uri = url;
+            var payload = null;
+            // Add given payload to get request
+            if (args && (method === XhrRequest.Method.GET)) {
+                uri += "?";
+                var argcount = 0;
+                for (var key in args) {
+                    if (args.hasOwnProperty(key)) {
+                        if (argcount++) {
+                            uri += "&";
+                        }
+                        uri += encodeURIComponent(key) + "=" + encodeURIComponent(args[key]);
+                    }
+                }
+            }
+            else if (args) {
+                if (!headers) {
+                    headers = {};
+                }
+                headers["Content-Type"] = "application/json; charset=utf-8";
+                payload = JSON.stringify(args);
+            }
+            for (var key in options) {
+                if (key in client) {
+                    client[key] = options[key];
+                }
+            }
+            // hack: method[method] is somewhat like .toString for enum Method
+            // should be made in normal way
+            client.open(XhrRequest.Method[method], uri, true);
+            // Add given headers
+            if (headers) {
+                console.log('Dialogflow.XhrRequest: Headers', headers);
+                for (var key in headers) {
+                    if (headers.hasOwnProperty(key)) {
+                        client.setRequestHeader(key, headers[key]);
+                    }
+                }
+            }
+            payload ? client.send(payload) : client.send();
+            client.onload = function () {
+                if (client.status >= 200 && client.status < 300) {
+                    // Performs the function "resolve" when this.status is equal to 2xx
+                    resolve(client);
+                }
+                else {
+                    // Performs the function "reject" when this.status is different than 2xx
+                    console.log('Dialogflow.XhrRequest: onLoad->reject ', client);
+                    reject(client);
+                }
+            };
+            client.onerror = function () {
+                console.log('Dialogflow.XhrRequest: onError ', client);
+                reject(client);
             };
         });
-    }, t.get = function(e, o, n, r) {
-        return void 0 === o && (o = null), void 0 === n && (n = null), void 0 === r && (r = {}), 
-        t.ajax(t.Method.GET, e, o, n, r);
-    }, t.post = function(e, o, n, r) {
-        return void 0 === o && (o = null), void 0 === n && (n = null), void 0 === r && (r = {}), 
-        t.ajax(t.Method.POST, e, o, n, r);
-    }, t.put = function(e, o, n, r) {
-        return void 0 === o && (o = null), void 0 === n && (n = null), void 0 === r && (r = {}), 
-        t.ajax(t.Method.PUT, e, o, n, r);
-    }, t.delete = function(e, o, n, r) {
-        return void 0 === o && (o = null), void 0 === n && (n = null), void 0 === r && (r = {}), 
-        t.ajax(t.Method.DELETE, e, o, n, r);
-    }, t.createXMLHTTPObject = function() {
-        for (var e = null, o = 0, n = t.XMLHttpFactories; o < n.length; o++) {
-            var r = n[o];
+    };
+    XhrRequest.get = function (url, payload, headers, options) {
+        if (payload === void 0) { payload = null; }
+        if (headers === void 0) { headers = null; }
+        if (options === void 0) { options = {}; }
+        return XhrRequest.ajax(XhrRequest.Method.GET, url, payload, headers, options);
+    };
+    XhrRequest.post = function (url, payload, headers, options) {
+        if (payload === void 0) { payload = null; }
+        if (headers === void 0) { headers = null; }
+        if (options === void 0) { options = {}; }
+        return XhrRequest.ajax(XhrRequest.Method.POST, url, payload, headers, options);
+    };
+    XhrRequest.put = function (url, payload, headers, options) {
+        if (payload === void 0) { payload = null; }
+        if (headers === void 0) { headers = null; }
+        if (options === void 0) { options = {}; }
+        return XhrRequest.ajax(XhrRequest.Method.PUT, url, payload, headers, options);
+    };
+    XhrRequest.delete = function (url, payload, headers, options) {
+        if (payload === void 0) { payload = null; }
+        if (headers === void 0) { headers = null; }
+        if (options === void 0) { options = {}; }
+        return XhrRequest.ajax(XhrRequest.Method.DELETE, url, payload, headers, options);
+    };
+    XhrRequest.createXMLHTTPObject = function () {
+        var xmlhttp = null;
+        for (var _i = 0, _a = XhrRequest.XMLHttpFactories; _i < _a.length; _i++) {
+            var i = _a[_i];
             try {
-                e = r();
-            } catch (t) {
+                xmlhttp = i();
+            }
+            catch (e) {
                 continue;
             }
             break;
         }
-        return e;
-    }, t.XMLHttpFactories = [ function() {
-        return new XMLHttpRequest();
-    }, function() {
-        return new window.ActiveXObject("Msxml2.XMLHTTP");
-    }, function() {
-        return new window.ActiveXObject("Msxml3.XMLHTTP");
-    }, function() {
-        return new window.ActiveXObject("Microsoft.XMLHTTP");
-    } ], t;
-}();
+        return xmlhttp;
+    };
+    XhrRequest.XMLHttpFactories = [
+        function () { return new XMLHttpRequest(); },
+        function () { return new window["ActiveXObject"]("Msxml2.XMLHTTP"); },
+        function () { return new window["ActiveXObject"]("Msxml3.XMLHTTP"); },
+        function () { return new window["ActiveXObject"]("Microsoft.XMLHTTP"); }
+    ];
+    return XhrRequest;
+}());
+(function (XhrRequest) {
+    var Method;
+    (function (Method) {
+        Method[Method["GET"] = "GET"] = "GET";
+        Method[Method["POST"] = "POST"] = "POST";
+        Method[Method["PUT"] = "PUT"] = "PUT";
+        Method[Method["DELETE"] = "DELETE"] = "DELETE";
+    })(Method = XhrRequest.Method || (XhrRequest.Method = {}));
+})(XhrRequest || (XhrRequest = {}));
+var XhrRequest$1 = XhrRequest;
 
-!function(t) {
-    !function(t) {
-        t[t.GET = "GET"] = "GET", t[t.POST = "POST"] = "POST", t[t.PUT = "PUT"] = "PUT", 
-        t[t.DELETE = "DELETE"] = "DELETE";
-    }(t.Method || (t.Method = {}));
-}(XhrRequest || (XhrRequest = {}));
-
-var IStreamClient, XhrRequest$1 = XhrRequest, Request = function() {
-    function t(t, e) {
-        this.apiAiClient = t, this.options = e, this.uri = this.apiAiClient.getApiBaseUrl() + "query?v=" + this.apiAiClient.getApiVersion(), 
-        this.requestMethod = XhrRequest$1.Method.POST, this.headers = {
-            Authorization: "Bearer " + this.apiAiClient.getAccessToken()
-        }, this.options.lang = this.apiAiClient.getApiLang(), this.options.sessionId = this.apiAiClient.getSessionId();
-    }
-    return t.handleSuccess = function(t) {
-        return Promise.resolve(JSON.parse(t.responseText));
-    }, t.handleError = function(t) {
-        var e = new ApiAiRequestError(null);
-        try {
-            var o = JSON.parse(t.responseText);
-            e = o.status && o.status.errorDetails ? new ApiAiRequestError(o.status.errorDetails, o.status.code) : new ApiAiRequestError(t.statusText, t.status);
-        } catch (o) {
-            e = new ApiAiRequestError(t.statusText, t.status);
-        }
-        return Promise.reject(e);
-    }, t.prototype.perform = function(e) {
-        void 0 === e && (e = null);
-        var o = e || this.options;
-        return XhrRequest$1.ajax(this.requestMethod, this.uri, o, this.headers).then(t.handleSuccess.bind(this)).catch(t.handleError.bind(this));
-    }, t;
-}(), EventRequest = function(t) {
-    function e() {
-        return null !== t && t.apply(this, arguments) || this;
-    }
-    return __extends(e, t), e;
-}(Request), TextRequest = function(t) {
-    function e() {
-        return null !== t && t.apply(this, arguments) || this;
-    }
-    return __extends(e, t), e;
-}(Request);
-
-!function(t) {
-    !function(t) {
-        t[t.ERR_NETWORK = 0] = "ERR_NETWORK", t[t.ERR_AUDIO = 1] = "ERR_AUDIO", t[t.ERR_SERVER = 2] = "ERR_SERVER", 
-        t[t.ERR_CLIENT = 3] = "ERR_CLIENT";
-    }(t.ERROR || (t.ERROR = {})), function(t) {
-        t[t.MSG_WAITING_MICROPHONE = 0] = "MSG_WAITING_MICROPHONE", t[t.MSG_MEDIA_STREAM_CREATED = 1] = "MSG_MEDIA_STREAM_CREATED", 
-        t[t.MSG_INIT_RECORDER = 2] = "MSG_INIT_RECORDER", t[t.MSG_RECORDING = 3] = "MSG_RECORDING", 
-        t[t.MSG_SEND = 4] = "MSG_SEND", t[t.MSG_SEND_EMPTY = 5] = "MSG_SEND_EMPTY", t[t.MSG_SEND_EOS_OR_JSON = 6] = "MSG_SEND_EOS_OR_JSON", 
-        t[t.MSG_WEB_SOCKET = 7] = "MSG_WEB_SOCKET", t[t.MSG_WEB_SOCKET_OPEN = 8] = "MSG_WEB_SOCKET_OPEN", 
-        t[t.MSG_WEB_SOCKET_CLOSE = 9] = "MSG_WEB_SOCKET_CLOSE", t[t.MSG_STOP = 10] = "MSG_STOP", 
-        t[t.MSG_CONFIG_CHANGED = 11] = "MSG_CONFIG_CHANGED";
-    }(t.EVENT || (t.EVENT = {}));
-}(IStreamClient || (IStreamClient = {}));
-
-var ApiAiClient = function() {
-    function t(t) {
-        if (!t || !t.accessToken) throw new ApiAiClientConfigurationError("Access token is required for new ApiAi.Client instance");
-        this.accessToken = t.accessToken, this.apiLang = t.lang || ApiAiConstants.DEFAULT_CLIENT_LANG, 
-        this.apiVersion = t.version || ApiAiConstants.DEFAULT_API_VERSION, this.apiBaseUrl = t.baseUrl || ApiAiConstants.DEFAULT_BASE_URL, 
-        this.sessionId = t.sessionId || this.guid();
-    }
-    return t.prototype.textRequest = function(t, e) {
-        if (void 0 === e && (e = {}), !t) throw new ApiAiClientConfigurationError("Query should not be empty");
-        return e.query = t, new TextRequest(this, e).perform();
-    }, t.prototype.eventRequest = function(t, e, o) {
-        if (void 0 === e && (e = {}), void 0 === o && (o = {}), !t) throw new ApiAiClientConfigurationError("Event name can not be empty");
-        return o.event = {
-            name: t,
-            data: e
-        }, new EventRequest(this, o).perform();
-    }, t.prototype.getAccessToken = function() {
-        return this.accessToken;
-    }, t.prototype.getApiVersion = function() {
-        return this.apiVersion ? this.apiVersion : ApiAiConstants.DEFAULT_API_VERSION;
-    }, t.prototype.getApiLang = function() {
-        return this.apiLang ? this.apiLang : ApiAiConstants.DEFAULT_CLIENT_LANG;
-    }, t.prototype.getApiBaseUrl = function() {
-        return this.apiBaseUrl ? this.apiBaseUrl : ApiAiConstants.DEFAULT_BASE_URL;
-    }, t.prototype.setSessionId = function(t) {
-        this.sessionId = t;
-    }, t.prototype.getSessionId = function() {
-        return this.sessionId;
-    }, t.prototype.guid = function() {
-        var t = function() {
-            return Math.floor(65536 * (1 + Math.random())).toString(16).substring(1);
+var Request = /** @class */ (function () {
+    function Request(apiAiClient, options) {
+        this.apiAiClient = apiAiClient;
+        this.options = options;
+        this.uri = this.apiAiClient.getApiBaseUrl() + "query?v=" + this.apiAiClient.getApiVersion();
+        this.requestMethod = XhrRequest$1.Method.POST;
+        this.headers = {
+            Authorization: "Bearer " + this.apiAiClient.getAccessToken(),
         };
-        return t() + t() + "-" + t() + "-" + t() + "-" + t() + "-" + t() + t() + t();
-    }, t;
-}(), GoogleDevice = function(t) {
-    function e(e, o, n) {
-        var r = t.call(this, e || 'GoogleDevice') || this;
-        return r.mInitFlag = !1, r.mConfig = null, r.mConnect = null, r.mTransaction = null, 
-        r.onStart = null, r.onStop = null, r.onResult = null, r.onError = null, r.onClose = null, 
-        r.mConfig = o, r.mConnect = n, r.mInitFlag = !0, r;
+        this.options.lang = this.apiAiClient.getApiLang();
+        this.options.sessionId = this.apiAiClient.getSessionId();
     }
-    return __extends(e, t), e.prototype.isInit = function() {
+    Request.handleSuccess = function (xhr) {
+        return Promise.resolve(JSON.parse(xhr.responseText));
+    };
+    Request.handleError = function (xhr) {
+        var error = new ApiAiRequestError(null);
+        try {
+            var serverResponse = JSON.parse(xhr.responseText);
+            if (serverResponse.status && serverResponse.status.errorDetails) {
+                error = new ApiAiRequestError(serverResponse.status.errorDetails, serverResponse.status.code);
+            }
+            else {
+                error = new ApiAiRequestError(xhr.statusText, xhr.status);
+            }
+        }
+        catch (e) {
+            error = new ApiAiRequestError(xhr.statusText, xhr.status);
+        }
+        return Promise.reject(error);
+    };
+    Request.prototype.perform = function (overrideOptions) {
+        if (overrideOptions === void 0) { overrideOptions = null; }
+        var options = overrideOptions ? overrideOptions : this.options;
+        return XhrRequest$1.ajax(this.requestMethod, this.uri, options, this.headers)
+            .then(Request.handleSuccess.bind(this))
+            .catch(Request.handleError.bind(this));
+    };
+    return Request;
+}());
+
+var EventRequest = /** @class */ (function (_super) {
+    __extends(EventRequest, _super);
+    function EventRequest() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return EventRequest;
+}(Request));
+
+var TextRequest = /** @class */ (function (_super) {
+    __extends(TextRequest, _super);
+    function TextRequest() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return TextRequest;
+}(Request));
+
+var IStreamClient;
+(function (IStreamClient) {
+    var ERROR;
+    (function (ERROR) {
+        ERROR[ERROR["ERR_NETWORK"] = 0] = "ERR_NETWORK";
+        ERROR[ERROR["ERR_AUDIO"] = 1] = "ERR_AUDIO";
+        ERROR[ERROR["ERR_SERVER"] = 2] = "ERR_SERVER";
+        ERROR[ERROR["ERR_CLIENT"] = 3] = "ERR_CLIENT";
+    })(ERROR = IStreamClient.ERROR || (IStreamClient.ERROR = {}));
+    var EVENT;
+    (function (EVENT) {
+        EVENT[EVENT["MSG_WAITING_MICROPHONE"] = 0] = "MSG_WAITING_MICROPHONE";
+        EVENT[EVENT["MSG_MEDIA_STREAM_CREATED"] = 1] = "MSG_MEDIA_STREAM_CREATED";
+        EVENT[EVENT["MSG_INIT_RECORDER"] = 2] = "MSG_INIT_RECORDER";
+        EVENT[EVENT["MSG_RECORDING"] = 3] = "MSG_RECORDING";
+        EVENT[EVENT["MSG_SEND"] = 4] = "MSG_SEND";
+        EVENT[EVENT["MSG_SEND_EMPTY"] = 5] = "MSG_SEND_EMPTY";
+        EVENT[EVENT["MSG_SEND_EOS_OR_JSON"] = 6] = "MSG_SEND_EOS_OR_JSON";
+        EVENT[EVENT["MSG_WEB_SOCKET"] = 7] = "MSG_WEB_SOCKET";
+        EVENT[EVENT["MSG_WEB_SOCKET_OPEN"] = 8] = "MSG_WEB_SOCKET_OPEN";
+        EVENT[EVENT["MSG_WEB_SOCKET_CLOSE"] = 9] = "MSG_WEB_SOCKET_CLOSE";
+        EVENT[EVENT["MSG_STOP"] = 10] = "MSG_STOP";
+        EVENT[EVENT["MSG_CONFIG_CHANGED"] = 11] = "MSG_CONFIG_CHANGED";
+    })(EVENT = IStreamClient.EVENT || (IStreamClient.EVENT = {}));
+})(IStreamClient || (IStreamClient = {}));
+
+var ApiAiClient = /** @class */ (function () {
+    function ApiAiClient(options) {
+        if (!options || !options.accessToken) {
+            throw new ApiAiClientConfigurationError("Access token is required for new ApiAi.Client instance");
+        }
+        this.accessToken = options.accessToken;
+        this.apiLang = options.lang || ApiAiConstants.DEFAULT_CLIENT_LANG;
+        this.apiVersion = options.version || ApiAiConstants.DEFAULT_API_VERSION;
+        this.apiBaseUrl = options.baseUrl || ApiAiConstants.DEFAULT_BASE_URL;
+        this.sessionId = options.sessionId || this.guid();
+    }
+    ApiAiClient.prototype.textRequest = function (query, options) {
+        if (options === void 0) { options = {}; }
+        if (!query) {
+            throw new ApiAiClientConfigurationError("Query should not be empty");
+        }
+        options.query = query;
+        return new TextRequest(this, options).perform();
+    };
+    ApiAiClient.prototype.eventRequest = function (eventName, eventData, options) {
+        if (eventData === void 0) { eventData = {}; }
+        if (options === void 0) { options = {}; }
+        if (!eventName) {
+            throw new ApiAiClientConfigurationError("Event name can not be empty");
+        }
+        options.event = { name: eventName, data: eventData };
+        return new EventRequest(this, options).perform();
+    };
+    // @todo: implement local tts request
+    /*public ttsRequest(query) {
+        if (!query) {
+            throw new ApiAiClientConfigurationError("Query should not be empty");
+        }
+        return new TTSRequest(this).makeTTSRequest(query);
+    }*/
+    /*public userEntitiesRequest(options: IRequestOptions = {}): UserEntitiesRequest {
+        return new UserEntitiesRequest(this, options);
+    }*/
+    ApiAiClient.prototype.getAccessToken = function () {
+        return this.accessToken;
+    };
+    ApiAiClient.prototype.getApiVersion = function () {
+        return (this.apiVersion) ? this.apiVersion : ApiAiConstants.DEFAULT_API_VERSION;
+    };
+    ApiAiClient.prototype.getApiLang = function () {
+        return (this.apiLang) ? this.apiLang : ApiAiConstants.DEFAULT_CLIENT_LANG;
+    };
+    ApiAiClient.prototype.getApiBaseUrl = function () {
+        return (this.apiBaseUrl) ? this.apiBaseUrl : ApiAiConstants.DEFAULT_BASE_URL;
+    };
+    ApiAiClient.prototype.setSessionId = function (sessionId) {
+        this.sessionId = sessionId;
+    };
+    ApiAiClient.prototype.getSessionId = function () {
+        return this.sessionId;
+    };
+    /**
+     * generates new random UUID
+     * @returns {string}
+     */
+    ApiAiClient.prototype.guid = function () {
+        var s4 = function () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); };
+        return s4() + s4() + "-" + s4() + "-" + s4() + "-" +
+            s4() + "-" + s4() + s4() + s4();
+    };
+    return ApiAiClient;
+}());
+
+/**
+ * Google Geraeteklasse fuer TTS, ASR und NLU
+ *
+ * Letzte Aenderung: 27.03.2020
+ * Status: rot
+ *
+ * @module cloud/google/device
+ * @author SB
+ */
+/**
+ * Basisklasse akller Google-Geraete
+ */
+var GoogleDevice = /** @class */ (function (_super) {
+    __extends(GoogleDevice, _super);
+    /**
+     * Erzeugt eine Instanz von NuanceDevice
+     *
+     * @param aConfig - Konfigurationsobjekt fuer Nuance-Konfigurationsdaten
+     * @param aConnect - Verbindungsobjekt zu Nuance-Server
+     */
+    function GoogleDevice(aDeviceName, aConfig, aConnect) {
+        var _this = _super.call(this, aDeviceName || 'GoogleDevice') || this;
+        // initialisierung
+        _this.mInitFlag = false;
+        // innere Komponenten
+        _this.mConfig = null;
+        _this.mConnect = null;
+        // Transaktion
+        _this.mTransaction = null;
+        // Event-Funktionen
+        _this.onStart = null;
+        _this.onStop = null;
+        _this.onResult = null;
+        _this.onError = null;
+        _this.onClose = null;
+        _this.mConfig = aConfig;
+        _this.mConnect = aConnect;
+        _this.mInitFlag = true;
+        return _this;
+    }
+    GoogleDevice.prototype.isInit = function () {
         return this.mInitFlag;
-    }, e.prototype._onStart = function() {
-        return this.mTransaction && this.onStart && this.onStart(this.mTransaction), 0;
-    }, e.prototype._onStop = function() {
-        return this.mTransaction && this.onStop && this.onStop(this.mTransaction), this.mTransaction = null, 
-        0;
-    }, e.prototype._onResult = function(t) {
-        return this.mTransaction && this.onResult && (this.mTransaction.result = t, this.onResult(this.mTransaction)), 
-        0;
-    }, e.prototype._onError = function(t) {
-        return this.mTransaction && this.onError && (this.mTransaction.error = t, this.onError(this.mTransaction)), 
-        0;
-    }, e.prototype._onClose = function() {
-        return this.mTransaction && this.onClose && this.onClose(this.mTransaction), 0;
-    }, e.prototype._start = function(t) {}, e.prototype._stop = function() {}, e.prototype.start = function(t, e) {
-        if (!t) return this._error('start', 'keine Transaktion uebergeben'), -1;
-        if (this.mTransaction) return this._error('start', 'vorherige Transaktion nicht beendet'), 
-        -1;
-        this.mTransaction = t;
-        try {
-            return this._start(e), 0;
-        } catch (t) {
-            return this._exception('start', t), -1;
+    };
+    GoogleDevice.prototype.clearToken = function () {
+        // muss von erbenden Klassen ueberschrieben werden        
+    };
+    // Event-Funktionen
+    /**
+     * StartEvent und Beginn der Transaktion
+     *
+     * @protected
+     */
+    GoogleDevice.prototype._onStart = function () {
+        // console.log('GoogleDevice._onStart');
+        if (this.mTransaction && this.onStart) {
+            this.onStart(this.mTransaction);
         }
-    }, e.prototype.stop = function(t) {
-        if (!t) return this._error('stop', 'keine Transaktion uebergeben'), -1;
-        if (!this.mTransaction) return this._error('stop', 'keine Transaktion gestartet'), 
-        -1;
-        if (this.mTransaction.transactionId !== t.transactionId) return this._error('stop', 'Transaktions-ID stimmt nicht ueberein'), 
-        -1;
-        try {
-            return this._stop(), 0;
-        } catch (t) {
-            return this._exception('stop', t), -1;
+        return 0;
+    };
+    /**
+     * Stop-Event und Ende der Transaktion
+     *
+     * @protected
+     */
+    GoogleDevice.prototype._onStop = function () {
+        // console.log('GoogleDevice._onStop:', this.mTransaction, this.onStop );
+        if (this.mTransaction && this.onStop) {
+            this.onStop(this.mTransaction);
         }
-    }, e.prototype.isTransaction = function() {
-        return !!this.mTransaction;
-    }, e.prototype.getTransaction = function() {
-        return this.mTransaction;
-    }, e.prototype.clearTransaction = function() {
+        // Transaktion wird geloescht
         this.mTransaction = null;
-    }, e;
-}(ErrorBase), GoogleNLU = function(t) {
-    function e(e, o) {
-        return t.call(this, 'GoogleNLU', e, o) || this;
+        return 0;
+    };
+    /**
+     * Ergebnis Event
+     *
+     * @protected
+     * @param aResult- Ergebnis von Google
+     */
+    GoogleDevice.prototype._onResult = function (aResult) {
+        if (this.mTransaction && this.onResult) {
+            this.mTransaction.result = aResult;
+            this.onResult(this.mTransaction);
+        }
+        return 0;
+    };
+    /**
+     * Fehler-Event
+     *
+     * @protected
+     * @param aError
+     */
+    GoogleDevice.prototype._onError = function (aError) {
+        if (this.mTransaction && this.onError) {
+            this.mTransaction.error = aError;
+            this.onError(this.mTransaction);
+        }
+        return 0;
+    };
+    /**
+     * WebSocket schliessen Event, deutet auf einen Fehler hin
+     *
+     * @protected
+     */
+    GoogleDevice.prototype._onClose = function () {
+        if (this.mTransaction && this.onClose) {
+            this.onClose(this.mTransaction);
+        }
+        return 0;
+    };
+    /**
+     * Initialisierung der Geraete Optionen
+     *
+     * @protected
+     *
+     * @return {any} Default Optionen fuer die NLU
+     */
+    // TODO: wird in Google nicht gebraucht
+    /****
+    _getDefaultOption(): any {
+        // console.log('NuanceASR._getDefaultOption: start');
+        const defaultOption = {
+
+            onopen: () => {
+                // console.log( 'NuanceNLU: Service verbunden' );
+                this._onStart();
+            },
+
+            onclose: () => {
+                // console.log( 'NuanceNLU: Websocket Closed' );
+                this._onClose();
+                this._onStop();
+            },
+
+            onerror: (aError: any) => {
+                // console.error('NuanceNLU._getDefaultOption: error = ', aError);
+                this._onError( aError );
+                this._onStop();
+            }
+
+        };
+        return defaultOption;
     }
-    return __extends(e, t), e.prototype._start = function(t) {
-        var e = this;
+    ****/
+    // TODO: wird in Google nicht gebraucht
+    /****
+    _createOption( aOverrideOption: any): any {
+        // console.log( 'NuanceNLU._createOption:', aOverrideOption );
+        const option = Object.assign( aOverrideOption, this._getDefaultOption());
+        option.appId = aOverrideOption.appId || this.mConfig.appId || '';
+        option.appKey = aOverrideOption.appKey || this.mConfig.appKey || '';
+        option.userId = aOverrideOption.userId || this.mConfig.userId;
+        option.tag = aOverrideOption.tag || this.mConfig.nluTag || '';
+        option.language = aOverrideOption.language || GOOGLE_DEFAULT_LANGUAGE;
+        option.text = aOverrideOption.text || '';
+        option.voice = aOverrideOption.voice || GOOGLE_DEFAULT_VOICE;
+        option.codec = aOverrideOption.codec || GOOGLE_DEFAULT_CODEC;
+        return option;
+    }
+    ****/
+    // Nachrichten senden
+    // TODO: wird in Google nicht gebraucht
+    /****
+    _sendQueryEndMessage( aTransactionId: number ): number {
+        const queryEndMessage = {
+            'message': 'query_end',
+            'transaction_id': aTransactionId
+        };
+        return this.mConnect.sendJSON( queryEndMessage );
+    }
+    ****/
+    // Geraete-Funktionen
+    /**
+     * Interne Geraete Startfunktion
+     *
+     * @protected
+     * @param {*} aOption - optionale Parameter
+     */
+    GoogleDevice.prototype._start = function (aOption) {
+        // muss von erbenden Klassen ueberschrieben werden
+    };
+    /**
+     * Interne Geraete Stopfunktion
+     *
+     * @protected
+     */
+    GoogleDevice.prototype._stop = function () {
+        // muss von erbenden Klassen ueberschrieben werden
+    };
+    /**
+     * Geraeteaktion starten
+     *
+     * @param {GoogleTransaction} aTransaction - auszufuehrende Transaktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleDevice.prototype.start = function (aTransaction, aOption) {
+        // console.log('GoogleDevice.start:', aTransaction, aOption);
+        if (!aTransaction) {
+            this._error('start', 'keine Transaktion uebergeben');
+            return -1;
+        }
+        // pruefen auf vorhandene Transaktion
+        if (this.mTransaction) {
+            this._error('start', 'vorherige Transaktion nicht beendet');
+            return -1;
+        }
+        // Transaktion eintragen
+        this.mTransaction = aTransaction;
         try {
-            if (!this.mConfig.appKey) return void this._error('_start', 'kein AppKey vorhanden');
-            this.mDialogflowClient = new ApiAiClient({
-                accessToken: this.mConfig.appKey
-            }), this.mDialogflowClient.textRequest(t.text).then(function(t) {
+            this._start(aOption);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('start', aException);
+            return -1;
+        }
+    };
+    /**
+     * Geraeteaktion beenden
+     *
+     * @param {GoogleTransaction} aTransaction - auszufuehrende Transaktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleDevice.prototype.stop = function (aTransaction) {
+        // console.log('GoogleDevice.stop:', aTransaction);
+        if (!aTransaction) {
+            this._error('stop', 'keine Transaktion uebergeben');
+            return -1;
+        }
+        // pruefen auf vorhandene Transaktion
+        if (!this.mTransaction) {
+            this._error('stop', 'keine Transaktion gestartet');
+            return -1;
+        }
+        // pruefen auf gleiche Transaktion
+        if (this.mTransaction.transactionId !== aTransaction.transactionId) {
+            this._error('stop', 'Transaktions-ID stimmt nicht ueberein');
+            return -1;
+        }
+        try {
+            this._stop();
+            return 0;
+        }
+        catch (aException) {
+            this._exception('stop', aException);
+            return -1;
+        }
+    };
+    /**
+     * pruefen auf vorhandene Transaktion
+     */
+    GoogleDevice.prototype.isTransaction = function () {
+        if (this.mTransaction) {
+            return true;
+        }
+        return false;
+    };
+    /**
+     * Transaktion zurueckgeben
+     */
+    GoogleDevice.prototype.getTransaction = function () {
+        return this.mTransaction;
+    };
+    /**
+     * Transaktion loeschen
+     */
+    GoogleDevice.prototype.clearTransaction = function () {
+        this.mTransaction = null;
+    };
+    return GoogleDevice;
+}(ErrorBase));
+
+/**
+ * NLU Anbindung an den Google-Service, hier wird nur ein Text in einen Intent umgewandelt
+ *
+ * Letzte Aenderung: 07.05.2019
+ * Status: rot
+ *
+ * @module cloud/google/device
+ * @author SB
+ */
+var GoogleNLU = /** @class */ (function (_super) {
+    __extends(GoogleNLU, _super);
+    /**
+     * Erzeugt eine Instanz von NuanceNLU
+     *
+     * @param aConfig - Konfigurationsobjekt fuer Nuance-Konfigurationsdaten
+     * @param aConnect - Verbindungsobjekt zu Nuance-Server
+     */
+    function GoogleNLU(aConfig, aConnect) {
+        return _super.call(this, 'GoogleNLU', aConfig, aConnect) || this;
+    }
+    // NLU-Funktionen
+    /**
+     * started die NLU
+     *
+     * @param options - Parameter fuer die NLU
+     */
+    GoogleNLU.prototype._start = function (aOptions) {
+        var _this = this;
+        // console.log('GoogleNLU._startNLU:', aOptions);
+        try {
+            if (!this.mConfig.appKey) {
+                this._error('_start', 'kein AppKey vorhanden');
+                return;
+            }
+            // Dialogflow V1 Verbindung erzeugen (gilt nur noch bis Oktober 2019)
+            this.mDialogflowClient = new ApiAiClient({ accessToken: this.mConfig.appKey });
+            // Hier wird die Antwort zurueckgegeben
+            this.mDialogflowClient.textRequest(aOptions.text).then(function (aResponse) {
+                // console.log('GoogleNlu._start: response = ', aResponse.result);
                 try {
-                    e._onResult(t.result);
-                } catch (t) {
-                    e._onError(new Error('NLU-Exception: ' + t.message));
+                    _this._onResult(aResponse.result);
                 }
-                e._onStop();
-            }, function(t) {
-                console.log('GoogleNlu._start: Promise-Error ', t), e._onError(new Error('NLU-Error: ' + t.message));
+                catch (aException) {
+                    _this._onError(new Error('NLU-Exception: ' + aException.message));
+                }
+                _this._onStop();
+            }, function (aError) {
+                console.log('GoogleNlu._start: Promise-Error ', aError);
+                _this._onError(new Error('NLU-Error: ' + aError.message));
             });
-        } catch (t) {
-            this._exception('_start', t);
         }
-    }, e.prototype._stop = function() {}, e;
-}(GoogleDevice), PCM_L16CodecArray = [ 'audio/L16;rate=8000', 'audio/L16;rate=16000' ], OpusCodecArray = [ 'audio/opus;rate=8000', 'audio/opus;rate=16000' ], GoogleAudioCodec = function(t) {
-    function e() {
-        return t.call(this, 'GoogleAudioCodec') || this;
+        catch (aException) {
+            this._exception('_start', aException);
+        }
+    };
+    GoogleNLU.prototype._stop = function () {
+        // console.log('GoogleNLU._stop');
+    };
+    return GoogleNLU;
+}(GoogleDevice));
+
+/**
+ * GoogleAudioCodec fuer Encode/Decode PCM
+ *
+ * Zur Zeit wird nur PCM-Codec unterstuetzt.
+ *
+ * Letzte Aenderung: 18.01.2019
+ * Status: rot
+ *
+ * @module cloud/google/audio
+ * @author SB
+ */
+// Nuance
+// import { AudioEncoder } from './audio-encoder';
+// Konstanten
+var PCM_L16CodecArray = ['audio/L16;rate=8000', 'audio/L16;rate=16000'];
+var OpusCodecArray = ['audio/opus;rate=8000', 'audio/opus;rate=16000'];
+/**
+ * Klasse GoogleAudioCodec zur Codierung/Decodierung von Audiodaten
+ */
+var GoogleAudioCodec = /** @class */ (function (_super) {
+    __extends(GoogleAudioCodec, _super);
+    function GoogleAudioCodec() {
+        return _super.call(this, 'GoogleAudioCodec') || this;
     }
-    return __extends(e, t), e.prototype._findCodec = function(t, e) {
-        for (var o = 0; o < e.length; o++) if (t === e[o]) return !0;
-        return !1;
-    }, e.prototype.findPcmCodec = function(t) {
-        return this._findCodec(t, PCM_L16CodecArray);
-    }, e.prototype.findOpusCodec = function(t) {
-        return this._findCodec(t, OpusCodecArray);
-    }, e.prototype._float32ToInt16 = function(t) {
-        var e = t < 0 ? 32768 * t : 32767 * t;
-        return Math.max(-32768, Math.min(32768, e));
-    }, e.prototype._float32ArrayToInt16Array = function(t) {
-        for (var e = new Int16Array(t.length), o = 0; o < t.length; ) e[o] = this._float32ToInt16(t[o++]);
-        return e;
-    }, e.prototype.encodePCM = function(t, e) {
-        return this.findPcmCodec(e) ? [ this._float32ArrayToInt16Array(t) ] : [ t ];
-    }, e.prototype.decodePCM = function(t) {
-        try {
-            for (var e = new Int16Array(t), o = e.length, n = new Float32Array(o), r = 0; r < o; ++r) n[r] = e[r] / 32768;
-            return n;
-        } catch (t) {
-            return console.log('GoogleAudioCodec.decodePCM: Exception', t), this._exception('decodePCM', t), 
-            [];
+    // Codec-Funktionen
+    /**
+     * Codec pruefen
+     *
+     * @private
+     * @param {string} aCodec - zu pruefender Codec
+     * @param {string[]} aCodecArray - Codec-Array
+     */
+    GoogleAudioCodec.prototype._findCodec = function (aCodec, aCodecArray) {
+        for (var i = 0; i < aCodecArray.length; i++) {
+            if (aCodec === aCodecArray[i]) {
+                return true;
+            }
         }
-    }, e;
-}(ErrorBase), GoogleResampler = function() {
-    function t(t, e, o, n, r) {
-        this.fromSampleRate = 0, this.toSampleRate = 0, this.channels = 0, this.outputBufferSize = 0, 
-        this.noReturn = !1, this.resampler = null, this.ratioWeight = 0, this.interpolate = null, 
-        this.lastWeight = 0, this.outputBuffer = null, this.lastOutput = null, this.fromSampleRate = t, 
-        this.toSampleRate = e, this.channels = o || 0, this.outputBufferSize = n, this.noReturn = !!r, 
+        return false;
+    };
+    /**
+     * Pruefen auf PCM-Codec
+     *
+     * @param {string} aCodec - zu pruefender codec
+     */
+    GoogleAudioCodec.prototype.findPcmCodec = function (aCodec) {
+        return this._findCodec(aCodec, PCM_L16CodecArray);
+    };
+    /**
+     * Pruefen auf Opus-Codec
+     *
+     * @param {string} aCodec - zu pruefender codec
+     */
+    GoogleAudioCodec.prototype.findOpusCodec = function (aCodec) {
+        return this._findCodec(aCodec, OpusCodecArray);
+    };
+    // Encode-Funktionen
+    /**
+     * Umwandlung von Float32 nach Int16
+     *
+     * @private
+     * @param {*} aFloat32 - umzuwandelnder Wert
+     *
+     * @return {*} Rueckgabe des passenden Int-Wertes
+     */
+    GoogleAudioCodec.prototype._float32ToInt16 = function (aFloat32) {
+        var int16 = aFloat32 < 0 ? aFloat32 * 32768 : aFloat32 * 32767;
+        return Math.max(-32768, Math.min(32768, int16));
+    };
+    /**
+     * Umwandlung des Float32Arrays nach Int16Array
+     *
+     * @private
+     * @param {*} aFloat32Array - umzuwandelndes Float32-Array
+     *
+     * @return {*} Rueckgabe des Int16-Arrays
+     */
+    GoogleAudioCodec.prototype._float32ArrayToInt16Array = function (aFloat32Array) {
+        var int16Array = new Int16Array(aFloat32Array.length);
+        var i = 0;
+        while (i < aFloat32Array.length) {
+            int16Array[i] = this._float32ToInt16(aFloat32Array[i++]);
+        }
+        return int16Array;
+    };
+    /**
+     * Umwandlung von FloatArray nach Int16Array
+     *
+     * @private
+     * @param {*} aFrame - umzuwandelnde Daten
+     * @param {string} aCodec - Codec fuer Umwandlung
+     */
+    GoogleAudioCodec.prototype.encodePCM = function (aFrame, aCodec) {
+        if (this.findPcmCodec(aCodec)) {
+            return [this._float32ArrayToInt16Array(aFrame)];
+        }
+        return [aFrame];
+    };
+    /* Opus-Codec
+    opusEncoderSetup( aRate: any ): void {
+        // TODO: Problem mit globalen Worker-Verzeichnis fuer alle Worker
+        this.opusEncoder = new AudioEncoder( 'lib/opus_encoder.js' );
+        this.opusEncoder.setup({ num_of_channels: 1, params: { application: 2048, frame_duration: 20, sampling_rate: aRate }, sampling_rate: aRate });
+    }
+    */
+    /*
+    encodeOpusAndSend( aFrame: any, aWs: any ): void {
+        this.opusEncoder.encode({ samples: aFrame, timestamp: 0, transferable: true })
+        .then((packets: any) => {
+            for ( let i = 0; i < packets.length; ++i ) {
+                aWs.send( packets[ i ].data );
+            }
+        }, rejectLog( 'opusDecoder.encode error' ));
+    }
+    */
+    // Decode-Funktionen
+    /**
+     * Umwandlung von Int16-Array nach Float32-Array
+     *
+     * @param {*} aAudioData - umzuwandelnde Audiodaten
+     */
+    GoogleAudioCodec.prototype.decodePCM = function (aAudioData) {
+        try {
+            var pcm16Buffer = new Int16Array(aAudioData);
+            var pcm16BufferLength = pcm16Buffer.length;
+            var outputArray = new Float32Array(pcm16BufferLength);
+            // console.log( 'GoogleAudioCodec.decodePCM: puffer = ', pcm16Buffer);
+            // console.log( 'GoogleAudioCodec.decodePCM: laenge = ', pcm16BufferLength);
+            var i = 0;
+            for (; i < pcm16BufferLength; ++i) {
+                outputArray[i] = pcm16Buffer[i] / 32768;
+            }
+            // console.log('GoogleAudioCodec.decodePCM: Float32 = ', outputArray);
+            return outputArray;
+        }
+        catch (aException) {
+            console.log('GoogleAudioCodec.decodePCM: Exception', aException);
+            this._exception('decodePCM', aException);
+            return [];
+        }
+    };
+    return GoogleAudioCodec;
+}(ErrorBase));
+
+/**
+ * externe Resampler-Klasse
+ *
+ * Letzte Aenderung: 07.05.2019
+ * Status: rot
+ *
+ * @module cloud/google/audio
+ * @author SB
+ */
+// JavaScript Audio Resampler (c) 2011 - Grant Galitz
+// https://github.com/taisel/XAudioJS/blob/master/resampler.js
+var GoogleResampler = /** @class */ (function () {
+    function GoogleResampler(fromSampleRate, toSampleRate, channels, outputBufferSize, noReturn) {
+        this.fromSampleRate = 0;
+        this.toSampleRate = 0;
+        this.channels = 0;
+        this.outputBufferSize = 0;
+        this.noReturn = false;
+        this.resampler = null;
+        this.ratioWeight = 0;
+        this.interpolate = null;
+        this.lastWeight = 0;
+        this.outputBuffer = null;
+        this.lastOutput = null;
+        this.fromSampleRate = fromSampleRate;
+        this.toSampleRate = toSampleRate;
+        this.channels = channels || 0;
+        this.outputBufferSize = outputBufferSize;
+        this.noReturn = !!noReturn;
         this.initialize();
     }
-    return t.prototype.initialize = function() {
-        if (!(this.fromSampleRate > 0 && this.toSampleRate > 0 && this.channels > 0)) throw new Error('Invalid settings specified for the resampler.');
-        this.fromSampleRate === this.toSampleRate ? (this.resampler = this.bypassResampler, 
-        this.ratioWeight = 1) : (this.compileInterpolationFunction(), this.resampler = this.interpolate, 
-        this.ratioWeight = this.fromSampleRate / this.toSampleRate, this.tailExists = !1, 
-        this.lastWeight = 0, this.initializeBuffers());
-    }, t.prototype.compileInterpolationFunction = function() {
-        for (var t = 'var bufferLength = Math.min(buffer.length, this.outputBufferSize);        if ((bufferLength % ' + this.channels + ') == 0) {            if (bufferLength > 0) {                var ratioWeight = this.ratioWeight;                var weight = 0;', e = 0; e < this.channels; ++e) t += 'var output' + e + ' = 0;';
-        t += 'var actualPosition = 0;                var amountToNext = 0;                var alreadyProcessedTail = !this.tailExists;                this.tailExists = false;                var outputBuffer = this.outputBuffer;                var outputOffset = 0;                var currentPosition = 0;                do {                    if (alreadyProcessedTail) {                        weight = ratioWeight;';
-        for (e = 0; e < this.channels; ++e) t += 'output' + e + ' = 0;';
-        t += '}                    else {                        weight = this.lastWeight;';
-        for (e = 0; e < this.channels; ++e) t += 'output' + e + ' = this.lastOutput[' + e + '];';
-        t += 'alreadyProcessedTail = true;                    }                    while (weight > 0 && actualPosition < bufferLength) {                        amountToNext = 1 + actualPosition - currentPosition;                        if (weight >= amountToNext) {';
-        for (e = 0; e < this.channels; ++e) t += 'output' + e + ' += buffer[actualPosition++] * amountToNext;';
-        t += 'currentPosition = actualPosition;                            weight -= amountToNext;                        }                        else {';
-        for (e = 0; e < this.channels; ++e) t += 'output' + e + ' += buffer[actualPosition' + (e > 0 ? ' + ' + e : '') + '] * weight;';
-        t += 'currentPosition += weight;                            weight = 0;                            break;                        }                    }                    if (weight == 0) {';
-        for (e = 0; e < this.channels; ++e) t += 'outputBuffer[outputOffset++] = output' + e + ' / ratioWeight;';
-        t += '}                    else {                        this.lastWeight = weight;';
-        for (e = 0; e < this.channels; ++e) t += 'this.lastOutput[' + e + '] = output' + e + ';';
-        t += 'this.tailExists = true;                        break;                    }                } while (actualPosition < bufferLength);                return this.bufferSlice(outputOffset);            }            else {                return (this.noReturn) ? 0 : [];            }        }        else {            throw(new Error("Buffer was of incorrect sample length."));        }', 
-        this.interpolate = Function('buffer', t);
-    }, t.prototype.bypassResampler = function(t) {
-        return this.noReturn ? (this.outputBuffer = t, t.length) : t;
-    }, t.prototype.bufferSlice = function(t) {
-        if (this.noReturn) return t;
-        try {
-            return this.outputBuffer.subarray(0, t);
-        } catch (e) {
+    GoogleResampler.prototype.initialize = function () {
+        // console.log('Resampler.initialize:', this.fromSampleRate, this.toSampleRate, this.channels);
+        // Perform some checks:
+        if (this.fromSampleRate > 0 && this.toSampleRate > 0 && this.channels > 0) {
+            if (this.fromSampleRate === this.toSampleRate) {
+                // Setup a resampler bypass:
+                this.resampler = this.bypassResampler; // Resampler just returns what was passed through.
+                this.ratioWeight = 1;
+            }
+            else {
+                // Setup the interpolation resampler:
+                this.compileInterpolationFunction();
+                this.resampler = this.interpolate; // Resampler is a custom quality interpolation algorithm.
+                this.ratioWeight = this.fromSampleRate / this.toSampleRate;
+                this.tailExists = false;
+                this.lastWeight = 0;
+                this.initializeBuffers();
+            }
+        }
+        else {
+            throw (new Error('Invalid settings specified for the resampler.'));
+        }
+    };
+    GoogleResampler.prototype.compileInterpolationFunction = function () {
+        var toCompile = 'var bufferLength = Math.min(buffer.length, this.outputBufferSize);\
+        if ((bufferLength % ' + this.channels + ') == 0) {\
+            if (bufferLength > 0) {\
+                var ratioWeight = this.ratioWeight;\
+                var weight = 0;';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'var output' + channel + ' = 0;';
+        }
+        toCompile += 'var actualPosition = 0;\
+                var amountToNext = 0;\
+                var alreadyProcessedTail = !this.tailExists;\
+                this.tailExists = false;\
+                var outputBuffer = this.outputBuffer;\
+                var outputOffset = 0;\
+                var currentPosition = 0;\
+                do {\
+                    if (alreadyProcessedTail) {\
+                        weight = ratioWeight;';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'output' + channel + ' = 0;';
+        }
+        toCompile += '}\
+                    else {\
+                        weight = this.lastWeight;';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'output' + channel + ' = this.lastOutput[' + channel + '];';
+        }
+        toCompile += 'alreadyProcessedTail = true;\
+                    }\
+                    while (weight > 0 && actualPosition < bufferLength) {\
+                        amountToNext = 1 + actualPosition - currentPosition;\
+                        if (weight >= amountToNext) {';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'output' + channel + ' += buffer[actualPosition++] * amountToNext;';
+        }
+        toCompile += 'currentPosition = actualPosition;\
+                            weight -= amountToNext;\
+                        }\
+                        else {';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'output' + channel + ' += buffer[actualPosition' + ((channel > 0) ? (' + ' + channel) : '') + '] * weight;';
+        }
+        toCompile += 'currentPosition += weight;\
+                            weight = 0;\
+                            break;\
+                        }\
+                    }\
+                    if (weight == 0) {';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'outputBuffer[outputOffset++] = output' + channel + ' / ratioWeight;';
+        }
+        toCompile += '}\
+                    else {\
+                        this.lastWeight = weight;';
+        for (var channel = 0; channel < this.channels; ++channel) {
+            toCompile += 'this.lastOutput[' + channel + '] = output' + channel + ';';
+        }
+        toCompile += 'this.tailExists = true;\
+                        break;\
+                    }\
+                } while (actualPosition < bufferLength);\
+                return this.bufferSlice(outputOffset);\
+            }\
+            else {\
+                return (this.noReturn) ? 0 : [];\
+            }\
+        }\
+        else {\
+            throw(new Error(\"Buffer was of incorrect sample length.\"));\
+        }';
+        this.interpolate = Function('buffer', toCompile);
+    };
+    GoogleResampler.prototype.bypassResampler = function (buffer) {
+        if (this.noReturn) {
+            // Set the buffer passed as our own, as we don't need to resample it:
+            this.outputBuffer = buffer;
+            return buffer.length;
+        }
+        else {
+            // Just return the buffer passsed:
+            return buffer;
+        }
+    };
+    GoogleResampler.prototype.bufferSlice = function (sliceAmount) {
+        if (this.noReturn) {
+            // If we're going to access the properties directly from this object:
+            return sliceAmount;
+        }
+        else {
+            // Typed array and normal array buffer section referencing:
             try {
-                return this.outputBuffer.length = t, this.outputBuffer;
-            } catch (e) {
-                return this.outputBuffer.slice(0, t);
+                return this.outputBuffer.subarray(0, sliceAmount);
+            }
+            catch (error) {
+                try {
+                    // Regular array pass:
+                    this.outputBuffer.length = sliceAmount;
+                    return this.outputBuffer;
+                }
+                catch (error) {
+                    // Nightly Firefox 4 used to have the subarray function named as slice:
+                    return this.outputBuffer.slice(0, sliceAmount);
+                }
             }
         }
-    }, t.prototype.initializeBuffers = function(t) {
+    };
+    GoogleResampler.prototype.initializeBuffers = function (generateTailCache) {
+        // Initialize the internal buffer:
         try {
-            this.outputBuffer = new Float32Array(this.outputBufferSize), this.lastOutput = new Float32Array(this.channels);
-        } catch (t) {
-            this.outputBuffer = [], this.lastOutput = [];
+            this.outputBuffer = new Float32Array(this.outputBufferSize);
+            this.lastOutput = new Float32Array(this.channels);
         }
-    }, t;
-}(), GoogleAudioRecorder2 = function(t) {
-    function e(e, o) {
-        var n = t.call(this, 'GoogleAudioRecorder2') || this;
-        n.mAudioContext = null, n.mAudioCodec = null, n.mResampler = null, n.mBufferSize = GOOGLE_AUDIOBUFFER_SIZE, 
-        n.mSampleRate = GOOGLE_AUDIOSAMPLE_RATE, n.mCodec = GOOGLE_DEFAULT_CODEC, n.mAudioInputNode = null, 
-        n.mAnalyseNode = null, n.mRecordingNode = null, n.mUserMediaStream = null, n.mChannelDataList = [], 
-        n.mBytesRecorded = 0, n.mRecordingFlag = !1, n.mOnVolumeFunc = null, n.mOnEndedFunc = null, 
-        n.mAudioContext = e, n.mOnVolumeFunc = o, n.mAudioCodec = new GoogleAudioCodec();
+        catch (error) {
+            this.outputBuffer = [];
+            this.lastOutput = [];
+        }
+    };
+    return GoogleResampler;
+}());
+
+/**
+ * GoogleAudioRecorder, sammelt Audio-Daten und gibt sie an Google-ASR2 weiter.
+ *
+ * Zur Zeit wird nur PCM-Codec unterstuetzt.
+ *
+ * Letzte Aenderung: 14.02.2020
+ * Status: rot
+ *
+ * @module cloud/google/audio
+ * @author SB
+ */
+// import { AudioEncoder } from './audio-encoder';
+/**
+ * Klasse GoogleAudioRecorder zum Aufnehmen von Audiodaten und streamen ueber eine WebSocket
+ */
+var GoogleAudioRecorder2 = /** @class */ (function (_super) {
+    __extends(GoogleAudioRecorder2, _super);
+    // opusEncoder = null;
+    /**
+     * Konstruktor
+     *
+     * @param {AudioContext} aAudioContext - AudioContext-Objekt
+     * @param {(aVolumeData) => void} aVolumeCallback - Callback-Funktion
+     */
+    function GoogleAudioRecorder2(aAudioContext, aVolumeCallback) {
+        var _this = _super.call(this, 'GoogleAudioRecorder2') || this;
+        // Komponenten
+        _this.mAudioContext = null;
+        _this.mAudioCodec = null;
+        _this.mResampler = null;
+        // Audio-Paramter
+        _this.mBufferSize = GOOGLE_AUDIOBUFFER_SIZE;
+        _this.mSampleRate = GOOGLE_AUDIOSAMPLE_RATE; // 16k up to server
+        _this.mCodec = GOOGLE_DEFAULT_CODEC;
+        // Audio-Knoten
+        _this.mAudioInputNode = null;
+        _this.mAnalyseNode = null;
+        _this.mRecordingNode = null;
+        // Audio-Daten
+        _this.mUserMediaStream = null;
+        _this.mChannelDataList = [];
+        _this.mBytesRecorded = 0;
+        _this.mRecordingFlag = false;
+        // Event-Funktionen
+        _this.mOnVolumeFunc = null;
+        _this.mOnEndedFunc = null;
+        _this.mAudioContext = aAudioContext;
+        _this.mOnVolumeFunc = aVolumeCallback;
+        // TODO: wird hier erst mal temporaer eingefuegt. Muss spaeter einmal uebergeben werden
+        _this.mAudioCodec = new GoogleAudioCodec();
+        /****
+        if ($("#codec").val() === "audio/L16;rate=8000" || $("#codec").val() === "audio/opus;rate=8000") {
+            mSampleRate = 8000;
+        }
+        ****/
         try {
-            n.mResampler = new GoogleResampler(n.mAudioContext.sampleRate, n.mSampleRate, 1, n.mBufferSize, void 0);
-        } catch (t) {
-            throw n._exception('constructor', t), new Error('GoogleAudioRecorder2 nicht initialisiert');
+            _this.mResampler = new GoogleResampler(_this.mAudioContext.sampleRate, _this.mSampleRate, 1, _this.mBufferSize, undefined);
         }
-        return n;
+        catch (aException) {
+            // console.log('GoogleAudioRecorder: Exception', aException.message);
+            _this._exception('constructor', aException);
+            // Exception wird geworfen, da AudioRecorder nicht funktionsfaehig ist !
+            throw new Error('GoogleAudioRecorder2 nicht initialisiert');
+        }
+        return _this;
+        // this.opusEncoderSetup( this.mSampleRate );
     }
-    return __extends(e, t), e.prototype._closeMediaStream = function() {
+    // Recorder-Funktionen
+    /**
+     * Hier wird der MediaStream wieder geschlossen, damit das Mikrofon-Symbol
+     * im Browser wieder verschwindet.
+     *
+     * @private
+     */
+    GoogleAudioRecorder2.prototype._closeMediaStream = function () {
         try {
-            if (this.mUserMediaStream && this.mUserMediaStream.getAudioTracks) for (var t = 0, e = this.mUserMediaStream.getAudioTracks(); t < e.length; t++) {
-                var o = e[t];
-                o.stop && o.stop();
+            // Schliessen des MediaStreams
+            if (this.mUserMediaStream) {
+                // pruefen, ob Tracks vorhanden sind
+                if (this.mUserMediaStream.getAudioTracks) {
+                    var trackList = this.mUserMediaStream.getAudioTracks();
+                    // console.log('GoogleAudioSource.start: Tracks = ', trackList);
+                    for (var _i = 0, trackList_1 = trackList; _i < trackList_1.length; _i++) {
+                        var track = trackList_1[_i];
+                        if (track.stop) {
+                            track.stop();
+                        }
+                    }
+                }
             }
-        } catch (t) {
-            this._exception('_closeMediaStream', t);
+        }
+        catch (aException) {
+            // console.log('GoogleAudioRecorder._closeMediaStream: Exception', aException);
+            this._exception('_closeMediaStream', aException);
         }
         this.mUserMediaStream = null;
-    }, e.prototype.getAudioData = function(t) {
-        for (var e = 0, o = 0, n = t; o < n.length; o++) {
-            e += (a = n[o]).length;
+    };
+    GoogleAudioRecorder2.prototype.getAudioData = function (aDataList) {
+        // console.log('GoogleAudioRecorder2.getAudioData', aDataList);
+        // pruefen auf Gesamtanzahl aller Bytes
+        var count = 0;
+        for (var _i = 0, aDataList_1 = aDataList; _i < aDataList_1.length; _i++) {
+            var array = aDataList_1[_i];
+            count += array.length;
         }
-        for (var r = new Int16Array(e), i = 0, s = 0, u = t; s < u.length; s++) for (var a = u[s], c = 0; c < a.length; c++) r[i] = a[c], 
-        i++;
-        return r.buffer;
-    }, e.prototype._onEnded = function() {
-        var t = this.getAudioData(this.mChannelDataList);
-        if ('function' == typeof this.mOnEndedFunc) try {
-            this.mOnEndedFunc(t);
-        } catch (t) {
-            return this._exception('_onEnded', t), -1;
-        }
-        return 0;
-    }, e.prototype._onVolume = function(t) {
-        if ('function' == typeof this.mOnVolumeFunc) try {
-            this.mOnVolumeFunc(t);
-        } catch (t) {
-            return this._exception('_onVolume', t), -1;
-        }
-        return 0;
-    }, e.prototype._onAudioProcess = function(t) {
-        var e = this;
-        try {
-            if (!this.mRecordingFlag) return this.mAudioInputNode.disconnect(this.mAnalyseNode), 
-            this.mAnalyseNode.disconnect(this.mRecordingNode), this.mRecordingNode.disconnect(this.mAudioContext.destination), 
-            this._closeMediaStream(), void this._onEnded();
-            var o = t.inputBuffer.getChannelData(0), n = this.mResampler.resampler(o);
-            this.mBytesRecorded += n.length;
-            var r = new Uint8Array(this.mAnalyseNode.frequencyBinCount);
-            if (this.mAnalyseNode.getByteTimeDomainData(r), this.mAudioCodec.findPcmCodec(this.mCodec)) this.mAudioCodec.encodePCM(n, this.mCodec).forEach(function(t) {
-                e.mChannelDataList.push(t);
-            }); else this.mAudioCodec.findOpusCodec(this.mCodec);
-            this._onVolume(r);
-        } catch (t) {
-            this._exception('_onAudioProcess', t);
-        }
-    }, e.prototype.start = function(t, e) {
-        var o = this;
-        this.mRecordingFlag = !0, this.mUserMediaStream = t, this.mCodec = e, this.mAudioContext.resume().then(function() {
-            try {
-                o.mAudioInputNode = o.mAudioContext.createMediaStreamSource(o.mUserMediaStream), 
-                o.mAnalyseNode = o.mAudioContext.createAnalyser(), o.mRecordingNode = o.mAudioContext.createScriptProcessor(o.mBufferSize, 1, 2), 
-                o.mRecordingNode.onaudioprocess = function(t) {
-                    return o._onAudioProcess(t);
-                }, o.mAudioInputNode.connect(o.mAnalyseNode), o.mAnalyseNode.connect(o.mRecordingNode), 
-                o.mRecordingNode.connect(o.mAudioContext.destination);
-            } catch (t) {
-                console.log('GoogleAudioRecorder2.start: Exception', t), o._exception('start', t);
+        // Arraybuffer mit Gesamtanzahl der Bytes erzeugen
+        var typedArray = new Int16Array(count);
+        var index = 0;
+        for (var _a = 0, aDataList_2 = aDataList; _a < aDataList_2.length; _a++) {
+            var array = aDataList_2[_a];
+            for (var i = 0; i < array.length; i++) {
+                typedArray[index] = array[i];
+                index++;
             }
-        }, function(t) {
-            t && t.message && o._error('start.resume', t.message);
+        }
+        // Buffer zurueckgeben
+        return typedArray.buffer;
+    };
+    /**
+     * Hier wird der Ende-Handler ausgefuehrt
+     *
+     * @private
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleAudioRecorder2.prototype._onEnded = function () {
+        // console.log('GoogleAudioRecorder2._onEnded:', this.mOnEndedFunc);
+        // Verarbeiten der Daten zu einem ArrayBuffer
+        var buffer = this.getAudioData(this.mChannelDataList);
+        if (typeof this.mOnEndedFunc === 'function') {
+            try {
+                this.mOnEndedFunc(buffer);
+            }
+            catch (aException) {
+                // console.log('GoogleAudioRecorder._onEnded: Exception', aException);
+                this._exception('_onEnded', aException);
+                return -1;
+            }
+        }
+        return 0;
+    };
+    /**
+     * Hier wird der Volumen-Callback Aufruf getaetigt
+     *
+     * @private
+     * @param {*} aVolumeData - Volumendaten zur Auswertung
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleAudioRecorder2.prototype._onVolume = function (aVolumeData) {
+        // console.log('GoogleAudioRecorder._onVolume:', this.mOnVolumeFunc, aVolumeData);
+        if (typeof this.mOnVolumeFunc === 'function') {
+            try {
+                this.mOnVolumeFunc(aVolumeData);
+            }
+            catch (aException) {
+                // console.log('GoogleAudioRecorder._onVolume: Exception', aException);
+                this._exception('_onVolume', aException);
+                return -1;
+            }
+        }
+        return 0;
+    };
+    /**
+     * Audioprozess Funktion
+     *
+     * @private
+     * @param {*} aEvent - AudioProzess-Event mit InputDaten vom Mikrofon
+     */
+    GoogleAudioRecorder2.prototype._onAudioProcess = function (aEvent) {
+        var _this = this;
+        // console.log('NuanceAudioSource._onAudioProcess: ', this.mRecordingFlag, aEvent);
+        try {
+            // Audioprozess beenden
+            if (!this.mRecordingFlag) {
+                this.mAudioInputNode.disconnect(this.mAnalyseNode);
+                this.mAnalyseNode.disconnect(this.mRecordingNode);
+                this.mRecordingNode.disconnect(this.mAudioContext.destination);
+                this._closeMediaStream();
+                // console.log('GoogleAudioRecorder2._onAudioProcess: disconnect: ', this._onEnded);
+                this._onEnded();
+                // TODO: hier sollte ein Event fuer das ausgeschaltete Mikrofon hin
+                return;
+            }
+            // Audiodaten sammeln
+            var inputData = aEvent.inputBuffer.getChannelData(0);
+            var _inputData = this.mResampler.resampler(inputData);
+            // this.mChannelDataList.push( _inputData );
+            this.mBytesRecorded += _inputData.length;
+            var ampArray = new Uint8Array(this.mAnalyseNode.frequencyBinCount);
+            this.mAnalyseNode.getByteTimeDomainData(ampArray);
+            // pruefen auf Codec
+            if (this.mAudioCodec.findPcmCodec(this.mCodec)) {
+                var encodedList = this.mAudioCodec.encodePCM(_inputData, this.mCodec);
+                encodedList.forEach(function (typedArray) {
+                    // console.log('GoogleAudioRecorder2._onAudioProcess:', typedArray);
+                    // TODO: hier muessen die Daten zu einem einzigen Array gesammelt werden
+                    // Daten senden ueber WebSocket
+                    // this.mWebSocket.send( typedArray.buffer )
+                    _this.mChannelDataList.push(typedArray);
+                });
+            }
+            else if (this.mAudioCodec.findOpusCodec(this.mCodec)) {
+                // this.encodeOpusAndSend( _inputData, this.mWebSocket );
+            }
+            this._onVolume(ampArray);
+        }
+        catch (aException) {
+            this._exception('_onAudioProcess', aException);
+        }
+    };
+    /**
+     * Startet die Audioaufnahmen und das Audiostreaming
+     *
+     * @param {MediaStream} aUserMediaStream - MediaStream vom Aufnahmegeraet(Mikrofon)
+     * @param {string} aCodec - Audio-Codec
+     */
+    GoogleAudioRecorder2.prototype.start = function (aUserMediaStream, aCodec) {
+        var _this = this;
+        // console.log('GoogleAudioRecorder2.start: start', aUserMediaStream, aCodec);
+        this.mRecordingFlag = true;
+        this.mUserMediaStream = aUserMediaStream;
+        this.mCodec = aCodec;
+        // Fuer Chrome muss hier mAudioContext.resume() aufgerufen werden, da Chrome das Web-API mit einer Policy versehen hat,
+        // nach der nur nach einer User-Aktion das Web-API ausgefuehrt werden kann. Wenn der Context vor einer User-Aktion
+        // erzeugt wird, ist er im syspend-Modus und muss mit resume() umgeschaltet werden.
+        this.mAudioContext.resume().then(function () {
+            // console.log('GoogleAudioRecorder2.start: resume')
+            try {
+                // TODO: RecordingFlag muss frueher gesetzt werden !
+                // this.mRecordingFlag = true;
+                _this.mAudioInputNode = _this.mAudioContext.createMediaStreamSource(_this.mUserMediaStream);
+                _this.mAnalyseNode = _this.mAudioContext.createAnalyser();
+                _this.mRecordingNode = _this.mAudioContext.createScriptProcessor(_this.mBufferSize, 1, 2);
+                // Audioprozess-Funktion
+                _this.mRecordingNode.onaudioprocess = function (aEvent) { return _this._onAudioProcess(aEvent); };
+                // alle Audioknoten miteinander verbinden
+                _this.mAudioInputNode.connect(_this.mAnalyseNode);
+                _this.mAnalyseNode.connect(_this.mRecordingNode);
+                _this.mRecordingNode.connect(_this.mAudioContext.destination);
+                // TODO: hier sollte ein Event fuer das eingeschaltete Mikrofon hin
+            }
+            catch (aException) {
+                console.log('GoogleAudioRecorder2.start: Exception', aException);
+                _this._exception('start', aException);
+            }
+            // console.log('GoogleAudioRecorder2.start: end ', this.mRecordingFlag);
+        }, function (aError) {
+            // console.log('GoogleAudioRecorder2.start: Resume-Error', aError);
+            if (aError && aError.message) {
+                _this._error('start.resume', aError.message);
+            }
         });
-    }, e.prototype.startAudio = function(t, e) {}, e.prototype.stop = function(t) {
-        this.mOnEndedFunc = t, this.mRecordingFlag = !1;
-    }, e;
-}(ErrorBase), AUDIO_MIN_SAMPLERATE = 22500, GoogleAudioPlayer = function(t) {
-    function e(e) {
-        var o = t.call(this, 'NuanceAudioPlayer') || this;
-        return o.mAudioContext = null, o.mAudioCodec = null, o.mResampler = null, o.mOnAudioEndFunc = null, 
-        o.mAudioSource = null, o.mAudioArray = [], o.mQueue = [], o.mBeginSpeakFlag = !0, 
-        o.mAudioStopFlag = !1, o.mAudioBuffer = null, o.mSource = null, o.mAudioContext = e, 
-        o.mAudioCodec = new GoogleAudioCodec(), o;
+    };
+    /**
+     * Audiodaten fuer Uebertragung nach Nuance verwenden, anstelle des Mikrofons
+     *
+     * @param {*} aAudioData - Audiodaten aus Audiodatei
+     * @param {string} aCodec - Audio-Codec
+     */
+    // TODO: Problem mit der Uebertragung an Nuance als Stream
+    GoogleAudioRecorder2.prototype.startAudio = function (aAudioData, aCodec) {
+        // console.log('GoogleAudioRecorder.startAudio:', aCodec);
+        // TODO: Audiodaten in Bloecke aufteilen und verarbeiten
+        // Schleife fuer alle Audiodaten versenden
+    };
+    /**
+     * Stop-Funktion fuer Audioaufnahme
+     *
+     * @param {() => void} aOnEndedFunc - Handler fuer Ende der Audioaufnahme
+     */
+    GoogleAudioRecorder2.prototype.stop = function (aOnEndedFunc) {
+        // console.log('GoogleAudioRecorder2.stop');
+        this.mOnEndedFunc = aOnEndedFunc;
+        this.mRecordingFlag = false;
+    };
+    return GoogleAudioRecorder2;
+}(ErrorBase));
+
+/**
+ * GoogleAudioPlayer fuer Abspielen von Sprachdaten
+ *
+ * Zur Zeit wird nur PCM-Codec unterstuetzt.
+ *
+ * Letzte Aenderung: 07.05.2019
+ * Status: rot
+ *
+ * @module cloud/google/audio
+ * @author SB
+ */
+// Minimum-Samplerate fuer Safari
+var AUDIO_MIN_SAMPLERATE = 22500;
+/**
+ * Klasse GoogleAudioPlayer zum Absielen des Google-Audiostreams
+ */
+var GoogleAudioPlayer = /** @class */ (function (_super) {
+    __extends(GoogleAudioPlayer, _super);
+    // mOpusDecoder = null;
+    /**
+     * Konstruktor
+     *
+     * @param aAudioContext - globaler AudioContext
+     */
+    function GoogleAudioPlayer(aAudioContext) {
+        var _this = _super.call(this, 'NuanceAudioPlayer') || this;
+        _this.mAudioContext = null;
+        _this.mAudioCodec = null;
+        _this.mResampler = null;
+        _this.mOnAudioEndFunc = null;
+        _this.mAudioSource = null;
+        _this.mAudioArray = [];
+        _this.mQueue = [];
+        _this.mBeginSpeakFlag = true;
+        _this.mAudioStopFlag = false;
+        _this.mAudioBuffer = null;
+        _this.mSource = null;
+        _this.mAudioContext = aAudioContext;
+        // TODO: wird hier erst mal temporaer eingefuegt. Muss spaeter einmal uebergeben werden
+        _this.mAudioCodec = new GoogleAudioCodec();
+        return _this;
     }
-    return __extends(e, t), e.prototype.start = function() {
-        this.mOnAudioEndFunc = null, this.mAudioSource = null, this.mAudioArray = [], this.mQueue = [], 
-        this.mBeginSpeakFlag = !0, this.mAudioStopFlag = !1;
-    }, e.prototype._getAudioBufferFirst = function(t) {
-        var e = null;
+    /**
+     * Start der Wiedergabe
+     */
+    GoogleAudioPlayer.prototype.start = function () {
+        this.mOnAudioEndFunc = null;
+        this.mAudioSource = null;
+        this.mAudioArray = [];
+        this.mQueue = [];
+        this.mBeginSpeakFlag = true;
+        this.mAudioStopFlag = false;
+    };
+    // AudioBuffer-Funktionen
+    /**
+     * Hier wird der AudioBuffer direkt ueber seinen Constructor erzeugt
+     *
+     * @private
+     * @param aData - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+    GoogleAudioPlayer.prototype._getAudioBufferFirst = function (aData) {
+        var audioBuffer = null;
+        // fuer die meisten aktuellen Browser mit AudioBuffer Constructor 
         try {
-            var o = new Float32Array(t.length);
-            o.set(t), (e = new AudioBuffer({
-                length: o.length,
-                numberOfChannels: 1,
-                sampleRate: GOOGLE_AUDIOSAMPLE_RATE
-            })).getChannelData(0).set(o);
-        } catch (t) {
-            e = null, console.log('NuanceAudioPlayer._getAudioBufferFirst: Exception', t);
+            var audioToPlay = new Float32Array(aData.length);
+            audioToPlay.set(aData);
+            // console.log('NuanceAudioPlayer.playByStream: buffer direkt erzeugen:', audioToPlay.length);
+            audioBuffer = new AudioBuffer({ length: audioToPlay.length, numberOfChannels: 1, sampleRate: GOOGLE_AUDIOSAMPLE_RATE });
+            audioBuffer.getChannelData(0).set(audioToPlay);
         }
-        return e;
-    }, e.prototype._getAudioBufferSecond = function(t) {
-        var e = null;
-        try {
-            var o = new Float32Array(t.length);
-            o.set(t), (e = this.mAudioContext.createBuffer(1, o.length, GOOGLE_AUDIOSAMPLE_RATE)).getChannelData(0).set(o);
-        } catch (t) {
-            e = null, console.log('NuanceAudioPlayer._getAudioBufferSecond: Exception', t);
+        catch (aException) {
+            audioBuffer = null;
+            console.log('NuanceAudioPlayer._getAudioBufferFirst: Exception', aException);
         }
-        return e;
-    }, e.prototype._getAudioBufferResample = function(t) {
-        var e = null;
+        return audioBuffer;
+    };
+    /**
+     * Hier wird der AudioBuffer ueber AudioContext.createBuffer() erzeugt
+     *
+     * @private
+     * @param aData  - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+    GoogleAudioPlayer.prototype._getAudioBufferSecond = function (aData) {
+        var audioBuffer = null;
+        // fuer die Browser ohne AudioBuffer Constructor
         try {
-            var o = new Float32Array(1.4 * t.length);
-            o.set(t), this.mResampler = new GoogleResampler(GOOGLE_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, o.length, void 0);
-            var n = this.mResampler.resampler(o);
-            (e = this.mAudioContext.createBuffer(1, n.length, AUDIO_MIN_SAMPLERATE)).getChannelData(0).set(n);
-        } catch (t) {
-            e = null, console.log('NuanceAudioPlayer._getAudioBufferResample: Exception', t);
+            var audioToPlay = new Float32Array(aData.length);
+            audioToPlay.set(aData);
+            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 16000 Samplerate:', audioToPlay.length);
+            audioBuffer = this.mAudioContext.createBuffer(1, audioToPlay.length, GOOGLE_AUDIOSAMPLE_RATE);
+            audioBuffer.getChannelData(0).set(audioToPlay);
         }
-        return e;
-    }, e.prototype.playByStream = function(t, e) {
-        var o = this;
+        catch (aException) {
+            audioBuffer = null;
+            console.log('NuanceAudioPlayer._getAudioBufferSecond: Exception', aException);
+        }
+        return audioBuffer;
+    };
+    /**
+     * Hier wird der Audiobuffer mit Resample erzeugt, um in Safari abgespielt zu werden
+     * SapmpleRate wird von PCM 16000 Hz auf 22500 Hz angehoben, da createBuffer in Safari
+     * erst ab dieser Frequenz arbeitet.
+     *
+     * @private
+     * @param aData - Audiodaten
+     *
+     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
+     */
+    GoogleAudioPlayer.prototype._getAudioBufferResample = function (aData) {
+        var audioBuffer = null;
+        // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
+        // hier wird der Resampler eingesetzt
         try {
-            if (this.mOnAudioEndFunc = t.onaudioend, 0 === e.length || this.mAudioStopFlag) return this.mBeginSpeakFlag = !0, 
-            t.onaudioend(), this.mOnAudioEndFunc = null, void (this.mAudioSource = null);
-            this.mAudioSource = this.mAudioContext.createBufferSource(), this.mAudioSource.onended = function() {
-                return o.playByStream(t, e);
+            // notwendig ist ein groesseres FloatArray 22500/16000 = 1.4 
+            var audioToPlay = new Float32Array(aData.length * 1.4);
+            audioToPlay.set(aData);
+            // Resampler, um die Frequenz des AudioBuffers anzuheben auf 22500 Hz fuer Safari
+            this.mResampler = new GoogleResampler(GOOGLE_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, audioToPlay.length, undefined);
+            var _audioToPlay = this.mResampler.resampler(audioToPlay);
+            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 22500 Samplerate:', _audioToPlay.length);
+            audioBuffer = this.mAudioContext.createBuffer(1, _audioToPlay.length, AUDIO_MIN_SAMPLERATE);
+            audioBuffer.getChannelData(0).set(_audioToPlay);
+        }
+        catch (aException) {
+            audioBuffer = null;
+            console.log('NuanceAudioPlayer._getAudioBufferResample: Exception', aException);
+        }
+        return audioBuffer;
+    };
+    // Player-Funktionen
+    /**
+     * Abspielen des Audiostreams
+     *
+     * @param {*} aOptions - Optionen
+     * @param {*} aAudioArray - Audiostream
+     */
+    GoogleAudioPlayer.prototype.playByStream = function (aOptions, aAudioArray) {
+        var _this = this;
+        try {
+            // console.log('NuanceConnect.playByStream: start', this.mAudioStopFlag);
+            this.mOnAudioEndFunc = aOptions.onaudioend;
+            if (aAudioArray.length === 0 || this.mAudioStopFlag) {
+                this.mBeginSpeakFlag = true;
+                // console.log( 'NuanceConnect.connect: source.onended' );
+                aOptions.onaudioend();
+                this.mOnAudioEndFunc = null;
+                this.mAudioSource = null;
+                return;
+            }
+            // console.log('NuanceAudioPlayer.playByStream: AudioContext.state = ', this.mAudioContext.state);
+            this.mAudioSource = this.mAudioContext.createBufferSource();
+            // TODO: falls mehrere Stream-Abschnitte verwendet werden
+            this.mAudioSource.onended = function () { return _this.playByStream(aOptions, aAudioArray); };
+            /*
+            source.onended = () => {
+                console.log( 'NuanceConnect.connect: source.onended' );
+                aOptions.onaudioend();
             };
-            var n = e.shift(), r = this._getAudioBufferFirst(n);
-            if (r || (r = this._getAudioBufferSecond(n)), r || (r = this._getAudioBufferResample(n)), 
-            !r) return void this._error('playByStream', 'kein Audiobuffer erzeugt');
-            this.mAudioSource.buffer = r, this.mAudioSource.connect(this.mAudioContext.destination), 
-            this.mAudioSource.start ? this.mAudioSource.start(0) : this.mAudioSource.noteOn(0), 
-            t.onaudiostart();
-        } catch (e) {
-            this.mBeginSpeakFlag = !0, t.onaudioend(), this.mOnAudioEndFunc = null, this.mAudioSource = null, 
-            console.log('NuanceAudioPlayer.playByStream: Exception', e), this._exception('playByStream', e);
+            */
+            var desiredSampleRate = GOOGLE_AUDIOSAMPLE_RATE;
+            /*
+            if ($("#selectCodec").val() === "audio/L16;rate=8000" || $("#selectCodec").val() === "audio/opus;rate=8000") {
+                desiredSampleRate = 8000;
+            }
+            */
+            // AudioBuffer direkt erzeugen
+            var data = aAudioArray.shift();
+            var audioBuffer = this._getAudioBufferFirst(data);
+            // fuer die Browser ohne AudioBuffer Constructor
+            if (!audioBuffer) {
+                audioBuffer = this._getAudioBufferSecond(data);
+            }
+            // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
+            // hier wird der Resampler eingesetzt
+            if (!audioBuffer) {
+                audioBuffer = this._getAudioBufferResample(data);
+            }
+            if (!audioBuffer) {
+                this._error('playByStream', 'kein Audiobuffer erzeugt');
+                return;
+            }
+            this.mAudioSource.buffer = audioBuffer;
+            this.mAudioSource.connect(this.mAudioContext.destination);
+            // console.log('NuanceAudioPlayer.playByStream: audio start', this.mAudioSource);
+            if (this.mAudioSource.start) {
+                this.mAudioSource.start(0);
+            }
+            else {
+                this.mAudioSource.noteOn(0);
+            }
+            aOptions.onaudiostart();
+            // console.log('NuanceConnect.playByStream: end');
         }
-    }, e.prototype.decodeStream = function(t, e) {
-        try {
-            if (this.mAudioCodec.findPcmCodec(t.codec)) {
-                var o = this.mAudioCodec.decodePCM(e);
-                this.mAudioArray.push(o), this.mQueue.push(o), this.mBeginSpeakFlag && (this.mBeginSpeakFlag = !1, 
-                this.playByStream(t, this.mAudioArray));
-            } else this.mAudioCodec.findOpusCodec(t.codec) || this._error('decode', 'Kein Decoder vorhanden fuer ' + t.codec);
-        } catch (t) {
-            this._exception('decode', t);
+        catch (aException) {
+            this.mBeginSpeakFlag = true;
+            // console.log( 'NuanceConnect.connect: source.onended' );
+            aOptions.onaudioend();
+            this.mOnAudioEndFunc = null;
+            this.mAudioSource = null;
+            console.log('NuanceAudioPlayer.playByStream: Exception', aException);
+            this._exception('playByStream', aException);
         }
-    }, e.prototype.decodeAudio = function(t, e) {
-        var o = this;
-        if (!this.mAudioContext) return this._error('_decodeAudio', 'kein AudioContext vorhanden'), 
-        -1;
+    };
+    /**
+     * Audiodaten abspielen
+     *
+     * @param aOptions - optionale Parameter (codec, onaudiostart)
+     * @param aAudioData - abzuspielende Audiodaten
+     */
+    GoogleAudioPlayer.prototype.decodeStream = function (aOptions, aAudioData) {
         try {
-            return this.mAudioContext.decodeAudioData(e, function(e) {
-                o.mAudioBuffer = e, o._playStart(t);
-            }, function(t) {
-                o._error('_decodeAudio', 'DOMException');
-            }), 0;
-        } catch (t) {
-            return this._exception('_decodeAudio', t), -1;
+            // console.log('NuanceConnect.connect: object');
+            if (this.mAudioCodec.findPcmCodec(aOptions.codec)) {
+                var decodePCM16KData = this.mAudioCodec.decodePCM(aAudioData);
+                this.mAudioArray.push(decodePCM16KData);
+                this.mQueue.push(decodePCM16KData);
+                // console.log('NuanceConnect.connect: PCM AudioSink', this.mBeginSpeakFlag);
+                if (this.mBeginSpeakFlag) {
+                    this.mBeginSpeakFlag = false;
+                    this.playByStream(aOptions, this.mAudioArray);
+                }
+            }
+            else if (this.mAudioCodec.findOpusCodec(aOptions.codec)) {
+                /* Opus-Codec
+                audioOpusDecodeArray.push( aMessage.data );
+                if ( beginOpusDecodeFlag ) {
+                    beginOpusDecodeFlag = false;
+                    decodeOpus( audioOpusDecodeArray.shift(), this.mAudioSink.mQueue );
+                }
+                */
+            }
+            else {
+                this._error('decode', 'Kein Decoder vorhanden fuer ' + aOptions.codec);
+            }
         }
-    }, e.prototype._playStart = function(t) {
-        if (!this.mAudioBuffer) return this._error('_playStart', 'kein AudioBuffer vorhanden'), 
-        -1;
-        if (!this.mAudioContext) return this._error('_playStart', 'kein AudioContext vorhanden'), 
-        -1;
-        try {
-            return this.mSource = this.mAudioContext.createBufferSource(), this.mSource.onended = function() {
-                t.onaudioend && t.onaudioend();
-            }, this.mSource.buffer = this.mAudioBuffer, this.mSource.connect(this.mAudioContext.destination), 
-            this.mSource.start ? this.mSource.start(0) : this.mSource.noteOn(0), t.onaudiostart && t.onaudiostart(), 
-            0;
-        } catch (t) {
-            return this._exception('_playStart', t), -1;
+        catch (aException) {
+            this._exception('decode', aException);
         }
-    }, e.prototype.stop = function() {
+    };
+    /**
+     * Dekodieren der Audiodaten (MP3)
+     *
+     * @private
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleAudioPlayer.prototype.decodeAudio = function (aOptions, aData) {
+        var _this = this;
+        if (!this.mAudioContext) {
+            this._error('_decodeAudio', 'kein AudioContext vorhanden');
+            return -1;
+        }
         try {
-            this.mAudioStopFlag = !0, this.mAudioSource && (this.mAudioSource.stop(0), this.mAudioSource.disconnect(0), 
-            'function' == typeof this.mOnAudioEndFunc && this.mOnAudioEndFunc());
-        } catch (t) {
-            this._exception('stop', t);
+            this.mAudioContext.decodeAudioData(aData, function (aBuffer) {
+                // console.log('AudioPlayer._decodeAudio: decodeAudioData start', aBuffer);
+                _this.mAudioBuffer = aBuffer;
+                _this._playStart(aOptions);
+                // console.log('AudioPlayer._decodeAudio: decodeAudioData end');
+            }, function (aError) {
+                // TODO: muss in Fehlerbehandlung uebertragen werden
+                // console.log('AudioPlayer._decodeAudio:', aError);
+                _this._error('_decodeAudio', 'DOMException');
+            });
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_decodeAudio', aException);
+            return -1;
+        }
+    };
+    /**
+     * Start der Audioausgabe
+     *
+     * @private
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleAudioPlayer.prototype._playStart = function (aOptions) {
+        // console.log('GoogleAudioPlayer._playStart:', aOptions);
+        if (!this.mAudioBuffer) {
+            this._error('_playStart', 'kein AudioBuffer vorhanden');
+            return -1;
+        }
+        if (!this.mAudioContext) {
+            this._error('_playStart', 'kein AudioContext vorhanden');
+            return -1;
+        }
+        // Create two sources and play them both together.
+        try {
+            this.mSource = this.mAudioContext.createBufferSource();
+            // Ende-Event
+            this.mSource.onended = function () {
+                // TODO: hier muss ein Ende-Event fuer Audio-Ende eingebaut werden
+                // console.log('GoogleAudioPlayer._playStart: onended');
+                // Audio Stop-Ereignis senden
+                if (aOptions.onaudioend) {
+                    aOptions.onaudioend();
+                }
+            };
+            this.mSource.buffer = this.mAudioBuffer;
+            this.mSource.connect(this.mAudioContext.destination);
+            // console.log('AudioPlayer._playStart: ', this.mSource, this.mAudioContext.state);
+            if (this.mSource.start) {
+                this.mSource.start(0);
+            }
+            else {
+                this.mSource.noteOn(0);
+            }
+            // Audio Start-Ereignis senden
+            if (aOptions.onaudiostart) {
+                aOptions.onaudiostart();
+            }
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_playStart', aException);
+            return -1;
+        }
+    };
+    /**
+     * Audioausgabe stoppen
+     */
+    GoogleAudioPlayer.prototype.stop = function () {
+        try {
+            // console.log('NuanceAudioSink.stop');
+            this.mAudioStopFlag = true;
+            if (this.mAudioSource) {
+                this.mAudioSource.stop(0);
+                this.mAudioSource.disconnect(0);
+                if (typeof this.mOnAudioEndFunc === 'function') {
+                    // console.log( 'NuanceAudioPlayer.stop: send onended event' );
+                    this.mOnAudioEndFunc();
+                }
+            }
+        }
+        catch (aException) {
+            this._exception('stop', aException);
         }
         this.mAudioSource = null;
-    }, e.prototype.stopAudio = function() {
+    };
+    GoogleAudioPlayer.prototype.stopAudio = function () {
+        // console.log('GoogleAudioPlayer.stopAudio');
         if (this.mSource) {
             try {
-                this.mSource.stop ? this.mSource.stop(0) : this.mSource.noteOff(0), this.mSource.disconnect(0);
-            } catch (t) {
-                this._exception('stop', t);
+                if (this.mSource.stop) {
+                    this.mSource.stop(0);
+                }
+                else {
+                    this.mSource.noteOff(0);
+                }
+                this.mSource.disconnect(0);
             }
-            this.mSource = null, this.mAudioBuffer = null;
+            catch (aException) {
+                this._exception('stop', aException);
+            }
+            this.mSource = null;
+            this.mAudioBuffer = null;
         }
-    }, e;
-}(ErrorBase), DIALOGFLOW_SERVER_URL = 'https://dialogflow.googleapis.com/v2/projects', ASR_MAXVOLUME_COUNTER = 30, ASR_TIMEOUTVOLUME_COUNTER = 200, ASR_MINVOLUME_THRESHOLD = 127, ASR_MAXVOLUME_THRESHOLD = 128, GoogleNLU2 = function(t) {
-    function e(e, o, n, r) {
-        var i = t.call(this, 'GoogleNLU2', e, o) || this;
-        return i.mAccessToken = '', i.mAccessTokenDate = new Date(), i.mAccessTokenDuration = 0, 
-        i.mOptions = {}, i.mAudioContext = null, i.mAudioPlayer = null, i.mGetUserMedia = null, 
-        i.mAudioRecorder = null, i.mUserMediaStream = null, i.mRecordingFlag = !1, i.mStopFlag = !1, 
-        i.mVolumeCounter = 0, i.mTimeoutCounter = 0, i.mAudioContext = n, i.mGetUserMedia = r, 
-        i.getAccessTokenFromServer(), i;
+    };
+    return GoogleAudioPlayer;
+}(ErrorBase));
+
+/**
+ * NLU Anbindung an den Google-Service, hier wird nur ein Text in einen Intent umgewandelt
+ * Zugriff erfolgt mit Hilfe eines AccessTokens, welche vom Dialogflow-Tokenserver geholt werden muss.
+ * Das AccessToken hat eine Stunde Gueltigkeit.
+ *
+ * Letzte Aenderung: 27.03.2020
+ * Status: rot
+ *
+ * @module cloud/google/device
+ * @author SB
+ */
+// Konstanten
+var DIALOGFLOW_SERVER_URL = 'https://dialogflow.googleapis.com/v2/projects';
+// Anzahl der Volume-Pruefungen, bis ASR-Aufnahme abgebrochen wird
+var ASR_BEGINMAXVOLUME_COUNTER = 100;
+var ASR_ENDMAXVOLUME_COUNTER = 20;
+var ASR_TIMEOUTVOLUME_COUNTER = 150;
+// Schwellwert fuer Lautstaerke, ab der weiter zugehoert wird
+var ASR_MINVOLUME_THRESHOLD = 127.0;
+var ASR_MAXVOLUME_THRESHOLD = 128.0;
+var GoogleNLU2 = /** @class */ (function (_super) {
+    __extends(GoogleNLU2, _super);
+    /**
+     * Erzeugt eine Instanz von DialogflowNLU
+     *
+     * @param aConfig - Konfigurationsobjekt fuer Nuance-Konfigurationsdaten
+     * @param aConnect - Verbindungsobjekt zu Nuance-Server
+     */
+    function GoogleNLU2(aConfig, aConnect, aAudioContext, aGetUserMedia) {
+        var _this = _super.call(this, 'GoogleNLU2', aConfig, aConnect) || this;
+        _this.mAccessToken = '';
+        _this.mAccessTokenDate = new Date();
+        _this.mAccessTokenDuration = 0;
+        _this.mOptions = {};
+        // Audio
+        _this.mAudioContext = null;
+        _this.mAudioPlayer = null;
+        // HTML5-Komponenten
+        _this.mGetUserMedia = null;
+        // weitere Attribute
+        _this.mAudioRecorder = null;
+        _this.mUserMediaStream = null;
+        _this.mRecordingFlag = false;
+        _this.mStopFlag = false;
+        _this.mVolumeCounter = 0;
+        _this.mMaxVolumeCounter = ASR_BEGINMAXVOLUME_COUNTER;
+        _this.mTimeoutCounter = 0;
+        _this.mAudioContext = aAudioContext;
+        _this.mGetUserMedia = aGetUserMedia;
+        // Prefetch des Tokens, dient dem Starten des Tokenservers in der Cloud
+        _this.getAccessTokenFromServer();
+        return _this;
     }
-    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
-        return e.getTime() - t.getTime();
-    }, e.prototype.getAccessTokenFromServer = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t, e;
-            return __generator(this, function(o) {
-                switch (o.label) {
-                  case 0:
-                    return o.trys.push([ 0, 3, , 4 ]), [ 4, fetch(this.mConfig.dialogflowTokenServerUrl, {
-                        method: 'GET',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }) ];
-
-                  case 1:
-                    return [ 4, o.sent().json() ];
-
-                  case 2:
-                    return t = o.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
-                    this.mAccessTokenDuration = t.time || 0, [ 3, 4 ];
-
-                  case 3:
-                    return e = o.sent(), this.mInitFlag = !1, this._exception('getAccessTokenFromServer', e), 
-                    [ 3, 4 ];
-
-                  case 4:
-                    return [ 2 ];
-                }
-            });
-        });
-    }, e.prototype.getAccessToken = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t;
-            return __generator(this, function(e) {
-                switch (e.label) {
-                  case 0:
-                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
-
-                  case 1:
-                    e.sent(), e.label = 2;
-
-                  case 2:
-                    return [ 2, this.mAccessToken ];
-                }
-            });
-        });
-    }, e.prototype.getDetectIntentText = function(t, e) {
-        return __awaiter(this, void 0, void 0, function() {
-            var o, n;
-            return __generator(this, function(r) {
-                switch (r.label) {
-                  case 0:
-                    return r.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
-
-                  case 1:
-                    return o = r.sent(), [ 4, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            Authorization: "Bearer " + o,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            queryInput: {
-                                text: {
-                                    text: t,
-                                    languageCode: e
+    // Token-Funktionen
+    GoogleNLU2.prototype.clearToken = function () {
+        this.mAccessToken = '';
+        this.mAccessTokenDate = new Date();
+        this.mAccessTokenDuration = 0;
+    };
+    /**
+     * Berechnung der Zeitdifferenz zur Bestimmung der Restgueltigkeitsdauer eines Tokens
+     */
+    GoogleNLU2.prototype.getDiffTime = function (date1, date2) {
+        return date2.getTime() - date1.getTime();
+    };
+    /**
+     * Token wird direkt vom Tokenserver geholt
+     */
+    GoogleNLU2.prototype.getAccessTokenFromServer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, responseJSON, aException_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetch(this.mConfig.dialogflowTokenServerUrl, {
+                                method: 'GET',
+                                mode: 'cors',
+                                headers: {
+                                    'Content-Type': 'application/json'
                                 }
-                            }
-                        })
-                    }) ];
-
-                  case 2:
-                    return [ 4, r.sent().json() ];
-
-                  case 3:
-                    return [ 2, r.sent() ];
-
-                  case 4:
-                    return n = r.sent(), this._exception('getDetectIntentText', n), [ 2, new Promise(function(t, e) {
-                        e(new Error('Exception in getDetectIntentText'));
-                    }) ];
-
-                  case 5:
-                    return [ 2 ];
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        responseJSON = _a.sent();
+                        // console.log('AccessToken: ', responseJSON);
+                        this.mAccessTokenDate = new Date();
+                        this.mAccessToken = responseJSON.token || '';
+                        this.mAccessTokenDuration = responseJSON.time || 0;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        aException_1 = _a.sent();
+                        this.mInitFlag = false;
+                        this._exception('getAccessTokenFromServer', aException_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
-    }, e.prototype.getDetectIntentAudio = function(t, e) {
-        return __awaiter(this, void 0, void 0, function() {
-            var e, o;
-            return __generator(this, function(n) {
-                switch (n.label) {
-                  case 0:
-                    return n.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
-
-                  case 1:
-                    return e = n.sent(), [ 4, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            Authorization: "Bearer " + e,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            queryInput: {
-                                audioConfig: {
-                                    audioEncoding: 'AUDIO_ENCODING_LINEAR_16',
-                                    languageCode: 'de',
-                                    sampleRateHertz: 16e3
-                                }
-                            },
-                            inputAudio: t
-                        })
-                    }) ];
-
-                  case 2:
-                    return [ 4, n.sent().json() ];
-
-                  case 3:
-                    return [ 2, n.sent() ];
-
-                  case 4:
-                    return o = n.sent(), this._exception('getDetectIntentText', o), [ 2, new Promise(function(t, e) {
-                        e(new Error('Exception in getDetectIntentAudio'));
-                    }) ];
-
-                  case 5:
-                    return [ 2 ];
+    };
+    /**
+     * Token wird zurueckgegeben
+     */
+    GoogleNLU2.prototype.getAccessToken = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var currentDate, diffTime;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        currentDate = new Date();
+                        diffTime = Math.round(this.getDiffTime(this.mAccessTokenDate, currentDate) / 1000);
+                        if (!(diffTime > this.mAccessTokenDuration)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getAccessTokenFromServer()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, this.mAccessToken];
                 }
             });
         });
-    }, e.prototype._responseIntent = function(t, e) {
-        var o = -1;
+    };
+    // NLU-Funktionen
+    /**
+     * Detect Intent Text zurueckgeben
+     */
+    GoogleNLU2.prototype.getDetectIntentText = function (aText, aLanguage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, response, responseJSON, aException_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this.getAccessToken()];
+                    case 1:
+                        accessToken = _a.sent();
+                        return [4 /*yield*/, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
+                                method: 'POST',
+                                mode: 'cors',
+                                headers: {
+                                    Authorization: "Bearer " + accessToken,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    queryInput: {
+                                        text: {
+                                            text: aText,
+                                            languageCode: aLanguage
+                                        }
+                                    }
+                                })
+                            })];
+                    case 2:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 3:
+                        responseJSON = _a.sent();
+                        // console.log('GoogleNLU2.getDetectIntent: ', responseJSON);
+                        return [2 /*return*/, responseJSON];
+                    case 4:
+                        aException_2 = _a.sent();
+                        this._exception('getDetectIntentText', aException_2);
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                reject(new Error('Exception in getDetectIntentText'));
+                            })];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Detect Intent Audio zurueckgeben
+     */
+    GoogleNLU2.prototype.getDetectIntentAudio = function (aAudioData, aLanguage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, response, responseJSON, aException_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this.getAccessToken()];
+                    case 1:
+                        accessToken = _a.sent();
+                        return [4 /*yield*/, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
+                                method: 'POST',
+                                mode: 'cors',
+                                headers: {
+                                    Authorization: "Bearer " + accessToken,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    queryInput: {
+                                        audioConfig: {
+                                            audioEncoding: 'AUDIO_ENCODING_LINEAR_16',
+                                            languageCode: 'de',
+                                            sampleRateHertz: 16000
+                                        }
+                                    },
+                                    inputAudio: aAudioData
+                                })
+                            })];
+                    case 2:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 3:
+                        responseJSON = _a.sent();
+                        // console.log('GoogleNLU2.getDetectIntentAudio: ', responseJSON);
+                        return [2 /*return*/, responseJSON];
+                    case 4:
+                        aException_3 = _a.sent();
+                        this._exception('getDetectIntentText', aException_3);
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                reject(new Error('Exception in getDetectIntentAudio'));
+                            })];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Verarbeitet den empfangenen Intent
+     *
+     * @param aResponse
+     */
+    GoogleNLU2.prototype._responseIntent = function (aOption, aResponse) {
+        // console.log('GoogleNLU2._readIntent: response = ', aResponse );
+        var ttsResult = -1;
         try {
-            this._onResult(e), this.mStopFlag || (e.outputAudioConfig && 'OUTPUT_AUDIO_ENCODING_MP3' === e.outputAudioConfig.audioEncoding ? o = this._startTTS(t, e.outputAudio) : this._onError(new Error('NLU-Error: no MP3-Format')));
-        } catch (t) {
-            this._onError(new Error('NLU-Exception: ' + t.message));
-        }
-        0 !== o && this._onStop();
-    }, e.prototype._start = function(t) {
-        var e = this;
-        this.mStopFlag = !1;
-        try {
-            if (!this.mConfig.dialogflowTokenServerUrl) return void this._error('_start', 'kein Tokenserver vorhanden');
-            if (!this.mConfig.dialogflowProjectId) return void this._error('_start', 'keine ProjektID vorhanden');
-            t.text ? this.getDetectIntentText(t.text, t.language).then(function(o) {
-                e._responseIntent(t, o);
-            }, function(t) {
-                e._onError(new Error('NLU-Error: ' + t.message)), e._onStop();
-            }) : this._startASR(t);
-        } catch (t) {
-            this._exception('_start', t);
-        }
-    }, e.prototype._stop = function() {
-        this.mStopFlag = !0, this._stopASR({}), this._stopTTS();
-    }, e.prototype.encodeBase64 = function(t) {
-        if (window.btoa) {
-            for (var e = '', o = new Uint8Array(t), n = o.byteLength, r = 0; r < n; r++) e += String.fromCharCode(o[r]);
-            return window.btoa(e);
-        }
-        return '';
-    }, e.prototype.isVolume = function(t) {
-        if (this.mVolumeCounter += 1, this.mTimeoutCounter += 1, t) try {
-            for (var e = t.length, o = 0, n = 0; n < e; n++) o += t[n] * t[n];
-            var r = Math.sqrt(o / e);
-            (r < ASR_MINVOLUME_THRESHOLD || r > ASR_MAXVOLUME_THRESHOLD) && (this.mVolumeCounter = 0);
-        } catch (t) {
-            this._exception('isVolume', t);
-        }
-        return this.mVolumeCounter !== ASR_MAXVOLUME_COUNTER && this.mTimeoutCounter !== ASR_TIMEOUTVOLUME_COUNTER;
-    }, e.prototype._startASRAudio = function(t) {}, e.prototype._startASRRecording = function(t) {
-        var e = this;
-        this.mVolumeCounter = 0, this.mTimeoutCounter = 0;
-        try {
-            if (this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function(o) {
-                e.isVolume(o) || e._stopASR(t);
-            }), t.userMediaStream) this.mAudioRecorder.start(t.userMediaStream, GOOGLE_PCM_CODEC); else {
-                if (!t.audioData) return this._error('_startASRRecording', 'keine Audiodaten vorhanden'), 
-                void this._stop();
-                this.mAudioRecorder.startAudio(t.audioData, GOOGLE_PCM_CODEC);
+            // Intent zurueckgeben
+            this._onResult(aResponse);
+            // pruefen auf Abspielen von Audio (MP3)
+            if (!this.mStopFlag) {
+                // pruefen auf MP3-Codec
+                if (aResponse.outputAudioConfig && aResponse.outputAudioConfig.audioEncoding === 'OUTPUT_AUDIO_ENCODING_MP3') {
+                    ttsResult = this._startTTS(aOption, aResponse.outputAudio);
+                }
+                else {
+                    this._onError(new Error('NLU-Error: no MP3-Format'));
+                }
             }
-            this.mRecordingFlag = !0;
-        } catch (e) {
-            this._exception('_startASRRecording', e), this._stopASR(t);
         }
-    }, e.prototype._startASR = function(t) {
-        var e = this;
-        if (this.mRecordingFlag) return this._error('_startASR', 'ASR laeuft bereits'), 
-        -1;
-        if (t && t.audioURL) {
-            var o = {
-                audioURL: t.audioURL,
-                language: t.language
-            };
-            try {
-                this._startASRAudio(o);
-            } catch (t) {
-                this._exception('_startASR', t);
-            }
-        } else {
-            if (!this.mGetUserMedia) return this._error('_startASR', 'kein getUserMedia vorhanden'), 
-            -1;
-            try {
-                return this.mGetUserMedia({
-                    audio: !0,
-                    video: !1
-                }).then(function(o) {
-                    e.mUserMediaStream = o;
-                    var n = {
-                        userMediaStream: e.mUserMediaStream,
-                        language: t.language
-                    };
-                    e._startASRRecording(n);
-                }, function(t) {
-                    e._onError(new Error('ASR-Error: kein UserMedia erzeugt')), e._error('_startASR', 'keine UserMedia erzeugt: ' + t.message), 
-                    e._onStop();
-                }), 0;
-            } catch (t) {
-                return this._exception('_startASR', t), -1;
-            }
+        catch (aException) {
+            this._onError(new Error('NLU-Exception: ' + aException.message));
         }
-        return this._error('_startASR', 'ASR ist nicht implementiert'), -1;
-    }, e.prototype._stopASR = function(t) {
-        var e = this;
-        if (this.mRecordingFlag = !1, !this.mAudioRecorder) return 0;
+        // pruefen auf TTS gestartet
+        if (ttsResult !== 0) {
+            this._onStop();
+        }
+    };
+    /**
+     * started die NLU
+     *
+     * @param options - Parameter fuer die NLU
+     */
+    GoogleNLU2.prototype._start = function (aOption) {
+        var _this = this;
+        // console.log('GoogleNLU2._startNLU:', aOptions);
+        this.mStopFlag = false;
         try {
-            return this.mAudioRecorder.stop(function(o) {
-                e.mStopFlag || e.getDetectIntentAudio(e.encodeBase64(o), '').then(function(o) {
-                    e._responseIntent(t, o);
-                }, function(t) {
-                    e._onError(new Error('NLU-Error: ' + t.message)), e._onStop();
+            if (!this.mConfig.dialogflowTokenServerUrl) {
+                this._error('_start', 'kein Tokenserver vorhanden');
+                return;
+            }
+            if (!this.mConfig.dialogflowProjectId) {
+                this._error('_start', 'keine ProjektID vorhanden');
+                return;
+            }
+            // pruefen auf Audioaufnahme
+            if (!aOption.text) {
+                this._startASR(aOption);
+            }
+            else {
+                // Hier wird die Antwort zurueckgegeben
+                this.getDetectIntentText(aOption.text, aOption.language).then(function (aResponse) {
+                    _this._responseIntent(aOption, aResponse);
+                }, function (aError) {
+                    // console.log('GoogleNLU2._start: Promise-Error ', aError)
+                    _this._onError(new Error('NLU-Error: ' + aError.message));
+                    _this._onStop();
                 });
-            }), this.mAudioRecorder = null, 0;
-        } catch (t) {
-            return this._exception('_stop', t), -1;
+            }
         }
-    }, e.prototype.decodeBase64 = function(t) {
-        if (window.atob) {
-            for (var e = window.atob(t), o = e.length, n = new Uint8Array(o), r = 0; r < o; r++) n[r] = e.charCodeAt(r);
-            return n.buffer;
+        catch (aException) {
+            this._exception('_start', aException);
         }
-        return new ArrayBuffer(1);
-    }, e.prototype._startTTS = function(t, e) {
-        var o = this;
-        try {
-            if (!e) return -1;
-            this.mAudioPlayer = new GoogleAudioPlayer(this.mAudioContext), this.mAudioPlayer.start();
-            var n = {
-                onaudiostart: function() {},
-                onaudioend: function() {
-                    o._stop();
-                }
-            };
-            return this.mAudioPlayer.decodeAudio(n, this.decodeBase64(e)), 0;
-        } catch (t) {
-            return this._onError(new Error('NLU2-Exception: ' + t.message)), -1;
-        }
-    }, e.prototype._stopTTS = function() {
-        return this.mAudioPlayer && (this.mAudioPlayer.stopAudio(), this._onStop()), 0;
-    }, e;
-}(GoogleDevice), GOOGLE_ASRSERVER_URL = 'https://speech.googleapis.com/v1/speech:recognize', ASR_MAXVOLUME_COUNTER$1 = 30, ASR_TIMEOUTVOLUME_COUNTER$1 = 200, ASR_MINVOLUME_THRESHOLD$1 = 127, ASR_MAXVOLUME_THRESHOLD$1 = 128, GoogleASR2 = function(t) {
-    function e(e, o, n, r, i) {
-        var s = t.call(this, 'GoogleASR2', e, o) || this;
-        return s.mAccessToken = '', s.mAccessTokenDate = new Date(), s.mAccessTokenDuration = 0, 
-        s.mAudioContext = null, s.mGetUserMedia = null, s.mAudioReader = null, s.mAudioRecorder = null, 
-        s.mUserMediaStream = null, s.mRecordingFlag = !1, s.mVolumeCounter = 0, s.mTimeoutCounter = 0, 
-        s.mAudioContext = n, s.mGetUserMedia = r, s.mAudioReader = i, s.getAccessTokenFromServer(), 
-        s;
-    }
-    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
-        return e.getTime() - t.getTime();
-    }, e.prototype.getAccessTokenFromServer = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t, e;
-            return __generator(this, function(o) {
-                switch (o.label) {
-                  case 0:
-                    return o.trys.push([ 0, 3, , 4 ]), [ 4, fetch(this.mConfig.serverUrl, {
-                        method: 'GET',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }) ];
-
-                  case 1:
-                    return [ 4, o.sent().json() ];
-
-                  case 2:
-                    return t = o.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
-                    this.mAccessTokenDuration = t.time || 0, [ 3, 4 ];
-
-                  case 3:
-                    return e = o.sent(), this.mInitFlag = !1, this._exception('getAccessTokenFromServer', e), 
-                    [ 3, 4 ];
-
-                  case 4:
-                    return [ 2 ];
-                }
-            });
-        });
-    }, e.prototype.getAccessToken = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t;
-            return __generator(this, function(e) {
-                switch (e.label) {
-                  case 0:
-                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
-
-                  case 1:
-                    e.sent(), e.label = 2;
-
-                  case 2:
-                    return [ 2, this.mAccessToken ];
-                }
-            });
-        });
-    }, e.prototype.getSpeechToText = function(t, e, o) {
-        return __awaiter(this, void 0, void 0, function() {
-            var t, e, n;
-            return __generator(this, function(r) {
-                switch (r.label) {
-                  case 0:
-                    return r.trys.push([ 0, 4, , 5 ]), [ 4, this.getAccessToken() ];
-
-                  case 1:
-                    return t = r.sent(), [ 4, fetch(GOOGLE_ASRSERVER_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            Authorization: "Bearer " + t,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            config: {
-                                encoding: 'LINEAR16',
-                                languageCode: 'de-DE',
-                                sampleRateHertz: 16e3
-                            },
-                            audio: {
-                                content: o
-                            }
-                        })
-                    }) ];
-
-                  case 2:
-                    return [ 4, r.sent().json() ];
-
-                  case 3:
-                    return (e = r.sent()) && this._onOptionMessage(e), this._onStop(), [ 2, e ];
-
-                  case 4:
-                    return n = r.sent(), this._exception('getSpeechToText', n), this._onStop(), [ 3, 5 ];
-
-                  case 5:
-                    return [ 2 ];
-                }
-            });
-        });
-    }, e.prototype.decodeBase64 = function(t) {
-        if (window.atob) {
-            for (var e = window.atob(t), o = e.length, n = new Uint8Array(o), r = 0; r < o; r++) n[r] = e.charCodeAt(r);
-            return n.buffer;
-        }
-        return new ArrayBuffer(1);
-    }, e.prototype.encodeBase64 = function(t) {
+    };
+    GoogleNLU2.prototype._stop = function () {
+        // console.log('GoogleNLU._stop');
+        this.mStopFlag = true;
+        this._stopASR({});
+        this._stopTTS();
+    };
+    // ASR-Funktionen
+    GoogleNLU2.prototype.encodeBase64 = function (aBuffer) {
         if (window.btoa) {
-            for (var e = '', o = new Uint8Array(t), n = o.byteLength, r = 0; r < n; r++) e += String.fromCharCode(o[r]);
-            return window.btoa(e);
+            var binary = '';
+            var bytes = new Uint8Array(aBuffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
         }
         return '';
-    }, e.prototype._onSpeechResult = function(t) {
-        if (t && t.length > 0) {
-            t[0].transcript, t[0].confidence;
-            this._onResult(t);
-        }
-    }, e.prototype._onSpeechEnd = function() {}, e.prototype._onOptionMessage = function(t) {
-        t.results && t.results.length > 0 && this._onSpeechResult(t.results[0].alternatives);
-    }, e.prototype.isVolume = function(t) {
-        if (this.mVolumeCounter += 1, this.mTimeoutCounter += 1, t) try {
-            for (var e = t.length, o = 0, n = 0; n < e; n++) o += t[n] * t[n];
-            var r = Math.sqrt(o / e);
-            (r < ASR_MINVOLUME_THRESHOLD$1 || r > ASR_MAXVOLUME_THRESHOLD$1) && (this.mVolumeCounter = 0);
-        } catch (t) {
-            this._exception('isVolume', t);
-        }
-        return this.mVolumeCounter !== ASR_MAXVOLUME_COUNTER$1 && this.mTimeoutCounter !== ASR_TIMEOUTVOLUME_COUNTER$1;
-    }, e.prototype._onEndedFunc = function(t) {
-        this.getSpeechToText('de-DE', 'LINEAR16', this.encodeBase64(t));
-    }, e.prototype._startAudio = function(t) {}, e.prototype._startASR = function(t) {
-        var e = this;
-        this.mVolumeCounter = 0, this.mTimeoutCounter = 0;
-        try {
-            if (this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function(t) {
-                e.isVolume(t) || e._stop();
-            }), t.userMediaStream) this.mAudioRecorder.start(t.userMediaStream, GOOGLE_PCM_CODEC); else {
-                if (!t.audioData) return this._error('_startASR', 'keine Audiodaten vorhanden'), 
-                void this._stop();
-                this.mAudioRecorder.startAudio(t.audioData, GOOGLE_PCM_CODEC);
+    };
+    /**
+     * Pruefen auf vorhandenem Volumen
+     * @param aVolumeData - Audiodaten zum pruefen auf Volumen
+     */
+    GoogleNLU2.prototype.isVolume = function (aVolumeData) {
+        this.mVolumeCounter += 1;
+        this.mTimeoutCounter += 1;
+        if (aVolumeData) {
+            try {
+                // Berechnung des Volumens
+                var length_1 = aVolumeData.length;
+                var volumeSum = 0;
+                for (var i = 0; i < length_1; i++) {
+                    volumeSum += aVolumeData[i] * aVolumeData[i];
+                }
+                var volume = Math.sqrt(volumeSum / length_1);
+                // console.log('GoogleNLU2.isVolume:', volume);
+                if (volume < ASR_MINVOLUME_THRESHOLD || volume > ASR_MAXVOLUME_THRESHOLD) {
+                    console.log('GoogleNLU2.isVolume:', volume);
+                    this.mVolumeCounter = 0;
+                    this.mMaxVolumeCounter = ASR_ENDMAXVOLUME_COUNTER;
+                }
             }
-            this.mRecordingFlag = !0;
-        } catch (t) {
-            this._exception('_startASR', t), this._stop();
+            catch (aException) {
+                this._exception('isVolume', aException);
+            }
         }
-    }, e.prototype._start = function(t) {
-        var e = this;
-        if (this.mRecordingFlag) return this._error('_start', 'ASR laeuft bereits'), -1;
-        if (t && t.audioURL) {
-            var o = {
-                audioURL: t.audioURL,
-                language: t.language
+        // console.log( 'GoogleASR2.isVolume:', aVolumeData);
+        if (this.mVolumeCounter === this.mMaxVolumeCounter) {
+            console.log('GoogleASR2.isVolume: VolumeCounter hat beendet');
+            return false;
+        }
+        if (this.mTimeoutCounter === ASR_TIMEOUTVOLUME_COUNTER) {
+            console.log('GoogleASR2.isVolume: TimeoutCounter hat beendet');
+            return false;
+        }
+        return true;
+    };
+    /**
+     * hier wird ein Audio uebertragen
+     *
+     * @param aOption
+     */
+    GoogleNLU2.prototype._startASRAudio = function (aOption) {
+    };
+    /**
+     * Echtzeitstreamen vom Mikrophon zur Sprachernkennung
+     *
+     * @param aOption
+     */
+    GoogleNLU2.prototype._startASRRecording = function (aOption) {
+        // console.log('GoogleASR2._startASR:', aOption);
+        var _this = this;
+        this.mMaxVolumeCounter = ASR_BEGINMAXVOLUME_COUNTER;
+        this.mVolumeCounter = 0;
+        this.mTimeoutCounter = 0;
+        // Audiosource einrichten
+        try {
+            this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function (aVolumeData) {
+                // console.log( 'GoogleASR2._startASR: volumeCallback ' + aVolumeData + '\n\n\n');
+                if (!_this.isVolume(aVolumeData)) {
+                    _this._stopASR(aOption);
+                }
+            });
+            // pruefen auf Mikrofon oder Audiodaten
+            if (aOption.userMediaStream) {
+                this.mAudioRecorder.start(aOption.userMediaStream, GOOGLE_PCM_CODEC);
+            }
+            else if (aOption.audioData) {
+                this.mAudioRecorder.startAudio(aOption.audioData, GOOGLE_PCM_CODEC);
+            }
+            else {
+                // console.log('GoogleASR2._startASR: keine Audiodaten vorhanden');
+                this._error('_startASRRecording', 'keine Audiodaten vorhanden');
+                this._stop();
+                return;
+            }
+            this.mRecordingFlag = true;
+        }
+        catch (aException) {
+            this._exception('_startASRRecording', aException);
+            this._stopASR(aOption);
+        }
+    };
+    /**
+     * startet die Recognition
+     *
+     * @protected
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleNLU2.prototype._startASR = function (aOption) {
+        var _this = this;
+        // console.log('GoogleNLU2._startASR:', aOption.language);
+        if (this.mRecordingFlag) {
+            this._error('_startASR', 'ASR laeuft bereits');
+            return -1;
+        }
+        // TODO: Hier muss zwischen vorhandenen Audiodaten zum Streamen und dem Mikrofon
+        //       als Audioquelle unterschieden werden.
+        if (aOption && aOption.audioURL) {
+            var option = {
+                audioURL: aOption.audioURL,
+                language: aOption.language
             };
             try {
-                this._startAudio(o);
-            } catch (t) {
-                this._exception('_start', t);
+                this._startASRAudio(option);
             }
-        } else {
-            if (!this.mGetUserMedia) return this._error('_start', 'kein getUserMedia vorhanden'), 
-            -1;
+            catch (aException) {
+                this._exception('_startASR', aException);
+            }
+        }
+        else {
+            if (!this.mGetUserMedia) {
+                this._error('_startASR', 'kein getUserMedia vorhanden');
+                return -1;
+            }
             try {
-                return this.mGetUserMedia({
-                    audio: !0,
-                    video: !1
-                }).then(function(o) {
-                    e.mUserMediaStream = o;
-                    var n = {
-                        userMediaStream: e.mUserMediaStream,
-                        language: t.language
+                // Verbindung mit dem Mikrofon herstellen ueber einen Stream
+                // console.log('NuanceASR._start: getUserMedia = ', this.mGetUserMedia);
+                this.mGetUserMedia({ audio: true, video: false }).then(function (stream) {
+                    // console.log('GoogleASR2._start: getUserMedia = ', stream);
+                    _this.mUserMediaStream = stream;
+                    var option = {
+                        userMediaStream: _this.mUserMediaStream,
+                        language: aOption.language
                     };
-                    e._startASR(n);
-                }, function(t) {
-                    e._onError(new Error('ASR-Error: kein UserMedia erzeugt')), e._error('_start', 'keine UserMedia erzeugt: ' + t.message), 
-                    e._onStop();
-                }), 0;
-            } catch (t) {
-                return this._exception('_start', t), -1;
+                    _this._startASRRecording(option);
+                }, function (aError) {
+                    // console.log('NuanceASR._start: getMediaError', aError);
+                    _this._onError(new Error('ASR-Error: kein UserMedia erzeugt'));
+                    _this._error('_startASR', 'keine UserMedia erzeugt: ' + aError.message);
+                    // hier muss die ASR sofort beendet werden
+                    _this._onStop();
+                });
+                return 0;
+            }
+            catch (aException) {
+                this._exception('_startASR', aException);
+                return -1;
             }
         }
-        return this._error('_start', 'ASR ist nicht implementiert'), -1;
-    }, e.prototype._stop = function() {
-        var t = this;
-        if (this.mRecordingFlag = !1, !this.mAudioRecorder) return 0;
-        try {
-            return this.mAudioRecorder.stop(function(e) {
-                t._onEndedFunc(e);
-            }), this.mAudioRecorder = null, 0;
-        } catch (t) {
-            return this._exception('_stop', t), -1;
+        this._error('_startASR', 'ASR ist nicht implementiert');
+        return -1;
+    };
+    /**
+     * Beenden der Recognition
+     *
+     * @protected
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleNLU2.prototype._stopASR = function (aOption) {
+        var _this = this;
+        // console.log('GoogleASR2._stop: start');
+        this.mRecordingFlag = false;
+        if (!this.mAudioRecorder) {
+            return 0;
         }
-    }, e;
-}(GoogleDevice), GOOGLE_TTSSERVER_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize', GoogleTTS2 = function(t) {
-    function e(e, o, n) {
-        var r = t.call(this, 'GoogleTTS2', e, o) || this;
-        return r.mAccessToken = '', r.mAccessTokenDate = new Date(), r.mAccessTokenDuration = 0, 
-        r.mAudioContext = null, r.mAudioPlayer = null, r.mAudioContext = n, r.getAccessTokenFromServer(), 
-        r;
-    }
-    return __extends(e, t), e.prototype.getDiffTime = function(t, e) {
-        return e.getTime() - t.getTime();
-    }, e.prototype.getAccessTokenFromServer = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t, e;
-            return __generator(this, function(o) {
-                switch (o.label) {
-                  case 0:
-                    return o.trys.push([ 0, 3, , 4 ]), [ 4, fetch(this.mConfig.serverUrl, {
-                        method: 'GET',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }) ];
-
-                  case 1:
-                    return [ 4, o.sent().json() ];
-
-                  case 2:
-                    return t = o.sent(), this.mAccessTokenDate = new Date(), this.mAccessToken = t.token || '', 
-                    this.mAccessTokenDuration = t.time || 0, [ 3, 4 ];
-
-                  case 3:
-                    return e = o.sent(), this.mInitFlag = !1, this._exception('getAccessTokenFromServer', e), 
-                    [ 3, 4 ];
-
-                  case 4:
-                    return [ 2 ];
+        try {
+            this.mAudioRecorder.stop(function (aBuffer) {
+                if (!_this.mStopFlag) {
+                    // Hier wird der Intent geholt
+                    _this.getDetectIntentAudio(_this.encodeBase64(aBuffer), '').then(function (aResponse) {
+                        _this._responseIntent(aOption, aResponse);
+                    }, function (aError) {
+                        // console.log('GoogleNLU2._start: Promise-Error ', aError)
+                        _this._onError(new Error('NLU-Error: ' + aError.message));
+                        _this._onStop();
+                    });
                 }
             });
-        });
-    }, e.prototype.getAccessToken = function() {
-        return __awaiter(this, void 0, void 0, function() {
-            var t;
-            return __generator(this, function(e) {
-                switch (e.label) {
-                  case 0:
-                    return t = new Date(), Math.round(this.getDiffTime(this.mAccessTokenDate, t) / 1e3) > this.mAccessTokenDuration ? [ 4, this.getAccessTokenFromServer() ] : [ 3, 2 ];
-
-                  case 1:
-                    e.sent(), e.label = 2;
-
-                  case 2:
-                    return [ 2, this.mAccessToken ];
-                }
-            });
-        });
-    }, e.prototype.getTextToSpeech = function(t, e, o, n) {
-        return __awaiter(this, void 0, void 0, function() {
-            var r;
-            return __generator(this, function(i) {
-                switch (i.label) {
-                  case 0:
-                    return [ 4, this.getAccessToken() ];
-
-                  case 1:
-                    return r = i.sent(), [ 4, fetch(GOOGLE_TTSSERVER_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            Authorization: "Bearer " + r,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            input: {
-                                text: t
-                            },
-                            voice: {
-                                languageCode: e,
-                                name: o
-                            },
-                            audioConfig: {
-                                audioEncoding: n
-                            }
-                        })
-                    }) ];
-
-                  case 2:
-                    return [ 4, i.sent().json() ];
-
-                  case 3:
-                    return [ 2, i.sent() ];
-                }
-            });
-        });
-    }, e.prototype.decodeBase64 = function(t) {
+            this.mAudioRecorder = null;
+            // console.log('GoogleASR2._stop: end');
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_stop', aException);
+            return -1;
+        }
+    };
+    // TTS-Funktionen
+    /**
+     * Dekodieren der String-Base64 Codierung
+     *
+     * @param aBase64Text
+     */
+    GoogleNLU2.prototype.decodeBase64 = function (aBase64Text) {
         if (window.atob) {
-            for (var e = window.atob(t), o = e.length, n = new Uint8Array(o), r = 0; r < o; r++) n[r] = e.charCodeAt(r);
-            return n.buffer;
+            var binary_string = window.atob(aBase64Text);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes.buffer;
         }
         return new ArrayBuffer(1);
-    }, e.prototype._start = function(t) {
-        var e = this;
+    };
+    /**
+     * TTS starten
+     *
+     * @param aOptions
+     */
+    GoogleNLU2.prototype._startTTS = function (aOptions, aAudioData) {
+        var _this = this;
+        // console.log('GoogleNLU2._startTTS:', aOptions);
         try {
-            return this.mConfig.serverUrl ? (this.getTextToSpeech(t.text, t.language, t.voice, 'MP3').then(function(t) {
+            // pruefen auf vorhandene Audiodaten
+            if (!aAudioData) {
+                return -1;
+            }
+            // Audioplayer erzeugen
+            this.mAudioPlayer = new GoogleAudioPlayer(this.mAudioContext);
+            this.mAudioPlayer.start();
+            var options = {
+                onaudiostart: function () {
+                    // console.log('GoogleNLU2._startTTS: Audioplayer gestartet');
+                    // TODO: Audiostart-Event einbauen
+                },
+                onaudioend: function () {
+                    // console.log('GoogleNLU2._startTTS: Audioplayer beenden');
+                    // TODO: Audiostop einbauen
+                    _this._stop();
+                }
+            };
+            // MP3-Audio dekodieren
+            // console.log('GoogleNLU2._startTTS: play Audio MP3');
+            this.mAudioPlayer.decodeAudio(options, this.decodeBase64(aAudioData));
+            return 0;
+        }
+        catch (aException) {
+            this._onError(new Error('NLU2-Exception: ' + aException.message));
+            return -1;
+        }
+    };
+    /**
+     * Stoppen der TTS
+     */
+    GoogleNLU2.prototype._stopTTS = function () {
+        // console.log('GoogleNLU2._stopTTS');
+        if (this.mAudioPlayer) {
+            // fuer Streams
+            // this.mAudioPlayer.stop();
+            // fuer MP3
+            this.mAudioPlayer.stopAudio();
+            this._onStop();
+        }
+        return 0;
+    };
+    return GoogleNLU2;
+}(GoogleDevice));
+
+/**
+ * ASR Anbindung an den Google-Service (Tokenserver)
+ *
+ * Letzte Aenderung: 27.03.2020
+ * Status: rot
+ *
+ * @module cloud/google/device
+ * @author SB
+ */
+// Konstanten
+var GOOGLE_ASRSERVER_URL = 'https://speech.googleapis.com/v1/speech:recognize';
+// Anzahl der Volume-Pruefungen, bis ASR-Aufnahme abgebrochen wird
+var ASR_MAXVOLUME_COUNTER = 30;
+var ASR_TIMEOUTVOLUME_COUNTER$1 = 200;
+// Schwellwert fuer Lautstaerke, ab der weiter zugehoert wird
+var ASR_MINVOLUME_THRESHOLD$1 = 127.0;
+var ASR_MAXVOLUME_THRESHOLD$1 = 128.0;
+var GoogleASR2 = /** @class */ (function (_super) {
+    __extends(GoogleASR2, _super);
+    function GoogleASR2(aConfig, aConnect, aAudioContext, aGetUserMedia, aAudioReader) {
+        var _this = _super.call(this, 'GoogleASR2', aConfig, aConnect) || this;
+        // Access-Token
+        _this.mAccessToken = '';
+        _this.mAccessTokenDate = new Date();
+        _this.mAccessTokenDuration = 0;
+        // HTML5-Komponenten
+        _this.mAudioContext = null;
+        _this.mGetUserMedia = null;
+        // AudioReader, fuer Einlesen von Audiodateien, anstatt das Mikrofon zu benutzen
+        _this.mAudioReader = null;
+        // weitere Attribute
+        _this.mAudioRecorder = null;
+        _this.mUserMediaStream = null;
+        _this.mRecordingFlag = false;
+        _this.mVolumeCounter = 0;
+        _this.mTimeoutCounter = 0;
+        _this.mAudioContext = aAudioContext;
+        _this.mGetUserMedia = aGetUserMedia;
+        _this.mAudioReader = aAudioReader;
+        // Prefetch des Tokens, dient dem Starten des Tokenservers in der Cloud
+        _this.getAccessTokenFromServer();
+        return _this;
+    }
+    // Token-Funktionen
+    GoogleASR2.prototype.clearToken = function () {
+        this.mAccessToken = '';
+        this.mAccessTokenDate = new Date();
+        this.mAccessTokenDuration = 0;
+    };
+    /**
+     * Berechnung der Zeitdifferenz zur Bestimmung der Restgueltigkeitsdauer eines Tokens
+     */
+    GoogleASR2.prototype.getDiffTime = function (date1, date2) {
+        return date2.getTime() - date1.getTime();
+    };
+    /**
+     * Token wird direkt vom Tokenserver geholt
+     */
+    GoogleASR2.prototype.getAccessTokenFromServer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, responseJSON, aException_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetch(this.mConfig.serverUrl, {
+                                method: 'GET',
+                                mode: 'cors',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        responseJSON = _a.sent();
+                        // console.log('AccessToken: ', responseJSON);
+                        this.mAccessTokenDate = new Date();
+                        this.mAccessToken = responseJSON.token || '';
+                        this.mAccessTokenDuration = responseJSON.time || 0;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        aException_1 = _a.sent();
+                        this.mInitFlag = false;
+                        this._exception('getAccessTokenFromServer', aException_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Token wird zurueckgegeben
+     */
+    GoogleASR2.prototype.getAccessToken = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var currentDate, diffTime;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        currentDate = new Date();
+                        diffTime = Math.round(this.getDiffTime(this.mAccessTokenDate, currentDate) / 1000);
+                        if (!(diffTime > this.mAccessTokenDuration)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getAccessTokenFromServer()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, this.mAccessToken];
+                }
+            });
+        });
+    };
+    /**
+     * Detect Intent zurueckgeben
+     */
+    GoogleASR2.prototype.getSpeechToText = function (aLanguageCode, aEncoding, aAudioData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, response, responseJSON, aException_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        return [4 /*yield*/, this.getAccessToken()];
+                    case 1:
+                        accessToken = _a.sent();
+                        return [4 /*yield*/, fetch(GOOGLE_ASRSERVER_URL, {
+                                method: 'POST',
+                                mode: 'cors',
+                                headers: {
+                                    Authorization: "Bearer " + accessToken,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    config: {
+                                        encoding: 'LINEAR16',
+                                        languageCode: 'de-DE',
+                                        sampleRateHertz: 16000
+                                    },
+                                    audio: {
+                                        content: aAudioData
+                                    }
+                                })
+                            })];
+                    case 2:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 3:
+                        responseJSON = _a.sent();
+                        // JSON-Nachricht als Ergebnis zurueckgeben
+                        if (responseJSON) {
+                            // console.log('GoogleASR2.getSpeechToText: ', responseJSON);
+                            this._onOptionMessage(responseJSON);
+                        }
+                        this._onStop();
+                        return [2 /*return*/, responseJSON];
+                    case 4:
+                        aException_2 = _a.sent();
+                        this._exception('getSpeechToText', aException_2);
+                        this._onStop();
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GoogleASR2.prototype.decodeBase64 = function (aBase64Text) {
+        if (window.atob) {
+            var binary_string = window.atob(aBase64Text);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+        return new ArrayBuffer(1);
+    };
+    GoogleASR2.prototype.encodeBase64 = function (aBuffer) {
+        if (window.btoa) {
+            var binary = '';
+            var bytes = new Uint8Array(aBuffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+        return '';
+    };
+    // Message-Funktionen
+    GoogleASR2.prototype._onSpeechResult = function (aResult) {
+        if (aResult && aResult.length > 0) {
+            var text = aResult[0].transcript;
+            var confidence = aResult[0].confidence;
+            // console.log('Transkript: ', text, '  Confidence: ', confidence );
+            // Ergebnis zurueckgeben
+            this._onResult(aResult);
+        }
+    };
+    GoogleASR2.prototype._onSpeechEnd = function () {
+        // console.log('GoogleASR2._onSpeechEnd: Ende der Spracheingabe');
+    };
+    GoogleASR2.prototype._onOptionMessage = function (aMessage) {
+        // pruefen auf Spracherkennung
+        // console.log('GoogleASR2._onOptionMessage: ', aMessage);
+        if (aMessage.results && aMessage.results.length > 0) {
+            this._onSpeechResult(aMessage.results[0].alternatives);
+        }
+    };
+    /**
+     * Pruefen auf vorhandenem Volumen
+     * @param aVolumeData - Audiodaten zum pruefen auf Volumen
+     */
+    GoogleASR2.prototype.isVolume = function (aVolumeData) {
+        this.mVolumeCounter += 1;
+        this.mTimeoutCounter += 1;
+        if (aVolumeData) {
+            try {
+                // Berechnung des Volumens
+                var length_1 = aVolumeData.length;
+                var volumeSum = 0;
+                for (var i = 0; i < length_1; i++) {
+                    volumeSum += aVolumeData[i] * aVolumeData[i];
+                }
+                var volume = Math.sqrt(volumeSum / length_1);
+                // console.log('GoogleASR2.isVolume:', volume);
+                if (volume < ASR_MINVOLUME_THRESHOLD$1 || volume > ASR_MAXVOLUME_THRESHOLD$1) {
+                    // console.log('GoogleASR2.isVolume: set Null', volume);
+                    this.mVolumeCounter = 0;
+                }
+            }
+            catch (aException) {
+                this._exception('isVolume', aException);
+            }
+        }
+        // console.log( 'GoogleASR2.isVolume:', aVolumeData);
+        if (this.mVolumeCounter === ASR_MAXVOLUME_COUNTER) {
+            // console.log('GoogleASR2.isVolume: VolumeCounter hat beendet')
+            return false;
+        }
+        if (this.mTimeoutCounter === ASR_TIMEOUTVOLUME_COUNTER$1) {
+            // console.log('GoogleASR2.isVolume: TimeoutCounter hat beendet')
+            return false;
+        }
+        return true;
+    };
+    // ASR-Funktionen
+    /**
+     * Callback-Funktion fuer Ende der Audioaufnahme
+     *
+     * @param aBuffer - Audiodaten, die an Google gesendet werden
+     */
+    GoogleASR2.prototype._onEndedFunc = function (aBuffer) {
+        // console.log('GoogleASR._onEndedFunc: ', aBuffer);
+        // wird asynchron ausgefuhert
+        this.getSpeechToText('de-DE', 'LINEAR16', this.encodeBase64(aBuffer));
+    };
+    /**
+     * hier wird ein Audio uebertragen
+     *
+     * @param aOption
+     */
+    GoogleASR2.prototype._startAudio = function (aOption) {
+    };
+    /**
+     * Echtzeitstreamen vom Mikrophon zur Sprachernkennung
+     *
+     * @param aOption
+     */
+    GoogleASR2.prototype._startASR = function (aOption) {
+        // console.log('GoogleASR2._startASR:', aOption);
+        var _this = this;
+        this.mVolumeCounter = 0;
+        this.mTimeoutCounter = 0;
+        // Audiosource einrichten
+        try {
+            this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function (aVolumeData) {
+                // console.log( 'GoogleASR2._startASR: volumeCallback ' + aVolumeData + '\n\n\n');
+                if (!_this.isVolume(aVolumeData)) {
+                    _this._stop();
+                }
+            });
+            // pruefen auf Mikrofon oder Audiodaten
+            if (aOption.userMediaStream) {
+                this.mAudioRecorder.start(aOption.userMediaStream, GOOGLE_PCM_CODEC);
+            }
+            else if (aOption.audioData) {
+                this.mAudioRecorder.startAudio(aOption.audioData, GOOGLE_PCM_CODEC);
+            }
+            else {
+                // console.log('GoogleASR2._startASR: keine Audiodaten vorhanden');
+                this._error('_startASR', 'keine Audiodaten vorhanden');
+                this._stop();
+                return;
+            }
+            this.mRecordingFlag = true;
+        }
+        catch (aException) {
+            this._exception('_startASR', aException);
+            this._stop();
+        }
+    };
+    /**
+     * startet die Recognition
+     *
+     * @protected
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleASR2.prototype._start = function (aOption) {
+        var _this = this;
+        // console.log('GoogleASR2._start:', aOption.language);
+        if (this.mRecordingFlag) {
+            this._error('_start', 'ASR laeuft bereits');
+            return -1;
+        }
+        // TODO: Hier muss zwischen vorhandenen Audiodaten zum Streamen und dem Mikrofon
+        //       als Audioquelle unterschieden werden.
+        if (aOption && aOption.audioURL) {
+            var option = {
+                audioURL: aOption.audioURL,
+                language: aOption.language
+            };
+            try {
+                this._startAudio(option);
+            }
+            catch (aException) {
+                this._exception('_start', aException);
+            }
+        }
+        else {
+            if (!this.mGetUserMedia) {
+                this._error('_start', 'kein getUserMedia vorhanden');
+                return -1;
+            }
+            try {
+                // Verbindung mit dem Mikrofon herstellen ueber einen Stream
+                // console.log('NuanceASR._start: getUserMedia = ', this.mGetUserMedia);
+                this.mGetUserMedia({ audio: true, video: false }).then(function (stream) {
+                    // console.log('GoogleASR2._start: getUserMedia = ', stream);
+                    _this.mUserMediaStream = stream;
+                    var option = {
+                        userMediaStream: _this.mUserMediaStream,
+                        language: aOption.language
+                    };
+                    _this._startASR(option);
+                }, function (aError) {
+                    // console.log('NuanceASR._start: getMediaError', aError);
+                    _this._onError(new Error('ASR-Error: kein UserMedia erzeugt'));
+                    _this._error('_start', 'keine UserMedia erzeugt: ' + aError.message);
+                    // hier muss die ASR sofort beendet werden
+                    _this._onStop();
+                });
+                return 0;
+            }
+            catch (aException) {
+                this._exception('_start', aException);
+                return -1;
+            }
+        }
+        this._error('_start', 'ASR ist nicht implementiert');
+        return -1;
+    };
+    /**
+     * Beenden der Recognition
+     *
+     * @protected
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleASR2.prototype._stop = function () {
+        var _this = this;
+        // console.log('GoogleASR2._stop: start');
+        this.mRecordingFlag = false;
+        if (!this.mAudioRecorder) {
+            return 0;
+        }
+        try {
+            this.mAudioRecorder.stop(function (aBuffer) {
+                _this._onEndedFunc(aBuffer);
+            });
+            this.mAudioRecorder = null;
+            // console.log('GoogleASR2._stop: end');
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_stop', aException);
+            return -1;
+        }
+    };
+    return GoogleASR2;
+}(GoogleDevice));
+
+/**
+ * TTS2 Anbindung an den Google-Service (Tokenserver)
+ *
+ * Letzte Aenderung: 08.03.2020
+ * Status: rot
+ *
+ * @module cloud/google/device
+ * @author SB
+ */
+// Konstanten
+var GOOGLE_TTSSERVER_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+var GoogleTTS2 = /** @class */ (function (_super) {
+    __extends(GoogleTTS2, _super);
+    /**
+     * Erzeugt eine Instanz von GoogleTTS
+     *
+     * @param aConfig - Konfigurationsobjekt
+     * @param aConnect - Verbindungsobjekt
+     */
+    function GoogleTTS2(aConfig, aConnect, aAudioContext) {
+        var _this = _super.call(this, 'GoogleTTS2', aConfig, aConnect) || this;
+        // Access-Token
+        _this.mAccessToken = '';
+        _this.mAccessTokenDate = new Date();
+        _this.mAccessTokenDuration = 0;
+        // Audio
+        _this.mAudioContext = null;
+        _this.mAudioPlayer = null;
+        _this.mAudioContext = aAudioContext;
+        // Prefetch des Tokens, dient dem Starten des Tokenservers in der Cloud
+        _this.getAccessTokenFromServer();
+        return _this;
+    }
+    // Token-Funktionen
+    GoogleTTS2.prototype.clearToken = function () {
+        this.mAccessToken = '';
+        this.mAccessTokenDate = new Date();
+        this.mAccessTokenDuration = 0;
+    };
+    /**
+     * Berechnung der Zeitdifferenz zur Bestimmung der Restgueltigkeitsdauer eines Tokens
+     */
+    GoogleTTS2.prototype.getDiffTime = function (date1, date2) {
+        return date2.getTime() - date1.getTime();
+    };
+    /**
+     * Token wird direkt vom Tokenserver geholt
+     */
+    GoogleTTS2.prototype.getAccessTokenFromServer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, responseJSON, aException_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetch(this.mConfig.serverUrl, {
+                                method: 'GET',
+                                mode: 'cors',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        responseJSON = _a.sent();
+                        // console.log('AccessToken: ', responseJSON);
+                        this.mAccessTokenDate = new Date();
+                        this.mAccessToken = responseJSON.token || '';
+                        this.mAccessTokenDuration = responseJSON.time || 0;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        aException_1 = _a.sent();
+                        this.mInitFlag = false;
+                        this._exception('getAccessTokenFromServer', aException_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Token wird zurueckgegeben
+     */
+    GoogleTTS2.prototype.getAccessToken = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var currentDate, diffTime;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        currentDate = new Date();
+                        diffTime = Math.round(this.getDiffTime(this.mAccessTokenDate, currentDate) / 1000);
+                        if (!(diffTime > this.mAccessTokenDuration)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getAccessTokenFromServer()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, this.mAccessToken];
+                }
+            });
+        });
+    };
+    /**
+     * Detect Intent zurueckgeben
+     */
+    GoogleTTS2.prototype.getTextToSpeech = function (aText, aLanguage, aVoice, aFormat) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, response, responseJSON;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getAccessToken()];
+                    case 1:
+                        accessToken = _a.sent();
+                        return [4 /*yield*/, fetch(GOOGLE_TTSSERVER_URL, {
+                                method: 'POST',
+                                mode: 'cors',
+                                headers: {
+                                    Authorization: "Bearer " + accessToken,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    input: {
+                                        text: aText
+                                    },
+                                    voice: {
+                                        languageCode: aLanguage,
+                                        name: aVoice
+                                    },
+                                    audioConfig: {
+                                        audioEncoding: aFormat
+                                    }
+                                })
+                            })];
+                    case 2:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 3:
+                        responseJSON = _a.sent();
+                        // console.log('GoogleTTS2.getTextToSpeak: ', responseJSON);
+                        return [2 /*return*/, responseJSON];
+                }
+            });
+        });
+    };
+    GoogleTTS2.prototype.decodeBase64 = function (aBase64Text) {
+        if (window.atob) {
+            var binary_string = window.atob(aBase64Text);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+        return new ArrayBuffer(1);
+    };
+    /**
+     * TTS starten
+     *
+     * @param aOptions
+     */
+    GoogleTTS2.prototype._start = function (aOptions) {
+        var _this = this;
+        // console.log('GoogleTTS2._start:', aOptions);
+        try {
+            if (!this.mConfig.serverUrl) {
+                this._error('_start', 'kein Tokenserver vorhanden');
+                return;
+            }
+            // Hier wird die Antwort zurueckgegeben
+            this.getTextToSpeech(aOptions.text, aOptions.language, aOptions.voice, 'MP3').then(function (aResponse) {
+                // console.log('GoogleTTS2._start: response = ', aResponse );
                 try {
-                    e.mAudioPlayer = new GoogleAudioPlayer(e.mAudioContext), e.mAudioPlayer.start();
-                    var o = {
-                        onaudiostart: function() {},
-                        onaudioend: function() {
-                            e._stop();
+                    // Audioplayer erzeugen
+                    _this.mAudioPlayer = new GoogleAudioPlayer(_this.mAudioContext);
+                    _this.mAudioPlayer.start();
+                    var options = {
+                        // codec: GOOGLE_PCM_CODEC,
+                        onaudiostart: function () {
+                            // console.log('Audioplayer gestartet');
+                        },
+                        onaudioend: function () {
+                            // console.log('Audioplayer beenden');
+                            _this._stop();
                         }
-                    }, n = t.audioContent;
-                    e.mAudioPlayer.decodeAudio(o, e.decodeBase64(n)), e._onResult(t);
-                } catch (t) {
-                    e._onError(new Error('TTS2-Exception: ' + t.message));
+                    };
+                    // Stream dekodieren
+                    // this.mAudioPlayer.decodeStream( options, aData );
+                    // MP3-Audio dekodieren
+                    var audioContent = aResponse.audioContent;
+                    // console.log('GoogleTTS2._start:', audioContent);
+                    _this.mAudioPlayer.decodeAudio(options, _this.decodeBase64(audioContent));
+                    _this._onResult(aResponse);
                 }
-            }, function(t) {
-                e._onError(new Error('TTS2-Error: ' + t.message)), e._onStop();
-            }), 0) : void this._error('_start', 'kein Tokenserver vorhanden');
-        } catch (t) {
-            return this._exception('_start', t), -1;
+                catch (aException) {
+                    _this._onError(new Error('TTS2-Exception: ' + aException.message));
+                }
+                // this._onStop();
+            }, function (aError) {
+                // console.log('GoogleTTS2._start: Promise-Error ', aError)
+                _this._onError(new Error('TTS2-Error: ' + aError.message));
+                _this._onStop();
+            });
+            return 0;
         }
-    }, e.prototype._stop = function() {
-        return this.mAudioPlayer && (this.mAudioPlayer.stopAudio(), this._onStop()), 0;
-    }, e;
-}(GoogleDevice), AUDIO_UNLOCK_TIMEOUT = 2e3, GOOGLE_ACTION_TIMEOUT = 6e4, GooglePort = function(t) {
-    function e(e, o) {
-        void 0 === o && (o = !0);
-        var n = t.call(this, e || GOOGLE_PORT_NAME, o) || this;
-        return n.mAudioContext = null, n.mGetUserMedia = null, n.mGoogleServerFlag = !1, 
-        n.mGoogleConfig = null, n.mGoogleNetwork = null, n.mGoogleWebSocket = null, n.mGoogleConnect = null, 
-        n.mGoogleTTS = null, n.mGoogleASR = null, n.mGoogleNLU = null, n.mGoogleNLU2 = null, 
-        n.mGoogleNLU2Flag = GOOGLE_NLU2_FLAG, n.mDynamicCredentialsFlag = !1, n.mTransaction = null, 
-        n.mRunningFlag = !1, n.mDefaultOptions = null, n.mActionTimeoutId = 0, n.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 
-        n;
+        catch (aException) {
+            this._exception('_start', aException);
+            return -1;
+        }
+    };
+    GoogleTTS2.prototype._stop = function () {
+        // console.log('GoogleTTS2._stop');
+        // this.mConnect.sendJSON( audioEndMessage );
+        if (this.mAudioPlayer) {
+            // fuer Streams
+            // this.mAudioPlayer.stop();
+            // fuer MP3
+            this.mAudioPlayer.stopAudio();
+            this._onStop();
+        }
+        return 0;
+    };
+    return GoogleTTS2;
+}(GoogleDevice));
+
+/**
+ * GooglePort zur Verbindung des Google Cloud-Service mit dem Framework
+ * Stellt Grundfunktionen von Google zur Verfuegung. Werden von mehreren anderen
+ * Komponenten geteilt.
+ *
+ * Letzte Aenderung: 04.05.2020
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+// Konstanten
+// Zeit die im Unlock-Event auf RESUME gewartet wird
+var AUDIO_UNLOCK_TIMEOUT = 2000;
+// Default Timeout fuer die Dauer einer Action, maximal eine Minute darf die Verarbeitung einer Action dauern,
+// danach wird Stop erzwungen.
+var GOOGLE_ACTION_TIMEOUT = 60000;
+/**
+ * Definiert die GooglePort-Klasse
+ */
+var GooglePort = /** @class */ (function (_super) {
+    __extends(GooglePort, _super);
+    /**
+     * Erzeugt eine Instanz von Port.
+     *
+     * @param {string} aPortName - Name des Ports
+     * @param {boolean} aRegisterFlag - true, wenn Port in PortManager eingetragen werden soll
+     */
+    function GooglePort(aPortName, aRegisterFlag) {
+        if (aRegisterFlag === void 0) { aRegisterFlag = true; }
+        var _this = _super.call(this, aPortName || GOOGLE_PORT_NAME, aRegisterFlag) || this;
+        // externe Html5-Komponenten
+        _this.mAudioContext = null;
+        _this.mGetUserMedia = null;
+        // externes Google-Objekt
+        _this.mGoogleServerFlag = false;
+        _this.mGoogleConfig = null;
+        _this.mGoogleNetwork = null;
+        _this.mGoogleWebSocket = null;
+        _this.mGoogleConnect = null;
+        _this.mGoogleTTS = null;
+        _this.mGoogleASR = null;
+        _this.mGoogleNLU = null;
+        _this.mGoogleNLU2 = null;
+        _this.mGoogleNLU2Flag = GOOGLE_NLU2_FLAG;
+        // weitere Attribute
+        _this.mDynamicCredentialsFlag = false;
+        _this.mTransaction = null;
+        _this.mRunningFlag = false;
+        _this.mDefaultOptions = null;
+        _this.mActionTimeoutId = 0;
+        _this.mActionTimeout = GOOGLE_ACTION_TIMEOUT;
+        return _this;
     }
-    return __extends(e, t), e.prototype.isServer = function() {
+    // Port-Funktionen
+    /**
+     * pruefen auf Server-Verbindung
+     *
+     * @return {boolean} true, Port hat Server-Verbindung, false sonst
+     */
+    GooglePort.prototype.isServer = function () {
         return this.mGoogleServerFlag;
-    }, e.prototype.isMock = function() {
-        return !1;
-    }, e.prototype.getType = function() {
+    };
+    /**
+     * pruefen auf Mock-Port zum Testen
+     *
+     * @return {boolean} mockFlag - true, wenn Port ein Mock zum Testen ist
+     */
+    GooglePort.prototype.isMock = function () {
+        return false;
+    };
+    /**
+     * Rueckgabe eines logischen Port-Typs
+     *
+     * @return {string} logischer Typ des Ports fuer unterschiedliche Anwendungsschnittstellen
+     */
+    GooglePort.prototype.getType = function () {
         return GOOGLE_TYPE_NAME;
-    }, e.prototype.getClass = function() {
+    };
+    /**
+     * Rueckgabe der Port-Klasse
+     *
+     * @return {string} konkrete Klasse des Ports
+     */
+    GooglePort.prototype.getClass = function () {
         return 'GooglePort';
-    }, e.prototype.getVersion = function() {
+    };
+    GooglePort.prototype.getVersion = function () {
         return GOOGLE_API_VERSION;
-    }, e.prototype._checkCredentials = function(t) {
-        if (!t) return !1;
-        var e = !0;
-        if ('string' != typeof t.dialogflowTokenServerUrl && (e = !1), t.dialogflowTokenServerUrl || (e = !1), 
-        'string' != typeof t.dialogflowProjectId && (e = !1), t.dialogflowProjectId || (e = !1), 
-        !e) {
-            if ('string' != typeof t.googleAppKey) return !1;
-            if (!t.googleAppKey) return !1;
+    };
+    /**
+     * Optionen eintragen
+     * @param aOption - optionale Parameter
+     */
+    GooglePort.prototype._checkCredentials = function (aOption) {
+        // console.log('GooglePort._checkCredentials: ', aOption);
+        if (!aOption) {
+            return false;
         }
-        return this.mGoogleNLU2Flag = e, !0;
-    }, e.prototype._initAllObject = function(t) {
-        var e = this, o = new FileHtml5Reader();
-        o.init();
-        var n = new AudioHtml5Reader();
-        if (n.init({
-            audioContext: this.mAudioContext
-        }), this.mGoogleConfig = new GoogleConfig(o), 0 !== this.mGoogleConfig.init(t)) return -1;
-        if (this.mGoogleNetwork = new GoogleNetwork(), this.mGoogleNetwork.onOnline = function() {
-            return e._onOnline();
-        }, this.mGoogleNetwork.onOffline = function() {
-            return e._onOffline();
-        }, this.mGoogleNetwork.onError = function(t) {
-            return e._onError(t);
-        }, 0 !== this.mGoogleNetwork.init(t)) return -1;
-        if (this.isServer() && (this.mGoogleWebSocket = new GoogleWebSocket(), this.mGoogleWebSocket.onOpen = function(t) {
-            return e._onOpen();
-        }, this.mGoogleWebSocket.onClose = function() {
-            return e._onClose();
-        }, this.mGoogleWebSocket.onError = function(t) {
-            return e._onError(t);
-        }, 0 !== this.mGoogleWebSocket.init(t))) return -1;
-        if (this.mGoogleConnect = new GoogleConnect(this.mGoogleConfig, this.mGoogleWebSocket), 
-        this.mGoogleNLU = new GoogleNLU(this.mGoogleConfig, this.mGoogleConnect), this.mGoogleNLU.onStart = function(t) {
-            return e._onStart(t.plugin, t.type);
-        }, this.mGoogleNLU.onStop = function(t) {
-            return e._onStop(t.plugin, t.type);
-        }, this.mGoogleNLU.onResult = function(t) {
-            return e._onResult(t.result, t.plugin, t.type);
-        }, this.mGoogleNLU.onError = function(t) {
-            return e._onError(t.error, t.plugin, t.type);
-        }, this.mGoogleNLU.onClose = function(t) {
-            return e._onClose();
-        }, this.mGoogleNLU2 = new GoogleNLU2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia), 
-        this.mGoogleNLU2.onStart = function(t) {
-            return e._onStart(t.plugin, t.type);
-        }, this.mGoogleNLU2.onStop = function(t) {
-            return e._onStop(t.plugin, t.type);
-        }, this.mGoogleNLU2.onResult = function(t) {
-            return e._onResult(t.result, t.plugin, t.type);
-        }, this.mGoogleNLU2.onError = function(t) {
-            return e._onError(t.error, t.plugin, t.type);
-        }, this.mGoogleNLU2.onClose = function(t) {
-            return e._onClose();
-        }, this.mAudioContext) {
-            this.mGoogleTTS = new GoogleTTS2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext), 
-            this.mGoogleTTS.onStart = function(t) {
-                return e._onStart(t.plugin, t.type);
-            }, this.mGoogleTTS.onStop = function(t) {
-                return e._onStop(t.plugin, t.type);
-            }, this.mGoogleTTS.onResult = function(t) {
-                return e._onResult(t.result, t.plugin, t.type);
-            }, this.mGoogleTTS.onError = function(t) {
-                return e._onError(t.error, t.plugin, t.type);
-            }, this.mGoogleTTS.onClose = function(t) {
-                return e._onClose();
-            };
+        // App-Parameter pruefen
+        // TODO: jetzt erst mal nur ACCESS-TOKEN (AppKey) von Dialogflow V1 bis Oktober 2019
+        var nlu2Flag = true;
+        if (typeof aOption.dialogflowTokenServerUrl !== 'string') {
+            nlu2Flag = false;
+        }
+        if (!aOption.dialogflowTokenServerUrl) {
+            nlu2Flag = false;
+        }
+        if (typeof aOption.dialogflowProjectId !== 'string') {
+            nlu2Flag = false;
+        }
+        if (!aOption.dialogflowProjectId) {
+            nlu2Flag = false;
+        }
+        // console.log( 'GooglePort._checkCredentials: NLU2 = ', nlu2Flag);
+        if (!nlu2Flag) {
+            if (typeof aOption.googleAppKey !== 'string') {
+                return false;
+            }
+            if (!aOption.googleAppKey) {
+                return false;
+            }
+        }
+        this.mGoogleNLU2Flag = nlu2Flag;
+        // App-Parameter sind vorhanden
+        return true;
+    };
+    /**
+     * alle inneren Objekte initialisieren
+     *
+     * @param aOption - optionale Parameter
+     */
+    GooglePort.prototype._initAllObject = function (aOption) {
+        // console.log('GooglePort._initAllObject:', aOption);
+        // innere Komponenten eintragen
+        var _this = this;
+        var fileReader = new FileHtml5Reader();
+        fileReader.init();
+        var audioReader = new AudioHtml5Reader();
+        audioReader.init({ audioContext: this.mAudioContext });
+        this.mGoogleConfig = new GoogleConfig(fileReader);
+        if (this.mGoogleConfig.init(aOption) !== 0) {
+            return -1;
+        }
+        // Network-Anbindung erzeugen
+        this.mGoogleNetwork = new GoogleNetwork();
+        this.mGoogleNetwork.onOnline = function () { return _this._onOnline(); };
+        this.mGoogleNetwork.onOffline = function () { return _this._onOffline(); };
+        this.mGoogleNetwork.onError = function (aError) { return _this._onError(aError); };
+        if (this.mGoogleNetwork.init(aOption) !== 0) {
+            return -1;
+        }
+        // pruefen auf vorhandenen Server
+        if (this.isServer()) {
+            // WebSocket-Anbindung erzeugen und WebSocket API pruefen
+            this.mGoogleWebSocket = new GoogleWebSocket();
+            this.mGoogleWebSocket.onOpen = function (aUrl) { return _this._onOpen(); };
+            this.mGoogleWebSocket.onClose = function () { return _this._onClose(); };
+            this.mGoogleWebSocket.onError = function (aError) { return _this._onError(aError); };
+            if (this.mGoogleWebSocket.init(aOption) !== 0) {
+                return -1;
+            }
+        }
+        this.mGoogleConnect = new GoogleConnect(this.mGoogleConfig, this.mGoogleWebSocket);
+        // Google-Komponenten erzeugen
+        this.mGoogleNLU = new GoogleNLU(this.mGoogleConfig, this.mGoogleConnect);
+        this.mGoogleNLU.onStart = function (aTransaction) { return _this._onStart(aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU.onStop = function (aTransaction) { return _this._onStop(aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU.onResult = function (aTransaction) { return _this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU.onError = function (aTransaction) { return _this._onError(aTransaction.error, aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU.onClose = function (aTransaction) { return _this._onClose(); };
+        this.mGoogleNLU2 = new GoogleNLU2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia);
+        this.mGoogleNLU2.onStart = function (aTransaction) { return _this._onStart(aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU2.onStop = function (aTransaction) { return _this._onStop(aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU2.onResult = function (aTransaction) { return _this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU2.onError = function (aTransaction) { return _this._onError(aTransaction.error, aTransaction.plugin, aTransaction.type); };
+        this.mGoogleNLU2.onClose = function (aTransaction) { return _this._onClose(); };
+        // pruefen auf Server und Audiokontext, nur dann koennen TTS und ASR verwendet werden
+        if (this.mAudioContext) {
+            // laden der Google-TTS2 mit Tokenserver
+            // this.mGoogleTTS = new GoogleTTS( this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext );
+            this.mGoogleTTS = new GoogleTTS2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext);
+            this.mGoogleTTS.onStart = function (aTransaction) { return _this._onStart(aTransaction.plugin, aTransaction.type); };
+            this.mGoogleTTS.onStop = function (aTransaction) { return _this._onStop(aTransaction.plugin, aTransaction.type); };
+            this.mGoogleTTS.onResult = function (aTransaction) { return _this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type); };
+            this.mGoogleTTS.onError = function (aTransaction) { return _this._onError(aTransaction.error, aTransaction.plugin, aTransaction.type); };
+            this.mGoogleTTS.onClose = function (aTransaction) { return _this._onClose(); };
+            // console.log('GooglePort._initAllObject: googleTTS = ', this.mGoogleTTS);
             try {
-                this.mGetUserMedia && (this.mGoogleASR = new GoogleASR2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, n), 
-                this.mGoogleASR.onStart = function(t) {
-                    return e._onStart(t.plugin, t.type);
-                }, this.mGoogleASR.onStop = function(t) {
-                    return e._onStop(t.plugin, t.type);
-                }, this.mGoogleASR.onResult = function(t) {
-                    return e._onResult(t.result, t.plugin, t.type);
-                }, this.mGoogleASR.onError = function(t) {
-                    return e._onError(t.error, t.plugin, t.type);
-                }, this.mGoogleASR.onClose = function(t) {
-                    return e._onClose();
-                });
-            } catch (t) {
-                this._exception('_initAllObject', t);
+                // if ( this.isServer() && this.mGetUserMedia ) {
+                if (this.mGetUserMedia) {
+                    // ASR kann nur verwendet werden, wenn getUserMedia vorhanden ist
+                    this.mGoogleASR = new GoogleASR2(this.mGoogleConfig, this.mGoogleConnect, this.mAudioContext, this.mGetUserMedia, audioReader);
+                    this.mGoogleASR.onStart = function (aTransaction) { return _this._onStart(aTransaction.plugin, aTransaction.type); };
+                    this.mGoogleASR.onStop = function (aTransaction) { return _this._onStop(aTransaction.plugin, aTransaction.type); };
+                    this.mGoogleASR.onResult = function (aTransaction) { return _this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type); };
+                    this.mGoogleASR.onError = function (aTransaction) { return _this._onError(aTransaction.error, aTransaction.plugin, aTransaction.type); };
+                    this.mGoogleASR.onClose = function (aTransaction) { return _this._onClose(); };
+                    // console.log('GooglePort._initAllObject: googleASR = ', this.mGoogleASR);
+                }
+            }
+            catch (aException) {
+                this._exception('_initAllObject', aException);
             }
         }
         return 0;
-    }, e.prototype.init = function(e) {
-        if (this.mInitFlag) return this._error('init', 'Port ist bereits initialisiert'), 
-        0;
-        if (e && 'boolean' == typeof e.googleDynamicCredentialsFlag && e.googleDynamicCredentialsFlag) this.mDynamicCredentialsFlag = !0; else if (!this._checkCredentials(e)) return this._error('init', 'kein AppKey als Parameter uebergeben'), 
-        -1;
-        e && 'boolean' == typeof e.googleServerFlag && e.googleServerFlag && (this.mGoogleServerFlag = !0);
-        var o = FactoryManager.get(AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory);
-        if (o) {
-            var n = o.create();
-            n && (this.mAudioContext = new n());
+    };
+    /**
+     * initialisert den Port
+     *
+     * Folgende Parameter muessen uebergeben werden, da sonst der Port nicht initalisiert wird:
+     *
+     *      googleAppId     - Google Credentials fuer APP_ID
+     *      googleAppKey    - Google Credentials fuer APP_KEY
+     *
+     * erlaubte optionale Parameter:
+     *
+     *      activeFlag      - legt fest, ob der Port zum Start aktiviert ist oder nicht
+     *      errorOutputFlag - legt fest, ob die Fehlerausgabe auf der Konsole erfolgt
+     *
+     *
+     * @param {any} aOption - optionale Parameter fuer die Konfiguration des Plugins
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GooglePort.prototype.init = function (aOption) {
+        // console.log('GooglePort.init:', aOption);
+        if (this.mInitFlag) {
+            this._error('init', 'Port ist bereits initialisiert');
+            return 0;
         }
-        var r = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
-        return r && (this.mGetUserMedia = r.create()), 0 !== this._initAllObject(e) ? -1 : 0 !== t.prototype.init.call(this, e) ? -1 : (this.isErrorOutput() && (this.mGoogleNLU ? console.log('GooglePort: NLU ist vorhanden') : console.log('GooglePort: NLU ist nicht vorhanden'), 
-        this.mGoogleNLU2 ? console.log('GooglePort: NLU2 ist vorhanden') : console.log('GooglePort: NLU2 ist nicht vorhanden'), 
-        this.mGoogleTTS ? console.log('GooglePort: TTS ist vorhanden') : console.log('GooglePort: TTS ist nicht vorhanden'), 
-        this.mGoogleASR ? console.log('GooglePort: ASR ist vorhanden') : console.log('GooglePort: ASR ist nicht vorhanden')), 
-        0);
-    }, e.prototype.done = function() {
-        return t.prototype.done.call(this), this._clearActionTimeout(), this.mAudioContext && this.mAudioContext.close(), 
-        this.mAudioContext = null, this.mGetUserMedia = null, this.mGoogleConnect && (this.mGoogleConnect.disconnect(), 
-        this.mGoogleConnect = null), this.mGoogleWebSocket && (this.mGoogleWebSocket.done(), 
-        this.mGoogleWebSocket = null), this.mGoogleNetwork && (this.mGoogleNetwork.done(), 
-        this.mGoogleNetwork = null), this.mGoogleConfig && (this.mGoogleConfig.done(), this.mGoogleConfig = null), 
-        this.mGoogleTTS = null, this.mGoogleASR = null, this.mGoogleNLU = null, this.mGoogleNLU2 = null, 
-        this.mGoogleServerFlag = !1, this.mDynamicCredentialsFlag = !1, this.mTransaction = null, 
-        this.mRunningFlag = !1, this.mDefaultOptions = null, this.mActionTimeoutId = 0, 
-        this.mActionTimeout = GOOGLE_ACTION_TIMEOUT, 0;
-    }, e.prototype.reset = function(e) {
-        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
-    }, e.prototype._setErrorOutput = function(e) {
-        t.prototype._setErrorOutput.call(this, e), this.mGoogleConfig && this.mGoogleConfig._setErrorOutput(e), 
-        this.mGoogleNetwork && this.mGoogleNetwork._setErrorOutput(e), this.mGoogleWebSocket && this.mGoogleWebSocket._setErrorOutput(e), 
-        this.mGoogleConnect && this.mGoogleConnect._setErrorOutput(e), this.mGoogleTTS && this.mGoogleTTS._setErrorOutput(e), 
-        this.mGoogleASR && this.mGoogleASR._setErrorOutput(e), this.mGoogleNLU && this.mGoogleNLU._setErrorOutput(e), 
-        this.mGoogleNLU2 && this.mGoogleNLU2._setErrorOutput(e);
-    }, e.prototype._breakAction = function() {
-        this.mActionTimeoutId = 0, this.mTransaction && (this._error('_breakAction', 'Timeout fuer Action erreicht'), 
-        this._onStop(this.mTransaction.plugin, this.mTransaction.type));
-    }, e.prototype._setActionTimeout = function() {
-        var t = this;
-        0 === this.mActionTimeoutId && this.mActionTimeout > 0 && (this.mActionTimeoutId = window.setTimeout(function() {
-            return t._breakAction();
-        }, this.mActionTimeout));
-    }, e.prototype._clearActionTimeout = function() {
-        this.mActionTimeoutId > 0 && (clearTimeout(this.mActionTimeoutId), this.mActionTimeoutId = 0);
-    }, e.prototype._onOnline = function() {
+        // pruefen auf dynamische Credentials
+        if (aOption && typeof aOption.googleDynamicCredentialsFlag === 'boolean' && aOption.googleDynamicCredentialsFlag) {
+            // dynamische Credentials koennen gesetzt werden
+            this.mDynamicCredentialsFlag = true;
+        }
+        else {
+            // pruefen auf Google App-Credientials Uebergabe
+            if (!this._checkCredentials(aOption)) {
+                this._error('init', 'kein AppKey als Parameter uebergeben');
+                return -1;
+            }
+        }
+        // pruefen auf Server-Flag
+        if (aOption && typeof aOption.googleServerFlag === 'boolean' && aOption.googleServerFlag) {
+            this.mGoogleServerFlag = true;
+        }
+        // AudioContext
+        var audioContextFactory = FactoryManager.get(AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory);
+        if (audioContextFactory) {
+            // TODO: eventuell sollte die AudoContextFactory gleich ein AudioContext-Objekt erzeugen ?
+            var audioContextClass = audioContextFactory.create();
+            if (audioContextClass) {
+                this.mAudioContext = new audioContextClass();
+            }
+        }
+        // getUserMedia
+        var getUserMediaFactory = FactoryManager.get(USERMEDIA_FACTORY_NAME, UserMediaFactory);
+        if (getUserMediaFactory) {
+            this.mGetUserMedia = getUserMediaFactory.create();
+        }
+        // innere Objekte erzeugen
+        if (this._initAllObject(aOption) !== 0) {
+            return -1;
+        }
+        // Initialisierung von Port
+        if (_super.prototype.init.call(this, aOption) !== 0) {
+            return -1;
+        }
+        // Debug-Ausgabe fuer Google-Komponenten
+        if (this.isErrorOutput()) {
+            if (this.mGoogleNLU) {
+                console.log('GooglePort: NLU ist vorhanden');
+            }
+            else {
+                console.log('GooglePort: NLU ist nicht vorhanden');
+            }
+            if (this.mGoogleNLU2) {
+                console.log('GooglePort: NLU2 ist vorhanden');
+            }
+            else {
+                console.log('GooglePort: NLU2 ist nicht vorhanden');
+            }
+            if (this.mGoogleTTS) {
+                console.log('GooglePort: TTS ist vorhanden');
+            }
+            else {
+                console.log('GooglePort: TTS ist nicht vorhanden');
+            }
+            if (this.mGoogleASR) {
+                console.log('GooglePort: ASR ist vorhanden');
+            }
+            else {
+                console.log('GooglePort: ASR ist nicht vorhanden');
+            }
+        }
         return 0;
-    }, e.prototype._onOffline = function() {
-        return this.close(), 0;
-    }, e.prototype._onStop = function(e, o) {
-        this._clearActionTimeout(), this.mGoogleConnect && this.mGoogleConnect.disconnect();
-        var n = t.prototype._onStop.call(this, e, o);
-        return this.mTransaction = null, this.mRunningFlag = !1, n;
-    }, e.prototype._unlockAudio = function(t) {
+    };
+    /**
+     * gibt den Port frei
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GooglePort.prototype.done = function () {
+        _super.prototype.done.call(this);
+        // Timeout loeschen 
+        this._clearActionTimeout();
+        // Audiokontext schliessen
         if (this.mAudioContext) {
-            if ('running' === this.mAudioContext.state) return void t(!0);
-            if ('suspended' === this.mAudioContext.state) {
-                var e = setTimeout(function() {
-                    return t(!1);
-                }, AUDIO_UNLOCK_TIMEOUT);
-                this.mAudioContext.resume().then(function() {
-                    clearTimeout(e), t(!0);
-                }, function(o) {
-                    console.log('GooglePort._unlockAudio:', o), clearTimeout(e), t(!1);
-                });
-            } else t(!1);
-        } else t(!1);
-    }, e.prototype.setConfig = function(t) {
-        if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
-        -1;
-        try {
-            return 'string' == typeof t.googleAppKey && t.googleAppKey && (this.mGoogleConfig.appKey = t.googleAppKey), 
-            'string' == typeof t.googleServerUrl && t.googleServerUrl && (this.mGoogleConfig.serverUrl = t.googleServerUrl), 
-            'string' == typeof t.dialogflowTokenServerUrl && t.dialogflowTokenServerUrl && (this.mGoogleConfig.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl), 
-            'string' == typeof t.dialogflowProjectId && t.dialogflowProjectId && (this.mGoogleConfig.dialogflowProjectId = t.dialogflowProjectId), 
-            0;
-        } catch (t) {
-            return this._exception('setConfig', t), -1;
+            this.mAudioContext.close();
         }
-    }, e.prototype.getConfig = function() {
-        return {
+        this.mAudioContext = null;
+        this.mGetUserMedia = null;
+        // externes Google-Objekt
+        if (this.mGoogleConnect) {
+            this.mGoogleConnect.disconnect();
+            this.mGoogleConnect = null;
+        }
+        if (this.mGoogleWebSocket) {
+            this.mGoogleWebSocket.done();
+            this.mGoogleWebSocket = null;
+        }
+        if (this.mGoogleNetwork) {
+            this.mGoogleNetwork.done();
+            this.mGoogleNetwork = null;
+        }
+        if (this.mGoogleConfig) {
+            this.mGoogleConfig.done();
+            this.mGoogleConfig = null;
+        }
+        this.mGoogleTTS = null;
+        this.mGoogleASR = null;
+        this.mGoogleNLU = null;
+        this.mGoogleNLU2 = null;
+        this.mGoogleServerFlag = false;
+        // weitere Attribute
+        this.mDynamicCredentialsFlag = false;
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        this.mDefaultOptions = null;
+        this.mActionTimeoutId = 0;
+        this.mActionTimeout = GOOGLE_ACTION_TIMEOUT;
+        return 0;
+    };
+    /**
+     * setzt den Port wieder auf Defaultwerte und uebergebene optionale Parameter.
+     * Die Fehlerausgabe wird nicht zurueckgesetzt.
+     *
+     * @param {any} aOption - optionale Parameter
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GooglePort.prototype.reset = function (aOption) {
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return _super.prototype.reset.call(this, aOption);
+    };
+    // Fehler-Funktionen
+    /**
+     * Fehlerausgabe ueber die Konsole ein/ausschalten
+     *
+     * @protected
+     * @param {boolean} aErrorOutputFlag - True, wenn Konsolenausgabe ein
+     */
+    GooglePort.prototype._setErrorOutput = function (aErrorOutputFlag) {
+        _super.prototype._setErrorOutput.call(this, aErrorOutputFlag);
+        if (this.mGoogleConfig) {
+            this.mGoogleConfig._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleNetwork) {
+            this.mGoogleNetwork._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleWebSocket) {
+            this.mGoogleWebSocket._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleConnect) {
+            this.mGoogleConnect._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleTTS) {
+            this.mGoogleTTS._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleASR) {
+            this.mGoogleASR._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleNLU) {
+            this.mGoogleNLU._setErrorOutput(aErrorOutputFlag);
+        }
+        if (this.mGoogleNLU2) {
+            this.mGoogleNLU2._setErrorOutput(aErrorOutputFlag);
+        }
+    };
+    // Timeout-Funktionen
+    /**
+     * Aktion wird abgebrochen
+     */
+    GooglePort.prototype._breakAction = function () {
+        // console.log('GooglePort._beakAction');
+        this.mActionTimeoutId = 0;
+        if (this.mTransaction) {
+            this._error('_breakAction', 'Timeout fuer Action erreicht');
+            this._onStop(this.mTransaction.plugin, this.mTransaction.type);
+        }
+    };
+    /**
+     * Timeout fuer Aktion setzen. Timeout wird nur gesetzt, wenn > 0
+     */
+    GooglePort.prototype._setActionTimeout = function () {
+        var _this = this;
+        // console.log('GooglePort._setActionTimeout');
+        if (this.mActionTimeoutId === 0 && this.mActionTimeout > 0) {
+            this.mActionTimeoutId = window.setTimeout(function () { return _this._breakAction(); }, this.mActionTimeout);
+        }
+    };
+    /**
+     * Timeout fuer Aktion loeschen
+     */
+    GooglePort.prototype._clearActionTimeout = function () {
+        // console.log('GooglePort._clearActionTimeout');
+        if (this.mActionTimeoutId > 0) {
+            clearTimeout(this.mActionTimeoutId);
+            this.mActionTimeoutId = 0;
+        }
+    };
+    // Event-Funktionen
+    /**
+     * Ereignisfunktion fuer Online aufrufen
+     *
+     * @private
+     *
+     * @return {number} errorCode(0,-1)
+     */
+    GooglePort.prototype._onOnline = function () {
+        // console.log('GooglePort._onOnline');
+        // TODO: muss hier nicht geoeffnet werden, collidiert mit sich schliessender WebSocket
+        // this.open();
+        return 0;
+    };
+    /**
+     * Ereignisfunktion fuer Offline aufrufen
+     *
+     * @private
+     *
+     * @return {number} errorCode(0,-1)
+     */
+    GooglePort.prototype._onOffline = function () {
+        // console.log('GooglePort._onOffline');
+        this.close();
+        return 0;
+    };
+    /**
+     * Ereignisfunktion fuer Stop aufrufen
+     *
+     * @private
+     * @param {string} aDest - Ziel der Operation
+     * @param {string} aType - Typ der Operation
+     *
+     * @return {number} errorCode(0,-1)
+     */
+    GooglePort.prototype._onStop = function (aDest, aType) {
+        // console.log('GooglePort._onStop: Transaktion wird beendet', aDest, aType);
+        // hier muss der Timeout geloescht werden, da die Transaktion zu Ende ist
+        this._clearActionTimeout();
+        // Hier wird die Verbindung zu onMessage der WebSocket geloescht
+        if (this.mGoogleConnect) {
+            this.mGoogleConnect.disconnect();
+        }
+        var result = _super.prototype._onStop.call(this, aDest, aType);
+        // hier muss die Transaktion geloescht werden, da sie beendet ist
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return result;
+    };
+    // Audio-Funktionen
+    /**
+     * Versuch, AudioContext zu entsperren
+     */
+    GooglePort.prototype._unlockAudio = function (aCallbackFunc) {
+        // console.log('GooglePort._unlockAudio: start');
+        // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
+        if (this.mAudioContext) {
+            if (this.mAudioContext.state === 'running') {
+                aCallbackFunc(true);
+                return;
+            }
+            if (this.mAudioContext.state === 'suspended') {
+                // console.log('GooglePort._unlockAudio: start', this.mAudioContext.state);
+                var timeoutId_1 = setTimeout(function () { return aCallbackFunc(false); }, AUDIO_UNLOCK_TIMEOUT);
+                this.mAudioContext.resume().then(function () {
+                    // console.log('GooglePort._unlockAudio: state = ', this.mAudioContext.state);
+                    clearTimeout(timeoutId_1);
+                    aCallbackFunc(true);
+                }, function (aError) {
+                    console.log('GooglePort._unlockAudio:', aError);
+                    clearTimeout(timeoutId_1);
+                    aCallbackFunc(false);
+                });
+            }
+            else {
+                aCallbackFunc(false);
+            }
+        }
+        else {
+            aCallbackFunc(false);
+        }
+    };
+    // Port-Funktionen
+    /**
+     * Dynamische Konfiguration des Ports
+     *
+     * @param {GoogleConfigDataInterface} aConfigData - Konfigurationsdaten { googleAppKey: '', googleAppId: '', googleNluTag: ''}
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype.setConfig = function (aConfigData) {
+        if (this.mDynamicCredentialsFlag) {
+            // Uebertragen der neuen Credentials
+            try {
+                /****
+                if ( typeof aConfigData.googleAppId === 'string' && aConfigData.googleAppId ) {
+                    this.mGoogleConfig.appId = aConfigData.googleAppId;
+                }
+                ****/
+                if (typeof aConfigData.googleAppKey === 'string' && aConfigData.googleAppKey) {
+                    if (this.mGoogleConfig.appKey !== aConfigData.googleAppKey) {
+                        this.mGoogleConfig.appKey = aConfigData.googleAppKey;
+                        // Loeschen der Token, nur wenn sich der Wert geaendert hat
+                        this.mGoogleASR.clearToken();
+                        this.mGoogleTTS.clearToken();
+                    }
+                }
+                if (typeof aConfigData.googleServerUrl === 'string' && aConfigData.googleServerUrl) {
+                    if (this.mGoogleConfig.serverUrl !== aConfigData.googleServerUrl) {
+                        this.mGoogleConfig.serverUrl = aConfigData.googleServerUrl;
+                        // Loeschen der Token, nur wenn sich der Wert geaendert hat
+                        this.mGoogleASR.clearToken();
+                        this.mGoogleTTS.clearToken();
+                    }
+                }
+                if (typeof aConfigData.dialogflowTokenServerUrl === 'string' && aConfigData.dialogflowTokenServerUrl) {
+                    if (this.mGoogleConfig.dialogflowTokenServerUrl !== aConfigData.dialogflowTokenServerUrl) {
+                        this.mGoogleConfig.dialogflowTokenServerUrl = aConfigData.dialogflowTokenServerUrl;
+                        // Loeschen der Token, nur wenn sich der Wert geaendert hat
+                        this.mGoogleNLU2.clearToken();
+                    }
+                }
+                if (typeof aConfigData.dialogflowProjectId === 'string' && aConfigData.dialogflowProjectId) {
+                    if (this.mGoogleConfig.dialogflowProjectId = aConfigData.dialogflowProjectId) {
+                        this.mGoogleConfig.dialogflowProjectId = aConfigData.dialogflowProjectId;
+                        // Loeschen der Token, nur wenn sich der Wert geaendert hat
+                        this.mGoogleNLU2.clearToken();
+                    }
+                }
+                /****
+                if ( typeof aConfigData.googleNluTag === 'string' && aConfigData.googleNluTag ) {
+                    this.mGoogleConfig.nluTag = aConfigData.googleNluTag;
+                }
+                ****/
+                return 0;
+            }
+            catch (aException) {
+                this._exception('setConfig', aException);
+                return -1;
+            }
+        }
+        else {
+            this._error('setConfig', 'Keine dynamischen Credentials erlaubt');
+            return -1;
+        }
+    };
+    /**
+     * Rueckgabe der aktuellen Port-Konfiguration
+     *
+     * @return {GoogleConfigDataInterface} aktuelle Portkonfigurationsdaten
+     */
+    GooglePort.prototype.getConfig = function () {
+        var configData = {
+            // googleAppId: this.mGoogleConfig.appId,
             googleAppKey: this.mGoogleConfig.appKey,
             googleServerUrl: this.mGoogleConfig.serverUrl,
             dialogflowTokenServerUrl: this.mGoogleConfig.dialogflowTokenServerUrl,
             dialogflowProjectId: this.mGoogleConfig.dialogflowProjectId
+            // googleNluTag: this.mGoogleConfig.nluTag
         };
-    }, e.prototype.isOnline = function() {
-        return !!this.mGoogleNetwork && this.mGoogleNetwork.isOnline();
-    }, e.prototype.isOpen = function() {
-        return !this.isServer() || this._isConnect();
-    }, e.prototype._checkOpen = function(t) {
-        var e = this;
-        return this.isServer() ? this.isOnline() ? this.isOpen() ? (t(!0), 0) : 'CLOSING' === this.mGoogleWebSocket.getState() ? (this._error('_checkOpen', 'Websocket wird geschlossen'), 
-        t(!1), -1) : this.mGoogleWebSocket ? (this.mGoogleWebSocket.onOpen = function(o) {
-            return e.mGoogleWebSocket.onOpen = function(t) {
-                return e._onOpen();
-            }, e.mGoogleWebSocket.onClose = function() {
-                return e._onClose();
-            }, e.mGoogleWebSocket.onError = function(t) {
-                return e._onError(t);
-            }, t(!0), 0;
-        }, this.mGoogleWebSocket.onClose = function() {
-            return e.mGoogleWebSocket.onOpen = function(t) {
-                return e._onOpen();
-            }, e.mGoogleWebSocket.onClose = function() {
-                return e._onClose();
-            }, e.mGoogleWebSocket.onError = function(t) {
-                return e._onError(t);
-            }, t(!1), 0;
-        }, this.mGoogleWebSocket.onError = function(o) {
-            return e.mGoogleWebSocket.onOpen = function(t) {
-                return e._onOpen();
-            }, e.mGoogleWebSocket.onClose = function() {
-                return e._onClose();
-            }, e.mGoogleWebSocket.onError = function(t) {
-                return e._onError(t);
-            }, t(!1), 0;
-        }, this.open()) : (this._error('_checkOpen', 'Websocket ist nicht vorhanden'), t(!1), 
-        -1) : (this._error('_checkOpen', 'kein Netz vorhanden'), t(!1), -1) : (t(!0), 0);
-    }, e.prototype.open = function(t) {
-        return this.isServer() ? this._connect(t) : (this._onOpen(), 0);
-    }, e.prototype.close = function() {
-        return this.isServer() ? this._disconnect() : (this._onClose(), 0);
-    }, e.prototype._isConnect = function() {
-        return !!this.mGoogleWebSocket && this.mGoogleWebSocket.isConnect();
-    }, e.prototype._connect = function(t) {
-        if (this._isConnect()) return 0;
-        if (!this.mGoogleWebSocket) return this._error('_connect', 'kein GoogleWebSocket vorhanden'), 
-        -1;
+        return configData;
+    };
+    /**
+     * Pruefen auf Netzwerk-Verbindung
+     *
+     * @return {boolean} True, wenn Netwerk verbunden ist, ansonsten false
+     */
+    GooglePort.prototype.isOnline = function () {
+        if (this.mGoogleNetwork) {
+            return this.mGoogleNetwork.isOnline();
+        }
+        return false;
+    };
+    /**
+     * Pruefen auf geoeffneten Port
+     *
+     * @return {boolean} True, wenn Port offen ist, False sonst
+     */
+    GooglePort.prototype.isOpen = function () {
+        // pruefen auf Server
+        if (!this.isServer()) {
+            return true;
+        }
+        return this._isConnect();
+    };
+    /**
+     * Pruefen und Oeffnen der WebSocket, wenn moeglich
+     *
+     * @private
+     * @param aOpenCallbackFunc - Callback fuer WebSocket geoeffnet oder nicht
+     */
+    GooglePort.prototype._checkOpen = function (aOpenCallbackFunc) {
+        var _this = this;
+        // console.log('GooglePort.checkOpen:', this.isErrorOutput());
+        // pruefen auf Server
+        if (!this.isServer()) {
+            // console.log('GooglePort._checkOpen: kein Server vorhanden');
+            aOpenCallbackFunc(true);
+            return 0;
+        }
+        // pruefen, ob Netzwerk vorhanden ist
+        if (!this.isOnline()) {
+            // console.log('GooglePort._checkOpen: kein Netz vorhanden');
+            this._error('_checkOpen', 'kein Netz vorhanden');
+            aOpenCallbackFunc(false);
+            return -1;
+        }
+        // pruefen ob WebSocket geoeffnet ist
+        if (this.isOpen()) {
+            // console.log('GooglePort._checkOpen: WebSocket ist geoeffnet');
+            aOpenCallbackFunc(true);
+            return 0;
+        }
+        // pruefen auf Closing
+        if (this.mGoogleWebSocket.getState() === 'CLOSING') {
+            // console.log('GooglePort._checkOpen: WebSocket wird geschlossen');
+            this._error('_checkOpen', 'Websocket wird geschlossen');
+            aOpenCallbackFunc(false);
+            return -1;
+        }
+        // WebSocket pruefen
+        if (!this.mGoogleWebSocket) {
+            // console.log('GooglePort._checkOpen: WebSocket nicht vorhanden');
+            this._error('_checkOpen', 'Websocket ist nicht vorhanden');
+            aOpenCallbackFunc(false);
+            return -1;
+        }
+        // WebSocket oeffnen
+        this.mGoogleWebSocket.onOpen = function (aUrl) {
+            // console.log('GooglePort._checkOpen: onOpen Event');
+            // alte Funktion wieder eintragen
+            _this.mGoogleWebSocket.onOpen = function (aUrl) { return _this._onOpen(); };
+            _this.mGoogleWebSocket.onClose = function () { return _this._onClose(); };
+            _this.mGoogleWebSocket.onError = function (aError) { return _this._onError(aError); };
+            aOpenCallbackFunc(true);
+            return 0;
+        };
+        // WebSocket schliessen
+        this.mGoogleWebSocket.onClose = function () {
+            // console.log('GooglePort._checkOpen: onClose Event');
+            // alte Funktion wieder eintragen
+            _this.mGoogleWebSocket.onOpen = function (aUrl) { return _this._onOpen(); };
+            _this.mGoogleWebSocket.onClose = function () { return _this._onClose(); };
+            _this.mGoogleWebSocket.onError = function (aError) { return _this._onError(aError); };
+            aOpenCallbackFunc(false);
+            return 0;
+        };
+        // WebSocket Fehler behandeln
+        this.mGoogleWebSocket.onError = function (aError) {
+            // console.log('GooglePort._checkOpen: onError Event:', aError);
+            // alte Funktion wieder eintragen
+            _this.mGoogleWebSocket.onOpen = function (aUrl) { return _this._onOpen(); };
+            _this.mGoogleWebSocket.onClose = function () { return _this._onClose(); };
+            _this.mGoogleWebSocket.onError = function (aError) { return _this._onError(aError); };
+            aOpenCallbackFunc(false);
+            return 0;
+        };
+        // Websocket oeffnen
+        return this.open();
+    };
+    /**
+     * Port oeffnen und mit Server verbinden
+     *
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype.open = function (aOption) {
+        // pruefen auf Server
+        if (!this.isServer()) {
+            this._onOpen();
+            return 0;
+        }
+        return this._connect(aOption);
+    };
+    /**
+     * Port schliessen und Server-Verbindung trennen
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype.close = function () {
+        // pruefen auf Server
+        if (!this.isServer()) {
+            this._onClose();
+            return 0;
+        }
+        return this._disconnect();
+    };
+    // Connection zum Server
+    GooglePort.prototype._isConnect = function () {
+        // pruefen auf WebSocket
+        if (this.mGoogleWebSocket) {
+            // console.log('GooglePort._isConnect:', this.mGoogleWebSocket.getState());
+            return this.mGoogleWebSocket.isConnect();
+        }
+        return false;
+    };
+    /**
+     * WebSocket-Verbindung herstellen
+     *
+     * @returns {number}
+     * @memberof GooglePort
+     */
+    GooglePort.prototype._connect = function (aOption) {
+        // console.log('GooglePort._connect');
+        if (this._isConnect()) {
+            // Kein Fehler, Verbindung ist bereits vorhanden
+            return 0;
+        }
+        if (!this.mGoogleWebSocket) {
+            this._error('_connect', 'kein GoogleWebSocket vorhanden');
+            return -1;
+        }
         try {
-            return this.mGoogleWebSocket.connect(this.mGoogleConfig.serverUrl || GOOGLE_DEFAULT_URL), 
-            0;
-        } catch (t) {
-            return this._exception('_connect', t), -1;
+            this.mGoogleWebSocket.connect(this.mGoogleConfig.serverUrl || GOOGLE_DEFAULT_URL);
+            return 0;
         }
-    }, e.prototype._disconnect = function() {
-        if (!this._isConnect()) return 0;
-        if (!this.mGoogleWebSocket) return this._error('_disconnect', 'kein GoogleWebSocket vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_connect', aException);
+            return -1;
+        }
+    };
+    GooglePort.prototype._disconnect = function () {
+        // console.log('GooglePort._disconnect');
+        if (!this._isConnect()) {
+            return 0;
+        }
+        if (!this.mGoogleWebSocket) {
+            this._error('_disconnect', 'kein GoogleWebSocket vorhanden');
+            return -1;
+        }
         try {
-            return this.mGoogleWebSocket.disconnect(), 0;
-        } catch (t) {
-            return this._exception('_disconnect', t), -1;
+            // console.log('GooglePort._disconnect: WebSocket Verbindung getrennt');
+            this.mGoogleWebSocket.disconnect();
+            return 0;
         }
-    }, e.prototype.getPluginName = function() {
-        return this.mTransaction ? this.mTransaction.plugin : '';
-    }, e.prototype.getActionName = function() {
-        return this.mTransaction ? this.mTransaction.type : '';
-    }, e.prototype.isRunning = function(t, e) {
-        if (!t && !e) return this.mRunningFlag;
-        if (t === this.getPluginName()) {
-            if (!e) return this.mRunningFlag;
-            if (e === this.getActionName()) return this.mRunningFlag;
+        catch (aException) {
+            this._exception('_disconnect', aException);
+            return -1;
         }
-        return !1;
-    }, e.prototype.isAction = function(t) {
-        var e = !1;
-        switch (t) {
-          case GOOGLE_NLU_ACTION:
-            e = !!(this.mGoogleNLU && this.mGoogleNLU2 && this.mGoogleNLU2.isInit());
-            break;
-
-          case GOOGLE_ASRNLU_ACTION:
-            e = !(!this.mGoogleNLU2 || !this.mGoogleNLU2.isInit());
-            break;
-
-          case GOOGLE_ASR_ACTION:
-            e = !(!this.mGoogleASR || !this.mGoogleASR.isInit());
-            break;
-
-          case GOOGLE_TTS_ACTION:
-            e = !(!this.mGoogleTTS || !this.mGoogleTTS.isInit());
+    };
+    /**
+     * Rueckgabe des Pluginnamens, der gerade eine Transaktion ausfuehrt
+     *
+     * @return {string} PluginName oder leerer String
+     */
+    GooglePort.prototype.getPluginName = function () {
+        if (this.mTransaction) {
+            return this.mTransaction.plugin;
         }
-        return e;
-    }, e.prototype.setActionTimeout = function(t) {
-        this.mActionTimeout = t;
-    }, e.prototype.start = function(t, e, o) {
-        var n = this;
-        return this.isRunning() ? (this._error('start', 'Aktion laeuft bereits'), -1) : this.mGoogleConfig.isCredentials() ? this.mTransaction ? (this._error('start', 'andere Transaktion laeuft noch'), 
-        -1) : this._checkOpen(function(r) {
-            if (!r) return -1;
-            n._setActionTimeout();
-            var i = o || {};
-            n.mPluginName = t, n.mRunningFlag = !0;
-            var s = 0;
-            switch (e) {
-              case GOOGLE_NLU_ACTION:
-                n.mTransaction = new GoogleTransaction(t, GOOGLE_NLU_ACTION), s = n._startNLU(n.mTransaction, i.text, i.language || GOOGLE_DEFAULT_LANGUAGE);
-                break;
-
-              case GOOGLE_ASRNLU_ACTION:
-                n.mTransaction = new GoogleTransaction(t, GOOGLE_ASRNLU_ACTION), s = n._startASRNLU(n.mTransaction, i.language || GOOGLE_DEFAULT_LANGUAGE);
-                break;
-
-              case GOOGLE_ASR_ACTION:
-                n.mTransaction = new GoogleTransaction(t, GOOGLE_ASR_ACTION), s = n._startASR(n.mTransaction, i.language || GOOGLE_DEFAULT_LANGUAGE, i.audioURL || '', !1, i.useProgressive || !1);
-                break;
-
-              case GOOGLE_TTS_ACTION:
-                n.mTransaction = new GoogleTransaction(t, GOOGLE_TTS_ACTION), s = n._startTTS(n.mTransaction, i.text, i.language || GOOGLE_DEFAULT_LANGUAGE, i.voice || GOOGLE_DEFAULT_VOICE);
-                break;
-
-              default:
-                n._clearActionTimeout(), n._error('start', 'Keine gueltige Aktion uebergeben ' + e), 
-                s = -1;
+        return '';
+    };
+    /**
+     * Rueckgabe des Aktionsnames, der gerade eine Transaktion ausfuehrt
+     *
+     * @return {string} ActionName oder leerer String
+     */
+    GooglePort.prototype.getActionName = function () {
+        if (this.mTransaction) {
+            return this.mTransaction.type;
+        }
+        return '';
+    };
+    /**
+     * Pruefen, ob Port eine Aufgabe ausfuehrt, zu einem bestimmten Plugin
+     * und zu einer bestimmten Aufgabe.
+     *
+     * @param {string} aPluginName - optionaler Pluginname
+     * @param {string} aAction - optionaler Aktionsname
+     *
+     * @return {boolean} True, wenn Port beschaeftigt ist, False sonst
+     */
+    GooglePort.prototype.isRunning = function (aPluginName, aAction) {
+        if (!aPluginName && !aAction) {
+            return this.mRunningFlag;
+        }
+        if (aPluginName === this.getPluginName()) {
+            if (!aAction) {
+                return this.mRunningFlag;
             }
-            return s;
-        }) : (this._error('start', 'Port hat keine Credentials'), -1);
-    }, e.prototype.stop = function(t, e, o) {
-        if (!this.isRunning()) return 0;
-        if (!this.isOpen()) return this._error('stop', 'Port ist nicht geoeffnet'), -1;
-        if (!this.mGoogleConfig.isCredentials()) return this._error('stop', 'Port hat keine Credentials'), 
-        -1;
-        if (!this.mTransaction) return this._error('stop', 'keine Transaktion vorhanden'), 
-        -1;
-        if (t !== this.mTransaction.plugin) return this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + t + ' != ' + this.mTransaction.plugin), 
-        -1;
-        if (e) {
-            if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
-            -1;
-        } else e = this.mTransaction.type;
-        var n = 0;
-        switch (e) {
-          case GOOGLE_NLU_ACTION:
-          case GOOGLE_ASRNLU_ACTION:
-            n = this._stopNLU(this.mTransaction);
-            break;
-
-          case GOOGLE_ASR_ACTION:
-            n = this._stopASR(this.mTransaction);
-            break;
-
-          case GOOGLE_TTS_ACTION:
-            n = this._stopTTS(this.mTransaction);
-            break;
-
-          default:
-            this._error('stop', 'Keine gueltige Aktion uebergeben ' + e), n = -1;
+            else if (aAction === this.getActionName()) {
+                return this.mRunningFlag;
+            }
         }
-        return n;
-    }, e.prototype._initRecognition = function(t) {
-        var e = this;
-        return this.mDefaultOptions = {
-            onopen: function() {},
-            onclose: function() {
-                e._onClose();
+        return false;
+    };
+    /**
+     * Pruefen, welche Google-Aktionen ausfuehrbar sind.
+     *
+     * @param {string} aAction - Name der zu pruefenden Aktion
+     *
+     * @return {boolean} True, wenn Aktion ausfuehrbar ist, False sonst
+     */
+    GooglePort.prototype.isAction = function (aAction) {
+        var result = false;
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                // console.log('GooglePort.isAction: isInit = ', this.mGoogleNLU2.isInit());
+                result = this.mGoogleNLU && (this.mGoogleNLU2 && this.mGoogleNLU2.isInit()) ? true : false;
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+                result = (this.mGoogleNLU2 && this.mGoogleNLU2.isInit()) ? true : false;
+                break;
+            case GOOGLE_ASR_ACTION:
+                result = (this.mGoogleASR && this.mGoogleASR.isInit()) ? true : false;
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = (this.mGoogleTTS && this.mGoogleTTS.isInit()) ? true : false;
+                break;
+        }
+        return result;
+    };
+    /**
+     * Dient zum Setzen eines Timeouts, um Aktionen abzubrechen.
+     * Bei Timeout 0 wird kein Timeout gesetzt.
+     *
+     * @param aTimeout - Zeit in Millisekunden bis die Aktion abgebrochen wird oder 0 fuer keinen Timeout
+     */
+    GooglePort.prototype.setActionTimeout = function (aTimeout) {
+        this.mActionTimeout = aTimeout;
+    };
+    /**
+     * Portaktion starten
+     *
+     * @param (string) aPluginName - Name des Aufrufers
+     * @param {string} aAction - optional auszufuehrende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype.start = function (aPluginName, aAction, aOption) {
+        var _this = this;
+        // console.log('GooglePort.stop:', aPluginName, aAction, aOption);
+        // pruefen, ob eine Aktion bereits laeuft
+        if (this.isRunning()) {
+            this._error('start', 'Aktion laeuft bereits');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this.mGoogleConfig.isCredentials()) {
+            this._error('start', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (this.mTransaction) {
+            this._error('start', 'andere Transaktion laeuft noch');
+            return -1;
+        }
+        // pruefen, ob der Port geoeffnet ist
+        return this._checkOpen(function (aOpenFlag) {
+            if (!aOpenFlag) {
+                // TODO: wird nicht benoetigt, da in _checkOpen die Fehler erzeugt werden
+                // this._error( 'start', 'Port ist nicht geoeffnet' );
+                return -1;
+            }
+            // Aktions-Timeout starten
+            _this._setActionTimeout();
+            var option = aOption || {};
+            // Aktion ausfuehren
+            _this.mPluginName = aPluginName;
+            _this.mRunningFlag = true;
+            var result = 0;
+            switch (aAction) {
+                case GOOGLE_NLU_ACTION:
+                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_NLU_ACTION);
+                    result = _this._startNLU(_this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE);
+                    break;
+                case GOOGLE_ASRNLU_ACTION:
+                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
+                    result = _this._startASRNLU(_this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE);
+                    break;
+                case GOOGLE_ASR_ACTION:
+                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASR_ACTION);
+                    result = _this._startASR(_this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', false, option.useProgressive || false);
+                    break;
+                case GOOGLE_TTS_ACTION:
+                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_TTS_ACTION);
+                    result = _this._startTTS(_this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE, option.voice || GOOGLE_DEFAULT_VOICE);
+                    break;
+                default:
+                    // Aktions-Timeout loeschen, keine Transaktion gestartet
+                    _this._clearActionTimeout();
+                    _this._error('start', 'Keine gueltige Aktion uebergeben ' + aAction);
+                    result = -1;
+                    break;
+            }
+            return result;
+        });
+    };
+    /**
+     * Portaktion beenden
+     *
+     * @param (string) aPluginName - Name des Aufrufers
+     * @param {string} aAction - optional zu beendende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype.stop = function (aPluginName, aAction, aOption) {
+        // console.log('GooglePort.stop:', aPluginName, aAction, aOption, this.mTransaction);
+        // pruefen, ob eine Aktion bereits laeuft
+        if (!this.isRunning()) {
+            // console.log('GooglePort.stop: kein isRunning');
+            return 0;
+        }
+        // pruefen, ob der Port geoeffnet ist
+        if (!this.isOpen()) {
+            this._error('stop', 'Port ist nicht geoeffnet');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this.mGoogleConfig.isCredentials()) {
+            this._error('stop', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (!this.mTransaction) {
+            this._error('stop', 'keine Transaktion vorhanden');
+            return -1;
+        }
+        // pruefen auf uebereinstimmende Transaktion
+        if (aPluginName !== this.mTransaction.plugin) {
+            this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + aPluginName + ' != ' + this.mTransaction.plugin);
+            return -1;
+        }
+        if (aAction) {
+            if (aAction !== this.mTransaction.type) {
+                this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + aAction + ' != ' + this.mTransaction.type);
+                return -1;
+            }
+        }
+        else {
+            aAction = this.mTransaction.type;
+        }
+        var result = 0;
+        // console.log('GooglePort.stop: Action = ', aAction);
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+            case GOOGLE_ASRNLU_ACTION:
+                result = this._stopNLU(this.mTransaction);
+                break;
+            case GOOGLE_ASR_ACTION:
+                result = this._stopASR(this.mTransaction);
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = this._stopTTS(this.mTransaction);
+                break;
+            default:
+                this._error('stop', 'Keine gueltige Aktion uebergeben ' + aAction);
+                result = -1;
+                break;
+        }
+        // TODO: das RunningFlag kann hier nicht geloescht werden, da die Verarbeitung asynchron verlaeuft und es erst in _onStop geloescht werden darf
+        // console.log('GooglePort.stop: RunningFlag=', this.mRunningFlag);
+        // this.mRunningFlag = false;
+        return result;
+    };
+    // Google-Funktionen
+    /**
+     * Initialisierung der Recognition
+     *
+     * @protected
+     * @param {*} aOption - optionale Parameter fuer die Recognition
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._initRecognition = function (aOption) {
+        var _this = this;
+        // console.log('GooglePort._initRecognition: start');
+        this.mDefaultOptions = {
+            onopen: function () {
+                // console.log( 'Websocket Opened' );
+                // this._onRecognitionOpen();
             },
-            onerror: function(t) {
-                e._onError(t);
+            onclose: function () {
+                // console.log( 'Websocket Closed' );
+                _this._onClose();
+            },
+            onerror: function (error) {
+                // console.error(error);
+                _this._onError(error);
             }
-        }, 0;
-    }, e.prototype._startNLU = function(t, e, o) {
-        if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
-        if (!o) return this._error('_startNLU', 'keine Sprache uebergeben'), -1;
-        if (!this.mGoogleNLU || !this.mGoogleNLU2) return this._error('_startNLU', 'keine Google NLU-Anbindung vorhanden'), 
-        -1;
+        };
+        // console.log('GooglePort._initRecognition: end');
+        return 0;
+    };
+    // Text-Funktionen
+    /**
+     * Intent zu einem Text holen
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - Text der interpretiert werden soll
+     * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._startNLU = function (aTransaction, aText, aLanguage) {
+        if (!aText) {
+            this._error('_startNLU', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!aLanguage) {
+            this._error('_startNLU', 'keine Sprache uebergeben');
+            return -1;
+        }
+        if (!this.mGoogleNLU || !this.mGoogleNLU2) {
+            this._error('_startNLU', 'keine Google NLU-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            var n = {
-                text: e,
-                language: o
+            var option = {
+                text: aText,
+                language: aLanguage
             };
-            return this.mGoogleNLU2Flag ? this.mGoogleNLU2.start(t, n) : this.mGoogleNLU.start(t, n);
-        } catch (t) {
-            return this._exception('_startNLU', t), -1;
+            if (this.mGoogleNLU2Flag) {
+                return this.mGoogleNLU2.start(aTransaction, option);
+            }
+            return this.mGoogleNLU.start(aTransaction, option);
+        }
+        catch (aException) {
+            this._exception('_startNLU', aException);
+            return -1;
         }
         return -1;
-    }, e.prototype._startASRNLU = function(t, e) {
-        if (!e) return this._error('_startASRNLU', 'keine Sprache uebergeben'), -1;
-        if (!this.mGoogleNLU || !this.mGoogleNLU2) return this._error('_startASRNLU', 'keine Google NLU-Anbindung vorhanden'), 
-        -1;
+    };
+    /**
+     * Intent zu einem gesprochenen Satz holen
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._startASRNLU = function (aTransaction, aLanguage) {
+        if (!aLanguage) {
+            this._error('_startASRNLU', 'keine Sprache uebergeben');
+            return -1;
+        }
+        if (!this.mGoogleNLU || !this.mGoogleNLU2) {
+            this._error('_startASRNLU', 'keine Google NLU-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            var o = {
+            var option = {
                 text: '',
-                language: e
+                language: aLanguage
             };
-            return this.mGoogleNLU2Flag ? this.mGoogleNLU2.start(t, o) : -1;
-        } catch (t) {
-            return this._exception('_startASRNLU', t), -1;
+            if (this.mGoogleNLU2Flag) {
+                return this.mGoogleNLU2.start(aTransaction, option);
+            }
+            return -1;
+        }
+        catch (aException) {
+            this._exception('_startASRNLU', aException);
+            return -1;
         }
         return -1;
-    }, e.prototype._stopNLU = function(t) {
-        if (!this.mGoogleNLU || !this.mGoogleNLU2) return this._error('_stopNLU', 'keine Google NLU-Anbindung vorhanden'), 
-        -1;
+    };
+    /**
+     * stoppt die Analyse
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._stopNLU = function (aTransaction) {
+        if (!this.mGoogleNLU || !this.mGoogleNLU2) {
+            this._error('_stopNLU', 'keine Google NLU-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this.mGoogleNLU2Flag ? this.mGoogleNLU2.stop(t) : this.mGoogleNLU.stop(t);
-        } catch (t) {
-            return this._exception('_stopNLU', t), -1;
+            if (this.mGoogleNLU2Flag) {
+                return this.mGoogleNLU2.stop(aTransaction);
+            }
+            return this.mGoogleNLU.stop(aTransaction);
+        }
+        catch (aException) {
+            this._exception('_stopNLU', aException);
+            return -1;
         }
         return -1;
-    }, e.prototype._startASR = function(t, e, o, n, r) {
-        if (void 0 === n && (n = !1), void 0 === r && (r = !1), !e) return this._error('_startASR', 'keine Sprache uebergeben'), 
-        -1;
-        if (!this.mGoogleASR) return this._error('_startASR', 'keine Google ASR-Anbindung vorhanden'), 
-        -1;
+    };
+    // ASR-Funktionen
+    /**
+     * startet die Recognition
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @returns {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._startASR = function (aTransaction, aLanguage, aAudioUrl, aUseNLUFlag, aProgressiveFlag) {
+        if (aUseNLUFlag === void 0) { aUseNLUFlag = false; }
+        if (aProgressiveFlag === void 0) { aProgressiveFlag = false; }
+        // console.log('GooglePort._startASR');
+        if (!aLanguage) {
+            this._error('_startASR', 'keine Sprache uebergeben');
+            return -1;
+        }
+        if (!this.mGoogleASR) {
+            this._error('_startASR', 'keine Google ASR-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            var i = {
-                language: e,
-                nlu: n,
-                progressive: r
+            var option = {
+                language: aLanguage,
+                nlu: aUseNLUFlag,
+                progressive: aProgressiveFlag
             };
-            return o && (i.audioURL = o), this.mGoogleASR.start(t, i);
-        } catch (t) {
-            return this._exception('_startASR', t), -1;
+            // pruefen auf Audiodatei
+            if (aAudioUrl) {
+                option['audioURL'] = aAudioUrl;
+            }
+            return this.mGoogleASR.start(aTransaction, option);
         }
-    }, e.prototype._stopASR = function(t) {
-        if (!this.mGoogleASR) return this._error('_stopASR', 'keine Google ASR-Anbindung vorhanden'), 
-        -1;
-        try {
-            return this.mGoogleASR.stop(t);
-        } catch (t) {
-            return this._exception('_stopASR', t), -1;
+        catch (aException) {
+            this._exception('_startASR', aException);
+            return -1;
         }
-    }, e.prototype._startTTS = function(t, e, o, n) {
-        var r = this;
-        if (!e) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
-        if (!this.mGoogleTTS) return this._error('_startTTS', 'keine Google TTS-Anbindung vorhanden'), 
-        -1;
+    };
+    /**
+     * stoppt die Recognition
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._stopASR = function (aTransaction) {
+        // console.log('GooglePort._stopASR: start');
+        if (!this.mGoogleASR) {
+            this._error('_stopASR', 'keine Google ASR-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            var i = {
-                text: e,
-                language: o,
-                voice: n
+            var result = this.mGoogleASR.stop(aTransaction);
+            // console.log('GooglePort._stopASR: stop');
+            return result;
+        }
+        catch (aException) {
+            this._exception('_stopASR', aException);
+            return -1;
+        }
+    };
+    // TTS-Funktionen
+    /**
+     * startet die TTS
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - auszusprechender Text
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._startTTS = function (aTransaction, aText, aLanguage, aVoice) {
+        var _this = this;
+        if (!aText) {
+            this._error('_startTTS', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!this.mGoogleTTS) {
+            this._error('_startTTS', 'keine Google TTS-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            var option_1 = {
+                text: aText,
+                language: aLanguage,
+                voice: aVoice
             };
-            return this._unlockAudio(function(e) {
-                e ? r.mGoogleTTS.start(t, i) : (r._error('_startTTS', 'AudioContext ist nicht entsperrt'), 
-                r._onStop(t.plugin, t.type));
-            }), 0;
-        } catch (t) {
-            return this._exception('_startTTS', t), -1;
+            // TODO: Provisorische Version von AudioContext.resume(), muss in Audio-Komponmente untergebracht werden!
+            // pruefen auf AutoContext Zustand suspended
+            // console.log('GooglePort._startTTS: AudioContext.state = ', this.mAudioContext.state);
+            this._unlockAudio(function (aUnlockFlag) {
+                if (aUnlockFlag) {
+                    _this.mGoogleTTS.start(aTransaction, option_1);
+                }
+                else {
+                    _this._error('_startTTS', 'AudioContext ist nicht entsperrt');
+                    _this._onStop(aTransaction.plugin, aTransaction.type);
+                }
+            });
+            return 0;
         }
-    }, e.prototype._stopTTS = function(t) {
-        if (!this.mGoogleTTS) return this._error('_stopTTS', 'keine Google TTS-Anbindung vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_startTTS', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die TTS
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GooglePort.prototype._stopTTS = function (aTransaction) {
+        // console.log('GooglePort._stopTTS', aTransaction);
+        if (!this.mGoogleTTS) {
+            this._error('_stopTTS', 'keine Google TTS-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this.mGoogleTTS.stop(t);
-        } catch (t) {
-            return this._exception('_stopTTS', t), -1;
+            return this.mGoogleTTS.stop(aTransaction);
         }
-    }, e;
-}(Port), GOOGLEMOCK_CALLBACK_TIMEOUT = 100, GoogleMock = function(t) {
-    function e(e, o) {
-        void 0 === o && (o = !0);
-        var n = t.call(this, e || GOOGLE_MOCK_NAME, o) || this;
-        return n.webSocketFlag = !0, n.audioContextFlag = !0, n.getUserMediaFlag = !0, n.googleNLUFlag = !0, 
-        n.googleASRFlag = !0, n.googleTTSFlag = !0, n.disconnectFlag = !0, n.defaultOptions = null, 
-        n.codec = '', n.intentName = 'TestIntent', n.intentConfidence = 1, n.intentSpeech = 'TestSpeech', 
-        n.mDynamicCredentialsFlag = !1, n.mTransaction = null, n.mRunningFlag = !1, n.googleAppId = '', 
-        n.googleAppKey = '', n.googleNluTag = '', n.googleServerUrl = '', n.dialogflowTokenServerUrl = '', 
-        n.dialogflowProjectId = '', n;
+        catch (aException) {
+            this._exception('_stopTTS', aException);
+            return -1;
+        }
+    };
+    return GooglePort;
+}(Port));
+
+/**
+ * GoogleMock zum Testen des Google Cloud-Service mit dem Framework
+ *
+ * Letzte Aenderung: 02.10.2019
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+// Konstanten
+// Asynchrones senden von Events nach 100 millisekunden
+var GOOGLEMOCK_CALLBACK_TIMEOUT = 100;
+/**
+ * Definiert die GoogleMock-Klasse
+ */
+var GoogleMock = /** @class */ (function (_super) {
+    __extends(GoogleMock, _super);
+    /**
+     * Erzeugt eine Instanz von Port.
+     *
+     * @param {string} aPortName - Name des Ports
+     * @param {boolean} aRegisterFlag - true, wenn Port in PortManager eingetragen werden soll
+     */
+    function GoogleMock(aPortName, aRegisterFlag) {
+        if (aRegisterFlag === void 0) { aRegisterFlag = true; }
+        var _this = _super.call(this, aPortName || GOOGLE_MOCK_NAME, aRegisterFlag) || this;
+        _this.webSocketFlag = true;
+        _this.audioContextFlag = true;
+        _this.getUserMediaFlag = true;
+        _this.googleNLUFlag = true;
+        _this.googleASRFlag = true;
+        _this.googleTTSFlag = true;
+        // weitere Attribute
+        _this.disconnectFlag = true;
+        _this.defaultOptions = null;
+        _this.codec = '';
+        _this.intentName = 'TestIntent';
+        _this.intentConfidence = 1.0;
+        _this.intentSpeech = 'TestSpeech';
+        _this.mDynamicCredentialsFlag = false;
+        _this.mTransaction = null;
+        _this.mRunningFlag = false;
+        // Credentials
+        _this.googleAppId = '';
+        _this.googleAppKey = '';
+        _this.googleNluTag = '';
+        _this.googleServerUrl = '';
+        _this.dialogflowTokenServerUrl = '';
+        _this.dialogflowProjectId = '';
+        return _this;
     }
-    return __extends(e, t), e.prototype.isMock = function() {
-        return !0;
-    }, e.prototype.getType = function() {
+    // Port-Funktionen
+    /**
+     * pruefen auf Mock-Port zum Testen
+     *
+     * @return {boolean} mockFlag - true, wenn Port ein Mock zum Testen ist
+     */
+    GoogleMock.prototype.isMock = function () {
+        return true;
+    };
+    /**
+     * Rueckgabe eines logischen Port-Typs
+     *
+     * @return {string} logischer Typ des Ports fuer unterschiedliche Anwendungsschnittstellen
+     */
+    GoogleMock.prototype.getType = function () {
         return GOOGLE_TYPE_NAME;
-    }, e.prototype.getClass = function() {
+    };
+    /**
+     * Rueckgabe der Port-Klasse
+     *
+     * @return {string} konkrete Klasse des Ports
+     */
+    GoogleMock.prototype.getClass = function () {
         return 'GoogleMock';
-    }, e.prototype._checkCredentials = function(t) {
-        return !!t && ('string' == typeof t.googleAppKey && (this.googleAppKey = t.googleAppKey), 
-        'string' == typeof t.googleAppKey && !!t.googleAppKey);
-    }, e.prototype.init = function(e) {
-        if (this.mInitFlag) return this._error('init', 'Init bereits aufgerufen'), 0;
-        if (e && 'boolean' == typeof e.googleDynamicCredentialsFlag && e.googleDynamicCredentialsFlag) this.mDynamicCredentialsFlag = !0, 
-        this._checkCredentials(e); else if (!this._checkCredentials(e)) return (this.isErrorOutput() || e && e.errorOutputFlag) && this._error('init', 'keine AppId und/oder AppKey als Parameter uebergeben'), 
-        -1;
-        return this.webSocketFlag ? (this.audioContextFlag || (this._error('init', 'kein Audiokontext vorhanden, TTS und ASR werden abgeschaltet'), 
-        this._onInit(-1)), this.googleNLUFlag = !0, this.audioContextFlag && (this.googleASRFlag = !0, 
-        this.getUserMediaFlag && (this.googleTTSFlag = !0)), this.isErrorOutput() && (this.googleNLUFlag ? console.log('GoogleMock: NLU ist vorhanden') : console.log('GoogleMock: NLU ist nicht vorhanden'), 
-        this.googleTTSFlag ? console.log('GoogleMock: TTS ist vorhanden') : console.log('GoogleMock: TTS ist nicht vorhanden'), 
-        this.googleASRFlag ? console.log('GoogleMock: ASR ist vorhanden') : console.log('GoogleMock: ASR ist nicht vorhanden')), 
-        this._onInit(0), t.prototype.init.call(this, e)) : (this._error('init', 'keine WebSocket vorhanden'), 
-        this._onInit(-1), -1);
-    }, e.prototype.done = function(e) {
-        return t.prototype.done.call(this), this.webSocketFlag = !0, this.audioContextFlag = !0, 
-        this.getUserMediaFlag = !0, this.googleNLUFlag = !1, this.googleASRFlag = !1, this.googleTTSFlag = !1, 
-        this.disconnectFlag = !0, this.defaultOptions = null, this.codec = '', this.mTransaction = null, 
-        this.mRunningFlag = !1, 0;
-    }, e.prototype.reset = function(e) {
-        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype.reset.call(this, e);
-    }, e.prototype._onStop = function(e, o) {
-        return this.mTransaction = null, this.mRunningFlag = !1, t.prototype._onStop.call(this, e, o);
-    }, e.prototype.setConfig = function(t) {
-        if (!this.mDynamicCredentialsFlag) return this._error('setConfig', 'Keine dynamischen Credentials erlaubt'), 
-        -1;
-        try {
-            return this.googleAppKey = t.googleAppKey, this.googleServerUrl = t.googleServerUrl, 
-            this.dialogflowTokenServerUrl = t.dialogflowTokenServerUrl, this.dialogflowProjectId = t.dialogflowProjectId, 
-            0;
-        } catch (t) {
-            return this._exception('setConfig', t), -1;
+    };
+    /**
+     * Optionen eintragen
+     * @param aOption - optionale Parameter
+     */
+    GoogleMock.prototype._checkCredentials = function (aOption) {
+        if (!aOption) {
+            return false;
         }
-    }, e.prototype.getConfig = function() {
-        return {
+        if (typeof aOption.googleAppKey === 'string') {
+            this.googleAppKey = aOption.googleAppKey;
+        }
+        // App-Parameter pruefen
+        // TODO: jetzt erst mal nur ACCESS-TOKEN (AppKey) von Dialogflow V1 bis Oktober 2019
+        if (typeof aOption.googleAppKey !== 'string') {
+            return false;
+        }
+        if (!aOption.googleAppKey) {
+            return false;
+        }
+        // App-Parameter sind vorhanden
+        return true;
+    };
+    /**
+     * initialisert den Port
+     *
+     * erlaubte optionale Parameter:
+     *
+     *      activeFlag      - legt fest, ob der Port zum Start aktiviert ist oder nicht
+     *      errorOutputFlag - legt fest, ob die Fehlerausgabe auf der Konsole erfolgt
+     *
+     *
+     * @param {any} aOption - optionale Parameter fuer die Konfiguration des Plugins
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.init = function (aOption) {
+        // console.log('NuanceMock: init start', aOption);
+        if (this.mInitFlag) {
+            this._error('init', 'Init bereits aufgerufen');
+            return 0;
+        }
+        // pruefen auf dynamische Credentials
+        if (aOption && typeof aOption.googleDynamicCredentialsFlag === 'boolean' && aOption.googleDynamicCredentialsFlag) {
+            // dynamische Credentials koennen gesetzt werden
+            this.mDynamicCredentialsFlag = true;
+            this._checkCredentials(aOption);
+        }
+        else {
+            // pruefen auf Nuance App-Credientials Uebergabe
+            if (!this._checkCredentials(aOption)) {
+                if (this.isErrorOutput() || (aOption && aOption.errorOutputFlag)) {
+                    this._error('init', 'keine AppId und/oder AppKey als Parameter uebergeben');
+                }
+                return -1;
+            }
+        }
+        // WebSocket
+        if (!this.webSocketFlag) {
+            // WEnn die WebSocket nicht vorhanden ist, geht gar nichts !
+            this._error('init', 'keine WebSocket vorhanden');
+            this._onInit(-1);
+            return -1;
+        }
+        // TODO: soll spaeter in die Audio-Komponente
+        // AudioContext
+        if (!this.audioContextFlag) {
+            // wenn der Audiokontext nicht vorhanden ist, gehen TTS und ASR nicht
+            this._error('init', 'kein Audiokontext vorhanden, TTS und ASR werden abgeschaltet');
+            this._onInit(-1);
+        }
+        this.googleNLUFlag = true;
+        if (this.audioContextFlag) {
+            this.googleASRFlag = true;
+            if (this.getUserMediaFlag) {
+                this.googleTTSFlag = true;
+            }
+        }
+        if (this.isErrorOutput()) {
+            if (this.googleNLUFlag) {
+                console.log('GoogleMock: NLU ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: NLU ist nicht vorhanden');
+            }
+            if (this.googleTTSFlag) {
+                console.log('GoogleMock: TTS ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: TTS ist nicht vorhanden');
+            }
+            if (this.googleASRFlag) {
+                console.log('GoogleMock: ASR ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: ASR ist nicht vorhanden');
+            }
+        }
+        this._onInit(0);
+        // console.log('NuanceMock.init: ende');
+        return _super.prototype.init.call(this, aOption);
+    };
+    /**
+     * gibt den Port frei
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.done = function (aFreeFlag) {
+        _super.prototype.done.call(this);
+        this.webSocketFlag = true;
+        this.audioContextFlag = true;
+        this.getUserMediaFlag = true;
+        this.googleNLUFlag = false;
+        this.googleASRFlag = false;
+        this.googleTTSFlag = false;
+        // weitere Attribute
+        this.disconnectFlag = true;
+        this.defaultOptions = null;
+        this.codec = '';
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return 0;
+    };
+    /**
+     * setzt den Port wieder auf Defaultwerte und uebergebene optionale Parameter.
+     * Die Fehlerausgabe wird nicht zurueckgesetzt.
+     *
+     * @param {any} aOption - optionale Parameter
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.reset = function (aOption) {
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return _super.prototype.reset.call(this, aOption);
+    };
+    // Event-Funktionen
+    /**
+     * Ereignisfunktion fuer Stop aufrufen
+     *
+     * @private
+     * @param {string} aDest - Ziel der Operation
+     * @param {string} aType - Typ der Operation
+     *
+     * @return {number} errorCode(0,-1)
+     */
+    GoogleMock.prototype._onStop = function (aDest, aType) {
+        // console.log('NuancePort._onStop: Transaktion wird beendet', aDest, aType);
+        // hier muss die Transaktion geloescht werden, da sie beendet ist
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return _super.prototype._onStop.call(this, aDest, aType);
+    };
+    // Port-Funktionen
+    /**
+     * Dynamische Konfiguration des Ports
+     *
+     * @param {GoogleConfigDataInterface} aConfigData - Konfigurationsdaten { nuanceAppKey: '', nuanceAppId: '', nuanceNluTag: ''}
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.setConfig = function (aConfigData) {
+        if (this.mDynamicCredentialsFlag) {
+            // Uebertragen der neuen Credentials
+            try {
+                // this.googleAppId = aConfigData.googleAppId;
+                this.googleAppKey = aConfigData.googleAppKey;
+                this.googleServerUrl = aConfigData.googleServerUrl;
+                this.dialogflowTokenServerUrl = aConfigData.dialogflowTokenServerUrl;
+                this.dialogflowProjectId = aConfigData.dialogflowProjectId;
+                /****
+                if ( typeof aConfigData.googleNluTag === 'string' ) {
+                    this.googleNluTag = aConfigData.googleNluTag;
+                }
+                ****/
+                return 0;
+            }
+            catch (aException) {
+                this._exception('setConfig', aException);
+                return -1;
+            }
+        }
+        else {
+            this._error('setConfig', 'Keine dynamischen Credentials erlaubt');
+            return -1;
+        }
+    };
+    /**
+     * Rueckgabe der aktuellen Port-Konfiguration
+     *
+     * @return {GoogleConfigDataInterface} aktuelle Portkonfigurationsdaten
+     */
+    GoogleMock.prototype.getConfig = function () {
+        var configData = {
+            // googleAppId: this.googleAppId,
             googleAppKey: this.googleAppKey,
             googleServerUrl: this.googleServerUrl,
             dialogflowTokenServerUrl: this.dialogflowTokenServerUrl,
             dialogflowProjectId: this.dialogflowProjectId
+            // googleNluTag: this.googleNluTag
         };
-    }, e.prototype.isOpen = function() {
+        return configData;
+    };
+    /**
+     * Pruefen auf geoeffneten Port
+     *
+     * @return {boolean} True, wenn Port offen ist, False sonst
+     */
+    GoogleMock.prototype.isOpen = function () {
         return !this.disconnectFlag;
-    }, e.prototype.open = function(t) {
-        return this.disconnectFlag ? (this.disconnectFlag = !1, this._onOpen(), 0) : 0;
-    }, e.prototype.close = function() {
-        return this.disconnectFlag = !0, 0;
-    }, e.prototype.isRunning = function() {
+    };
+    /**
+     * Port oeffnen
+     *
+     * @param {*} aOption - optionale Parameter
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.open = function (aOption) {
+        // console.log('NuanceMock._connect:', this.disconnectFlag);
+        if (!this.disconnectFlag) {
+            // Kein Fehler, Verbindung ist bereits vorhanden
+            return 0;
+        }
+        this.disconnectFlag = false;
+        // console.log('WebSocket Verbindung aufgebaut');
+        this._onOpen();
+        return 0;
+    };
+    /**
+     * Port schliessen
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.close = function () {
+        this.disconnectFlag = true;
+        return 0;
+    };
+    /**
+     * Pruefen auf beschaeftigten Port.
+     *
+     * @return {boolean} True, Port ist beschaeftigt, False sonst
+     */
+    GoogleMock.prototype.isRunning = function () {
         return this.mRunningFlag;
-    }, e.prototype._isCredentials = function() {
-        return !!this.googleAppKey;
-    }, e.prototype.isAction = function(t) {
-        var e = !1;
-        switch (t) {
-          case GOOGLE_NLU_ACTION:
-            e = this.googleNLUFlag;
-            break;
-
-          case GOOGLE_ASRNLU_ACTION:
-          case GOOGLE_ASR_ACTION:
-            e = this.googleASRFlag;
-            break;
-
-          case GOOGLE_TTS_ACTION:
-            e = this.googleTTSFlag;
+    };
+    GoogleMock.prototype._isCredentials = function () {
+        if (this.googleAppKey) {
+            return true;
         }
-        return e;
-    }, e.prototype.start = function(t, e, o) {
-        if (this.isRunning()) return this._error('start', 'Aktion laeuft bereits'), -1;
-        if (!this.isOpen()) return this._error('start', 'Port ist nicht geoeffnet'), -1;
-        if (!this._isCredentials()) return this._error('start', 'Port hat keine Credentials'), 
-        -1;
-        if (this.mTransaction) return this._error('start', 'andere Transaktion laeuft noch'), 
-        -1;
-        var n = o || {};
-        this.mRunningFlag = !0;
-        var r = 0;
-        switch (e) {
-          case GOOGLE_NLU_ACTION:
-            this.mTransaction = new GoogleTransaction(t, GOOGLE_NLU_ACTION), r = this._startNLU(this.mTransaction, n.text, n.language || GOOGLE_DEFAULT_LANGUAGE);
-            break;
-
-          case GOOGLE_ASRNLU_ACTION:
-            this.mTransaction = new GoogleTransaction(t, GOOGLE_ASRNLU_ACTION), r = this._startASR(this.mTransaction, n.language || GOOGLE_DEFAULT_LANGUAGE, n.audioURL || '', !0, n.useProgressive || !1);
-            break;
-
-          case GOOGLE_ASR_ACTION:
-            this.mTransaction = new GoogleTransaction(t, GOOGLE_ASR_ACTION), r = this._startASR(this.mTransaction, n.language || GOOGLE_DEFAULT_LANGUAGE, n.audioURL || '', !1, n.useProgressive || !1);
-            break;
-
-          case GOOGLE_TTS_ACTION:
-            this.mTransaction = new GoogleTransaction(t, GOOGLE_TTS_ACTION), r = this._startTTS(this.mTransaction, n.text, n.language || GOOGLE_DEFAULT_LANGUAGE, n.voice || GOOGLE_DEFAULT_VOICE);
-            break;
-
-          default:
-            this._error('start', 'Keine gueltige Aktion uebergeben ' + e), r = -1;
+        return false;
+    };
+    /**
+     * Pruefen, welche Nuance-Aktionen ausfuehrbar sind.
+     *
+     * @param {string} aAction - Name der zu pruefenden Aktion
+     *
+     * @return {boolean} True, wenn Aktion ausfuehrbar ist, False sonst
+     */
+    GoogleMock.prototype.isAction = function (aAction) {
+        var result = false;
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                result = this.googleNLUFlag;
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+            case GOOGLE_ASR_ACTION:
+                result = this.googleASRFlag;
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = this.googleTTSFlag;
+                break;
         }
-        return r;
-    }, e.prototype.stop = function(t, e, o) {
-        if (!this.isRunning()) return 0;
-        if (!this.isOpen()) return this._error('stop', 'Port ist nicht geoeffnet'), -1;
-        if (!this._isCredentials()) return this._error('stop', 'Port hat keine Credentials'), 
-        -1;
-        if (!this.mTransaction) return this._error('stop', 'keine Transaktion vorhanden'), 
-        -1;
-        if (t !== this.mTransaction.plugin) return this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + t + ' != ' + this.mTransaction.plugin), 
-        -1;
-        if (e) {
-            if (e !== this.mTransaction.type) return this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + e + ' != ' + this.mTransaction.type), 
-            -1;
-        } else e = this.mTransaction.type;
-        var n = 0;
-        switch (e) {
-          case GOOGLE_NLU_ACTION:
-            n = this._stopNLU(this.mTransaction);
-            break;
-
-          case GOOGLE_ASRNLU_ACTION:
-          case GOOGLE_ASR_ACTION:
-            n = this._stopASR(this.mTransaction);
-            break;
-
-          case GOOGLE_TTS_ACTION:
-            n = this._stopTTS(this.mTransaction);
-            break;
-
-          default:
-            this._error('stop', 'Keine gueltige Aktion uebergeben ' + e), n = -1;
+        return result;
+    };
+    /**
+     * Portaktion starten
+     *
+     * @param {string} aAction - optional auszufuehrende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.start = function (aPluginName, aAction, aOption) {
+        // pruefen, ob eine Aktion bereits laeuft
+        if (this.isRunning()) {
+            this._error('start', 'Aktion laeuft bereits');
+            return -1;
         }
-        return this.mTransaction = null, this.mRunningFlag = !1, n;
-    }, e.prototype._startNLU = function(t, e, o) {
-        if (!e) return this._error('_startNLU', 'keinen Text uebergeben'), -1;
-        if (!this.googleNLUFlag) return this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden'), 
-        -1;
+        // pruefen, ob der Port geoeffnet ist
+        if (!this.isOpen()) {
+            this._error('start', 'Port ist nicht geoeffnet');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this._isCredentials()) {
+            this._error('start', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (this.mTransaction) {
+            this._error('start', 'andere Transaktion laeuft noch');
+            return -1;
+        }
+        var option = aOption || {};
+        // Aktion ausfuehren
+        this.mRunningFlag = true;
+        var result = 0;
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_NLU_ACTION);
+                result = this._startNLU(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE);
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
+                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', true, option.useProgressive || false);
+                break;
+            case GOOGLE_ASR_ACTION:
+                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASR_ACTION);
+                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', false, option.useProgressive || false);
+                break;
+            case GOOGLE_TTS_ACTION:
+                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_TTS_ACTION);
+                result = this._startTTS(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE, option.voice || GOOGLE_DEFAULT_VOICE);
+                break;
+            default:
+                this._error('start', 'Keine gueltige Aktion uebergeben ' + aAction);
+                result = -1;
+                break;
+        }
+        return result;
+    };
+    /**
+     * Portaktion beenden
+     *
+     * @param {string} aAction - optional zu beendende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.stop = function (aPluginName, aAction, aOption) {
+        // console.log('NuancePort.stop:', aPluginName, aAction, aOption);
+        // pruefen, ob eine Aktion bereits laeuft
+        if (!this.isRunning()) {
+            // console.log('NuancePort.stop: kein isRunning');
+            return 0;
+        }
+        // pruefen, ob der Port geoeffnet ist
+        if (!this.isOpen()) {
+            this._error('stop', 'Port ist nicht geoeffnet');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this._isCredentials()) {
+            this._error('stop', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (!this.mTransaction) {
+            this._error('stop', 'keine Transaktion vorhanden');
+            return -1;
+        }
+        // pruefen auf uebereinstimmende Transaktion
+        if (aPluginName !== this.mTransaction.plugin) {
+            this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + aPluginName + ' != ' + this.mTransaction.plugin);
+            return -1;
+        }
+        if (aAction) {
+            if (aAction !== this.mTransaction.type) {
+                this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + aAction + ' != ' + this.mTransaction.type);
+                return -1;
+            }
+        }
+        else {
+            aAction = this.mTransaction.type;
+        }
+        var result = 0;
+        // console.log('NuancePort.stop: Action = ', aAction);
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                result = this._stopNLU(this.mTransaction);
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+            case GOOGLE_ASR_ACTION:
+                result = this._stopASR(this.mTransaction);
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = this._stopTTS(this.mTransaction);
+                break;
+            default:
+                this._error('stop', 'Keine gueltige Aktion uebergeben ' + aAction);
+                result = -1;
+                break;
+        }
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return result;
+    };
+    // Nuance-Funktionen
+    // Text-Funktionen
+    /**
+     * Intent zu einem Text holen
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - Text der interpretiert werden soll
+     * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startNLU = function (aTransaction, aText, aLanguage) {
+        if (!aText) {
+            this._error('_startNLU', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!this.googleNLUFlag) {
+            this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            this._onStart(t.plugin, t.type);
-            var n = {
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            var event_1 = {
                 metadata: {
                     intentName: this.intentName
                 },
                 fulfillment: {
                     speech: this.intentSpeech
                 },
-                resolvedQuery: e,
+                resolvedQuery: aText,
                 score: this.intentConfidence
             };
-            return t.result = n, console.log('GoogleMock._startNLU: _onResult wird aufgerufen'), 
-            this._onResult(t.result, t.plugin, t.type), this._onStop(t.plugin, t.type), 0;
-        } catch (t) {
-            return this._exception('_startNLU', t), -1;
+            aTransaction.result = event_1;
+            console.log('GoogleMock._startNLU: _onResult wird aufgerufen');
+            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
         }
-    }, e.prototype._stopNLU = function(t) {
-        return this._onStop(t.plugin, t.type), 0;
-    }, e.prototype._startASR = function(t, e, o, n, r) {
-        if (!this.googleASRFlag) return this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_startNLU', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die Analyse
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopNLU = function (aTransaction) {
+        this._onStop(aTransaction.plugin, aTransaction.type);
+        // kein Stop der NLU notwendig
+        return 0;
+    };
+    // ASR-Funktionen
+    /**
+     * startet die Recognition
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @returns {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startASR = function (aTransaction, aLanguage, aAudioUrl, aUseNLUFlag, aProgressiveFlag) {
+        // console.log('NuancePort._startASR');
+        if (!this.googleASRFlag) {
+            this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this._onStart(t.plugin, t.type), t.result = "Testtext", this._onResult(t.result, t.plugin, t.type), 
-            this._onStop(t.plugin, t.type), 0;
-        } catch (t) {
-            return this._exception('_startASR', t), -1;
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            aTransaction.result = "Testtext";
+            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
         }
-    }, e.prototype._stopASR = function(t) {
-        if (!this.googleASRFlag) return this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_startASR', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die Recognition
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopASR = function (aTransaction) {
+        if (!this.googleASRFlag) {
+            this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this._onStop(t.plugin, t.type), 0;
-        } catch (t) {
-            return this._exception('_stopASR', t), -1;
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
         }
-    }, e.prototype._startTTS = function(t, e, o, n) {
-        var r = this;
-        if (!e) return this._error('_startTTS', 'keinen Text uebergeben'), -1;
-        if (!this.googleTTSFlag) return this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_stopASR', aException);
+            return -1;
+        }
+    };
+    // TTS-Funktionen
+    /**
+     * startet die TTS
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - auszusprechender Text
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startTTS = function (aTransaction, aText, aLanguage, aVoice) {
+        var _this = this;
+        if (!aText) {
+            this._error('_startTTS', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!this.googleTTSFlag) {
+            this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this._onStart(t.plugin, t.type), setTimeout(function() {
-                return r._onStop(t.plugin, t.type);
-            }, GOOGLEMOCK_CALLBACK_TIMEOUT), 0;
-        } catch (t) {
-            return this._exception('_startTTS', t), -1;
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            // asynchron TTS-Stop Event senden
+            setTimeout(function () { return _this._onStop(aTransaction.plugin, aTransaction.type); }, GOOGLEMOCK_CALLBACK_TIMEOUT);
+            return 0;
         }
-    }, e.prototype._stopTTS = function(t) {
-        if (!this.googleTTSFlag) return this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden'), 
-        -1;
+        catch (aException) {
+            this._exception('_startTTS', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die TTS
+     *
+     * @private
+     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopTTS = function (aTransaction) {
+        if (!this.googleTTSFlag) {
+            this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden');
+            return -1;
+        }
         try {
-            return this._onStop(t.plugin, t.type), 0;
-        } catch (t) {
-            return this._exception('_stopTTS', t), -1;
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
         }
-    }, e;
-}(Port), Google = function() {
-    function t() {}
-    return t.setErrorOutputOn = function() {
-        t.mErrorOutputFlag = !0, PortManager.setErrorOutputOn();
-    }, t.setErrorOutputOff = function() {
-        t.mErrorOutputFlag = !1, PortManager.setErrorOutputOff();
-    }, t.setErrorOutputFunc = function(t) {
-        PortManager._setErrorOutputFunc(t);
-    }, t._initGooglePort = function(e) {
-        var o = PortManager.get(GOOGLE_TYPE_NAME, GooglePort);
-        return o ? 0 !== o.init(e) ? (PortManager.remove(GOOGLE_TYPE_NAME), -1) : (t.mCurrentPort = o, 
-        0) : -1;
-    }, t._initGoogleMock = function(e) {
-        var o = PortManager.get(GOOGLE_TYPE_NAME, GoogleMock);
-        return o ? 0 !== o.init(e) ? (console.log('Google._initGoogleMock: Error GoogleMock wurde nicht initialisiert'), 
-        PortManager.remove(GOOGLE_TYPE_NAME), -1) : (t.mCurrentPort = o, 0) : (console.log('Google._initGoogleMock: Error GoogleMock wurde nicht erzeugt'), 
-        -1);
-    }, t.init = function(e) {
-        if (t.mInitFlag) return 0;
-        if (!e) return t.mErrorOutputFlag && console.log('Google.init: Keine Google-Parameter uebergeben'), 
-        -1;
-        'boolean' == typeof e.errorOutputFlag && (e.errorOutputFlag ? t.setErrorOutputOn() : t.setErrorOutputOff());
-        var o = 'GooglePort';
-        if (e && 'string' == typeof e.googlePortName && 'GoogleMock' === e.googlePortName && (o = 'GoogleMock'), 
-        'GooglePort' === o) {
-            if (0 !== t._initGooglePort(e)) return -1;
-        } else {
-            if ('GoogleMock' !== o) return t.mErrorOutputFlag && console.log('Google.init: Kein Google PortName vorhanden'), 
-            -1;
-            if (0 !== t._initGoogleMock(e)) return -1;
+        catch (aException) {
+            this._exception('_stopTTS', aException);
+            return -1;
         }
-        return t.mInitFlag = !0, 0;
-    }, t.isInit = function() {
-        return t.mInitFlag;
-    }, t.done = function() {
-        var e = PortManager.find(GOOGLE_TYPE_NAME);
-        e || (e = t.mCurrentPort);
-        var o = 0;
-        return e && (o = e.done(), PortManager.remove(GOOGLE_TYPE_NAME)), t.mCurrentPort = null, 
-        t.mInitFlag = !1, o;
-    }, t._onOpenEvent = function(e, o, n, r) {
-        if ('function' == typeof r) try {
-            return r(e, o, n), 0;
-        } catch (e) {
-            return t.mErrorOutputFlag && console.log('Google._onOpenEvent: Exception', e.message), 
-            -1;
+    };
+    return GoogleMock;
+}(Port));
+
+/**
+ * Google-Manager zur Verwaltung des GooglePort
+ *
+ * Hier wird die Manager-Schnittstelle von Google definiert, um Google zu
+ * initialisieren und als Port zu oeffnen.
+ *
+ * API-Version: 1.0
+ * Datum:       08.05.2019
+ *
+ * Letzte Aenderung: 08.05.2019
+ * Status: rot
+ *
+ * @module cloud/google
+ * @author SB
+ */
+/**
+ * statische Google-Klasse zur Erzeugung des GooglePorts
+ */
+var Google = /** @class */ (function () {
+    // statische Klasse, keine Instanz erzeugbar !
+    function Google() {
+    }
+    // Fehler-Funktionen
+    Google.setErrorOutputOn = function () {
+        Google.mErrorOutputFlag = true;
+        PortManager.setErrorOutputOn();
+    };
+    Google.setErrorOutputOff = function () {
+        Google.mErrorOutputFlag = false;
+        PortManager.setErrorOutputOff();
+    };
+    Google.setErrorOutputFunc = function (aErrorFunc) {
+        PortManager._setErrorOutputFunc(aErrorFunc);
+    };
+    /**
+     * Initialisiert den GooglePort.
+     *
+     * @static
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google._initGooglePort = function (aGoogleOption) {
+        // console.log('Google._initGooglePort:', aGoogleOption);
+        var port = PortManager.get(GOOGLE_TYPE_NAME, GooglePort);
+        if (!port) {
+            return -1;
+        }
+        if (port.init(aGoogleOption) !== 0) {
+            PortManager.remove(GOOGLE_TYPE_NAME);
+            return -1;
+        }
+        Google.mCurrentPort = port;
+        return 0;
+    };
+    /**
+     * Initialisiert den GoogleMock.
+     *
+     * @static
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google._initGoogleMock = function (aGoogleOption) {
+        // console.log('Google._initGoogleMock:', aGoogleOption);
+        var port = PortManager.get(GOOGLE_TYPE_NAME, GoogleMock);
+        if (!port) {
+            console.log('Google._initGoogleMock: Error GoogleMock wurde nicht erzeugt');
+            return -1;
+        }
+        if (port.init(aGoogleOption) !== 0) {
+            console.log('Google._initGoogleMock: Error GoogleMock wurde nicht initialisiert');
+            PortManager.remove(GOOGLE_TYPE_NAME);
+            return -1;
+        }
+        Google.mCurrentPort = port;
+        return 0;
+    };
+    /**
+     * Initialisiert den GooglePorts
+     *
+     * @static
+     * @param {GoogleOptionInterface} aOption - Google-Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google.init = function (aOption) {
+        // console.log('Google.init:', aOption);
+        if (Google.mInitFlag) {
+            return 0;
+        }
+        // pruefen auf Optionen
+        if (!aOption) {
+            if (Google.mErrorOutputFlag) {
+                console.log('Google.init: Keine Google-Parameter uebergeben');
+            }
+            return -1;
+        }
+        // pruefen auf ErrorOutputFlag
+        if (typeof aOption.errorOutputFlag === 'boolean') {
+            if (aOption.errorOutputFlag) {
+                Google.setErrorOutputOn();
+            }
+            else {
+                Google.setErrorOutputOff();
+            }
+        }
+        // hier wird der zu erzeugende Portname selectiert
+        var portName = 'GooglePort';
+        if (aOption && typeof aOption.googlePortName === 'string') {
+            if (aOption.googlePortName === 'GoogleMock') {
+                portName = 'GoogleMock';
+            }
+        }
+        // hier wird der Google-Port initialisiert
+        // console.log('Google.init: PortName = ', portName);
+        if (portName === 'GooglePort') {
+            if (Google._initGooglePort(aOption) !== 0) {
+                return -1;
+            }
+        }
+        else if (portName === 'GoogleMock') {
+            if (Google._initGoogleMock(aOption) !== 0) {
+                return -1;
+            }
+        }
+        else {
+            if (Google.mErrorOutputFlag) {
+                console.log('Google.init: Kein Google PortName vorhanden');
+            }
+            return -1;
+        }
+        // console.log('Google.init: end', result);
+        Google.mInitFlag = true;
+        return 0;
+    };
+    Google.isInit = function () {
+        return Google.mInitFlag;
+    };
+    /**
+     * Freigabe des GooglePorts
+     *
+     * @static
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google.done = function () {
+        var port = PortManager.find(GOOGLE_TYPE_NAME);
+        // TODO: Workaround eines Bugs in PortList nur unter Windows!
+        if (!port) {
+            port = Google.mCurrentPort;
+        }
+        var result = 0;
+        if (port) {
+            result = port.done();
+            PortManager.remove(GOOGLE_TYPE_NAME);
+        }
+        Google.mCurrentPort = null;
+        Google.mInitFlag = false;
+        return result;
+    };
+    // Port-Funktionen
+    Google._onOpenEvent = function (aError, aPortName, aPortResult, aOpenEventCallback) {
+        if (typeof aOpenEventCallback === 'function') {
+            try {
+                // console.log('Google._onOpenEvent:', aPortName, aPortResult);
+                aOpenEventCallback(aError, aPortName, aPortResult);
+                return 0;
+            }
+            catch (aException) {
+                if (Google.mErrorOutputFlag) {
+                    console.log('Google._onOpenEvent: Exception', aException.message);
+                }
+                return -1;
+            }
         }
         return 0;
-    }, t._openGooglePort = function(e) {
-        var o = PortManager.find(GOOGLE_TYPE_NAME);
-        return o || (o = t.mCurrentPort), o ? (o.addOpenEvent(GOOGLE_TYPE_NAME, function(n) {
-            return o.removeErrorEvent(GOOGLE_TYPE_NAME), o.removeOpenEvent(GOOGLE_TYPE_NAME), 
-            'function' == typeof e && t._onOpenEvent(null, GOOGLE_TYPE_NAME, n.result, e), n.result;
-        }), o.addErrorEvent(GOOGLE_TYPE_NAME, function(n) {
-            return o.removeOpenEvent(GOOGLE_TYPE_NAME), o.removeErrorEvent(GOOGLE_TYPE_NAME), 
-            'function' == typeof e && t._onOpenEvent(n, GOOGLE_TYPE_NAME, -1, e), 0;
-        }), o.open()) : (t.mErrorOutputFlag && console.log('Google._openGooglePort: kein Port vorhanden'), 
-        t._onOpenEvent(new Error('Google._openGooglePort: Kein Port vorhanden'), GOOGLE_TYPE_NAME, -1, e), 
-        -1);
-    }, t.open = function(e) {
-        return t.mInitFlag ? t._openGooglePort(e) : (t.mErrorOutputFlag && console.log('Google.open: Init wurde nicht aufgerufen'), 
-        t._onOpenEvent(new Error('Google.open: Init wurde nicht aufgerufen'), GOOGLE_TYPE_NAME, -1, e), 
-        -1);
-    }, t.setConfig = function(e) {
-        return t.mCurrentPort ? t.mCurrentPort.setConfig(e) : -1;
-    }, t.getConfig = function() {
-        return t.mCurrentPort ? t.mCurrentPort.getConfig() : {
-            googleAppKey: '',
-            googleServerUrl: '',
-            dialogflowTokenServerUrl: '',
-            dialogflowProjectId: ''
-        };
-    }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
-}();
+    };
+    /**
+     * Oeffnet den GooglePort
+     *
+     * @param {function} aOpenEventCallback - Funktion fuer OpenEvent-Ereignis fn( PortName: string, PortResult: number)
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google._openGooglePort = function (aOpenEventCallback) {
+        // console.log('Google._openGooglePort: start');
+        var port = PortManager.find(GOOGLE_TYPE_NAME);
+        // TODO: Workaround eines Bugs in PortList nur unter Windows!
+        if (!port) {
+            port = Google.mCurrentPort;
+        }
+        if (!port) {
+            if (Google.mErrorOutputFlag) {
+                console.log('Google._openGooglePort: kein Port vorhanden');
+            }
+            Google._onOpenEvent(new Error('Google._openGooglePort: Kein Port vorhanden'), GOOGLE_TYPE_NAME, -1, aOpenEventCallback);
+            return -1;
+        }
+        // Events verarbeiten
+        port.addOpenEvent(GOOGLE_TYPE_NAME, function (aEvent) {
+            port.removeErrorEvent(GOOGLE_TYPE_NAME);
+            port.removeOpenEvent(GOOGLE_TYPE_NAME);
+            // console.log('Google._openGooglePort: openEvent');
+            if (typeof aOpenEventCallback === 'function') {
+                Google._onOpenEvent(null, GOOGLE_TYPE_NAME, aEvent.result, aOpenEventCallback);
+            }
+            return aEvent.result;
+        });
+        port.addErrorEvent(GOOGLE_TYPE_NAME, function (aError) {
+            port.removeOpenEvent(GOOGLE_TYPE_NAME);
+            port.removeErrorEvent(GOOGLE_TYPE_NAME);
+            // console.log('Google._openGooglePort: errorEvent', aError.message);
+            if (typeof aOpenEventCallback === 'function') {
+                Google._onOpenEvent(aError, GOOGLE_TYPE_NAME, -1, aOpenEventCallback);
+            }
+            return 0;
+        });
+        // Port oeffnen
+        return port.open();
+    };
+    /**
+     * Oeffnet den GooglePort
+     *
+     * @static
+     * @param {function} aOpenEventCallback - Ereignis-Funktion fuer Port geoeffnet
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google.open = function (aOpenEventCallback) {
+        if (!Google.mInitFlag) {
+            if (Google.mErrorOutputFlag) {
+                console.log('Google.open: Init wurde nicht aufgerufen');
+            }
+            Google._onOpenEvent(new Error('Google.open: Init wurde nicht aufgerufen'), GOOGLE_TYPE_NAME, -1, aOpenEventCallback);
+            return -1;
+        }
+        // hier wird der Nuance-Port geoeffnet
+        var result = Google._openGooglePort(aOpenEventCallback);
+        // console.log('Google.open: end', result);
+        return result;
+    };
+    /**
+     * Traegt geaenderte Credentials ein.
+     *
+     * @static
+     * @param {function} aOpenEventCallback - Ereignis-Funktion fuer Port geoeffnet
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    Google.setConfig = function (aConfigData) {
+        if (Google.mCurrentPort) {
+            return Google.mCurrentPort.setConfig(aConfigData);
+        }
+        return -1;
+    };
+    /**
+     * Gibt die aktuellen Credentials zurueck.
+     *
+     * @static
+     * @return {GoogleConfigDataInterface} Konfigurationsdaten zurueckgeben
+     */
+    Google.getConfig = function () {
+        if (Google.mCurrentPort) {
+            return Google.mCurrentPort.getConfig();
+        }
+        return { googleAppKey: '', googleServerUrl: '', dialogflowTokenServerUrl: '', dialogflowProjectId: '' };
+    };
+    Google.mInitFlag = false;
+    Google.mErrorOutputFlag = false;
+    Google.mCurrentPort = null;
+    return Google;
+}());
 
 export { GOOGLE_ASRNLU_ACTION, GOOGLE_ASR_ACTION, GOOGLE_NLU_ACTION, GOOGLE_TTS_ACTION, GOOGLE_TYPE_NAME, Google };

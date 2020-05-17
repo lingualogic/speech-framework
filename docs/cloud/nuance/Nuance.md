@@ -90,8 +90,8 @@ Die openEventCallback-Funktion gibt drei Werte zurück, der erste Wert ist ein F
 	const openEventCallback = ( error: Error, portName: string, portResult: number ) => {
 		// hier kann auf das OpenEvent entsprechend den Rückgabewerten reagiert werden
 	}
-	
-	
+
+
 ### Nuance.setConfig( configData: NuanceConfigDataInterface ): number
 
 Mit dem Aufruf:

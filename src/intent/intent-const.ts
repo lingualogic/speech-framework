@@ -21,7 +21,7 @@ export const INTENT_COMPONENTBUILDER_NAME = 'IntentComponentBuilder';
 export const INTENT_COMPONENTFACTORY_NAME = 'IntentComponentFactory';
 
 export const INTENT_COMPONENT_NAME = 'IntentComponent';
-export const INTENT_MOCK_NAME = 'ListenMock';
+export const INTENT_MOCK_NAME = 'IntentMock';
 
 
 // NLU-Konstanten (muessen mit den Konstenten in NLU synchron gehalten werden!)

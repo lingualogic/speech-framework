@@ -161,7 +161,7 @@ export class FileHtml5Reader extends ErrorBase implements FileHtml5ReaderInterfa
         // console.log('FileHtml5Reader._onLoad:', aData, aStatus);
         if ( this.mOnReadFunc ) {
             try {
-                // console.log('FileReader._requestDialogFile:', aData, aStatus);
+                // console.log('FileReader._onLoad:', aData, aStatus);
                 if ( aStatus === 404 ) {
                     this._error( '_onLoad', 'Error 404' );
                 } else {

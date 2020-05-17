@@ -1,9 +1,9 @@
 // rollup.config.js fuer SpeechService
 
 import typescript from 'rollup-plugin-typescript2';
-import json from 'rollup-plugin-json';
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
+import json from '@rollup/plugin-json';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import uglify from 'rollup-plugin-uglify';
 import { minify } from 'uglify-es';
 
@@ -53,7 +53,7 @@ let typescriptDefaults = { compilerOptions: { declaration: true } };
 let typescriptOverride = { compilerOptions: { declaration: false } };
 
 export default {
-    input: './index.ts',
+    input: 'index.ts',
     output: {
         file: './build/speech-framework.js',
         format: 'umd',

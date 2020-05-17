@@ -3,17 +3,14 @@
 Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Versionen und deren Features.
 
 
-## Geplante Versionen
+## Veröffentlichte Versionen
 
 
 ### Mai: Version 0.5.20
 
 beinhaltet:
 
-* **Speak:** Einbau eines Reader-Modus in Speak zum Vorlesen von Texten.
-
-
-## Veröffentlichte Versionen
+* **Gulp:** Umstellung auf Gulp4, um mit NodeJS 12 zu funktionieren.
 
 
 ### April: Version 0.5.19
