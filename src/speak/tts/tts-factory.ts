@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer TTS Version
  *
- * Letzte Aenderung: 04.07.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: rot
  *
  * @module speak/tts
@@ -11,7 +11,7 @@
 
 // plugin
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // tts

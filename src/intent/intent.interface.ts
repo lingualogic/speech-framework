@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Intent Interface
  *
  * API-Version: 1.1
  * Datum: 27.01.2019
  *
- * Letzte Aenderung: 28.03.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module intent
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseInterface } from './../base/base.interface';
+/****
+ * import { BaseInterface } from './../base/base.interface';
+ ****/
+
+import { BaseInterface } from '@speech/base';
 
 
 // intent

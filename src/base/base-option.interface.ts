@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * BaseOption Schnittstelle
  *
  * API-Version: 1.0

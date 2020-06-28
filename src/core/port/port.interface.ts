@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Port Schnittstelle fuer die Verbindung mit externen Diensten.
  * Ports sind Vermittler zwischen den externen Diensten und den internen Plugins.
  *

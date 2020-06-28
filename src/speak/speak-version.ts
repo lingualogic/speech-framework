@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Speak Version und Build Konstanten
  *
  * API-Version: 1.0
@@ -14,7 +14,7 @@
 
 // global
 
-import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../const/speech-version';
+import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../core/const/speech-version';
 
 
 // Versions-Konstanten

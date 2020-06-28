@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Verwaltet alle Ports des Systems. Ist eine statische Klasse.
  *
  * Letzte Aenderung: 14.02.2019
@@ -11,7 +11,7 @@
 
 // global
 
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 // error

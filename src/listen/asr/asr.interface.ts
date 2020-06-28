@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * ASR Schnittstelle
  *
  * Version: 1.4
  * Datum:   09.04.2020
  *
- * Letzte Aenderung: 09.04.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module listen/asr
@@ -12,9 +12,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // Funktionen

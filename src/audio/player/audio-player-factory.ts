@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung eines AudioPlayer
  *
  * API-Version: 1.1
  * Datum:       23.07.2018
  *
- * Letzte Aenderung: 11.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module audio/player
@@ -12,9 +12,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // audio

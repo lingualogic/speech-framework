@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * DialogComponent definiert einen DialogManager fuer Aktionen und Sprachausgaben
  *
  * Letzte Aenderung: 03.12.2019

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * SystemManager als oberster Manager des gesamten Systems
  * SystemManager ist eine statische Klasse
  *
@@ -12,7 +12,7 @@
 
 // global
 
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 // builder

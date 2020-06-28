@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Audio
  *
  * API-Version: 1.0

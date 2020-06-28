@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * BaseComponent Schnittstelle
  *
- * Letzte Aenderung: 11.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module base/component
@@ -9,9 +9,9 @@
  */
 
 
-// component
+// core
 
-import { ComponentInterface } from '../../core/component/component.interface';
+import { ComponentInterface } from '@speech/core';
 
 
 // base

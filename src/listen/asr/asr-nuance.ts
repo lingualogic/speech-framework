@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Nuance-Spracherkennung implementiert. Ist NuancePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 21.03.2019
+ * Letzte Aenderung: 30.05.2020
  * Status: rot
  *
  * @module listen/asr
@@ -10,20 +10,14 @@
  */
 
 
-// event
+// core
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
-
-
-// port
-
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// nuance
+// cloud
 
-import { NUANCE_TYPE_NAME, NUANCE_ASR_ACTION } from './../../cloud/nuance/nuance-const';
+import { CLOUD_NUANCE_PORT, CLOUD_ASR_ACTION, CloudManager } from '@speech/cloud';
 
 
 // asr
@@ -175,7 +169,7 @@ export class ASRNuance extends ASRPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mNuancePort = PortManager.find( NUANCE_TYPE_NAME );
+        this.mNuancePort = CloudManager.findPort( CLOUD_NUANCE_PORT );
         if ( !this.mNuancePort ) {
             this._error( '_detectRecognition', 'kein Nuance-Port vorhanden' );
             return false;
@@ -239,7 +233,7 @@ export class ASRNuance extends ASRPlugin {
 
     _isRecognition(): boolean {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isAction( NUANCE_ASR_ACTION );
+            return this.mNuancePort.isAction( CLOUD_ASR_ACTION );
         }
         return false;
     }
@@ -270,7 +264,7 @@ export class ASRNuance extends ASRPlugin {
         // console.log('ASRNuance._startRecognition');
         if ( this.mNuancePort ) {
             // console.log('ASRNuance._startRecognition:', this._getASRLanguage());
-            return this.mNuancePort.start( ASR_NUANCE_NAME, NUANCE_ASR_ACTION, { language: this._getASRLanguage() });
+            return this.mNuancePort.start( ASR_NUANCE_NAME, CLOUD_ASR_ACTION, { language: this._getASRLanguage() });
         }
         return -1;
     }
@@ -285,7 +279,7 @@ export class ASRNuance extends ASRPlugin {
 
     _stopRecognition(): number {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.stop( ASR_NUANCE_NAME, NUANCE_ASR_ACTION );
+            return this.mNuancePort.stop( ASR_NUANCE_NAME, CLOUD_ASR_ACTION );
         }
         return -1;
     }
@@ -300,7 +294,7 @@ export class ASRNuance extends ASRPlugin {
     _abortRecognition(): number {
         if ( this.mNuancePort ) {
             // TODO: Abort muss in Port noch eingebaut werden
-            // return this.mNuancePort.abort( NUANCE_ASR_ACTION );
+            // return this.mNuancePort.abort( CLOUD_ASR_ACTION );
             return this._stopRecognition();
         }
         return -1;
@@ -314,7 +308,7 @@ export class ASRNuance extends ASRPlugin {
     _isRecognitionRunning(): boolean {
         // console.log('TTSNuance._isSynthesisRunning');
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isRunning( ASR_NUANCE_NAME, NUANCE_ASR_ACTION );
+            return this.mNuancePort.isRunning( ASR_NUANCE_NAME, CLOUD_ASR_ACTION );
         }
         return false;
     }

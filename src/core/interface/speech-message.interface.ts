@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Nachrichten Interface
  *
  * @module speech

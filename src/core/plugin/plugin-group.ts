@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * PluginGroup als Manager fuer Plugins.
  *
  * Letzte Aenderung: 05.11.2018
@@ -11,7 +11,7 @@
 
 // global
 
-import { SpeechMessageInterface, SpeechSendMessageFunc } from '../../interface/speech-message.interface';
+import { SpeechMessageInterface, SpeechSendMessageFunc } from '../interface/speech-message.interface';
 
 
 // plugin

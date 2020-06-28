@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Listen
  *
  * Version: 1.0
- * Datum:   01.12.2018
+ * Datum:   01.06.2020
  *
  * Definiert das gesamte Listen-API:
  *
@@ -14,9 +14,13 @@
 // Global API
 
 
-export { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME } from './listen-const';
+export * from './listen-version';
+export * from './listen-const';
 export { ListenComponentBuilder } from './component/listen-component-builder';
+export { ListenComponentFactory } from './component/listen-component-factory';
 export { ListenComponentInterface } from './component/listen-component.interface';
+export { ListenComponent } from './component/listen-component';
 export { ListenOptionInterface } from './listen-option.interface';
 export { ListenInterface } from './listen.interface';
 export { ListenFactory } from './listen-factory';
+export { Listen } from './listen';

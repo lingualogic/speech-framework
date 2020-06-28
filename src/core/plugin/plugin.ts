@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Plugin Basiskomponente, von der alle Plungins abgeleitet sind
  *
  * Letzte Aenderung: 19.10.2018
@@ -11,8 +11,8 @@
 
 // global
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc, SpeechErrorFunc } from '../../interface/speech-function.type';
-import { SpeechMessageInterface } from '../../interface/speech-message.interface';
+import { OnSpeechInitFunc, OnSpeechErrorFunc, SpeechErrorFunc } from '../interface/speech-function.type';
+import { SpeechMessageInterface } from '../interface/speech-message.interface';
 
 
 // error

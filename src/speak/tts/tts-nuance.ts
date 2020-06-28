@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Nuance-Sprachausgabe implementiert. Ist NuancePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 20.03.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: rot
  *
  * @module speak/tts
@@ -12,24 +12,18 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// nuance
-
-import { NUANCE_TYPE_NAME, NUANCE_TTS_ACTION } from './../../cloud/nuance/nuance-const';
+import { CLOUD_NUANCE_PORT, CLOUD_TTS_ACTION, CloudManager } from '@speech/cloud';
 
 
 // tts
 
 import { TTS_NUANCE_NAME } from './tts-const';
-import { TTSPlugin} from './tts-plugin';
+import { TTSPlugin } from './tts-plugin';
 
 
 /**
@@ -197,7 +191,7 @@ export class TTSNuance extends TTSPlugin {
      */
 
     _detectSynthesis(): boolean {
-        this.mNuancePort = PortManager.find( NUANCE_TYPE_NAME );
+        this.mNuancePort = CloudManager.findPort( CLOUD_NUANCE_PORT );
         if ( !this.mNuancePort ) {
             this._error( '_detectSynthesis', 'kein Nuance-Port vorhanden' );
             return false;
@@ -256,7 +250,7 @@ export class TTSNuance extends TTSPlugin {
 
     _isSynthesis(): boolean {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isAction( NUANCE_TTS_ACTION );
+            return this.mNuancePort.isAction( CLOUD_TTS_ACTION );
         }
         return false;
     }
@@ -286,7 +280,7 @@ export class TTSNuance extends TTSPlugin {
     _startSynthesis( aText: string ): number {
         if ( this.mNuancePort ) {
             // console.log('TTSNuance._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
-            return this.mNuancePort.start( TTS_NUANCE_NAME, NUANCE_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
+            return this.mNuancePort.start( TTS_NUANCE_NAME, CLOUD_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
         }
         return -1;
     }
@@ -302,7 +296,7 @@ export class TTSNuance extends TTSPlugin {
     _stopSynthesis(): number {
         if ( this.mNuancePort ) {
             // console.log('TTSNuance._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
-            return this.mNuancePort.stop( TTS_NUANCE_NAME, NUANCE_TTS_ACTION );
+            return this.mNuancePort.stop( TTS_NUANCE_NAME, CLOUD_TTS_ACTION );
         }
         return -1;
     }
@@ -315,7 +309,7 @@ export class TTSNuance extends TTSPlugin {
     _isSynthesisRunning(): boolean {
         // console.log('TTSNuance._isSynthesisRunning');
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isRunning( TTS_NUANCE_NAME, NUANCE_TTS_ACTION );
+            return this.mNuancePort.isRunning( TTS_NUANCE_NAME, CLOUD_TTS_ACTION );
         }
         return false;
     }

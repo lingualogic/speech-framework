@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * RasaConfigData-Schnittstelle
  *
  * API-Version: 1.1

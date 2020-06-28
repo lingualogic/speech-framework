@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer NLU
  *
  * Letzte Aenderung: 28.08.2019

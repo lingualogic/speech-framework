@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer ASR
  *
- * Letzte Aenderung: 17.06.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module listen/asr
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // asr

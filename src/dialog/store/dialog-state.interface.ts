@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * DialogState Interface
  *
  * Letzte Aenderung: 07.09.2018

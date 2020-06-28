@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * globale Speech Event Konstanten
  *
  * @module speech
@@ -14,6 +14,13 @@ export const SPEECH_STOP_EVENT = 'stop';
 export const SPEECH_EVENT_EVENT = 'event';
 export const SPEECH_ERROR_EVENT = 'error';
 export const SPEECH_FEATUREINFO_EVENT = 'featureInfo';
+
+
+// wakeword
+
+export const SPEECH_WAKEWORDSTART_EVENT = 'wakewordStart';
+export const SPEECH_WAKEWORDSTOP_EVENT = 'wakewordStop';
+export const SPEECH_WAKEWORDDETECT_EVENT = 'wakewordDetect';
 
 
 // speak

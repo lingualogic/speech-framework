@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Amazon
  *
  * Letzte Aenderung: 01.04.2019

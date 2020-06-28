@@ -214,6 +214,12 @@ function ListenApp() {
             listenResult.value = aResult;
         });
 
+        listen.addListenNoMatchEvent( 'ListenApp', function() {
+            console.log('ListenApp.noMatchEvent');
+            var listenResult = document.getElementById( 'listenResult' );
+            listenResult.value = 'No Match';
+        });
+
         listen.addErrorEvent( 'ListenApp', function(aError) {
             console.log('ListenApp.errorEvent', aError.message);
             var errorText = document.getElementById( 'errorText' );

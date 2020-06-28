@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer FileLoader
  *
  * Version: 1.1

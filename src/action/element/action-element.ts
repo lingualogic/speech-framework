@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ActionElement-Plugin definiert die Funktionalitaet zur Steuerung einer App mit Hilfe von Aktionen.
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/element
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // action

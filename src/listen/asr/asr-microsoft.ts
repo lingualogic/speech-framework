@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Microsoft-Spracherkennung implementiert. Ist MicrosoftPort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 17.06.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module listen/asr
@@ -12,18 +12,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// microsoft
-
-import { MICROSOFT_TYPE_NAME, MICROSOFT_ASR_ACTION } from './../../cloud/microsoft/microsoft-const';
+import { CLOUD_MICROSOFT_PORT, CLOUD_ASR_ACTION, CloudManager } from '@speech/cloud';
 
 
 // asr
@@ -116,7 +110,7 @@ export class ASRMicrosoft extends ASRPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mMicrosoftPort = PortManager.find( MICROSOFT_TYPE_NAME );
+        this.mMicrosoftPort = CloudManager.findPort( CLOUD_MICROSOFT_PORT );
         if ( !this.mMicrosoftPort ) {
             this._error( '_detectRecognition', 'kein Microsoft-Port vorhanden' );
             return false;
@@ -180,7 +174,7 @@ export class ASRMicrosoft extends ASRPlugin {
 
     _isRecognition(): boolean {
         if ( this.mMicrosoftPort ) {
-            return this.mMicrosoftPort.isAction( MICROSOFT_ASR_ACTION );
+            return this.mMicrosoftPort.isAction( CLOUD_ASR_ACTION );
         }
         return false;
     }
@@ -211,7 +205,7 @@ export class ASRMicrosoft extends ASRPlugin {
         // console.log('ASRMicrosoft._startRecognition');
         if ( this.mMicrosoftPort ) {
             // console.log('ASRMicrosoft._startRecognition:', this._getASRLanguage());
-            return this.mMicrosoftPort.start( ASR_MICROSOFT_NAME, MICROSOFT_ASR_ACTION, { language: this._getASRLanguage() });
+            return this.mMicrosoftPort.start( ASR_MICROSOFT_NAME, CLOUD_ASR_ACTION, { language: this._getASRLanguage() });
         }
         return -1;
     }
@@ -226,7 +220,7 @@ export class ASRMicrosoft extends ASRPlugin {
 
     _stopRecognition(): number {
         if ( this.mMicrosoftPort ) {
-            return this.mMicrosoftPort.stop( ASR_MICROSOFT_NAME, MICROSOFT_ASR_ACTION );
+            return this.mMicrosoftPort.stop( ASR_MICROSOFT_NAME, CLOUD_ASR_ACTION );
         }
         return -1;
     }
@@ -255,7 +249,7 @@ export class ASRMicrosoft extends ASRPlugin {
     _isRecognitionRunning(): boolean {
         // console.log('TTSMicrosoft._isRecognitionRunning');
         if ( this.mMicrosoftPort ) {
-            return this.mMicrosoftPort.isRunning( ASR_MICROSOFT_NAME, MICROSOFT_ASR_ACTION );
+            return this.mMicrosoftPort.isRunning( ASR_MICROSOFT_NAME, CLOUD_ASR_ACTION );
         }
         return false;
     }

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Component
  *
  * Version: 1.0

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Google-Manager zur Verwaltung des GooglePort
  *
  * Hier wird die Manager-Schnittstelle von Google definiert, um Google zu
@@ -7,13 +7,16 @@
  * API-Version: 1.0
  * Datum:       08.05.2019
  *
- * Letzte Aenderung: 08.05.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/google
  * @author SB
  */
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+
+import { SpeechErrorFunc } from './../../core/interface/speech-function.type';
+
+// import { SpeechErrorFunc } from '@speech/core';
 import { GoogleConfigDataInterface } from './google-config-data.interface';
 import { GoogleOptionInterface } from './google-option.interface';
 /**

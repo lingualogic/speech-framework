@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Dieses Programm speichert die JSON-Daten und erlaubt den Zugriff darauf.
  *
- * Letzte Aenderung: 24.10.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/json
@@ -11,7 +11,7 @@
 
 // core
 
-import { ErrorBase } from './../../core/error/error-base';
+import { ErrorBase } from '@speech/core';
 
 
 // dialog

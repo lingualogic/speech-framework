@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Action
  *
  * API-Version: 1.0

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * PluginFactory-Interface fuer die Erzeugung von Plugin-Komponenten
  *
  * Letzte Aenderung: 08.10.2018

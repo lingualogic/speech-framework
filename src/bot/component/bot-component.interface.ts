@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * BotComponent Schnittstelle
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module bot/component
@@ -11,12 +11,12 @@
 
 // base
 
-import { BaseComponentInterface } from '../../base/component/base-component.interface';
+import { BaseComponentInterface } from '@speech/base';
 
 
 // dialog
 
-import { OnDialogActionFunc, OnDialogActionStopFunc, OnDialogSpeakFunc, OnDialogSpeakStopFunc } from './../../dialog/dialog-function.type';
+import { OnDialogActionFunc, OnDialogActionStopFunc, OnDialogSpeakFunc, OnDialogSpeakStopFunc } from '@speech/dialog';
 
 
 // bot

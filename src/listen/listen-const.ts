@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Listen
  *
  * API-Version: 1.0

@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Dialog API Wrapper fuer BotComponent.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module bot
@@ -9,29 +9,29 @@
  */
 
 
-// global
+// core
 
-import { OnSpeechErrorFunc } from '../interface/speech-function.type';
+import { OnSpeechErrorFunc } from '@speech/core';
 
 
 // base
 
-import { Base } from './../base/base';
+import { Base } from '@speech/base';
 
 
 // speak
 
-import { SpeakInterface } from './../speak/speak.interface';
+import { SpeakInterface } from '@speech/speak';
 
 
 // listen
 
-import { ListenInterface } from './../listen/listen.interface';
+import { ListenInterface } from '@speech/listen';
 
 
 // action
 
-import { ActionInterface } from './../action/action.interface';
+import { ActionInterface } from '@speech/action';
 
 
 // dialog
@@ -47,10 +47,10 @@ import {
     OnDialogActionStopFunc,
     OnDialogSpeakFunc,
     OnDialogSpeakStartFunc,
-    OnDialogSpeakStopFunc
-} from './../dialog/dialog-function.type';
-import { DialogStateContextInterface } from './../dialog/dialog-state-context.interface';
-import { DialogDataInterface } from './../dialog/dialog-data.interface';
+    OnDialogSpeakStopFunc,
+    DialogStateContextInterface,
+    DialogDataInterface
+} from '@speech/dialog';
 
 
 // bot

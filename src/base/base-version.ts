@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Base Version und Build Konstanten
  *
  * Letzte Aenderung: 11.10.2018
@@ -11,7 +11,7 @@
 
 // global
 
-import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../const/speech-version';
+import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '@speech/core';
 
 
 // Versions-Konstanten

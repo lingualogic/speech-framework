@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente liest eine Datei in den Browser als String
  *
- * Letzte Aenderung: 09.05.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  * 
  * @module file/reader
@@ -11,13 +11,12 @@
 
 // core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // common
 
-import { XMLHTTPREQUEST_TEXT_RESPONSETYPE } from './../../common/html5/file-html5-reader.interface';
-import { FileHtml5Reader } from './../../common/html5/file-html5-reader';
+import { XMLHTTPREQUEST_TEXT_RESPONSETYPE, FileHtml5Reader } from '@speech/common';
 
 
 // file

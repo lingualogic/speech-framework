@@ -1,9 +1,9 @@
 "use strict";
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Speech-Rasa
  *
  * Version: 1.0
- * Datum:   10.07.2019
+ * Datum:   01.06.2020
  *
  * Definiert das gesamte Speech-Rasa-API:
  *
@@ -12,11 +12,15 @@
  * @module cloud/rasa
  * @author SB
  */
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 // Global API
-var rasa_const_1 = require("./rasa.bundle");
-exports.RASA_TYPE_NAME = rasa_const_1.RASA_TYPE_NAME;
-exports.RASA_NLU_ACTION = rasa_const_1.RASA_NLU_ACTION;
+__export(require("./rasa.bundle"));
+__export(require("./rasa.bundle"));
+var rasa_factory_1 = require("./rasa.bundle");
+exports.RasaFactory = rasa_factory_1.RasaFactory;
 var rasa_1 = require("./rasa.bundle");
 exports.Rasa = rasa_1.Rasa;
 //# sourceMappingURL=index.js.map

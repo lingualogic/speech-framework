@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * SpeakComponentBuilder erzeugt die lokale Speak-Komponente
  *
- * Letzte Aenderung: 21.02.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module speak/component
@@ -9,16 +9,14 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // Audio
 
-import { AUDIOPLAYER_FACTORY_NAME, AUDIOPLAYER_PLUGIN_NAME } from '../../audio/audio-const';
-import { AudioPlayerFactory } from '../../audio/player/audio-player-factory';
-import { AudioPlayerInterface } from '../../audio/player/audio-player.interface';
+import { AUDIOPLAYER_FACTORY_NAME, AUDIOPLAYER_PLUGIN_NAME, AudioPlayerFactory, AudioPlayerInterface } from '@speech/audio';
 
 
 // tts

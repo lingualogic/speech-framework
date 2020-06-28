@@ -2,13 +2,13 @@
  * Automatisch erzeugte globale index.ts Datei fuer Speech-Framework
  *
  * Konfiguration: stable
- * Version: 0.5.20.0064 (release) vom 17.05.2020
+ * Version: 0.5.21.0065 (release) vom 28.06.2020
  */
 
 
 // const
 
-export { SPEECH_API_VERSION } from './src/const/speech-version';
+export { SPEECH_API_VERSION } from './src/core/const/speech-version';
 
 
 // base

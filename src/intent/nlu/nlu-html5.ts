@@ -1,9 +1,9 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von SpeechRecognition aus HTML5
  * Funktioniert zur Zeit nur in Chrome. Ist Speech-Recognition nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 01.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -13,12 +13,12 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
+import { FactoryManager } from '@speech/core';
 
 
 // common
 
-import { SPEECHRECOGNITION_FACTORY_NAME, SpeechRecognitionFactory } from './../../common/html5/speechrecognition-factory';
+import { SPEECHRECOGNITION_FACTORY_NAME, SpeechRecognitionFactory } from '@speech/common';
 
 
 // nlu

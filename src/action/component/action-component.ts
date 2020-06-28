@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Action Komponente zur Verwaltung von Aktionen
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/component
@@ -11,7 +11,7 @@
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // function

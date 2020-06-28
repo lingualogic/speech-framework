@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer SpeechApi
  *
  * @module speech
@@ -81,6 +81,7 @@ export const VOICE_DEFAULT_NAME = VOICE_HANNA_NAME;
 //       Erst mit Typescript kann ich gemeinsame Dateien zwischen
 //       Client und Server teilen.
 
+/* deprcated, ist in speech-message-const 
 export const SPEECH_FEATUREINFO_MESSAGE = 'featureInfo';
 export const SPEECH_STARTDIALOG_MESSAGE = 'startDialog';
 export const SPEECH_STOPDIALOG_MESSAGE = 'stopDialog';
@@ -92,10 +93,12 @@ export const SPEECH_SETTING_MESSAGE = 'setting';
 export const SPEECH_SETSTATE_MESSAGE = 'setState';
 export const SPEECH_SETSTATECONTEXT_MESSAGE = 'setStateContext';
 export const SPEECH_SKIPNEXTSPEAK_MESSAGE = 'skipNextSpeak';
+*/
 
 
 // Ereignis Konstanten
 
+/* deprecated, ist in speech-event-const
 export const SPEECH_INIT_EVENT = 'init';
 export const SPEECH_START_EVENT = 'start';
 export const SPEECH_STOP_EVENT = 'stop';
@@ -113,4 +116,4 @@ export const SPEECH_ACTION_EVENT = 'action';
 export const SPEECH_EVENT_EVENT = 'event';
 export const SPEECH_ERROR_EVENT = 'error';
 export const SPEECH_FEATUREINFO_EVENT = 'featureInfo';
-
+*/

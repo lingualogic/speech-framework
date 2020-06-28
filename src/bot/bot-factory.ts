@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer Bot API Instanz.
  *
  * Version: 1.0

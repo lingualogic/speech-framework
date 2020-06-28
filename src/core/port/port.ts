@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Port Basiskomponente, von der alle Ports abgeleitet sind.
  * Ports sind Verbindungskomponenten zu externen Cloud-Diensten.
  *
@@ -12,8 +12,8 @@
 
 // global
 
-import { SPEECH_API_VERSION } from './../../const/speech-version';
-import { SpeechErrorFunc } from '../../interface/speech-function.type';
+import { SPEECH_API_VERSION } from '../const/speech-version';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 // error

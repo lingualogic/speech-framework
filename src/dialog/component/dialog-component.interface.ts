@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * DialogComponent Schnittstelle
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/component
@@ -11,12 +11,12 @@
 
 // base
 
-import { BaseComponentInterface } from '../../base/component/base-component.interface';
+import { BaseComponentInterface } from '@speech/base';
 
 
 // file
 
-import { OnFileReaderReadFunc } from '../../file/reader/file-reader.interface';
+import { OnFileReaderReadFunc } from '@speech/file';
 
 
 // json

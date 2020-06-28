@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * FactoryList zur Speicherung von Factories
  *
  * Letzte Aenderung: 04.10.2018

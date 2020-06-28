@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Nuance zur Verwaltung des NuancePort
  *
  * Hier wird die Manager-Schnittstelle von Nuance definiert, um Nuance zu
@@ -7,13 +7,16 @@
  * API-Version: 1.1
  * Datum:       06.02.2019
  *
- * Letzte Aenderung: 14.02.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/nuance
  * @author SB
  */
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+
+import { SpeechErrorFunc } from './../../core/interface/speech-function.type';
+
+// import { SpeechErrorFunc } from '@speech/core';
 import { NuanceConfigDataInterface } from './nuance-config-data.interface';
 import { NuanceOptionInterface } from './nuance-option.interface';
 /**

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Plort
  *
  * Version: 1.0
@@ -28,5 +28,6 @@ export {
 } from './port-event-const';
 export { PortManager } from './port-manager';
 export { Port } from './port';
+export { PortTransaction } from './port-transaction';
 export { PortInterface } from './port.interface';
 

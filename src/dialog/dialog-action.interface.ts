@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Public Dialog Aktion Schnittstelle
  *
  * API-Version: 1.0

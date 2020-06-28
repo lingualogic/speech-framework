@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ListenComponent Interface
  *
- * Letzte Aenderung: 30.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module listen/component
@@ -9,18 +9,14 @@
  */
 
 
-// component
+// base
 
+import { BaseComponentInterface } from '@speech/base';
 
 
 // asr
 
 import { OnASRListenStartFunc, OnASRListenStopFunc, OnASRListenResultFunc, OnASRListenNoMatchFunc } from '../asr/asr.interface';
-
-
-// base
-
-import { BaseComponentInterface } from '../../base/component/base-component.interface';
 
 
 // listen

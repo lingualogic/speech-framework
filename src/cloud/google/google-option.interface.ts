@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * GoogleOption Schnittstelle
  *
- * API-Version: 1.1
- * Datum:       07.06.2019
+ * API-Version: 1.3
+ * Datum:       20.06.2020
  *
- * Letzte Aenderung: 07.06.2019
+ * Letzte Aenderung: 20.06.2020
  * Status: rot
  *
  * @module cloud/google
@@ -27,6 +27,10 @@ export interface GoogleOptionInterface {
     dialogflowTokenServerUrl?: string;
     /** legt die Projekt-ID von Dialogflow fest */
     dialogflowProjectId?: string;
+    /** legt die Session-ID von Dialogflow fest */
+    dialogflowSessionId?: string;
+    /** legt den Enviromment-Namen des Dialogflow-Agenten fest */
+    dialogflowEnvironmentName?: string;
     /** legt dynamische Konfigurierbarkeit fest */
     googleDynamicCredentialsFlag?: boolean;
     /** legt die App-ID fuer die Verbindung zum Server fest */

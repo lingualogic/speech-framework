@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Oeffentliche Base Schnittstelle, fuer alle Komponenten APIs.
  *
  * API-Version: 1.0
  * Datum:       11.10.2018
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gruen
  *
  * @module base
@@ -12,9 +12,13 @@
  */
 
 
-// global
+// core
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../interface/speech-function.type';
+/****
+ * import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';
+ ****/
+
+import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';
 
 
 // base

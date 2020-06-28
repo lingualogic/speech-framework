@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * DialogComponentBuilder
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module dialog/component
@@ -9,16 +9,14 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // file
 
-import { FILEREADER_FACTORY_NAME, FILEREADER_PLUGIN_NAME } from '../../file/const/file-const';
-import { FileReaderFactory } from '../../file/reader/file-reader-factory';
-import { FileReaderInterface } from '../../file/reader/file-reader.interface';
+import { FILEREADER_FACTORY_NAME, FILEREADER_PLUGIN_NAME, FileReaderFactory, FileReaderInterface } from '@speech/file';
 
 
 // store

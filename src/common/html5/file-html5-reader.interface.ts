@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * FileHtml5Reader Schnittstelle
  *
  * Version: 1.0

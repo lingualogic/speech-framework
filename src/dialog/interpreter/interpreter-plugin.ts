@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Interpreter Plugin interpretiert Dialogprogramme fuer die Dialogausgabe
  *
- * Letzte Aenderung: 12.11.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module dialog/interpreter
@@ -9,17 +9,13 @@
  */
 
 
-// global
+// core
 
 import {
     SPEECH_DIALOGACTION_EVENT,
-    SPEECH_DIALOGSPEAK_EVENT
-} from '../../const/speech-event-const';
-
-
-// plugin
-
-import { Plugin } from '../../core/plugin/plugin';
+    SPEECH_DIALOGSPEAK_EVENT,
+    Plugin
+} from '@speech/core';
 
 
 // dialog

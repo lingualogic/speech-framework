@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ActionComponentBuilder fuer die Erzeugung der ActionComponent
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module action/component
@@ -9,9 +9,9 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // action

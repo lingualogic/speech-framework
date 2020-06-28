@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Speak Komponente, dient zur Sprachausgabe von Texten oder Audiodateien
  * ueber ein TTS-Plugin oder ein AudioPlayer-Plugin.
  *
- * Letzte Aenderung: 04.11.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module speak/component
@@ -10,25 +10,19 @@
  */
 
 
-// global
+// core
 
-import { SPEECH_SPEAKAUDIOUNLOCK_EVENT } from '../../const/speech-event-const';
-
-
-// event
-
-import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
+import { SPEECH_SPEAKAUDIOUNLOCK_EVENT, EventFunctionList, EventFunc } from '@speech/core';
 
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // audio
 
-import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_DEFAULT_FORMAT } from '../../audio/audio-const';
-import { AudioPlayerInterface } from '../../audio/player/audio-player.interface';
+import { AUDIOPLAYER_PLUGIN_NAME, AUDIO_DEFAULT_FORMAT, AudioPlayerInterface } from '@speech/audio';
 
 
 // tts

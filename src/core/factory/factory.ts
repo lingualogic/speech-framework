@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Factory zur Erzeugung von Objekten
  *
  * Letzte Aenderung: 04.10.2018

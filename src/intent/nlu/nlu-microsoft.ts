@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von Microsoft-NLU
  *
- * Letzte Aenderung: 28.08.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -9,20 +9,14 @@
  */
 
 
-// event
+// core
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
-
-
-// port
-
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// microsoft
+// cloud
 
-import { MICROSOFT_TYPE_NAME, MICROSOFT_NLU_ACTION } from './../../cloud/microsoft/microsoft-const';
+import { CLOUD_MICROSOFT_PORT, CLOUD_NLU_ACTION, CloudManager } from '@speech/cloud';
 
 
 // nlu
@@ -116,7 +110,7 @@ export class NLUMicrosoft extends NLUPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mMicrosoftPort = PortManager.find( MICROSOFT_TYPE_NAME );
+        this.mMicrosoftPort = CloudManager.findPort( CLOUD_MICROSOFT_PORT );
         if ( !this.mMicrosoftPort ) {
             this._error( '_detectRecognition', 'kein Microsoft-Port vorhanden' );
             return false;
@@ -135,7 +129,7 @@ export class NLUMicrosoft extends NLUPlugin {
 
     _onInternResult( aResult: any ): number {
         // console.log('NLUGoogle._onInternResult:', aResult);
-        if ( aResult.type === MICROSOFT_NLU_ACTION ) {
+        if ( aResult.type === CLOUD_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
         return 0;
@@ -200,7 +194,7 @@ export class NLUMicrosoft extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mMicrosoftPort ) {
-            return this.mMicrosoftPort.isAction( MICROSOFT_NLU_ACTION );
+            return this.mMicrosoftPort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -215,7 +209,7 @@ export class NLUMicrosoft extends NLUPlugin {
 
     isIntent(): boolean {
         if ( this.mMicrosoftPort ) {
-            return this.mMicrosoftPort.isAction( MICROSOFT_NLU_ACTION );
+            return this.mMicrosoftPort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -312,7 +306,7 @@ export class NLUMicrosoft extends NLUPlugin {
         if ( !this.mMicrosoftPort ) {
             return -1;
         }
-        return this.mMicrosoftPort.start( NLU_MICROSOFT_NAME, MICROSOFT_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
+        return this.mMicrosoftPort.start( NLU_MICROSOFT_NAME, CLOUD_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
     }
 
 

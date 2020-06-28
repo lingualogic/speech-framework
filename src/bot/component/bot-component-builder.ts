@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * BotBuilder fuer die Erzeugung der BotComponent
  *
- * Letzte Aenderung: 08.11.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module bot/component
@@ -9,40 +9,34 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // audio
 
-import { AUDIOPLAYER_FACTORY_NAME, AUDIOPLAYER_PLUGIN_NAME } from '../../audio/audio-const';
-import { AudioPlayerFactory } from '../../audio/player/audio-player-factory';
-import { AudioPlayerInterface } from '../../audio/player/audio-player.interface';
+import { AUDIOPLAYER_FACTORY_NAME, AUDIOPLAYER_PLUGIN_NAME, AudioPlayerFactory, AudioPlayerInterface } from '@speech/audio';
 
 
 // speak
 
-import { SPEAK_TYPE_NAME, SPEAK_COMPONENT_NAME } from '../../speak/speak-const';
-import { SpeakComponentInterface } from '../../speak/component/speak-component.interface';
+import { SPEAK_TYPE_NAME, SPEAK_COMPONENT_NAME, SpeakComponentInterface } from '@speech/speak';
 
 
 // listen
 
-import { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME } from '../../listen/listen-const';
-import { ListenComponentInterface } from '../../listen/component/listen-component.interface';
+import { LISTEN_TYPE_NAME, LISTEN_COMPONENT_NAME, ListenComponentInterface } from '@speech/listen';
 
 
 // action
 
-import { ACTION_TYPE_NAME, ACTION_COMPONENT_NAME } from '../../action/action-const';
-import { ActionComponentInterface } from '../../action/component/action-component.interface';
+import { ACTION_TYPE_NAME, ACTION_COMPONENT_NAME, ActionComponentInterface } from '@speech/action';
 
 
 // dialog
 
-import { DIALOG_TYPE_NAME, DIALOG_COMPONENT_NAME } from '../../dialog/dialog-const';
-import { DialogComponentInterface } from '../../dialog/component/dialog-component.interface';
+import { DIALOG_TYPE_NAME, DIALOG_COMPONENT_NAME, DialogComponentInterface } from '@speech/dialog';
 
 
 // bot

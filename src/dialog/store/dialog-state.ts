@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * DialogState speichert einen Zustand eines Dialogs
  *
  * Letzte Aenderung: 07.09.2018

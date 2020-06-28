@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Error
  *
  * Version: 1.0

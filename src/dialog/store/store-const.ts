@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Store
  *
  * Letzte Aenderung: 07.09.2018

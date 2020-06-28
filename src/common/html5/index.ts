@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Html5
  *
  * Version: 1.0
@@ -16,15 +16,19 @@
 
 // Basisklassen
 
+export { FileHtml5ReaderInterface, XMLHTTPREQUEST_TEXT_RESPONSETYPE, XMLHTTPREQUEST_ARRAYBUFFER_RESPONSETYPE } from './file-html5-reader.interface';
 export { FileHtml5Reader } from './file-html5-reader';
+export { AudioHtml5ReaderInterface } from './audio-html5-reader.interface';
 export { AudioHtml5Reader } from './audio-html5-reader';
-export { NetHtml5WebSocket } from './net-html5-websocket';
+export { NetHtml5Connect } from './net-html5-connect';
+export { NetHtml5WebSocket, NET_CONNECTINTERVAL_TIMEOUT } from './net-html5-websocket';
 
 // Fabriken fuer HTML5-Klassen
 
-export { AudioContextFactory } from './audiocontext-factory';
-export { SpeechRecognitionFactory } from './speechrecognition-factory';
-export { SpeechSynthesisFactory } from './speechsynthesis-factory';
-export { WebSocketFactory } from './websocket-factory';
-export { WebWorkerFactory } from './webworker-factory';
-export { XMLHttpRequestFactory } from './xmlhttprequest-factory';
+export { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME, AUDIOCONTEXT_TYPE_NAME } from './audiocontext-factory';
+export { SpeechRecognitionFactory, SPEECHRECOGNITION_FACTORY_NAME, SPEECHRECOGNITION_TYPE_NAME, SPEECHRECOGNITION_GRAMMAR_NAME } from './speechrecognition-factory';
+export { SpeechSynthesisFactory, SPEECHSYNTHESIS_FACTORY_NAME, SPEECHSYNTHESIS_TYPE_NAME, SPEECHSYNTHESIS_UTTERANCE_NAME } from './speechsynthesis-factory';
+export { WebSocketFactory, WEBSOCKET_FACTORY_NAME, WEBSOCKET_TYPE_NAME } from './websocket-factory';
+export { WebWorkerFactory, WEBWORKER_FACTORY_NAME, WEBWORKER_TYPE_NAME } from './webworker-factory';
+export { UserMediaFactory, USERMEDIA_FACTORY_NAME, USERMEDIA_TYPE_NAME } from './usermedia-factory';
+export { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME, XMLHTTPREQUEST_TYPE_NAME } from './xmlhttprequest-factory';

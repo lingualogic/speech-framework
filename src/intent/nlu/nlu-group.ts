@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * NLUGroup definiert die Verwaltungsklasse aller NLU.
  * Hier werden die vorhandenen NLU verwaltet und es kann
  * zwischen ihnen gewechselt werden.
@@ -11,7 +11,7 @@
  *      NLURasa      - Rasa NLU 
  *      NLUHtml5     - Web-NLU (Grammatik muss definiert werden)
  *
- * Letzte Aenderung: 28.08.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -22,14 +22,9 @@
 // TODO: Html5-NLU soll erst mal nicht verwendet werden, bis Grammatik aufgebaut ist !
 
 
-// global
+// core
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from './../../interface/speech-function.type';
-
-
-// plugin
-
-import { PluginGroup } from '../../core/plugin/plugin-group';
+import { OnSpeechInitFunc, OnSpeechErrorFunc, PluginGroup } from '@speech/core';
 
 
 // nlu

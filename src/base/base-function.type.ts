@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Base
  *
  * API-Version: 1.0

@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Die NetHtmpl5Connect-Komponente dient zum testen einer Internet-Verbindung (online/offline)
  *
- * Letzte Aenderung: 18.03.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module common/html5
@@ -11,7 +11,7 @@
 
 // core
 
-import { ErrorBase } from './../../core/error/error-base';
+import { ErrorBase } from '@speech/core';
 
 
 // Funktionstypen

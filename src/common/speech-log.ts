@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Log Komponente fuer den Speech-Server
  *
  * @module speech-common

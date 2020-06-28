@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Public Audio Schnittstelle
  *
  * API-Version: 1.2
@@ -11,7 +11,11 @@
 
 // global
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../interface/speech-function.type';
+/****
+ * import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';
+ ****/
+
+import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';
 
 
 // audio

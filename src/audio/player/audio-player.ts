@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 09.04.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module audio/player
@@ -13,14 +13,12 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
-import { Plugin } from './../../core/plugin/plugin';
+import { FactoryManager, Plugin } from '@speech/core';
 
 
 // common
 
-import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from './../../common/html5/audiocontext-factory';
-import { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from './../../common/html5/xmlhttprequest-factory';
+import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME, XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from '@speech/common/html5';
 
 
 // audio

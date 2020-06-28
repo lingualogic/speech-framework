@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * TTSPlugin definiert die Basisklasse aller TTS
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -11,7 +11,7 @@
 
 // plugin
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // tts

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Event Rueckgabedaten, die jeder Event zurueckgibt
  *
  * Letzte Aenderung: 26.10.2018

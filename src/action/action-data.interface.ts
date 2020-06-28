@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Public Action Data Schnittstelle
  *
  * API-Version: 1.0

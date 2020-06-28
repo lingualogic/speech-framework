@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von Nuance NLU
  * sowohl mit Audio wie auch Text.
  *
- * Letzte Aenderung: 28.03.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -12,18 +12,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// nuance
-
-import { NUANCE_TYPE_NAME, NUANCE_NLU_ACTION, NUANCE_ASR_ACTION, NUANCE_ASRNLU_ACTION } from './../../cloud/nuance/nuance-const';
+import { CLOUD_NUANCE_PORT, CLOUD_NLU_ACTION, CLOUD_ASRNLU_ACTION, CLOUD_ASR_ACTION, CloudManager } from '@speech/cloud';
 
 
 // nlu
@@ -176,7 +170,7 @@ export class NLUNuance extends NLUPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mNuancePort = PortManager.find( NUANCE_TYPE_NAME );
+        this.mNuancePort = CloudManager.findPort( CLOUD_NUANCE_PORT );
         if ( !this.mNuancePort ) {
             this._error( '_detectRecognition', 'kein Nuance-Port vorhanden' );
             return false;
@@ -195,10 +189,10 @@ export class NLUNuance extends NLUPlugin {
 
     _onInternResult( aResult: any ): number {
         // console.log('NLUNuance._onInternResult:', aResult);
-        if ( aResult.type === NUANCE_NLU_ACTION ) {
+        if ( aResult.type === CLOUD_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
-        if ( aResult.type === NUANCE_ASRNLU_ACTION ) {
+        if ( aResult.type === CLOUD_ASRNLU_ACTION ) {
             // Unterscheiden von Transkription als String und Intent als Objekt
             if ( typeof aResult.data[ 0 ] === 'string' ) {
                 return this._onRecognitionResult( aResult.data );
@@ -206,7 +200,7 @@ export class NLUNuance extends NLUPlugin {
                 return this._onRecognitionIntentResult( aResult.data );
             }
         }
-        if ( aResult.type === NUANCE_ASR_ACTION ) {
+        if ( aResult.type === CLOUD_ASR_ACTION ) {
             return this._onRecognitionResult( aResult.data );
         }
         return 0;
@@ -271,7 +265,7 @@ export class NLUNuance extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isAction( NUANCE_NLU_ACTION );
+            return this.mNuancePort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -286,7 +280,7 @@ export class NLUNuance extends NLUPlugin {
 
     isIntent(): boolean {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isAction( NUANCE_NLU_ACTION );
+            return this.mNuancePort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -301,7 +295,7 @@ export class NLUNuance extends NLUPlugin {
 
     isListen(): boolean {
         if ( this.mNuancePort ) {
-            return this.mNuancePort.isAction( NUANCE_ASRNLU_ACTION );
+            return this.mNuancePort.isAction( CLOUD_ASRNLU_ACTION );
         }
         return false;
     }
@@ -374,7 +368,7 @@ export class NLUNuance extends NLUPlugin {
         if ( !this.mNuancePort ) {
             return -1;
         }
-        return this.mNuancePort.start( NLU_NUANCE_NAME, NUANCE_ASRNLU_ACTION, { language: this._getNLULanguage()});
+        return this.mNuancePort.start( NLU_NUANCE_NAME, CLOUD_ASRNLU_ACTION, { language: this._getNLULanguage()});
     }
 
 
@@ -389,7 +383,7 @@ export class NLUNuance extends NLUPlugin {
         if ( !this.mNuancePort ) {
             return -1;
         }
-        return this.mNuancePort.start( NLU_NUANCE_NAME, NUANCE_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
+        return this.mNuancePort.start( NLU_NUANCE_NAME, CLOUD_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
     }
 
 
@@ -426,7 +420,7 @@ export class NLUNuance extends NLUPlugin {
         // console.log('TTSNuance._isSynthesisRunning');
         if ( this.mNuancePort ) {
             // TODO: solange mehrere Actions verwendet werden in der NLU, wird die Action nicht uebergeben
-            // return this.mNuancePort.isRunning( NLU_NUANCE_NAME, NUANCE_NLU_ACTION );
+            // return this.mNuancePort.isRunning( NLU_NUANCE_NAME, CLOUD_NLU_ACTION );
             return this.mNuancePort.isRunning( NLU_NUANCE_NAME );
         }
         return false;

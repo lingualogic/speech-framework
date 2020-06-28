@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ListenComponentBuilder fuer lokale ListenComponent
  *
- * Letzte Aenderung: 07.04.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module listen/component
@@ -9,9 +9,9 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // asr

@@ -11,6 +11,7 @@
 
 const gulp = require('gulp');
 const shell = require('gulp-shell');
+const replace = require('gulp-replace');
 const runSequence = require('gulp4-run-sequence');
 const typedoc = require('gulp-typedoc');
 const del = require('del');
@@ -35,7 +36,6 @@ gulp.task('dist-typedoc', (cb) => {
             'src/base/*.ts',
             'src/bot/*.ts',
             'src/dialog/*.ts',
-            'src/inference/*.ts',
             'src/intent/*.ts',
             'src/listen/*.ts',
             'src/speak/*.ts'
@@ -59,7 +59,6 @@ gulp.task('dist-typedoc', (cb) => {
                 '**/base/base.ts',
                 '**/bot/bot.ts',
                 '**/dialog/dialog.ts',
-                '**/inference/inference.ts',
                 '**/intent/intent.ts',
                 '**/listen/listen.ts',
                 '**/speak/speak.ts',
@@ -124,7 +123,7 @@ gulp.task('test', shell.task('karma start karma.conf.js'));
  * Installationstext des veroeffentlichten NPM-Packages
  */
 
-gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.20.tgz'));
+gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.21.tgz'));
 
 
 // Kopiert Quellcode
@@ -162,9 +161,9 @@ gulp.task('copy-main', function() {
 
 gulp.task('copy-const', function() {
     return gulp.src([
-        'build/src/const/speech-version.d.ts'
+        'build/src/core/const/speech-version.d.ts'
     ])
-        .pipe( gulp.dest('dist/src/const'));
+        .pipe( gulp.dest('dist/src/core/const'));
 }); 
 
 
@@ -174,9 +173,9 @@ gulp.task('copy-const', function() {
 
 gulp.task('copy-interface', function() {
     return gulp.src([
-        'build/src/interface/speech-function.type.d.ts'
+        'build/src/core/interface/speech-function.type.d.ts'
     ])
-        .pipe( gulp.dest('dist/src/interface'));
+        .pipe( gulp.dest('dist/src/core/interface'));
 }); 
 
 
@@ -192,6 +191,16 @@ gulp.task('copy-base', function() {
         'build/src/base/base.interface.d.ts',
     ])
         .pipe( gulp.dest('dist/src/base'));
+}); 
+
+
+gulp.task('replace-base-interface', function() {
+    return gulp.src( 'build/src/base/base.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';", "import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';", "// import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/base' ));
 }); 
 
 
@@ -212,6 +221,26 @@ gulp.task('copy-action', function() {
 }); 
 
 
+gulp.task('replace-action-option', function() {
+    return gulp.src( 'build/src/action/action-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseOptionInterface } from './../base/base-option.interface';", "import { BaseOptionInterface } from './../base/base-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseOptionInterface } from '@speech/base'", "// import { BaseOptionInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/action' ));
+}); 
+
+
+gulp.task('replace-action-interface', function() {
+    return gulp.src( 'build/src/action/action.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseInterface } from './../base/base.interface';", "import { BaseInterface } from './../base/base.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseInterface } from '@speech/base'", "// import { BaseInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/action' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Audio
  */ 
@@ -222,8 +251,18 @@ gulp.task('copy-audio', function() {
         'build/src/audio/audio-factory.d.ts',
         'build/src/audio/audio-function.type.d.ts',
         'build/src/audio/audio.interface.d.ts',
-    ])
+    ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/audio'));
+}); 
+
+
+gulp.task('replace-audio-interface', function() {
+    return gulp.src( 'build/src/audio/audio.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';", "import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';", "// import { OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/audio' ));
 }); 
 
 
@@ -243,6 +282,26 @@ gulp.task('copy-speak', function() {
 }); 
 
 
+gulp.task('replace-speak-option', function() {
+    return gulp.src( 'build/src/speak/speak-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseOptionInterface } from './../base/base-option.interface';", "import { BaseOptionInterface } from './../base/base-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseOptionInterface } from '@speech/base'", "// import { BaseOptionInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/speak' ));
+}); 
+
+
+gulp.task('replace-speak-interface', function() {
+    return gulp.src( 'build/src/speak/speak.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseInterface } from './../base/base.interface';", "import { BaseInterface } from './../base/base.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseInterface } from '@speech/base'", "// import { BaseInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/speak' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Listen
  */ 
@@ -256,6 +315,26 @@ gulp.task('copy-listen', function() {
         'build/src/listen/listen.interface.d.ts',
     ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/listen'));
+}); 
+
+
+gulp.task('replace-listen-option', function() {
+    return gulp.src( 'build/src/listen/listen-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseOptionInterface } from './../base/base-option.interface';", "import { BaseOptionInterface } from './../base/base-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseOptionInterface } from '@speech/base'", "// import { BaseOptionInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/listen' ));
+}); 
+
+
+gulp.task('replace-listen-interface', function() {
+    return gulp.src( 'build/src/listen/listen.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseInterface } from './../base/base.interface';", "import { BaseInterface } from './../base/base.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseInterface } from '@speech/base'", "// import { BaseInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/listen' ));
 }); 
 
 
@@ -279,24 +358,23 @@ gulp.task('copy-dialog', function() {
 }); 
 
 
-/** 
- * Kopiert die Sourcedateien aus build/src nach dist/src/ von Inference
- */ 
+gulp.task('replace-dialog-option', function() {
+    return gulp.src( 'build/src/dialog/dialog-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseOptionInterface } from './../base/base-option.interface';", "import { BaseOptionInterface } from './../base/base-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseOptionInterface } from '@speech/base'", "// import { BaseOptionInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/dialog' ));
+}); 
 
-gulp.task('copy-inference', function() {
-    return gulp.src([
-        'build/src/inference/inference-action.interface.d.ts',
-        'build/src/inference/inference-const.d.ts',
-        'build/src/inference/inference-event-const.d.ts',
-        'build/src/inference/inference-factory.d.ts',
-        'build/src/inference/inference-function.type.d.ts',
-        'build/src/inference/inference-message-const.d.ts',
-        'build/src/inference/inference-option.interface.d.ts',
-        'build/src/inference/inference-speak.interface.d.ts',
-        'build/src/inference/inference-state-context.interface.d.ts',
-        'build/src/inference/inference.interface.d.ts',
-    ], { allowEmpty: true })
-        .pipe( gulp.dest('dist/src/inference'));
+
+gulp.task('replace-dialog-interface', function() {
+    return gulp.src( 'build/src/dialog/dialog.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseInterface } from './../base/base.interface';", "import { BaseInterface } from './../base/base.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseInterface } from '@speech/base'", "// import { BaseInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/dialog' ));
 }); 
 
 
@@ -317,6 +395,26 @@ gulp.task('copy-intent', function() {
 }); 
 
 
+gulp.task('replace-intent-option', function() {
+    return gulp.src( 'build/src/intent/intent-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseOptionInterface } from './../base/base-option.interface';", "import { BaseOptionInterface } from './../base/base-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseOptionInterface } from '@speech/base'", "// import { BaseOptionInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/intent' ));
+}); 
+
+
+gulp.task('replace-intent-interface', function() {
+    return gulp.src( 'build/src/intent/intent.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { BaseInterface } from './../base/base.interface';", "import { BaseInterface } from './../base/base.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { BaseInterface } from '@speech/base'", "// import { BaseInterface } from '@speech/base'" ))
+        .pipe( gulp.dest( 'dist/src/intent' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Bot
  */ 
@@ -329,6 +427,32 @@ gulp.task('copy-bot', function() {
         'build/src/bot/bot.interface.d.ts'
     ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/bot'));
+}); 
+
+
+gulp.task('replace-bot-option', function() {
+    return gulp.src( 'build/src/bot/bot-option.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { DialogOptionInterface } from './../dialog/dialog-option.interface';", "import { DialogOptionInterface } from './../dialog/dialog-option.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { DialogOptionInterface } from '@speech/dialog'", "// import { DialogOptionInterface } from '@speech/dialog'" ))
+        .pipe( gulp.dest( 'dist/src/bot' ));
+}); 
+
+
+gulp.task('replace-bot-interface', function() {
+    return gulp.src( 'build/src/bot/bot.interface.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { SpeakInterface } from './../speak/speak.interface';", "import { SpeakInterface } from './../speak/speak.interface';" ))
+        .pipe( replace( " * import { ListenInterface } from './../listen/listen.interface';", "import { ListenInterface } from './../listen/listen.interface';" ))
+        .pipe( replace( " * import { ActionInterface } from './../action/action.interface';", "import { ActionInterface } from './../action/action.interface';" ))
+        .pipe( replace( " * import { DialogInterface } from './../dialog/dialog.interface';", "import { DialogInterface } from './../dialog/dialog.interface';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { SpeakInterface } from '@speech/speak'", "// import { SpeakInterface } from '@speech/speak'" ))
+        .pipe( replace( "import { ListenInterface } from '@speech/listen'", "// import { ListenInterface } from '@speech/listen'" ))
+        .pipe( replace( "import { ActionInterface } from '@speech/action'", "// import { ActionInterface } from '@speech/action'" ))
+        .pipe( replace( "import { DialogInterface } from '@speech/dialog'", "// import { DialogInterface } from '@speech/dialog'" ))
+        .pipe( gulp.dest( 'dist/src/bot' ));
 }); 
 
 
@@ -347,6 +471,16 @@ gulp.task('copy-nuance', function() {
 }); 
 
 
+gulp.task('replace-nuance', function() {
+        return gulp.src( 'build/src/cloud/nuance/nuance.d.ts', { allowEmpty: true })
+            .pipe( replace( "/****", "" ))
+            .pipe( replace( " * import { SpeechErrorFunc } from './../../core/interface/speech-function.type';", "import { SpeechErrorFunc } from './../../core/interface/speech-function.type';" ))
+            .pipe( replace( " ****/", "" ))
+            .pipe( replace( "import { SpeechErrorFunc } from '@speech/core';", "// import { SpeechErrorFunc } from '@speech/core';" ))
+            .pipe( gulp.dest( 'dist/src/cloud/nuance' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Amazon
  */ 
@@ -359,6 +493,16 @@ gulp.task('copy-amazon', function() {
         'build/src/cloud/amazon/amazon-option.interface.d.ts'
     ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/amazon'));
+}); 
+
+
+gulp.task('replace-amazon', function() {
+    return gulp.src( 'build/src/cloud/amazon/amazon.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { SpeechErrorFunc } from './../../core/interface/speech-function.type';", "import { SpeechErrorFunc } from './../../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { SpeechErrorFunc } from '@speech/core';", "// import { SpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/cloud/amazon' ));
 }); 
 
 
@@ -377,6 +521,16 @@ gulp.task('copy-google', function() {
 }); 
 
 
+gulp.task('replace-google', function() {
+    return gulp.src( 'build/src/cloud/google/google.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { SpeechErrorFunc } from './../../core/interface/speech-function.type';", "import { SpeechErrorFunc } from './../../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { SpeechErrorFunc } from '@speech/core';", "// import { SpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/cloud/google' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Microsoft
  */ 
@@ -392,6 +546,16 @@ gulp.task('copy-microsoft', function() {
 }); 
 
 
+gulp.task('replace-microsoft', function() {
+    return gulp.src( 'build/src/cloud/microsoft/microsoft.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { SpeechErrorFunc } from './../../core/interface/speech-function.type';", "import { SpeechErrorFunc } from './../../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { SpeechErrorFunc } from '@speech/core';", "// import { SpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/cloud/microsoft' ));
+}); 
+
+
 /** 
  * Kopiert die Sourcedateien aus build/src nach dist/src/ von Rasa
  */ 
@@ -404,6 +568,16 @@ gulp.task('copy-rasa', function() {
         'build/src/cloud/rasa/rasa-option.interface.d.ts'
     ], { allowEmpty: true })
         .pipe( gulp.dest('dist/src/cloud/rasa'));
+}); 
+
+
+gulp.task('replace-rasa', function() {
+    return gulp.src( 'build/src/cloud/rasa/rasa.d.ts', { allowEmpty: true })
+        .pipe( replace( "/****", "" ))
+        .pipe( replace( " * import { SpeechErrorFunc } from './../../core/interface/speech-function.type';", "import { SpeechErrorFunc } from './../../core/interface/speech-function.type';" ))
+        .pipe( replace( " ****/", "" ))
+        .pipe( replace( "import { SpeechErrorFunc } from '@speech/core';", "// import { SpeechErrorFunc } from '@speech/core';" ))
+        .pipe( gulp.dest( 'dist/src/cloud/rasa' ));
 }); 
 
 
@@ -475,20 +649,38 @@ gulp.task('dist-copy-src', (callback) => {
         'copy-main',        
         'copy-const',
         'copy-interface',
-        'copy-base',        
+        'copy-base',
+        'replace-base-interface',
         'copy-action',
+        'replace-action-option',
+        'replace-action-interface',
         'copy-audio',
+        'replace-audio-interface',
         'copy-speak',
+        'replace-speak-option',
+        'replace-speak-interface',
         'copy-listen',
+        'replace-listen-option',
+        'replace-listen-interface',
         'copy-dialog',
-        'copy-inference',
+        'replace-dialog-option',
+        'replace-dialog-interface',
         'copy-intent',
+        'replace-intent-option',
+        'replace-intent-interface',
         'copy-bot',
+        'replace-bot-option',
+        'replace-bot-interface',
         'copy-nuance',
+        'replace-nuance',
         'copy-amazon',
+        'replace-amazon',
         'copy-google',
+        'replace-google',
         'copy-microsoft',
+        'replace-microsoft',
         'copy-rasa',
+        'replace-rasa',
         callback
     );
 });

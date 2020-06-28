@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * globale Speech Message Konstanten
  *
  * @module speech

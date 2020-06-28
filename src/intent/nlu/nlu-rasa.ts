@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von Rasa-NLU
  *
- * Letzte Aenderung: 09.07.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -11,18 +11,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// rasa
-
-import { RASA_TYPE_NAME, RASA_NLU_ACTION } from './../../cloud/rasa/rasa-const';
+import { CLOUD_RASA_PORT, CLOUD_NLU_ACTION, CloudManager } from '@speech/cloud';
 
 
 // nlu
@@ -116,7 +110,7 @@ export class NLURasa extends NLUPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mRasaPort = PortManager.find( RASA_TYPE_NAME );
+        this.mRasaPort = CloudManager.findPort( CLOUD_RASA_PORT );
         if ( !this.mRasaPort ) {
             this._error( '_detectRecognition', 'kein Rasa-Port vorhanden' );
             return false;
@@ -135,7 +129,7 @@ export class NLURasa extends NLUPlugin {
 
     _onInternResult( aResult: any ): number {
         // console.log('NLURasa._onInternResult:', aResult);
-        if ( aResult.type === RASA_NLU_ACTION ) {
+        if ( aResult.type === CLOUD_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
         return 0;
@@ -200,7 +194,7 @@ export class NLURasa extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mRasaPort ) {
-            return this.mRasaPort.isAction( RASA_NLU_ACTION );
+            return this.mRasaPort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -215,7 +209,7 @@ export class NLURasa extends NLUPlugin {
 
     isIntent(): boolean {
         if ( this.mRasaPort ) {
-            return this.mRasaPort.isAction( RASA_NLU_ACTION );
+            return this.mRasaPort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -322,7 +316,7 @@ export class NLURasa extends NLUPlugin {
         if ( !this.mRasaPort ) {
             return -1;
         }
-        return this.mRasaPort.start( NLU_RASA_NAME, RASA_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
+        return this.mRasaPort.start( NLU_RASA_NAME, CLOUD_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
     }
 
 

@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Microsoft-Sprachausgabe implementiert. Ist MicrosoftPort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 04.07.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: rot
  *
  * @module speak/tts
@@ -12,18 +12,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// microsoft
-
-import { MICROSOFT_TYPE_NAME, MICROSOFT_TTS_ACTION, MICROSOFT_TTS_VOICE1, MICROSOFT_TTS_VOICE2, MICROSOFT_TTS_VOICE3 } from './../../cloud/microsoft/microsoft-const';
+import { CLOUD_MICROSOFT_PORT, CLOUD_TTS_ACTION, CloudManager } from '@speech/cloud';
 
 
 // tts
@@ -117,7 +111,7 @@ export class TTSMicrosoft extends TTSPlugin {
     getVoiceList(): Array<string> {
         // Deutschland
         if ( this.getLanguage() === 'de' ) {
-            return [ MICROSOFT_TTS_VOICE1, MICROSOFT_TTS_VOICE2, MICROSOFT_TTS_VOICE3 ];
+            return [ 'de-DE-Hedda', 'de-DE-HeddaRUS', 'de-DE-Stefan-Apollo' ];
         }
         // US-Englisch
         if ( this.getLanguage() === 'en' ) {
@@ -138,7 +132,7 @@ export class TTSMicrosoft extends TTSPlugin {
      */
 
     _detectSynthesis(): boolean {
-        this.mPort = PortManager.find( MICROSOFT_TYPE_NAME );
+        this.mPort = CloudManager.findPort( CLOUD_MICROSOFT_PORT );
         if ( !this.mPort ) {
             this._error( '_detectSynthesis', 'kein Microsoft-Port vorhanden' );
             return false;
@@ -197,7 +191,7 @@ export class TTSMicrosoft extends TTSPlugin {
 
     _isSynthesis(): boolean {
         if ( this.mPort ) {
-            return this.mPort.isAction( MICROSOFT_TTS_ACTION );
+            return this.mPort.isAction( CLOUD_TTS_ACTION );
         }
         return false;
     }
@@ -227,7 +221,7 @@ export class TTSMicrosoft extends TTSPlugin {
     _startSynthesis( aText: string ): number {
         if ( this.mPort ) {
             // console.log('TTSMicrosoft._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
-            return this.mPort.start( TTS_MICROSOFT_NAME, MICROSOFT_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
+            return this.mPort.start( TTS_MICROSOFT_NAME, CLOUD_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
         }
         return -1;
     }
@@ -243,7 +237,7 @@ export class TTSMicrosoft extends TTSPlugin {
     _stopSynthesis(): number {
         if ( this.mPort ) {
             // console.log('TTSMicrosoft._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
-            return this.mPort.stop( TTS_MICROSOFT_NAME, MICROSOFT_TTS_ACTION );
+            return this.mPort.stop( TTS_MICROSOFT_NAME, CLOUD_TTS_ACTION );
         }
         return -1;
     }
@@ -256,7 +250,7 @@ export class TTSMicrosoft extends TTSPlugin {
     _isSynthesisRunning(): boolean {
         // console.log('TTSMicrosoft._isSynthesisRunning');
         if ( this.mPort ) {
-            return this.mPort.isRunning( TTS_MICROSOFT_NAME, MICROSOFT_TTS_ACTION );
+            return this.mPort.isRunning( TTS_MICROSOFT_NAME, CLOUD_TTS_ACTION );
         }
         return false;
     }

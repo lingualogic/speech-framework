@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Rasa-Manager zur Verwaltung des RasaPort
  *
  * Hier wird die Manager-Schnittstelle von Rasa definiert, um Rasa zu
@@ -7,13 +7,16 @@
  * API-Version: 1.0
  * Datum:       09.07.2019
  *
- * Letzte Aenderung: 10.07.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/rasa
  * @author SB
  */
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+
+import { SpeechErrorFunc } from './../../core/interface/speech-function.type';
+
+// import { SpeechErrorFunc } from '@speech/core';
 import { RasaConfigDataInterface } from './rasa-config-data.interface';
 import { RasaOptionInterface } from './rasa-option.interface';
 /**

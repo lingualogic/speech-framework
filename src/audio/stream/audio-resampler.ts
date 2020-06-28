@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * externe Resampler-Klasse
  *
  * Letzte Aenderung: 24.03.2020

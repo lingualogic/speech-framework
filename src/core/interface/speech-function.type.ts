@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstype
  *
  * @module speech

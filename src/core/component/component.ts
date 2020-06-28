@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Komponente als semantische Einheit fuer Plugins und Klassen.
  *
  * Letzte Aenderung: 15.12.2018
@@ -11,14 +11,14 @@
 
 // global
 
-import { SPEECH_API_VERSION } from './../../const/speech-version';
+import { SPEECH_API_VERSION } from '../const/speech-version';
 import {
     SPEECH_INIT_EVENT,
     SPEECH_ERROR_EVENT
-} from '../../const/speech-event-const';
+} from '../const/speech-event-const';
 
-import { OnSpeechErrorFunc } from '../../interface/speech-function.type';
-import { SpeechMessageInterface, SpeechSendMessageFunc } from '../../interface/speech-message.interface';
+import { OnSpeechErrorFunc } from '../interface/speech-function.type';
+import { SpeechMessageInterface, SpeechSendMessageFunc } from '../interface/speech-message.interface';
 
 
 // event

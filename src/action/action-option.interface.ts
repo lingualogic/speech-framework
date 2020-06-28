@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * ActionOption Schnittstelle
  *
  * API-Version: 1.1
- * Datum:       18.10.2018
+ * Datum:       01.06.2020
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module action
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseOptionInterface } from './../base/base-option.interface';
+/****
+ * import { BaseOptionInterface } from './../base/base-option.interface';
+ ****/
+
+import { BaseOptionInterface } from '@speech/base';
 
 
 /** @export

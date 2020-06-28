@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Fehlercodes und Fehlertexte des Speech-Servers, deutsch und englisch
  *
  * @module speech-common

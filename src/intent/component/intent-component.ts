@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * IntentComponent zur Verwaltung von NLU-Plugins. Sie erbt von der BaseComponent.
  *
- * Letzte Aenderung: 27.02.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/component
@@ -9,19 +9,14 @@
  */
 
 
-// global
+// core
 
-import { SPEECH_LISTENRESULT_EVENT, SPEECH_INTENTRESULT_EVENT } from '../../const/speech-event-const';
-
-
-// event
-
-import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
+import { SPEECH_LISTENRESULT_EVENT, SPEECH_INTENTRESULT_EVENT, EventFunctionList, EventFunc } from '@speech/core';
 
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // nlu

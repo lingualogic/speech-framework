@@ -4,8 +4,9 @@ import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import uglify from 'rollup-plugin-uglify';
-import { minify } from 'uglify-es';
+import { uglify } from 'rollup-plugin-uglify';
+// import uglify from 'rollup-plugin-uglify';
+// import { minify } from 'uglify-es';
 
 
 // SpeechFramework
@@ -72,11 +73,21 @@ export default {
 
         json(),
 
+        /* Uglify-ES
         uglify({ output: {
             beautify: readableSourceCode,
             preamble: preambleText,
             quote_style: 3
         }}, minify),
+        */
+
+       uglify({ 
+            output: {
+                beautify: readableSourceCode,
+                preamble: preambleText,
+                quote_style: 3
+            }
+        }),
 
         nodeResolve({
             mainFields: ['module', 'main']            

@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer JSON Version
  * JSON wird als Singleton verwaltet
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/json
@@ -10,9 +10,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // json

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Grundlegende Fehlerbehandlung
  *
  * Letzte Aenderung: 24.08.2018
@@ -11,8 +11,8 @@
 
 // global
 
-import { SPEECH_ERROR_OUTPUT } from './../../const/speech-api-const';
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+import { SPEECH_ERROR_OUTPUT } from '../const/speech-api-const';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 /** @export

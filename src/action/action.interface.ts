@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Oeffentliche Action Schnittstelle, um Aktionen in der App ausfuehren zu lassen.
  *
  * API-Version: 1.1
  * Datum:       18.10.2018
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module action
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseInterface } from './../base/base.interface';
+/****
+ * import { BaseInterface } from './../base/base.interface';
+ ****/
+
+import { BaseInterface } from '@speech/base';
 
 
 // action

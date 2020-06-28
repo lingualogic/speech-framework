@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Event-Konstanten fuer Port
  *
  * Letzte Aenderung: 26.10.2018

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Listen
  *
  * API-Version: 1.0

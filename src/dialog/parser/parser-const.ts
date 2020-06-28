@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Parser Plugin
  *
  * Letzte Aenderung: 07.09.2018

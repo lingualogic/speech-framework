@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * BotOption Schnittstelle
  *
  * API-Version: 1.0
  * Datum:       06.09.2018
  *
- * Letzte Aenderung: 06.09.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gruen
  *
  * @module bot
@@ -14,7 +14,11 @@
 
 // dialog
 
-import { DialogOptionInterface } from './../dialog/dialog-option.interface';
+/****
+ * import { DialogOptionInterface } from './../dialog/dialog-option.interface';
+ ****/
+
+import { DialogOptionInterface } from '@speech/dialog';
 
 
 /** @export

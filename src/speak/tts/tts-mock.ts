@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * TTSMock definiert eine Mock-Klasse fuer die TTS, um sie in Unit-Tests verwenden zu koennen
  *
- * Letzte Aenderung: 17.10.2018
+ * Letzte Aenderung: 09.06.2020
  * Status: gelb
  *
  * @module speak/tts

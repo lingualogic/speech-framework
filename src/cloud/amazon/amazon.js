@@ -1,5 +1,5 @@
 "use strict";
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Speech-Amazon
  *
  * Version: 1.0
@@ -12,14 +12,15 @@
  * @module cloud/amazon
  * @author SB
  */
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 // Global API
-var amazon_const_1 = require("./amazon.bundle");
-exports.AMAZON_TYPE_NAME = amazon_const_1.AMAZON_TYPE_NAME;
-exports.AMAZON_TTS_ACTION = amazon_const_1.AMAZON_TTS_ACTION;
-exports.AMAZON_ASR_ACTION = amazon_const_1.AMAZON_ASR_ACTION;
-exports.AMAZON_ASRNLU_ACTION = amazon_const_1.AMAZON_ASRNLU_ACTION;
-exports.AMAZON_NLU_ACTION = amazon_const_1.AMAZON_NLU_ACTION;
+__export(require("./amazon.bundle"));
+__export(require("./amazon.bundle"));
+var amazon_factory_1 = require("./amazon.bundle");
+exports.AmazonFactory = amazon_factory_1.AmazonFactory;
 var amazon_1 = require("./amazon.bundle");
 exports.Amazon = amazon_1.Amazon;
 //# sourceMappingURL=index.js.map

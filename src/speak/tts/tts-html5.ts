@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die HTML5-Sprachausgabe implementiert. Ist Speech-Synthesis nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 10.05.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -12,12 +12,12 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
+import { FactoryManager } from '@speech/core';
 
 
 // common
 
-import { SpeechSynthesisFactory, SPEECHSYNTHESIS_FACTORY_NAME } from './../../common/html5/speechsynthesis-factory';
+import { SpeechSynthesisFactory, SPEECHSYNTHESIS_FACTORY_NAME } from '@speech/common';
 
 
 // tts

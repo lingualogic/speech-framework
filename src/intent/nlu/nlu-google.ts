@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von Google Dialogflow-NLU
  *
- * Letzte Aenderung: 26.03.2030
+ * Letzte Aenderung: 15.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -9,20 +9,14 @@
  */
 
 
-// event
+// core
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
-
-
-// port
-
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// google
+// cloud
 
-import { GOOGLE_TYPE_NAME, GOOGLE_NLU_ACTION, GOOGLE_ASRNLU_ACTION } from './../../cloud/google/google-const';
+import { CLOUD_GOOGLE_PORT, CLOUD_NLU_ACTION, CLOUD_ASRNLU_ACTION, CloudManager } from '@speech/cloud';
 
 
 // nlu
@@ -116,7 +110,7 @@ export class NLUGoogle extends NLUPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mGooglePort = PortManager.find( GOOGLE_TYPE_NAME );
+        this.mGooglePort = CloudManager.findPort( CLOUD_GOOGLE_PORT );
         if ( !this.mGooglePort ) {
             this._error( '_detectRecognition', 'kein Google-Port vorhanden' );
             return false;
@@ -135,10 +129,10 @@ export class NLUGoogle extends NLUPlugin {
 
     _onInternResult( aResult: any ): number {
         // console.log('NLUGoogle._onInternResult:', aResult);
-        if ( aResult.type === GOOGLE_NLU_ACTION ) {
+        if ( aResult.type === CLOUD_NLU_ACTION ) {
             return this._onRecognitionIntentResult( aResult.data );
         }
-        if ( aResult.type === GOOGLE_ASRNLU_ACTION ) {
+        if ( aResult.type === CLOUD_ASRNLU_ACTION ) {
             // Unterscheiden von Transkription als String und Intent als Objekt
             if ( typeof aResult.data[ 0 ] === 'string' ) {
                 return this._onRecognitionResult( aResult.data );
@@ -212,8 +206,8 @@ export class NLUGoogle extends NLUPlugin {
 
     _isRecognition(): boolean {
         if ( this.mGooglePort ) {
-            // console.log('NLUGoogle._isRecognition:', this.mGooglePort.isAction( GOOGLE_NLU_ACTION ));
-            return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
+            // console.log('NLUGoogle._isRecognition:', this.mGooglePort.isAction( CLOUD_NLU_ACTION ));
+            return this.mGooglePort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -228,7 +222,7 @@ export class NLUGoogle extends NLUPlugin {
 
     isIntent(): boolean {
         if ( this.mGooglePort ) {
-            return this.mGooglePort.isAction( GOOGLE_NLU_ACTION );
+            return this.mGooglePort.isAction( CLOUD_NLU_ACTION );
         }
         return false;
     }
@@ -243,7 +237,7 @@ export class NLUGoogle extends NLUPlugin {
 
     isListen(): boolean {
         if ( this.mGooglePort ) {
-            return this.mGooglePort.isAction( GOOGLE_ASRNLU_ACTION );
+            return this.mGooglePort.isAction( CLOUD_ASRNLU_ACTION );
         }
         return false;
     }
@@ -352,7 +346,7 @@ export class NLUGoogle extends NLUPlugin {
         if ( !this.mGooglePort ) {
             return -1;
         }
-        return this.mGooglePort.start( NLU_GOOGLE_NAME, GOOGLE_ASRNLU_ACTION, { language: this._getNLULanguage()});
+        return this.mGooglePort.start( NLU_GOOGLE_NAME, CLOUD_ASRNLU_ACTION, { language: this._getNLULanguage()});
     }
 
 
@@ -367,7 +361,7 @@ export class NLUGoogle extends NLUPlugin {
         if ( !this.mGooglePort ) {
             return -1;
         }
-        return this.mGooglePort.start( NLU_GOOGLE_NAME, GOOGLE_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
+        return this.mGooglePort.start( NLU_GOOGLE_NAME, CLOUD_NLU_ACTION, { text: aText, language: this._getNLULanguage()});
     }
 
 

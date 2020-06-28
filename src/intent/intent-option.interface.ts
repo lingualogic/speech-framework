@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Intent Option Schnittstelle
  *
  * API-Version: 1.0
  * Datum: 11.10.2018
  *
- * Letzte Aenderung: 28.11.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module intent
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseOptionInterface } from './../base/base-option.interface';
+/****
+ * import { BaseOptionInterface } from './../base/base-option.interface';
+ ****/
+
+import { BaseOptionInterface } from '@speech/base';
 
 
 /** @export

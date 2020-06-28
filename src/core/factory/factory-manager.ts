@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Verwaltet alle Factories des Systems. Ist eine statische Klasse.
  *
  * Letzte Aenderung: 04.10.2018
@@ -11,7 +11,7 @@
 
 // global
 
-import { SpeechErrorFunc } from '../../interface/speech-function.type';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 // error

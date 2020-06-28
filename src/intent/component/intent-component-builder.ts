@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * IntentComponentBuilder fuer lokale IntentComponent
  *
- * Letzte Aenderung: 03.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/component
@@ -9,9 +9,9 @@
  */
 
 
-// builder
+// core
 
-import { Builder } from '../../core/builder/builder';
+import { Builder } from '@speech/core';
 
 
 // nlu

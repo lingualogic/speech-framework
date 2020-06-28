@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Action
  *
  * API-Version: 1.0

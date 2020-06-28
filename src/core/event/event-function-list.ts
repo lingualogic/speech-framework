@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Event-Funktionsliste, um Eventfunktionen verschiedener Listener zu speichern
  *
  * Letzte Aenderung: 08.12.2018
@@ -160,7 +160,7 @@ export class EventFunctionList extends ErrorBase {
                 // asynchrone Ausfuehrung des Events
                 setTimeout( function() {
                     try {
-                        eventFunc( aEvent);
+                        eventFunc( aEvent );
                     } catch ( aException ) {
                         console.log('EventFunction.dispatch: Exception', aException);
                     }}, 0 );

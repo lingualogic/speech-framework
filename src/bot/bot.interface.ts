@@ -1,37 +1,43 @@
-/**
+/** @packageDocumentation
  * Oeffentliche Bot Schnittstelle, beinhaltet die Dialog Schnittstelle
  *
  * API-Version: 1.1
  * Datum:       18.10.2018
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module bot
  * @author SB
  */
 
+/****
+ * import { SpeakInterface } from './../speak/speak.interface';
+ * import { ListenInterface } from './../listen/listen.interface';
+ * import { ActionInterface } from './../action/action.interface';
+ * import { DialogInterface } from './../dialog/dialog.interface';
+ ****/
 
 // speak
 
-import { SpeakInterface } from './../speak/speak.interface';
+import { SpeakInterface } from '@speech/speak';
 
 
 // listen
 
-import { ListenInterface } from './../listen/listen.interface';
+import { ListenInterface } from '@speech/listen';
 
 
 // action
 
-import { ActionInterface } from './../action/action.interface';
+import { ActionInterface } from '@speech/action';
 
 
 // dialog
 
-import { DialogInterface } from './../dialog/dialog.interface';
+import { DialogInterface } from '@speech/dialog';
 
-
+ 
 // Global API
 
 

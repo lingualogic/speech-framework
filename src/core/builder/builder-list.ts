@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Builder-Liste zur Speicherung von Plugin-Komponenten
  *
  * Letzte Aenderung: 24.08.2018
@@ -8,7 +8,7 @@
  * @author SB
  */
 
-// _error
+// error
 
 import { ErrorBase } from './../error/error-base';
 

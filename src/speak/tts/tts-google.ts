@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Google-Sprachausgabe implementiert. Ist GooglePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 27.03.2020
+ * Letzte Aenderung: 09.06.2020
  * Status: rot
  *
  * @module speak/tts
@@ -12,18 +12,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// google
-
-import { GOOGLE_TYPE_NAME, GOOGLE_TTS_ACTION } from './../../cloud/google/google-const';
+import { CLOUD_GOOGLE_PORT, CLOUD_TTS_ACTION, CloudManager } from '@speech/cloud';
 
 
 // tts
@@ -138,7 +132,7 @@ export class TTSGoogle extends TTSPlugin {
      */
 
     _detectSynthesis(): boolean {
-        this.mPort = PortManager.find( GOOGLE_TYPE_NAME );
+        this.mPort = CloudManager.findPort( CLOUD_GOOGLE_PORT );
         if ( !this.mPort ) {
             this._error( '_detectSynthesis', 'kein Google-Port vorhanden' );
             return false;
@@ -201,7 +195,7 @@ export class TTSGoogle extends TTSPlugin {
 
     _isSynthesis(): boolean {
         if ( this.mPort ) {
-            return this.mPort.isAction( GOOGLE_TTS_ACTION );
+            return this.mPort.isAction( CLOUD_TTS_ACTION );
         }
         return false;
     }
@@ -231,7 +225,7 @@ export class TTSGoogle extends TTSPlugin {
     _startSynthesis( aText: string ): number {
         if ( this.mPort ) {
             // console.log('TTSGoogle._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
-            return this.mPort.start( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
+            return this.mPort.start( TTS_GOOGLE_NAME, CLOUD_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
         }
         return -1;
     }
@@ -247,7 +241,7 @@ export class TTSGoogle extends TTSPlugin {
     _stopSynthesis(): number {
         if ( this.mPort ) {
             // console.log('TTSGoogle._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
-            return this.mPort.stop( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION );
+            return this.mPort.stop( TTS_GOOGLE_NAME, CLOUD_TTS_ACTION );
         }
         return -1;
     }
@@ -260,7 +254,7 @@ export class TTSGoogle extends TTSPlugin {
     _isSynthesisRunning(): boolean {
         // console.log('TTSGoogle._isSynthesisRunning');
         if ( this.mPort ) {
-            return this.mPort.isRunning( TTS_GOOGLE_NAME, GOOGLE_TTS_ACTION );
+            return this.mPort.isRunning( TTS_GOOGLE_NAME, CLOUD_TTS_ACTION );
         }
         return false;
     }

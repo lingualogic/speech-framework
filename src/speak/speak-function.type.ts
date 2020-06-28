@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Speak
  *
  * API-Version: 1.0

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Plugin-Interface fuer alle Plugin Komponenten
  *
  * Letzte Aenderung: 15.12.2018
@@ -11,8 +11,8 @@
 
 // global
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../../interface/speech-function.type';
-import { SpeechMessageInterface } from '../../interface/speech-message.interface';
+import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../interface/speech-function.type';
+import { SpeechMessageInterface } from '../interface/speech-message.interface';
 
 
 // Funktionen

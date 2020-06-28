@@ -1,9 +1,9 @@
-/**
+/** @packageDocumentation
  * ASRGroup definiert die Verwaltungsklasse aller ASR.
  * Hier werden die vorhandenen ASR verwaltet und es kann
  * zwischen ihnen gewechselt werden.
  *
- * Letzte Aenderung: 31.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * Installierte ASR:
@@ -18,14 +18,9 @@
  */
 
 
-// global
+// core
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from './../../interface/speech-function.type';
-
-
-// plugin
-
-import { PluginGroup } from '../../core/plugin/plugin-group';
+import { OnSpeechInitFunc, OnSpeechErrorFunc, PluginGroup } from '@speech/core';
 
 
 // asr

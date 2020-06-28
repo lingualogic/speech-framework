@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Oeffentliche Speak Schnittstelle als Teil des Speak-API
  *
  * API-Version: 1.3
  * Datum:       21.02.2019
  *
- * Letzte Aenderung: 09.04.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module speak
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseInterface } from './../base/base.interface';
+/****
+ * import { BaseInterface } from './../base/base.interface';
+ ****/
+
+import { BaseInterface } from '@speech/base';
 
 
 // speak

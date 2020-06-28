@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Action Version und Build Konstanten
  *
- * Letzte Aenderung: 12.02.2019
+ * Letzte Aenderung: 15.06.2020
  * Status: gelb
  *
  * @module action
@@ -11,7 +11,7 @@
 
 // global
 
-import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../const/speech-version';
+import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '@speech/core';
 
 
 // Versions-Konstanten

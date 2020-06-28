@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Event
  *
  * Version: 1.0

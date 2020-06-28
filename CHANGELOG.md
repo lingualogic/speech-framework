@@ -1,7 +1,17 @@
 # Speech-Framework Release Notizen
 
 
-## 0.5.20.0064 Release (17.04.2020)
+## 0.5.21.0065 Release (26.06.2020)
+
+### Features
+
+* **Listen:** Ausbau von Listen, um den NoMatch-Event zu senden.
+* **Google:** In Google Dialogflow wurden Session-Id und EventName eingebaut, um
+              die Versionierung des Sprachmodells und parallele Sessions verschiedener
+              Nutzer zuzulassen.
+
+
+## 0.5.20.0064 Release (17.05.2020)
 
 
 ### Features

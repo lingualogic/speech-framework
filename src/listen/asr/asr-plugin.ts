@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  *  ASRPlugin definiert die Basisklasse aller ASRs
  *
- * Letzte Aenderung: 09.04.2020
+ * Letzte Aenderung: 15.06.2020
  * Status: gruen
  *
  * @module listen/asr
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // asr
@@ -83,6 +83,13 @@ export class ASRPlugin extends Plugin implements ASRInterface {
      */
 
     mListenTimeoutTime = ASR_TIMEOUT_TIME;
+
+
+    /**
+     * markiert erhaltenen ListenResult. Dient dazu, einen NoMatch-Event zu senden, wenn keine Sprache erkannt wurde.
+     */
+
+    mListenResultFlag = false;
 
 
     // Event-Funktionen
@@ -809,7 +816,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
     _setRecognitionTimeout(): void {
         this._clearRecognitionTimeout();
-        this.mListenTimeoutId = window.setTimeout(() => { this.stopListen(); }, this.mListenTimeoutTime );
+        this.mListenTimeoutId = window.setTimeout(() => this.stopListen(), this.mListenTimeoutTime );
         // console.log('ASRPlugin._setRecognitionTimeout:', this.mListenTimeoutTime, this.mListenTimeoutId );
     }
 
@@ -937,12 +944,15 @@ export class ASRPlugin extends Plugin implements ASRInterface {
     _onRecognitionSpeechEnd(): number {
         // console.log('ASRPlugin._onRecognitionSpeechEnd');
         let result = this._onListenSpeechStop();
+        // TODO: loest zu frueh ein Stop-Event aus !
         // pruefen auf Command Mode
+        /*
         if ( this.isCommandMode()) {
             if ( this._stopListen() !== 0 ) {
                 result = -1;
             }
         }
+        */
         return result;
     }
 
@@ -992,6 +1002,7 @@ export class ASRPlugin extends Plugin implements ASRInterface {
         // console.log('ASRPlugin._onRecognitionResult:', aEvent);
         let result = 0;
         try {
+            this.mListenResultFlag = true;
             // console.log('ASRPlugin._onRecognitionResult:', this._isRecognitionFinalResult( aEvent ));
             if ( this._isRecognitionFinalResult( aEvent )) {
                 // Endergebnisse liefern
@@ -1389,6 +1400,8 @@ export class ASRPlugin extends Plugin implements ASRInterface {
     startListen(): number {
         // console.log('ASRPlugin.startListen:', this.getName());
 
+        this.mListenResultFlag = false;
+
         // pruefen auf aktive Komponente
 
         if ( !this.isActive()) {
@@ -1447,9 +1460,14 @@ export class ASRPlugin extends Plugin implements ASRInterface {
         // ListenStop senden
 
         if ( this.isListenRunning()) {
+            this.mListenRunningFlag = false;
             // Timeout loeschen
             this._clearRecognitionTimeout();
-            this.mListenRunningFlag = false;
+            // pruefen auf ResultFlag
+            if ( !this.mListenResultFlag ) {
+                // senden von noMatch-Event, wenn result-Event nicht gesendet wurde
+                this._onListenNoMatch();
+            }
             if ( this._onListenStop() !== 0 ) {
                 return -1;
             }
@@ -1505,6 +1523,11 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
         if ( this.isListenRunning()) {
             this.mListenRunningFlag = false;
+            // pruefen auf ResultFlag
+            if ( !this.mListenResultFlag ) {
+                // senden von noMatch-Event, wenn result-Event nicht gesendet wurde
+                this._onListenNoMatch();
+            }
             if ( this._onListenStop() !== 0 ) {
                 result = -1;
             }
@@ -1570,6 +1593,11 @@ export class ASRPlugin extends Plugin implements ASRInterface {
 
         if ( this.isListenRunning()) {
             this.mListenRunningFlag = false;
+            // pruefen auf ResultFlag
+            if ( !this.mListenResultFlag ) {
+                // senden von noMatch-Event, wenn result-Event nicht gesendet wurde
+                this._onListenNoMatch();
+            }
             if ( this._onListenStop() !== 0 ) {
                 result = -1;
             }

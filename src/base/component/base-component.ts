@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Base Komponente als abstrakte Basiskomponente aller Komponenten
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module base/component
@@ -9,25 +9,19 @@
  */
 
 
-// global
+// core
 
 import {
     SPEECH_INIT_EVENT,
     SPEECH_START_EVENT,
     SPEECH_STOP_EVENT,
-    SPEECH_ERROR_EVENT
-} from '../../const/speech-event-const';
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../../interface/speech-function.type';
-
-
-// event
-
-import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
-
-
-// component
-
-import { Component } from '../../core/component/component';
+    SPEECH_ERROR_EVENT,
+    OnSpeechInitFunc,
+    OnSpeechErrorFunc,
+    EventFunctionList,
+    EventFunc,
+    Component
+} from '@speech/core';
 
 
 // base

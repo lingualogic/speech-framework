@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * NLUMock definiert eine Mock-Klasse fuer die NLU, um sie in Unit-Tests verwenden zu koennen
  *
  * Letzte Aenderung: 23.10.2018

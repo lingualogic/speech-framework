@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Manager zur Verwaltung des MicrosoftPort
  *
  * Hier wird die Manager-Schnittstelle von Microsoft definiert, um Microsoft zu
@@ -7,13 +7,16 @@
  * API-Version: 1.0
  * Datum:       17.06.2019
  *
- * Letzte Aenderung: 17.06.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/microsoft
  * @author SB
  */
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+
+import { SpeechErrorFunc } from './../../core/interface/speech-function.type';
+
+// import { SpeechErrorFunc } from '@speech/core';
 import { MicrosoftConfigDataInterface } from './microsoft-config-data.interface';
 import { MicrosoftOptionInterface } from './microsoft-option.interface';
 /**

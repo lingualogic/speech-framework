@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Dieses Programm transformiert externe JSON-Daten in
  * Dialog Datenobjekte im Dialog-Store.
  *
- * Letzte Aenderung: 17.11.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/json
@@ -10,9 +10,9 @@
  */
 
 
-// plugin
+// core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // dialog

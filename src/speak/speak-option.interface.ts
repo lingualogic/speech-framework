@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Speak Option Schnittstelle
  *
  * API-Version: 1.2
  * Datum:       10.05.2019
  *
- * Letzte Aenderung: 10.05.2019
+ * Letzte Aenderung: 21.06.2019
  * Status: gruen
  *
  * @module speak
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseOptionInterface } from './../base/base-option.interface';
+/****
+ * import { BaseOptionInterface } from './../base/base-option.interface';
+ ****/
+
+import { BaseOptionInterface } from '@speech/base';
 
 
 /** @export

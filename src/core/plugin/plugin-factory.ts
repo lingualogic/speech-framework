@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Plugin Fabrik zur Erzeugung von Plugins
  *
  * Letzte Aenderung: 08.10.2018

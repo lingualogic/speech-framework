@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * AudioHtml5Reader Schnittstelle
  *
  * API-Version: 1.0

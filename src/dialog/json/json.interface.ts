@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * JSON Interface
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/json
@@ -11,7 +11,7 @@
 
 // plugin
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // store

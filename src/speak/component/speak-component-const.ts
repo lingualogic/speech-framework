@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Konstanten fuer SpeakComponent
  *
  * Letzte Aenderung: 03.09.2018

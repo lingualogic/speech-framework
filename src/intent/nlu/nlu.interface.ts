@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * NLU Schnittstelle
  *
  * Version: 1.2
  * Datum:   27.01.2019
  *
- * Letzte Aenderung: 28.03.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -12,9 +12,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // Funktionen

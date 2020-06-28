@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung eines ActionFunctionPlugin
  *
- * Letzte Aenderung: 04.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/function
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // action

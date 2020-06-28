@@ -1,17 +1,17 @@
-/**
+/** @packageDocumentation
  * FileReader Schnittstelle
  *
  * Version: 1.0
- * Datum:   28.06.2018
+ * Datum:   01.06.2020
  *
  * @module file/reader
  * @author SB
  */
 
 
-// plugin
+// core
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // Funktionen

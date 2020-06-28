@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Store Plugin fuer den Dialogspeicher und die Dialogdatenobjekte.
  *
- * Letzte Aenderung: 07.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module dialog/store
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // store

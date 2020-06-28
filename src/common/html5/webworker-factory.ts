@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient als Fabrik zur Erzeugung der WebWorker-Klasse und -Instanz fuer Net
  *
- * Letzte Aenderung: 01.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module common/html5
@@ -11,7 +11,7 @@
 
 // core
 
-import { Factory } from './../../core/factory/factory';
+import { Factory } from '@speech/core';
 
 
 // Konstanten

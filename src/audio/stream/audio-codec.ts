@@ -1,9 +1,9 @@
-/**
+/** @packageDocumentation
  * AudioCodec fuer Encode/Decode PCM
  *
  * Zur Zeit wird nur PCM-Codec unterstuetzt.
  *
- * Letzte Aenderung: 24.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module audio/stream
@@ -12,7 +12,7 @@
 
 // core
 
-import { ErrorBase } from './../../core/error/error-base';
+import { ErrorBase } from '@speech/core';
 
 
 // Konstanten

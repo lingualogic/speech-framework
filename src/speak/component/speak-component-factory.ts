@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Fabrik zur Erzeugung einer SpeakComponent
  *
- * Letzte Aenderung: 03.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module speak/component
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // speak

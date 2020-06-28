@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer TTS
  *
  * Letzte Aenderung: 04.07.2019

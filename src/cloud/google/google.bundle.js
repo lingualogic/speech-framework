@@ -1,15 +1,52 @@
-import { PortManager } from '../../core/port/port-manager.ts';
+import '../../core/builder/builder-manager.ts';
+import '../../core/builder/builder.ts';
+import '../../core/component/component.ts';
+import '../../core/const/speech-version.ts';
+import { ErrorBase } from '../../core/error/error-base.ts';
+import '../../core/event/event-function-list.ts';
 import { FactoryManager } from '../../core/factory/factory-manager.ts';
+import '../../core/factory/factory.ts';
+import '../../core/plugin/plugin-manager.ts';
+import '../../core/plugin/plugin-factory.ts';
+import '../../core/plugin/plugin-group.ts';
+import '../../core/plugin/plugin.ts';
+import { PortManager } from '../../core/port/port-manager.ts';
+import { PortFactory } from '../../core/port/port-factory.ts';
+import { PortTransaction } from '../../core/port/port-transaction.ts';
 import { Port } from '../../core/port/port.ts';
+import '../../common/audio/audio-codec.ts';
+import { AudioPlayer } from '../../common/audio/audio-player.ts';
+import { AudioRecorder } from '../../common/audio/audio-recorder.ts';
+import '../../common/audio/audio-resampler.ts';
 import { FileHtml5Reader } from '../../common/html5/file-html5-reader.ts';
 import { AudioHtml5Reader } from '../../common/html5/audio-html5-reader.ts';
-import { AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory } from '../../common/html5/audiocontext-factory.ts';
-import { USERMEDIA_FACTORY_NAME, UserMediaFactory } from '../../common/html5/usermedia-factory.ts';
-import { ErrorBase } from '../../core/error/error-base.ts';
 import { NetHtml5Connect } from '../../common/html5/net-html5-connect.ts';
 import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
+import { AUDIOCONTEXT_FACTORY_NAME, AudioContextFactory } from '../../common/html5/audiocontext-factory.ts';
+import '../../common/html5/speechrecognition-factory.ts';
+import '../../common/html5/speechsynthesis-factory.ts';
+import '../../common/html5/websocket-factory.ts';
+import '../../common/html5/webworker-factory.ts';
+import { USERMEDIA_FACTORY_NAME, UserMediaFactory } from '../../common/html5/usermedia-factory.ts';
+import '../../common/html5/xmlhttprequest-factory.ts';
 
-/**
+/** @packageDocumentation
+ * Speech-Google Version und Build Konstanten
+ *
+ * @module cloud/google
+ * @author SB
+ */
+var GOOGLE_VERSION_NUMBER = '0.1.6';
+var GOOGLE_VERSION_BUILD = '0007';
+var GOOGLE_VERSION_TYPE = 'ALPHA';
+var GOOGLE_VERSION_DATE = '20.06.2020';
+// tslint:disable-next-line
+var GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')';
+var GOOGLE_SERVER_VERSION = GOOGLE_VERSION_STRING;
+var GOOGLE_WORKER_VERSION = GOOGLE_VERSION_STRING;
+var GOOGLE_API_VERSION = GOOGLE_VERSION_STRING;
+
+/** @packageDocumentation
  * Globale Konstanten fuer Google
  *
  * Letzte Aenderung: 02.10.2019
@@ -20,8 +57,10 @@ import { NetHtml5WebSocket } from '../../common/html5/net-html5-websocket.ts';
  */
 // Default-Konstanten
 var GOOGLE_TYPE_NAME = 'Google';
+var GOOGLE_FACTORY_NAME = 'GoogleFactory';
 var GOOGLE_PORT_NAME = 'GooglePort';
 var GOOGLE_MOCK_NAME = 'GoogleMock';
+var GOOGLE_DEFAULT_NAME = GOOGLE_PORT_NAME;
 // Default URL des Amazon-Service
 var GOOGLE_SERVER_URL = 'ws://localhost:7050';
 var GOOGLE_DEFAULT_URL = GOOGLE_SERVER_URL;
@@ -36,12 +75,26 @@ var GOOGLE_CONFIG_FILE = 'google.json';
 var GOOGLE_CONFIG_LOAD = false;
 // Sprachen
 var GOOGLE_DE_LANGUAGE = 'de-DE';
+var GOOGLE_EN_LANGUAGE = 'en-US';
 var GOOGLE_DEFAULT_LANGUAGE = GOOGLE_DE_LANGUAGE;
 // NLU
 var GOOGLE_NLU2_FLAG = true;
+// ASR
+var GOOGLE_ASR_LANGUAGE1 = 'de-DE';
+var GOOGLE_ASR_LANGUAGE2 = 'en-US';
+var GOOGLE_ASR_LANGUAGE = GOOGLE_ASR_LANGUAGE1;
+// TTS
+var GOOGLE_TTS_LANGUAGE1 = 'de-DE';
+var GOOGLE_TTS_LANGUAGE2 = 'en-US';
+var GOOGLE_TTS_LANGUAGE = GOOGLE_TTS_LANGUAGE1;
+// Amazon Stimmen
+var GOOGLE_TTS_VOICE1 = 'Yannick';
+var GOOGLE_TTS_VOICE2 = 'Markus';
+var GOOGLE_TTS_VOICE3 = 'Anna-ML';
 var GOOGLE_TTS_VOICE4 = 'Petra-ML';
 var GOOGLE_TTS_VOICE = GOOGLE_TTS_VOICE4;
 var GOOGLE_DEFAULT_VOICE = GOOGLE_TTS_VOICE;
+var GOOGLE_AUDIOTTS_ID = 789;
 // Audio-Codec
 var GOOGLE_PCM_CODEC = 'audio/L16;rate=16000';
 var GOOGLE_DEFAULT_CODEC = GOOGLE_PCM_CODEC;
@@ -50,18 +103,18 @@ var GOOGLE_AUDIOBUFFER_SIZE = 2048;
 var GOOGLE_AUDIOSAMPLE_RATE = 16000;
 
 /*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 /* global Reflect, Promise */
 
@@ -116,52 +169,660 @@ function __generator(thisArg, body) {
     }
 }
 
-/**
- * Speech-Google Version und Build Konstanten
+/** @packageDocumentation
+ * GoogleMock zum Testen des Google Cloud-Service mit dem Framework
  *
- * @module cloud/google
- * @author SB
- */
-var GOOGLE_VERSION_NUMBER = '0.1.4';
-var GOOGLE_VERSION_BUILD = '0005';
-var GOOGLE_VERSION_TYPE = 'ALPHA';
-var GOOGLE_VERSION_DATE = '12.02.2020';
-// tslint:disable-next-line
-var GOOGLE_VERSION_STRING = GOOGLE_VERSION_NUMBER + '.' + GOOGLE_VERSION_BUILD + ' vom ' + GOOGLE_VERSION_DATE + ' (' + GOOGLE_VERSION_TYPE + ')';
-var GOOGLE_API_VERSION = GOOGLE_VERSION_STRING;
-
-/**
- * Event-Klasse fuer alle Google-Transaktionen
- *
- * Letzte Aenderung: 02.04.2019
+ * Letzte Aenderung: 20.06.2020
  * Status: rot
  *
  * @module cloud/google
  * @author SB
  */
-var GoogleTransaction = /** @class */ (function () {
-    function GoogleTransaction(aPluginName, aType) {
-        if (aPluginName === void 0) { aPluginName = ''; }
-        if (aType === void 0) { aType = ''; }
-        this.transactionId = 0;
-        this.plugin = '';
-        this.type = '';
-        this.result = null;
-        this.error = null;
-        this.plugin = aPluginName;
-        this.type = aType;
-        // automatische Transaktions-ID Erzeugung
-        GoogleTransaction.mTransactionCounter += 1;
-        this.transactionId = GoogleTransaction.mTransactionCounter;
-    }
-    GoogleTransaction.mTransactionCounter = 0;
-    return GoogleTransaction;
-}());
-
+// Konstanten
+// Asynchrones senden von Events nach 100 millisekunden
+var GOOGLEMOCK_CALLBACK_TIMEOUT = 100;
 /**
+ * Definiert die GoogleMock-Klasse
+ */
+var GoogleMock = /** @class */ (function (_super) {
+    __extends(GoogleMock, _super);
+    /**
+     * Erzeugt eine Instanz von Port.
+     *
+     * @param {string} aPortName - Name des Ports
+     * @param {boolean} aRegisterFlag - true, wenn Port in PortManager eingetragen werden soll
+     */
+    function GoogleMock(aPortName, aRegisterFlag) {
+        if (aRegisterFlag === void 0) { aRegisterFlag = true; }
+        var _this = _super.call(this, aPortName || GOOGLE_MOCK_NAME, aRegisterFlag) || this;
+        _this.webSocketFlag = true;
+        _this.audioContextFlag = true;
+        _this.getUserMediaFlag = true;
+        _this.googleNLUFlag = true;
+        _this.googleASRFlag = true;
+        _this.googleTTSFlag = true;
+        // weitere Attribute
+        _this.disconnectFlag = true;
+        _this.defaultOptions = null;
+        _this.codec = '';
+        _this.intentName = 'TestIntent';
+        _this.intentConfidence = 1.0;
+        _this.intentSpeech = 'TestSpeech';
+        _this.mDynamicCredentialsFlag = false;
+        _this.mTransaction = null;
+        _this.mRunningFlag = false;
+        // Credentials
+        _this.googleAppId = '';
+        _this.googleAppKey = '';
+        _this.googleNluTag = '';
+        _this.googleServerUrl = '';
+        _this.dialogflowTokenServerUrl = '';
+        _this.dialogflowProjectId = '';
+        _this.dialogflowSessionId = '';
+        _this.dialogflowEnvironmentName = '';
+        return _this;
+    }
+    // Port-Funktionen
+    /**
+     * pruefen auf Mock-Port zum Testen
+     *
+     * @return {boolean} mockFlag - true, wenn Port ein Mock zum Testen ist
+     */
+    GoogleMock.prototype.isMock = function () {
+        return true;
+    };
+    /**
+     * Rueckgabe eines logischen Port-Typs
+     *
+     * @return {string} logischer Typ des Ports fuer unterschiedliche Anwendungsschnittstellen
+     */
+    GoogleMock.prototype.getType = function () {
+        return GOOGLE_TYPE_NAME;
+    };
+    /**
+     * Rueckgabe der Port-Klasse
+     *
+     * @return {string} konkrete Klasse des Ports
+     */
+    GoogleMock.prototype.getClass = function () {
+        return 'GoogleMock';
+    };
+    /**
+     * Optionen eintragen
+     * @param aOption - optionale Parameter
+     */
+    GoogleMock.prototype._checkCredentials = function (aOption) {
+        if (!aOption) {
+            return false;
+        }
+        if (typeof aOption.googleAppKey === 'string') {
+            this.googleAppKey = aOption.googleAppKey;
+        }
+        // App-Parameter pruefen
+        // TODO: jetzt erst mal nur ACCESS-TOKEN (AppKey) von Dialogflow V1 bis Oktober 2019
+        if (typeof aOption.googleAppKey !== 'string') {
+            return false;
+        }
+        if (!aOption.googleAppKey) {
+            return false;
+        }
+        // App-Parameter sind vorhanden
+        return true;
+    };
+    /**
+     * initialisert den Port
+     *
+     * erlaubte optionale Parameter:
+     *
+     *      activeFlag      - legt fest, ob der Port zum Start aktiviert ist oder nicht
+     *      errorOutputFlag - legt fest, ob die Fehlerausgabe auf der Konsole erfolgt
+     *
+     *
+     * @param {any} aOption - optionale Parameter fuer die Konfiguration des Plugins
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.init = function (aOption) {
+        // console.log('NuanceMock: init start', aOption);
+        if (this.mInitFlag) {
+            this._error('init', 'Init bereits aufgerufen');
+            return 0;
+        }
+        // pruefen auf Error-OutputFlag (Port wird erst am Ende aufgerufen, daher wird das ErrorOutputFlag nicht vorher gesetzt)
+        if (aOption && typeof aOption.errorOutputFlag === 'boolean' && aOption.errorOutputFlag) {
+            this.setErrorOutputOn();
+        }
+        else {
+            this.setErrorOutputOff();
+        }
+        // pruefen auf dynamische Credentials
+        if (aOption && typeof aOption.googleDynamicCredentialsFlag === 'boolean' && aOption.googleDynamicCredentialsFlag) {
+            // dynamische Credentials koennen gesetzt werden
+            this.mDynamicCredentialsFlag = true;
+            this._checkCredentials(aOption);
+        }
+        else {
+            // pruefen auf Nuance App-Credientials Uebergabe
+            if (!this._checkCredentials(aOption)) {
+                if (this.isErrorOutput() || (aOption && aOption.errorOutputFlag)) {
+                    this._error('init', 'keine AppId und/oder AppKey als Parameter uebergeben');
+                }
+                return -1;
+            }
+        }
+        // WebSocket
+        if (!this.webSocketFlag) {
+            // WEnn die WebSocket nicht vorhanden ist, geht gar nichts !
+            this._error('init', 'keine WebSocket vorhanden');
+            this._onInit(-1);
+            return -1;
+        }
+        // TODO: soll spaeter in die Audio-Komponente
+        // AudioContext
+        if (!this.audioContextFlag) {
+            // wenn der Audiokontext nicht vorhanden ist, gehen TTS und ASR nicht
+            this._error('init', 'kein Audiokontext vorhanden, TTS und ASR werden abgeschaltet');
+            this._onInit(-1);
+        }
+        this.googleNLUFlag = true;
+        if (this.audioContextFlag) {
+            this.googleASRFlag = true;
+            if (this.getUserMediaFlag) {
+                this.googleTTSFlag = true;
+            }
+        }
+        if (this.isErrorOutput()) {
+            if (this.googleNLUFlag) {
+                console.log('GoogleMock: NLU ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: NLU ist nicht vorhanden');
+            }
+            if (this.googleTTSFlag) {
+                console.log('GoogleMock: TTS ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: TTS ist nicht vorhanden');
+            }
+            if (this.googleASRFlag) {
+                console.log('GoogleMock: ASR ist vorhanden');
+            }
+            else {
+                console.log('GoogleMock: ASR ist nicht vorhanden');
+            }
+        }
+        this._onInit(0);
+        // console.log('NuanceMock.init: ende');
+        return _super.prototype.init.call(this, aOption);
+    };
+    /**
+     * gibt den Port frei
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.done = function (aFreeFlag) {
+        _super.prototype.done.call(this);
+        this.webSocketFlag = true;
+        this.audioContextFlag = true;
+        this.getUserMediaFlag = true;
+        this.googleNLUFlag = false;
+        this.googleASRFlag = false;
+        this.googleTTSFlag = false;
+        // weitere Attribute
+        this.disconnectFlag = true;
+        this.defaultOptions = null;
+        this.codec = '';
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return 0;
+    };
+    /**
+     * setzt den Port wieder auf Defaultwerte und uebergebene optionale Parameter.
+     * Die Fehlerausgabe wird nicht zurueckgesetzt.
+     *
+     * @param {any} aOption - optionale Parameter
+     *
+     * @return {number} errorCode (0,-1) - Fehlercode
+     */
+    GoogleMock.prototype.reset = function (aOption) {
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return _super.prototype.reset.call(this, aOption);
+    };
+    // Event-Funktionen
+    /**
+     * Ereignisfunktion fuer Stop aufrufen
+     *
+     * @private
+     * @param {string} aDest - Ziel der Operation
+     * @param {string} aType - Typ der Operation
+     *
+     * @return {number} errorCode(0,-1)
+     */
+    GoogleMock.prototype._onStop = function (aDest, aType) {
+        // console.log('NuancePort._onStop: Transaktion wird beendet', aDest, aType);
+        // hier muss die Transaktion geloescht werden, da sie beendet ist
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return _super.prototype._onStop.call(this, aDest, aType);
+    };
+    // Port-Funktionen
+    /**
+     * Dynamische Konfiguration des Ports
+     *
+     * @param {GoogleConfigDataInterface} aConfigData - Konfigurationsdaten { nuanceAppKey: '', nuanceAppId: '', nuanceNluTag: ''}
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.setConfig = function (aConfigData) {
+        if (this.mDynamicCredentialsFlag) {
+            // Uebertragen der neuen Credentials
+            try {
+                // this.googleAppId = aConfigData.googleAppId;
+                this.googleAppKey = aConfigData.googleAppKey;
+                this.googleServerUrl = aConfigData.googleServerUrl;
+                this.dialogflowTokenServerUrl = aConfigData.dialogflowTokenServerUrl;
+                this.dialogflowProjectId = aConfigData.dialogflowProjectId;
+                this.dialogflowSessionId = aConfigData.dialogflowSessionId;
+                this.dialogflowEnvironmentName = aConfigData.dialogflowEnvironmentName;
+                /****
+                if ( typeof aConfigData.googleNluTag === 'string' ) {
+                    this.googleNluTag = aConfigData.googleNluTag;
+                }
+                ****/
+                return 0;
+            }
+            catch (aException) {
+                this._exception('setConfig', aException);
+                return -1;
+            }
+        }
+        else {
+            this._error('setConfig', 'Keine dynamischen Credentials erlaubt');
+            return -1;
+        }
+    };
+    /**
+     * Rueckgabe der aktuellen Port-Konfiguration
+     *
+     * @return {GoogleConfigDataInterface} aktuelle Portkonfigurationsdaten
+     */
+    GoogleMock.prototype.getConfig = function () {
+        var configData = {
+            // googleAppId: this.googleAppId,
+            googleAppKey: this.googleAppKey,
+            googleServerUrl: this.googleServerUrl,
+            dialogflowTokenServerUrl: this.dialogflowTokenServerUrl,
+            dialogflowProjectId: this.dialogflowProjectId,
+            dialogflowSessionId: this.dialogflowSessionId,
+            dialogflowEnvironmentName: this.dialogflowEnvironmentName
+            // googleNluTag: this.googleNluTag
+        };
+        return configData;
+    };
+    /**
+     * Pruefen auf geoeffneten Port
+     *
+     * @return {boolean} True, wenn Port offen ist, False sonst
+     */
+    GoogleMock.prototype.isOpen = function () {
+        return !this.disconnectFlag;
+    };
+    /**
+     * Port oeffnen
+     *
+     * @param {*} aOption - optionale Parameter
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.open = function (aOption) {
+        // console.log('NuanceMock._connect:', this.disconnectFlag);
+        if (!this.disconnectFlag) {
+            // Kein Fehler, Verbindung ist bereits vorhanden
+            return 0;
+        }
+        this.disconnectFlag = false;
+        // console.log('WebSocket Verbindung aufgebaut');
+        this._onOpen();
+        return 0;
+    };
+    /**
+     * Port schliessen
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.close = function () {
+        this.disconnectFlag = true;
+        return 0;
+    };
+    /**
+     * Pruefen auf beschaeftigten Port.
+     *
+     * @return {boolean} True, Port ist beschaeftigt, False sonst
+     */
+    GoogleMock.prototype.isRunning = function () {
+        return this.mRunningFlag;
+    };
+    GoogleMock.prototype._isCredentials = function () {
+        if (this.googleAppKey) {
+            return true;
+        }
+        return false;
+    };
+    /**
+     * Pruefen, welche Nuance-Aktionen ausfuehrbar sind.
+     *
+     * @param {string} aAction - Name der zu pruefenden Aktion
+     *
+     * @return {boolean} True, wenn Aktion ausfuehrbar ist, False sonst
+     */
+    GoogleMock.prototype.isAction = function (aAction) {
+        var result = false;
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                result = this.googleNLUFlag;
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+            case GOOGLE_ASR_ACTION:
+                result = this.googleASRFlag;
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = this.googleTTSFlag;
+                break;
+        }
+        return result;
+    };
+    /**
+     * Portaktion starten
+     *
+     * @param {string} aAction - optional auszufuehrende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.start = function (aPluginName, aAction, aOption) {
+        // pruefen, ob eine Aktion bereits laeuft
+        if (this.isRunning()) {
+            this._error('start', 'Aktion laeuft bereits');
+            return -1;
+        }
+        // pruefen, ob der Port geoeffnet ist
+        if (!this.isOpen()) {
+            this._error('start', 'Port ist nicht geoeffnet');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this._isCredentials()) {
+            this._error('start', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (this.mTransaction) {
+            this._error('start', 'andere Transaktion laeuft noch');
+            return -1;
+        }
+        var option = aOption || {};
+        // Aktion ausfuehren
+        this.mRunningFlag = true;
+        var result = 0;
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                this.mTransaction = new PortTransaction(aPluginName, GOOGLE_NLU_ACTION);
+                result = this._startNLU(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE);
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+                this.mTransaction = new PortTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
+                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', true, option.useProgressive || false);
+                break;
+            case GOOGLE_ASR_ACTION:
+                this.mTransaction = new PortTransaction(aPluginName, GOOGLE_ASR_ACTION);
+                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', false, option.useProgressive || false);
+                break;
+            case GOOGLE_TTS_ACTION:
+                this.mTransaction = new PortTransaction(aPluginName, GOOGLE_TTS_ACTION);
+                result = this._startTTS(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE, option.voice || GOOGLE_DEFAULT_VOICE);
+                break;
+            default:
+                this._error('start', 'Keine gueltige Aktion uebergeben ' + aAction);
+                result = -1;
+                break;
+        }
+        return result;
+    };
+    /**
+     * Portaktion beenden
+     *
+     * @param {string} aAction - optional zu beendende Aktion
+     * @param {*} aOption - optionale Parameter
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype.stop = function (aPluginName, aAction, aOption) {
+        // console.log('NuancePort.stop:', aPluginName, aAction, aOption);
+        // pruefen, ob eine Aktion bereits laeuft
+        if (!this.isRunning()) {
+            // console.log('NuancePort.stop: kein isRunning');
+            return 0;
+        }
+        // pruefen, ob der Port geoeffnet ist
+        if (!this.isOpen()) {
+            this._error('stop', 'Port ist nicht geoeffnet');
+            return -1;
+        }
+        // pruefen auf Credentials
+        if (!this._isCredentials()) {
+            this._error('stop', 'Port hat keine Credentials');
+            return -1;
+        }
+        // pruefen auf laufende Transaktion
+        if (!this.mTransaction) {
+            this._error('stop', 'keine Transaktion vorhanden');
+            return -1;
+        }
+        // pruefen auf uebereinstimmende Transaktion
+        if (aPluginName !== this.mTransaction.plugin) {
+            this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + aPluginName + ' != ' + this.mTransaction.plugin);
+            return -1;
+        }
+        if (aAction) {
+            if (aAction !== this.mTransaction.type) {
+                this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + aAction + ' != ' + this.mTransaction.type);
+                return -1;
+            }
+        }
+        else {
+            aAction = this.mTransaction.type;
+        }
+        var result = 0;
+        // console.log('NuancePort.stop: Action = ', aAction);
+        switch (aAction) {
+            case GOOGLE_NLU_ACTION:
+                result = this._stopNLU(this.mTransaction);
+                break;
+            case GOOGLE_ASRNLU_ACTION:
+            case GOOGLE_ASR_ACTION:
+                result = this._stopASR(this.mTransaction);
+                break;
+            case GOOGLE_TTS_ACTION:
+                result = this._stopTTS(this.mTransaction);
+                break;
+            default:
+                this._error('stop', 'Keine gueltige Aktion uebergeben ' + aAction);
+                result = -1;
+                break;
+        }
+        this.mTransaction = null;
+        this.mRunningFlag = false;
+        return result;
+    };
+    // Nuance-Funktionen
+    // Text-Funktionen
+    /**
+     * Intent zu einem Text holen
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - Text der interpretiert werden soll
+     * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startNLU = function (aTransaction, aText, aLanguage) {
+        if (!aText) {
+            this._error('_startNLU', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!this.googleNLUFlag) {
+            this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            var event_1 = {
+                metadata: {
+                    intentName: this.intentName
+                },
+                fulfillment: {
+                    speech: this.intentSpeech
+                },
+                resolvedQuery: aText,
+                score: this.intentConfidence
+            };
+            aTransaction.result = event_1;
+            console.log('GoogleMock._startNLU: _onResult wird aufgerufen');
+            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_startNLU', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die Analyse
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopNLU = function (aTransaction) {
+        this._onStop(aTransaction.plugin, aTransaction.type);
+        // kein Stop der NLU notwendig
+        return 0;
+    };
+    // ASR-Funktionen
+    /**
+     * startet die Recognition
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @returns {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startASR = function (aTransaction, aLanguage, aAudioUrl, aUseNLUFlag, aProgressiveFlag) {
+        // console.log('NuancePort._startASR');
+        if (!this.googleASRFlag) {
+            this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            aTransaction.result = "Testtext";
+            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_startASR', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die Recognition
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopASR = function (aTransaction) {
+        if (!this.googleASRFlag) {
+            this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_stopASR', aException);
+            return -1;
+        }
+    };
+    // TTS-Funktionen
+    /**
+     * startet die TTS
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {string} aText - auszusprechender Text
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._startTTS = function (aTransaction, aText, aLanguage, aVoice) {
+        var _this = this;
+        if (!aText) {
+            this._error('_startTTS', 'keinen Text uebergeben');
+            return -1;
+        }
+        if (!this.googleTTSFlag) {
+            this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            // Nachrichten senden
+            this._onStart(aTransaction.plugin, aTransaction.type);
+            // asynchron TTS-Stop Event senden
+            setTimeout(function () { return _this._onStop(aTransaction.plugin, aTransaction.type); }, GOOGLEMOCK_CALLBACK_TIMEOUT);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_startTTS', aException);
+            return -1;
+        }
+    };
+    /**
+     * stoppt die TTS
+     *
+     * @private
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     *
+     * @return {number} Fehlercode 0 oder -1
+     */
+    GoogleMock.prototype._stopTTS = function (aTransaction) {
+        if (!this.googleTTSFlag) {
+            this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden');
+            return -1;
+        }
+        try {
+            this._onStop(aTransaction.plugin, aTransaction.type);
+            return 0;
+        }
+        catch (aException) {
+            this._exception('_stopTTS', aException);
+            return -1;
+        }
+    };
+    return GoogleMock;
+}(Port));
+
+/** @packageDocumentation
  * Google Konstanten Verwaltung
  *
- * Letzte Aenderung: 02.10.2019
+ * Letzte Aenderung: 20.06.2020
  * Status: rot
  *
  * @module cloud/google
@@ -183,6 +844,8 @@ var GoogleConfig = /** @class */ (function (_super) {
         _this.mConfigServerUrl = GOOGLE_DEFAULT_URL;
         _this.mConfigDialogflowTokenServerUrl = '';
         _this.mConfigDialogflowProjectId = '';
+        _this.mConfigDialogflowSessionId = '';
+        _this.mConfigDialogflowEnvironmentName = '';
         _this.mConfigAppId = '';
         _this.mConfigAppKey = '';
         _this.mConfigUserId = '';
@@ -223,6 +886,12 @@ var GoogleConfig = /** @class */ (function (_super) {
         }
         if (typeof aOption.dialogflowProjectId === 'string') {
             this.mConfigDialogflowProjectId = aOption.dialogflowProjectId;
+        }
+        if (typeof aOption.dialogflowSessionId === 'string') {
+            this.mConfigDialogflowSessionId = aOption.dialogflowSessionId;
+        }
+        if (typeof aOption.dialogflowEnvironmentName === 'string') {
+            this.mConfigDialogflowEnvironmentName = aOption.dialogflowEnvironmentName;
         }
         if (typeof aOption.googleAppId === 'string') {
             this.mConfigAppId = aOption.googleAppId;
@@ -287,6 +956,8 @@ var GoogleConfig = /** @class */ (function (_super) {
         this.mConfigServerUrl = GOOGLE_DEFAULT_URL;
         this.mConfigDialogflowTokenServerUrl = '';
         this.mConfigDialogflowProjectId = '';
+        this.mConfigDialogflowSessionId = '';
+        this.mConfigDialogflowEnvironmentName = '';
         this.mConfigAppId = '';
         this.mConfigAppKey = '';
         this.mConfigUserId = '';
@@ -460,6 +1131,30 @@ var GoogleConfig = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(GoogleConfig.prototype, "dialogflowSessionId", {
+        get: function () {
+            // console.log('GoogleConfig.getDialogflowSessionId:', this.mConfigDiaogflowSessionId);
+            return this.mConfigDialogflowSessionId;
+        },
+        set: function (aSessionId) {
+            // console.log('GoogleConfig.setDialogflowSessionId:', aSessionId);
+            this.mConfigDialogflowSessionId = aSessionId;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GoogleConfig.prototype, "dialogflowEnvironmentName", {
+        get: function () {
+            // console.log('GoogleConfig.getDialogflowEnvironmentName:', this.mConfigDiaogflowEnvironmentName);
+            return this.mConfigDialogflowEnvironmentName;
+        },
+        set: function (aEnvironmentName) {
+            // console.log('GoogleConfig.setDialogflowEnvironmentName:', aEnvironmentName);
+            this.mConfigDialogflowEnvironmentName = aEnvironmentName;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(GoogleConfig.prototype, "appId", {
         get: function () {
             return this.mConfigAppId;
@@ -510,10 +1205,10 @@ var GoogleConfig = /** @class */ (function (_super) {
     return GoogleConfig;
 }(ErrorBase));
 
-/**
+/** @packageDocumentation
  * Definiert die Network fuer Google
  *
- * Letzte Aenderung: 08.05.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module cloud/google/net
@@ -527,10 +1222,10 @@ var GoogleNetwork = /** @class */ (function (_super) {
     return GoogleNetwork;
 }(NetHtml5Connect));
 
-/**
+/** @packageDocumentation
  * Definiert die WebSocket fuer den Speech-Server als Verbindung zu Google
  *
- * Letzte Aenderung: 16.05.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module cloud/google/net
@@ -568,10 +1263,10 @@ var GoogleWebSocket = /** @class */ (function (_super) {
     return GoogleWebSocket;
 }(NetHtml5WebSocket));
 
-/**
+/** @packageDocumentation
  * Definiert die Verbindung zum Google-Service
  *
- * Letzte Aenderung: 07.06.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module cloud/google/net
@@ -1038,10 +1733,10 @@ var ApiAiClient = /** @class */ (function () {
     return ApiAiClient;
 }());
 
-/**
+/** @packageDocumentation
  * Google Geraeteklasse fuer TTS, ASR und NLU
  *
- * Letzte Aenderung: 27.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module cloud/google/device
@@ -1230,7 +1925,7 @@ var GoogleDevice = /** @class */ (function (_super) {
     /**
      * Geraeteaktion starten
      *
-     * @param {GoogleTransaction} aTransaction - auszufuehrende Transaktion
+     * @param {PortTransaction} aTransaction - auszufuehrende Transaktion
      * @param {*} aOption - optionale Parameter
      *
      * @return {number} Fehlercode 0 oder -1
@@ -1260,7 +1955,7 @@ var GoogleDevice = /** @class */ (function (_super) {
     /**
      * Geraeteaktion beenden
      *
-     * @param {GoogleTransaction} aTransaction - auszufuehrende Transaktion
+     * @param {PortTransaction} aTransaction - auszufuehrende Transaktion
      *
      * @return {number} Fehlercode 0 oder -1
      */
@@ -1313,7 +2008,7 @@ var GoogleDevice = /** @class */ (function (_super) {
     return GoogleDevice;
 }(ErrorBase));
 
-/**
+/** @packageDocumentation
  * NLU Anbindung an den Google-Service, hier wird nur ein Text in einen Intent umgewandelt
  *
  * Letzte Aenderung: 07.05.2019
@@ -1374,973 +2069,12 @@ var GoogleNLU = /** @class */ (function (_super) {
     return GoogleNLU;
 }(GoogleDevice));
 
-/**
- * GoogleAudioCodec fuer Encode/Decode PCM
- *
- * Zur Zeit wird nur PCM-Codec unterstuetzt.
- *
- * Letzte Aenderung: 18.01.2019
- * Status: rot
- *
- * @module cloud/google/audio
- * @author SB
- */
-// Nuance
-// import { AudioEncoder } from './audio-encoder';
-// Konstanten
-var PCM_L16CodecArray = ['audio/L16;rate=8000', 'audio/L16;rate=16000'];
-var OpusCodecArray = ['audio/opus;rate=8000', 'audio/opus;rate=16000'];
-/**
- * Klasse GoogleAudioCodec zur Codierung/Decodierung von Audiodaten
- */
-var GoogleAudioCodec = /** @class */ (function (_super) {
-    __extends(GoogleAudioCodec, _super);
-    function GoogleAudioCodec() {
-        return _super.call(this, 'GoogleAudioCodec') || this;
-    }
-    // Codec-Funktionen
-    /**
-     * Codec pruefen
-     *
-     * @private
-     * @param {string} aCodec - zu pruefender Codec
-     * @param {string[]} aCodecArray - Codec-Array
-     */
-    GoogleAudioCodec.prototype._findCodec = function (aCodec, aCodecArray) {
-        for (var i = 0; i < aCodecArray.length; i++) {
-            if (aCodec === aCodecArray[i]) {
-                return true;
-            }
-        }
-        return false;
-    };
-    /**
-     * Pruefen auf PCM-Codec
-     *
-     * @param {string} aCodec - zu pruefender codec
-     */
-    GoogleAudioCodec.prototype.findPcmCodec = function (aCodec) {
-        return this._findCodec(aCodec, PCM_L16CodecArray);
-    };
-    /**
-     * Pruefen auf Opus-Codec
-     *
-     * @param {string} aCodec - zu pruefender codec
-     */
-    GoogleAudioCodec.prototype.findOpusCodec = function (aCodec) {
-        return this._findCodec(aCodec, OpusCodecArray);
-    };
-    // Encode-Funktionen
-    /**
-     * Umwandlung von Float32 nach Int16
-     *
-     * @private
-     * @param {*} aFloat32 - umzuwandelnder Wert
-     *
-     * @return {*} Rueckgabe des passenden Int-Wertes
-     */
-    GoogleAudioCodec.prototype._float32ToInt16 = function (aFloat32) {
-        var int16 = aFloat32 < 0 ? aFloat32 * 32768 : aFloat32 * 32767;
-        return Math.max(-32768, Math.min(32768, int16));
-    };
-    /**
-     * Umwandlung des Float32Arrays nach Int16Array
-     *
-     * @private
-     * @param {*} aFloat32Array - umzuwandelndes Float32-Array
-     *
-     * @return {*} Rueckgabe des Int16-Arrays
-     */
-    GoogleAudioCodec.prototype._float32ArrayToInt16Array = function (aFloat32Array) {
-        var int16Array = new Int16Array(aFloat32Array.length);
-        var i = 0;
-        while (i < aFloat32Array.length) {
-            int16Array[i] = this._float32ToInt16(aFloat32Array[i++]);
-        }
-        return int16Array;
-    };
-    /**
-     * Umwandlung von FloatArray nach Int16Array
-     *
-     * @private
-     * @param {*} aFrame - umzuwandelnde Daten
-     * @param {string} aCodec - Codec fuer Umwandlung
-     */
-    GoogleAudioCodec.prototype.encodePCM = function (aFrame, aCodec) {
-        if (this.findPcmCodec(aCodec)) {
-            return [this._float32ArrayToInt16Array(aFrame)];
-        }
-        return [aFrame];
-    };
-    /* Opus-Codec
-    opusEncoderSetup( aRate: any ): void {
-        // TODO: Problem mit globalen Worker-Verzeichnis fuer alle Worker
-        this.opusEncoder = new AudioEncoder( 'lib/opus_encoder.js' );
-        this.opusEncoder.setup({ num_of_channels: 1, params: { application: 2048, frame_duration: 20, sampling_rate: aRate }, sampling_rate: aRate });
-    }
-    */
-    /*
-    encodeOpusAndSend( aFrame: any, aWs: any ): void {
-        this.opusEncoder.encode({ samples: aFrame, timestamp: 0, transferable: true })
-        .then((packets: any) => {
-            for ( let i = 0; i < packets.length; ++i ) {
-                aWs.send( packets[ i ].data );
-            }
-        }, rejectLog( 'opusDecoder.encode error' ));
-    }
-    */
-    // Decode-Funktionen
-    /**
-     * Umwandlung von Int16-Array nach Float32-Array
-     *
-     * @param {*} aAudioData - umzuwandelnde Audiodaten
-     */
-    GoogleAudioCodec.prototype.decodePCM = function (aAudioData) {
-        try {
-            var pcm16Buffer = new Int16Array(aAudioData);
-            var pcm16BufferLength = pcm16Buffer.length;
-            var outputArray = new Float32Array(pcm16BufferLength);
-            // console.log( 'GoogleAudioCodec.decodePCM: puffer = ', pcm16Buffer);
-            // console.log( 'GoogleAudioCodec.decodePCM: laenge = ', pcm16BufferLength);
-            var i = 0;
-            for (; i < pcm16BufferLength; ++i) {
-                outputArray[i] = pcm16Buffer[i] / 32768;
-            }
-            // console.log('GoogleAudioCodec.decodePCM: Float32 = ', outputArray);
-            return outputArray;
-        }
-        catch (aException) {
-            console.log('GoogleAudioCodec.decodePCM: Exception', aException);
-            this._exception('decodePCM', aException);
-            return [];
-        }
-    };
-    return GoogleAudioCodec;
-}(ErrorBase));
-
-/**
- * externe Resampler-Klasse
- *
- * Letzte Aenderung: 07.05.2019
- * Status: rot
- *
- * @module cloud/google/audio
- * @author SB
- */
-// JavaScript Audio Resampler (c) 2011 - Grant Galitz
-// https://github.com/taisel/XAudioJS/blob/master/resampler.js
-var GoogleResampler = /** @class */ (function () {
-    function GoogleResampler(fromSampleRate, toSampleRate, channels, outputBufferSize, noReturn) {
-        this.fromSampleRate = 0;
-        this.toSampleRate = 0;
-        this.channels = 0;
-        this.outputBufferSize = 0;
-        this.noReturn = false;
-        this.resampler = null;
-        this.ratioWeight = 0;
-        this.interpolate = null;
-        this.lastWeight = 0;
-        this.outputBuffer = null;
-        this.lastOutput = null;
-        this.fromSampleRate = fromSampleRate;
-        this.toSampleRate = toSampleRate;
-        this.channels = channels || 0;
-        this.outputBufferSize = outputBufferSize;
-        this.noReturn = !!noReturn;
-        this.initialize();
-    }
-    GoogleResampler.prototype.initialize = function () {
-        // console.log('Resampler.initialize:', this.fromSampleRate, this.toSampleRate, this.channels);
-        // Perform some checks:
-        if (this.fromSampleRate > 0 && this.toSampleRate > 0 && this.channels > 0) {
-            if (this.fromSampleRate === this.toSampleRate) {
-                // Setup a resampler bypass:
-                this.resampler = this.bypassResampler; // Resampler just returns what was passed through.
-                this.ratioWeight = 1;
-            }
-            else {
-                // Setup the interpolation resampler:
-                this.compileInterpolationFunction();
-                this.resampler = this.interpolate; // Resampler is a custom quality interpolation algorithm.
-                this.ratioWeight = this.fromSampleRate / this.toSampleRate;
-                this.tailExists = false;
-                this.lastWeight = 0;
-                this.initializeBuffers();
-            }
-        }
-        else {
-            throw (new Error('Invalid settings specified for the resampler.'));
-        }
-    };
-    GoogleResampler.prototype.compileInterpolationFunction = function () {
-        var toCompile = 'var bufferLength = Math.min(buffer.length, this.outputBufferSize);\
-        if ((bufferLength % ' + this.channels + ') == 0) {\
-            if (bufferLength > 0) {\
-                var ratioWeight = this.ratioWeight;\
-                var weight = 0;';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'var output' + channel + ' = 0;';
-        }
-        toCompile += 'var actualPosition = 0;\
-                var amountToNext = 0;\
-                var alreadyProcessedTail = !this.tailExists;\
-                this.tailExists = false;\
-                var outputBuffer = this.outputBuffer;\
-                var outputOffset = 0;\
-                var currentPosition = 0;\
-                do {\
-                    if (alreadyProcessedTail) {\
-                        weight = ratioWeight;';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'output' + channel + ' = 0;';
-        }
-        toCompile += '}\
-                    else {\
-                        weight = this.lastWeight;';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'output' + channel + ' = this.lastOutput[' + channel + '];';
-        }
-        toCompile += 'alreadyProcessedTail = true;\
-                    }\
-                    while (weight > 0 && actualPosition < bufferLength) {\
-                        amountToNext = 1 + actualPosition - currentPosition;\
-                        if (weight >= amountToNext) {';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'output' + channel + ' += buffer[actualPosition++] * amountToNext;';
-        }
-        toCompile += 'currentPosition = actualPosition;\
-                            weight -= amountToNext;\
-                        }\
-                        else {';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'output' + channel + ' += buffer[actualPosition' + ((channel > 0) ? (' + ' + channel) : '') + '] * weight;';
-        }
-        toCompile += 'currentPosition += weight;\
-                            weight = 0;\
-                            break;\
-                        }\
-                    }\
-                    if (weight == 0) {';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'outputBuffer[outputOffset++] = output' + channel + ' / ratioWeight;';
-        }
-        toCompile += '}\
-                    else {\
-                        this.lastWeight = weight;';
-        for (var channel = 0; channel < this.channels; ++channel) {
-            toCompile += 'this.lastOutput[' + channel + '] = output' + channel + ';';
-        }
-        toCompile += 'this.tailExists = true;\
-                        break;\
-                    }\
-                } while (actualPosition < bufferLength);\
-                return this.bufferSlice(outputOffset);\
-            }\
-            else {\
-                return (this.noReturn) ? 0 : [];\
-            }\
-        }\
-        else {\
-            throw(new Error(\"Buffer was of incorrect sample length.\"));\
-        }';
-        this.interpolate = Function('buffer', toCompile);
-    };
-    GoogleResampler.prototype.bypassResampler = function (buffer) {
-        if (this.noReturn) {
-            // Set the buffer passed as our own, as we don't need to resample it:
-            this.outputBuffer = buffer;
-            return buffer.length;
-        }
-        else {
-            // Just return the buffer passsed:
-            return buffer;
-        }
-    };
-    GoogleResampler.prototype.bufferSlice = function (sliceAmount) {
-        if (this.noReturn) {
-            // If we're going to access the properties directly from this object:
-            return sliceAmount;
-        }
-        else {
-            // Typed array and normal array buffer section referencing:
-            try {
-                return this.outputBuffer.subarray(0, sliceAmount);
-            }
-            catch (error) {
-                try {
-                    // Regular array pass:
-                    this.outputBuffer.length = sliceAmount;
-                    return this.outputBuffer;
-                }
-                catch (error) {
-                    // Nightly Firefox 4 used to have the subarray function named as slice:
-                    return this.outputBuffer.slice(0, sliceAmount);
-                }
-            }
-        }
-    };
-    GoogleResampler.prototype.initializeBuffers = function (generateTailCache) {
-        // Initialize the internal buffer:
-        try {
-            this.outputBuffer = new Float32Array(this.outputBufferSize);
-            this.lastOutput = new Float32Array(this.channels);
-        }
-        catch (error) {
-            this.outputBuffer = [];
-            this.lastOutput = [];
-        }
-    };
-    return GoogleResampler;
-}());
-
-/**
- * GoogleAudioRecorder, sammelt Audio-Daten und gibt sie an Google-ASR2 weiter.
- *
- * Zur Zeit wird nur PCM-Codec unterstuetzt.
- *
- * Letzte Aenderung: 14.02.2020
- * Status: rot
- *
- * @module cloud/google/audio
- * @author SB
- */
-// import { AudioEncoder } from './audio-encoder';
-/**
- * Klasse GoogleAudioRecorder zum Aufnehmen von Audiodaten und streamen ueber eine WebSocket
- */
-var GoogleAudioRecorder2 = /** @class */ (function (_super) {
-    __extends(GoogleAudioRecorder2, _super);
-    // opusEncoder = null;
-    /**
-     * Konstruktor
-     *
-     * @param {AudioContext} aAudioContext - AudioContext-Objekt
-     * @param {(aVolumeData) => void} aVolumeCallback - Callback-Funktion
-     */
-    function GoogleAudioRecorder2(aAudioContext, aVolumeCallback) {
-        var _this = _super.call(this, 'GoogleAudioRecorder2') || this;
-        // Komponenten
-        _this.mAudioContext = null;
-        _this.mAudioCodec = null;
-        _this.mResampler = null;
-        // Audio-Paramter
-        _this.mBufferSize = GOOGLE_AUDIOBUFFER_SIZE;
-        _this.mSampleRate = GOOGLE_AUDIOSAMPLE_RATE; // 16k up to server
-        _this.mCodec = GOOGLE_DEFAULT_CODEC;
-        // Audio-Knoten
-        _this.mAudioInputNode = null;
-        _this.mAnalyseNode = null;
-        _this.mRecordingNode = null;
-        // Audio-Daten
-        _this.mUserMediaStream = null;
-        _this.mChannelDataList = [];
-        _this.mBytesRecorded = 0;
-        _this.mRecordingFlag = false;
-        // Event-Funktionen
-        _this.mOnVolumeFunc = null;
-        _this.mOnEndedFunc = null;
-        _this.mAudioContext = aAudioContext;
-        _this.mOnVolumeFunc = aVolumeCallback;
-        // TODO: wird hier erst mal temporaer eingefuegt. Muss spaeter einmal uebergeben werden
-        _this.mAudioCodec = new GoogleAudioCodec();
-        /****
-        if ($("#codec").val() === "audio/L16;rate=8000" || $("#codec").val() === "audio/opus;rate=8000") {
-            mSampleRate = 8000;
-        }
-        ****/
-        try {
-            _this.mResampler = new GoogleResampler(_this.mAudioContext.sampleRate, _this.mSampleRate, 1, _this.mBufferSize, undefined);
-        }
-        catch (aException) {
-            // console.log('GoogleAudioRecorder: Exception', aException.message);
-            _this._exception('constructor', aException);
-            // Exception wird geworfen, da AudioRecorder nicht funktionsfaehig ist !
-            throw new Error('GoogleAudioRecorder2 nicht initialisiert');
-        }
-        return _this;
-        // this.opusEncoderSetup( this.mSampleRate );
-    }
-    // Recorder-Funktionen
-    /**
-     * Hier wird der MediaStream wieder geschlossen, damit das Mikrofon-Symbol
-     * im Browser wieder verschwindet.
-     *
-     * @private
-     */
-    GoogleAudioRecorder2.prototype._closeMediaStream = function () {
-        try {
-            // Schliessen des MediaStreams
-            if (this.mUserMediaStream) {
-                // pruefen, ob Tracks vorhanden sind
-                if (this.mUserMediaStream.getAudioTracks) {
-                    var trackList = this.mUserMediaStream.getAudioTracks();
-                    // console.log('GoogleAudioSource.start: Tracks = ', trackList);
-                    for (var _i = 0, trackList_1 = trackList; _i < trackList_1.length; _i++) {
-                        var track = trackList_1[_i];
-                        if (track.stop) {
-                            track.stop();
-                        }
-                    }
-                }
-            }
-        }
-        catch (aException) {
-            // console.log('GoogleAudioRecorder._closeMediaStream: Exception', aException);
-            this._exception('_closeMediaStream', aException);
-        }
-        this.mUserMediaStream = null;
-    };
-    GoogleAudioRecorder2.prototype.getAudioData = function (aDataList) {
-        // console.log('GoogleAudioRecorder2.getAudioData', aDataList);
-        // pruefen auf Gesamtanzahl aller Bytes
-        var count = 0;
-        for (var _i = 0, aDataList_1 = aDataList; _i < aDataList_1.length; _i++) {
-            var array = aDataList_1[_i];
-            count += array.length;
-        }
-        // Arraybuffer mit Gesamtanzahl der Bytes erzeugen
-        var typedArray = new Int16Array(count);
-        var index = 0;
-        for (var _a = 0, aDataList_2 = aDataList; _a < aDataList_2.length; _a++) {
-            var array = aDataList_2[_a];
-            for (var i = 0; i < array.length; i++) {
-                typedArray[index] = array[i];
-                index++;
-            }
-        }
-        // Buffer zurueckgeben
-        return typedArray.buffer;
-    };
-    /**
-     * Hier wird der Ende-Handler ausgefuehrt
-     *
-     * @private
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleAudioRecorder2.prototype._onEnded = function () {
-        // console.log('GoogleAudioRecorder2._onEnded:', this.mOnEndedFunc);
-        // Verarbeiten der Daten zu einem ArrayBuffer
-        var buffer = this.getAudioData(this.mChannelDataList);
-        if (typeof this.mOnEndedFunc === 'function') {
-            try {
-                this.mOnEndedFunc(buffer);
-            }
-            catch (aException) {
-                // console.log('GoogleAudioRecorder._onEnded: Exception', aException);
-                this._exception('_onEnded', aException);
-                return -1;
-            }
-        }
-        return 0;
-    };
-    /**
-     * Hier wird der Volumen-Callback Aufruf getaetigt
-     *
-     * @private
-     * @param {*} aVolumeData - Volumendaten zur Auswertung
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleAudioRecorder2.prototype._onVolume = function (aVolumeData) {
-        // console.log('GoogleAudioRecorder._onVolume:', this.mOnVolumeFunc, aVolumeData);
-        if (typeof this.mOnVolumeFunc === 'function') {
-            try {
-                this.mOnVolumeFunc(aVolumeData);
-            }
-            catch (aException) {
-                // console.log('GoogleAudioRecorder._onVolume: Exception', aException);
-                this._exception('_onVolume', aException);
-                return -1;
-            }
-        }
-        return 0;
-    };
-    /**
-     * Audioprozess Funktion
-     *
-     * @private
-     * @param {*} aEvent - AudioProzess-Event mit InputDaten vom Mikrofon
-     */
-    GoogleAudioRecorder2.prototype._onAudioProcess = function (aEvent) {
-        var _this = this;
-        // console.log('NuanceAudioSource._onAudioProcess: ', this.mRecordingFlag, aEvent);
-        try {
-            // Audioprozess beenden
-            if (!this.mRecordingFlag) {
-                this.mAudioInputNode.disconnect(this.mAnalyseNode);
-                this.mAnalyseNode.disconnect(this.mRecordingNode);
-                this.mRecordingNode.disconnect(this.mAudioContext.destination);
-                this._closeMediaStream();
-                // console.log('GoogleAudioRecorder2._onAudioProcess: disconnect: ', this._onEnded);
-                this._onEnded();
-                // TODO: hier sollte ein Event fuer das ausgeschaltete Mikrofon hin
-                return;
-            }
-            // Audiodaten sammeln
-            var inputData = aEvent.inputBuffer.getChannelData(0);
-            var _inputData = this.mResampler.resampler(inputData);
-            // this.mChannelDataList.push( _inputData );
-            this.mBytesRecorded += _inputData.length;
-            var ampArray = new Uint8Array(this.mAnalyseNode.frequencyBinCount);
-            this.mAnalyseNode.getByteTimeDomainData(ampArray);
-            // pruefen auf Codec
-            if (this.mAudioCodec.findPcmCodec(this.mCodec)) {
-                var encodedList = this.mAudioCodec.encodePCM(_inputData, this.mCodec);
-                encodedList.forEach(function (typedArray) {
-                    // console.log('GoogleAudioRecorder2._onAudioProcess:', typedArray);
-                    // TODO: hier muessen die Daten zu einem einzigen Array gesammelt werden
-                    // Daten senden ueber WebSocket
-                    // this.mWebSocket.send( typedArray.buffer )
-                    _this.mChannelDataList.push(typedArray);
-                });
-            }
-            else if (this.mAudioCodec.findOpusCodec(this.mCodec)) {
-                // this.encodeOpusAndSend( _inputData, this.mWebSocket );
-            }
-            this._onVolume(ampArray);
-        }
-        catch (aException) {
-            this._exception('_onAudioProcess', aException);
-        }
-    };
-    /**
-     * Startet die Audioaufnahmen und das Audiostreaming
-     *
-     * @param {MediaStream} aUserMediaStream - MediaStream vom Aufnahmegeraet(Mikrofon)
-     * @param {string} aCodec - Audio-Codec
-     */
-    GoogleAudioRecorder2.prototype.start = function (aUserMediaStream, aCodec) {
-        var _this = this;
-        // console.log('GoogleAudioRecorder2.start: start', aUserMediaStream, aCodec);
-        this.mRecordingFlag = true;
-        this.mUserMediaStream = aUserMediaStream;
-        this.mCodec = aCodec;
-        // Fuer Chrome muss hier mAudioContext.resume() aufgerufen werden, da Chrome das Web-API mit einer Policy versehen hat,
-        // nach der nur nach einer User-Aktion das Web-API ausgefuehrt werden kann. Wenn der Context vor einer User-Aktion
-        // erzeugt wird, ist er im syspend-Modus und muss mit resume() umgeschaltet werden.
-        this.mAudioContext.resume().then(function () {
-            // console.log('GoogleAudioRecorder2.start: resume')
-            try {
-                // TODO: RecordingFlag muss frueher gesetzt werden !
-                // this.mRecordingFlag = true;
-                _this.mAudioInputNode = _this.mAudioContext.createMediaStreamSource(_this.mUserMediaStream);
-                _this.mAnalyseNode = _this.mAudioContext.createAnalyser();
-                _this.mRecordingNode = _this.mAudioContext.createScriptProcessor(_this.mBufferSize, 1, 2);
-                // Audioprozess-Funktion
-                _this.mRecordingNode.onaudioprocess = function (aEvent) { return _this._onAudioProcess(aEvent); };
-                // alle Audioknoten miteinander verbinden
-                _this.mAudioInputNode.connect(_this.mAnalyseNode);
-                _this.mAnalyseNode.connect(_this.mRecordingNode);
-                _this.mRecordingNode.connect(_this.mAudioContext.destination);
-                // TODO: hier sollte ein Event fuer das eingeschaltete Mikrofon hin
-            }
-            catch (aException) {
-                console.log('GoogleAudioRecorder2.start: Exception', aException);
-                _this._exception('start', aException);
-            }
-            // console.log('GoogleAudioRecorder2.start: end ', this.mRecordingFlag);
-        }, function (aError) {
-            // console.log('GoogleAudioRecorder2.start: Resume-Error', aError);
-            if (aError && aError.message) {
-                _this._error('start.resume', aError.message);
-            }
-        });
-    };
-    /**
-     * Audiodaten fuer Uebertragung nach Nuance verwenden, anstelle des Mikrofons
-     *
-     * @param {*} aAudioData - Audiodaten aus Audiodatei
-     * @param {string} aCodec - Audio-Codec
-     */
-    // TODO: Problem mit der Uebertragung an Nuance als Stream
-    GoogleAudioRecorder2.prototype.startAudio = function (aAudioData, aCodec) {
-        // console.log('GoogleAudioRecorder.startAudio:', aCodec);
-        // TODO: Audiodaten in Bloecke aufteilen und verarbeiten
-        // Schleife fuer alle Audiodaten versenden
-    };
-    /**
-     * Stop-Funktion fuer Audioaufnahme
-     *
-     * @param {() => void} aOnEndedFunc - Handler fuer Ende der Audioaufnahme
-     */
-    GoogleAudioRecorder2.prototype.stop = function (aOnEndedFunc) {
-        // console.log('GoogleAudioRecorder2.stop');
-        this.mOnEndedFunc = aOnEndedFunc;
-        this.mRecordingFlag = false;
-    };
-    return GoogleAudioRecorder2;
-}(ErrorBase));
-
-/**
- * GoogleAudioPlayer fuer Abspielen von Sprachdaten
- *
- * Zur Zeit wird nur PCM-Codec unterstuetzt.
- *
- * Letzte Aenderung: 07.05.2019
- * Status: rot
- *
- * @module cloud/google/audio
- * @author SB
- */
-// Minimum-Samplerate fuer Safari
-var AUDIO_MIN_SAMPLERATE = 22500;
-/**
- * Klasse GoogleAudioPlayer zum Absielen des Google-Audiostreams
- */
-var GoogleAudioPlayer = /** @class */ (function (_super) {
-    __extends(GoogleAudioPlayer, _super);
-    // mOpusDecoder = null;
-    /**
-     * Konstruktor
-     *
-     * @param aAudioContext - globaler AudioContext
-     */
-    function GoogleAudioPlayer(aAudioContext) {
-        var _this = _super.call(this, 'NuanceAudioPlayer') || this;
-        _this.mAudioContext = null;
-        _this.mAudioCodec = null;
-        _this.mResampler = null;
-        _this.mOnAudioEndFunc = null;
-        _this.mAudioSource = null;
-        _this.mAudioArray = [];
-        _this.mQueue = [];
-        _this.mBeginSpeakFlag = true;
-        _this.mAudioStopFlag = false;
-        _this.mAudioBuffer = null;
-        _this.mSource = null;
-        _this.mAudioContext = aAudioContext;
-        // TODO: wird hier erst mal temporaer eingefuegt. Muss spaeter einmal uebergeben werden
-        _this.mAudioCodec = new GoogleAudioCodec();
-        return _this;
-    }
-    /**
-     * Start der Wiedergabe
-     */
-    GoogleAudioPlayer.prototype.start = function () {
-        this.mOnAudioEndFunc = null;
-        this.mAudioSource = null;
-        this.mAudioArray = [];
-        this.mQueue = [];
-        this.mBeginSpeakFlag = true;
-        this.mAudioStopFlag = false;
-    };
-    // AudioBuffer-Funktionen
-    /**
-     * Hier wird der AudioBuffer direkt ueber seinen Constructor erzeugt
-     *
-     * @private
-     * @param aData - Audiodaten
-     *
-     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
-     */
-    GoogleAudioPlayer.prototype._getAudioBufferFirst = function (aData) {
-        var audioBuffer = null;
-        // fuer die meisten aktuellen Browser mit AudioBuffer Constructor 
-        try {
-            var audioToPlay = new Float32Array(aData.length);
-            audioToPlay.set(aData);
-            // console.log('NuanceAudioPlayer.playByStream: buffer direkt erzeugen:', audioToPlay.length);
-            audioBuffer = new AudioBuffer({ length: audioToPlay.length, numberOfChannels: 1, sampleRate: GOOGLE_AUDIOSAMPLE_RATE });
-            audioBuffer.getChannelData(0).set(audioToPlay);
-        }
-        catch (aException) {
-            audioBuffer = null;
-            console.log('NuanceAudioPlayer._getAudioBufferFirst: Exception', aException);
-        }
-        return audioBuffer;
-    };
-    /**
-     * Hier wird der AudioBuffer ueber AudioContext.createBuffer() erzeugt
-     *
-     * @private
-     * @param aData  - Audiodaten
-     *
-     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
-     */
-    GoogleAudioPlayer.prototype._getAudioBufferSecond = function (aData) {
-        var audioBuffer = null;
-        // fuer die Browser ohne AudioBuffer Constructor
-        try {
-            var audioToPlay = new Float32Array(aData.length);
-            audioToPlay.set(aData);
-            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 16000 Samplerate:', audioToPlay.length);
-            audioBuffer = this.mAudioContext.createBuffer(1, audioToPlay.length, GOOGLE_AUDIOSAMPLE_RATE);
-            audioBuffer.getChannelData(0).set(audioToPlay);
-        }
-        catch (aException) {
-            audioBuffer = null;
-            console.log('NuanceAudioPlayer._getAudioBufferSecond: Exception', aException);
-        }
-        return audioBuffer;
-    };
-    /**
-     * Hier wird der Audiobuffer mit Resample erzeugt, um in Safari abgespielt zu werden
-     * SapmpleRate wird von PCM 16000 Hz auf 22500 Hz angehoben, da createBuffer in Safari
-     * erst ab dieser Frequenz arbeitet.
-     *
-     * @private
-     * @param aData - Audiodaten
-     *
-     * @return {AudioBuffer} Rueckgabe des erzeugten Audiobuffers oder null bei einem Fehler
-     */
-    GoogleAudioPlayer.prototype._getAudioBufferResample = function (aData) {
-        var audioBuffer = null;
-        // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
-        // hier wird der Resampler eingesetzt
-        try {
-            // notwendig ist ein groesseres FloatArray 22500/16000 = 1.4 
-            var audioToPlay = new Float32Array(aData.length * 1.4);
-            audioToPlay.set(aData);
-            // Resampler, um die Frequenz des AudioBuffers anzuheben auf 22500 Hz fuer Safari
-            this.mResampler = new GoogleResampler(GOOGLE_AUDIOSAMPLE_RATE, AUDIO_MIN_SAMPLERATE, 1, audioToPlay.length, undefined);
-            var _audioToPlay = this.mResampler.resampler(audioToPlay);
-            // console.log('NuanceAudioPlayer.playByStream: buffer erzeugen mit 22500 Samplerate:', _audioToPlay.length);
-            audioBuffer = this.mAudioContext.createBuffer(1, _audioToPlay.length, AUDIO_MIN_SAMPLERATE);
-            audioBuffer.getChannelData(0).set(_audioToPlay);
-        }
-        catch (aException) {
-            audioBuffer = null;
-            console.log('NuanceAudioPlayer._getAudioBufferResample: Exception', aException);
-        }
-        return audioBuffer;
-    };
-    // Player-Funktionen
-    /**
-     * Abspielen des Audiostreams
-     *
-     * @param {*} aOptions - Optionen
-     * @param {*} aAudioArray - Audiostream
-     */
-    GoogleAudioPlayer.prototype.playByStream = function (aOptions, aAudioArray) {
-        var _this = this;
-        try {
-            // console.log('NuanceConnect.playByStream: start', this.mAudioStopFlag);
-            this.mOnAudioEndFunc = aOptions.onaudioend;
-            if (aAudioArray.length === 0 || this.mAudioStopFlag) {
-                this.mBeginSpeakFlag = true;
-                // console.log( 'NuanceConnect.connect: source.onended' );
-                aOptions.onaudioend();
-                this.mOnAudioEndFunc = null;
-                this.mAudioSource = null;
-                return;
-            }
-            // console.log('NuanceAudioPlayer.playByStream: AudioContext.state = ', this.mAudioContext.state);
-            this.mAudioSource = this.mAudioContext.createBufferSource();
-            // TODO: falls mehrere Stream-Abschnitte verwendet werden
-            this.mAudioSource.onended = function () { return _this.playByStream(aOptions, aAudioArray); };
-            /*
-            source.onended = () => {
-                console.log( 'NuanceConnect.connect: source.onended' );
-                aOptions.onaudioend();
-            };
-            */
-            var desiredSampleRate = GOOGLE_AUDIOSAMPLE_RATE;
-            /*
-            if ($("#selectCodec").val() === "audio/L16;rate=8000" || $("#selectCodec").val() === "audio/opus;rate=8000") {
-                desiredSampleRate = 8000;
-            }
-            */
-            // AudioBuffer direkt erzeugen
-            var data = aAudioArray.shift();
-            var audioBuffer = this._getAudioBufferFirst(data);
-            // fuer die Browser ohne AudioBuffer Constructor
-            if (!audioBuffer) {
-                audioBuffer = this._getAudioBufferSecond(data);
-            }
-            // Fuer Safari wird eine hoehere SampleRate als 16000 benoetigt, da createBuffer sonst nicht funktioniert
-            // hier wird der Resampler eingesetzt
-            if (!audioBuffer) {
-                audioBuffer = this._getAudioBufferResample(data);
-            }
-            if (!audioBuffer) {
-                this._error('playByStream', 'kein Audiobuffer erzeugt');
-                return;
-            }
-            this.mAudioSource.buffer = audioBuffer;
-            this.mAudioSource.connect(this.mAudioContext.destination);
-            // console.log('NuanceAudioPlayer.playByStream: audio start', this.mAudioSource);
-            if (this.mAudioSource.start) {
-                this.mAudioSource.start(0);
-            }
-            else {
-                this.mAudioSource.noteOn(0);
-            }
-            aOptions.onaudiostart();
-            // console.log('NuanceConnect.playByStream: end');
-        }
-        catch (aException) {
-            this.mBeginSpeakFlag = true;
-            // console.log( 'NuanceConnect.connect: source.onended' );
-            aOptions.onaudioend();
-            this.mOnAudioEndFunc = null;
-            this.mAudioSource = null;
-            console.log('NuanceAudioPlayer.playByStream: Exception', aException);
-            this._exception('playByStream', aException);
-        }
-    };
-    /**
-     * Audiodaten abspielen
-     *
-     * @param aOptions - optionale Parameter (codec, onaudiostart)
-     * @param aAudioData - abzuspielende Audiodaten
-     */
-    GoogleAudioPlayer.prototype.decodeStream = function (aOptions, aAudioData) {
-        try {
-            // console.log('NuanceConnect.connect: object');
-            if (this.mAudioCodec.findPcmCodec(aOptions.codec)) {
-                var decodePCM16KData = this.mAudioCodec.decodePCM(aAudioData);
-                this.mAudioArray.push(decodePCM16KData);
-                this.mQueue.push(decodePCM16KData);
-                // console.log('NuanceConnect.connect: PCM AudioSink', this.mBeginSpeakFlag);
-                if (this.mBeginSpeakFlag) {
-                    this.mBeginSpeakFlag = false;
-                    this.playByStream(aOptions, this.mAudioArray);
-                }
-            }
-            else if (this.mAudioCodec.findOpusCodec(aOptions.codec)) {
-                /* Opus-Codec
-                audioOpusDecodeArray.push( aMessage.data );
-                if ( beginOpusDecodeFlag ) {
-                    beginOpusDecodeFlag = false;
-                    decodeOpus( audioOpusDecodeArray.shift(), this.mAudioSink.mQueue );
-                }
-                */
-            }
-            else {
-                this._error('decode', 'Kein Decoder vorhanden fuer ' + aOptions.codec);
-            }
-        }
-        catch (aException) {
-            this._exception('decode', aException);
-        }
-    };
-    /**
-     * Dekodieren der Audiodaten (MP3)
-     *
-     * @private
-     * @return {number} errorCode (0,-1) - Fehlercode
-     */
-    GoogleAudioPlayer.prototype.decodeAudio = function (aOptions, aData) {
-        var _this = this;
-        if (!this.mAudioContext) {
-            this._error('_decodeAudio', 'kein AudioContext vorhanden');
-            return -1;
-        }
-        try {
-            this.mAudioContext.decodeAudioData(aData, function (aBuffer) {
-                // console.log('AudioPlayer._decodeAudio: decodeAudioData start', aBuffer);
-                _this.mAudioBuffer = aBuffer;
-                _this._playStart(aOptions);
-                // console.log('AudioPlayer._decodeAudio: decodeAudioData end');
-            }, function (aError) {
-                // TODO: muss in Fehlerbehandlung uebertragen werden
-                // console.log('AudioPlayer._decodeAudio:', aError);
-                _this._error('_decodeAudio', 'DOMException');
-            });
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_decodeAudio', aException);
-            return -1;
-        }
-    };
-    /**
-     * Start der Audioausgabe
-     *
-     * @private
-     * @return {number} errorCode (0,-1) - Fehlercode
-     */
-    GoogleAudioPlayer.prototype._playStart = function (aOptions) {
-        // console.log('GoogleAudioPlayer._playStart:', aOptions);
-        if (!this.mAudioBuffer) {
-            this._error('_playStart', 'kein AudioBuffer vorhanden');
-            return -1;
-        }
-        if (!this.mAudioContext) {
-            this._error('_playStart', 'kein AudioContext vorhanden');
-            return -1;
-        }
-        // Create two sources and play them both together.
-        try {
-            this.mSource = this.mAudioContext.createBufferSource();
-            // Ende-Event
-            this.mSource.onended = function () {
-                // TODO: hier muss ein Ende-Event fuer Audio-Ende eingebaut werden
-                // console.log('GoogleAudioPlayer._playStart: onended');
-                // Audio Stop-Ereignis senden
-                if (aOptions.onaudioend) {
-                    aOptions.onaudioend();
-                }
-            };
-            this.mSource.buffer = this.mAudioBuffer;
-            this.mSource.connect(this.mAudioContext.destination);
-            // console.log('AudioPlayer._playStart: ', this.mSource, this.mAudioContext.state);
-            if (this.mSource.start) {
-                this.mSource.start(0);
-            }
-            else {
-                this.mSource.noteOn(0);
-            }
-            // Audio Start-Ereignis senden
-            if (aOptions.onaudiostart) {
-                aOptions.onaudiostart();
-            }
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_playStart', aException);
-            return -1;
-        }
-    };
-    /**
-     * Audioausgabe stoppen
-     */
-    GoogleAudioPlayer.prototype.stop = function () {
-        try {
-            // console.log('NuanceAudioSink.stop');
-            this.mAudioStopFlag = true;
-            if (this.mAudioSource) {
-                this.mAudioSource.stop(0);
-                this.mAudioSource.disconnect(0);
-                if (typeof this.mOnAudioEndFunc === 'function') {
-                    // console.log( 'NuanceAudioPlayer.stop: send onended event' );
-                    this.mOnAudioEndFunc();
-                }
-            }
-        }
-        catch (aException) {
-            this._exception('stop', aException);
-        }
-        this.mAudioSource = null;
-    };
-    GoogleAudioPlayer.prototype.stopAudio = function () {
-        // console.log('GoogleAudioPlayer.stopAudio');
-        if (this.mSource) {
-            try {
-                if (this.mSource.stop) {
-                    this.mSource.stop(0);
-                }
-                else {
-                    this.mSource.noteOff(0);
-                }
-                this.mSource.disconnect(0);
-            }
-            catch (aException) {
-                this._exception('stop', aException);
-            }
-            this.mSource = null;
-            this.mAudioBuffer = null;
-        }
-    };
-    return GoogleAudioPlayer;
-}(ErrorBase));
-
-/**
+/** @packageDocumentation
  * NLU Anbindung an den Google-Service, hier wird nur ein Text in einen Intent umgewandelt
  * Zugriff erfolgt mit Hilfe eines AccessTokens, welche vom Dialogflow-Tokenserver geholt werden muss.
  * Das AccessToken hat eine Stunde Gueltigkeit.
  *
- * Letzte Aenderung: 27.03.2020
+ * Letzte Aenderung: 20.06.2020
  * Status: rot
  *
  * @module cloud/google/device
@@ -2379,6 +2113,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
         _this.mUserMediaStream = null;
         _this.mRecordingFlag = false;
         _this.mStopFlag = false;
+        _this.mSpeakFlag = false;
         _this.mVolumeCounter = 0;
         _this.mMaxVolumeCounter = ASR_BEGINMAXVOLUME_COUNTER;
         _this.mTimeoutCounter = 0;
@@ -2464,15 +2199,26 @@ var GoogleNLU2 = /** @class */ (function (_super) {
      */
     GoogleNLU2.prototype.getDetectIntentText = function (aText, aLanguage) {
         return __awaiter(this, void 0, void 0, function () {
-            var accessToken, response, responseJSON, aException_2;
+            var sessionId, serverUrl, accessToken, response, responseJSON, aException_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
+                        sessionId = this.mConfig.dialogflowSessionId;
+                        // Zufalls-Session, wenn keine Session vorhanden
+                        if (!sessionId) {
+                            sessionId = Math.floor(Math.random() * Math.floor(9999999999)).toString();
+                            this.mConfig.dialogflowSessionId = sessionId;
+                        }
+                        serverUrl = DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/" + sessionId + ":detectIntent";
+                        // Server-URL fuer published Environment-Version des Dialogflow-Agenten
+                        if (this.mConfig.dialogflowEnvironmentName) {
+                            serverUrl = DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/environments/" + this.mConfig.dialogflowEnvironmentName + "/users/-/sessions/" + sessionId + ":detectIntent";
+                        }
                         return [4 /*yield*/, this.getAccessToken()];
                     case 1:
                         accessToken = _a.sent();
-                        return [4 /*yield*/, fetch(DIALOGFLOW_SERVER_URL + "/" + this.mConfig.dialogflowProjectId + "/agent/sessions/123456789:detectIntent", {
+                        return [4 /*yield*/, fetch(serverUrl, {
                                 method: 'POST',
                                 mode: 'cors',
                                 headers: {
@@ -2567,7 +2313,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
             // Intent zurueckgeben
             this._onResult(aResponse);
             // pruefen auf Abspielen von Audio (MP3)
-            if (!this.mStopFlag) {
+            if (this.mSpeakFlag && !this.mStopFlag) {
                 // pruefen auf MP3-Codec
                 if (aResponse.outputAudioConfig && aResponse.outputAudioConfig.audioEncoding === 'OUTPUT_AUDIO_ENCODING_MP3') {
                     ttsResult = this._startTTS(aOption, aResponse.outputAudio);
@@ -2627,6 +2373,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
         this.mStopFlag = true;
         this._stopASR({});
         this._stopTTS();
+        this._onStop();
     };
     // ASR-Funktionen
     GoogleNLU2.prototype.encodeBase64 = function (aBuffer) {
@@ -2699,7 +2446,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
         this.mTimeoutCounter = 0;
         // Audiosource einrichten
         try {
-            this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function (aVolumeData) {
+            this.mAudioRecorder = new AudioRecorder(null, this.mAudioContext, function (aVolumeData) {
                 // console.log( 'GoogleASR2._startASR: volumeCallback ' + aVolumeData + '\n\n\n');
                 if (!_this.isVolume(aVolumeData)) {
                     _this._stopASR(aOption);
@@ -2852,7 +2599,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
                 return -1;
             }
             // Audioplayer erzeugen
-            this.mAudioPlayer = new GoogleAudioPlayer(this.mAudioContext);
+            this.mAudioPlayer = new AudioPlayer(this.mAudioContext);
             this.mAudioPlayer.start();
             var options = {
                 onaudiostart: function () {
@@ -2882,7 +2629,7 @@ var GoogleNLU2 = /** @class */ (function (_super) {
         // console.log('GoogleNLU2._stopTTS');
         if (this.mAudioPlayer) {
             // fuer Streams
-            // this.mAudioPlayer.stop();
+            // this.mAudioPlayer.stopOld();
             // fuer MP3
             this.mAudioPlayer.stopAudio();
             this._onStop();
@@ -2892,10 +2639,10 @@ var GoogleNLU2 = /** @class */ (function (_super) {
     return GoogleNLU2;
 }(GoogleDevice));
 
-/**
+/** @packageDocumentation
  * ASR Anbindung an den Google-Service (Tokenserver)
  *
- * Letzte Aenderung: 27.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module cloud/google/device
@@ -3169,7 +2916,7 @@ var GoogleASR2 = /** @class */ (function (_super) {
         this.mTimeoutCounter = 0;
         // Audiosource einrichten
         try {
-            this.mAudioRecorder = new GoogleAudioRecorder2(this.mAudioContext, function (aVolumeData) {
+            this.mAudioRecorder = new AudioRecorder(null, this.mAudioContext, function (aVolumeData) {
                 // console.log( 'GoogleASR2._startASR: volumeCallback ' + aVolumeData + '\n\n\n');
                 if (!_this.isVolume(aVolumeData)) {
                     _this._stop();
@@ -3284,10 +3031,10 @@ var GoogleASR2 = /** @class */ (function (_super) {
     return GoogleASR2;
 }(GoogleDevice));
 
-/**
+/** @packageDocumentation
  * TTS2 Anbindung an den Google-Service (Tokenserver)
  *
- * Letzte Aenderung: 08.03.2020
+ * Letzte Aenderung: 30.05.2020
  * Status: rot
  *
  * @module cloud/google/device
@@ -3459,7 +3206,7 @@ var GoogleTTS2 = /** @class */ (function (_super) {
                 // console.log('GoogleTTS2._start: response = ', aResponse );
                 try {
                     // Audioplayer erzeugen
-                    _this.mAudioPlayer = new GoogleAudioPlayer(_this.mAudioContext);
+                    _this.mAudioPlayer = new AudioPlayer(_this.mAudioContext);
                     _this.mAudioPlayer.start();
                     var options = {
                         // codec: GOOGLE_PCM_CODEC,
@@ -3472,7 +3219,7 @@ var GoogleTTS2 = /** @class */ (function (_super) {
                         }
                     };
                     // Stream dekodieren
-                    // this.mAudioPlayer.decodeStream( options, aData );
+                    // this.mAudioPlayer.decodeOld( options, aData );
                     // MP3-Audio dekodieren
                     var audioContent = aResponse.audioContent;
                     // console.log('GoogleTTS2._start:', audioContent);
@@ -3500,7 +3247,7 @@ var GoogleTTS2 = /** @class */ (function (_super) {
         // this.mConnect.sendJSON( audioEndMessage );
         if (this.mAudioPlayer) {
             // fuer Streams
-            // this.mAudioPlayer.stop();
+            // this.mAudioPlayer.stopOld();
             // fuer MP3
             this.mAudioPlayer.stopAudio();
             this._onStop();
@@ -3510,12 +3257,12 @@ var GoogleTTS2 = /** @class */ (function (_super) {
     return GoogleTTS2;
 }(GoogleDevice));
 
-/**
+/** @packageDocumentation
  * GooglePort zur Verbindung des Google Cloud-Service mit dem Framework
  * Stellt Grundfunktionen von Google zur Verfuegung. Werden von mehreren anderen
  * Komponenten geteilt.
  *
- * Letzte Aenderung: 04.05.2020
+ * Letzte Aenderung: 20.06.2020
  * Status: rot
  *
  * @module cloud/google
@@ -4056,10 +3803,20 @@ var GooglePort = /** @class */ (function (_super) {
                     }
                 }
                 if (typeof aConfigData.dialogflowProjectId === 'string' && aConfigData.dialogflowProjectId) {
-                    if (this.mGoogleConfig.dialogflowProjectId = aConfigData.dialogflowProjectId) {
+                    if (this.mGoogleConfig.dialogflowProjectId !== aConfigData.dialogflowProjectId) {
                         this.mGoogleConfig.dialogflowProjectId = aConfigData.dialogflowProjectId;
                         // Loeschen der Token, nur wenn sich der Wert geaendert hat
                         this.mGoogleNLU2.clearToken();
+                    }
+                }
+                if (typeof aConfigData.dialogflowSessionId === 'string' && aConfigData.dialogflowSessionId) {
+                    if (this.mGoogleConfig.dialogflowSessionId !== aConfigData.dialogflowSessionId) {
+                        this.mGoogleConfig.dialogflowSessionId = aConfigData.dialogflowSessionId;
+                    }
+                }
+                if (typeof aConfigData.dialogflowEnvironmentName === 'string' && aConfigData.dialogflowEnvironmentName) {
+                    if (this.mGoogleConfig.dialogflowEnvironmentName !== aConfigData.dialogflowEnvironmentName) {
+                        this.mGoogleConfig.dialogflowEnvironmentName = aConfigData.dialogflowEnvironmentName;
                     }
                 }
                 /****
@@ -4090,7 +3847,9 @@ var GooglePort = /** @class */ (function (_super) {
             googleAppKey: this.mGoogleConfig.appKey,
             googleServerUrl: this.mGoogleConfig.serverUrl,
             dialogflowTokenServerUrl: this.mGoogleConfig.dialogflowTokenServerUrl,
-            dialogflowProjectId: this.mGoogleConfig.dialogflowProjectId
+            dialogflowProjectId: this.mGoogleConfig.dialogflowProjectId,
+            dialogflowSessionId: this.mGoogleConfig.dialogflowSessionId,
+            dialogflowEnvironmentName: this.mGoogleConfig.dialogflowEnvironmentName
             // googleNluTag: this.mGoogleConfig.nluTag
         };
         return configData;
@@ -4397,19 +4156,19 @@ var GooglePort = /** @class */ (function (_super) {
             var result = 0;
             switch (aAction) {
                 case GOOGLE_NLU_ACTION:
-                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_NLU_ACTION);
+                    _this.mTransaction = new PortTransaction(aPluginName, GOOGLE_NLU_ACTION);
                     result = _this._startNLU(_this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE);
                     break;
                 case GOOGLE_ASRNLU_ACTION:
-                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
+                    _this.mTransaction = new PortTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
                     result = _this._startASRNLU(_this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE);
                     break;
                 case GOOGLE_ASR_ACTION:
-                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASR_ACTION);
+                    _this.mTransaction = new PortTransaction(aPluginName, GOOGLE_ASR_ACTION);
                     result = _this._startASR(_this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', false, option.useProgressive || false);
                     break;
                 case GOOGLE_TTS_ACTION:
-                    _this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_TTS_ACTION);
+                    _this.mTransaction = new PortTransaction(aPluginName, GOOGLE_TTS_ACTION);
                     result = _this._startTTS(_this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE, option.voice || GOOGLE_DEFAULT_VOICE);
                     break;
                 default:
@@ -4524,7 +4283,7 @@ var GooglePort = /** @class */ (function (_super) {
      * Intent zu einem Text holen
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      * @param {string} aText - Text der interpretiert werden soll
      * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
      *
@@ -4563,7 +4322,7 @@ var GooglePort = /** @class */ (function (_super) {
      * Intent zu einem gesprochenen Satz holen
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
      *
      * @return {number} Fehlercode 0 oder -1
@@ -4597,7 +4356,7 @@ var GooglePort = /** @class */ (function (_super) {
      * stoppt die Analyse
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      *
      * @return {number} Fehlercode 0 oder -1
      */
@@ -4623,7 +4382,7 @@ var GooglePort = /** @class */ (function (_super) {
      * startet die Recognition
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      *
      * @returns {number} Fehlercode 0 oder -1
      */
@@ -4660,7 +4419,7 @@ var GooglePort = /** @class */ (function (_super) {
      * stoppt die Recognition
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      *
      * @return {number} Fehlercode 0 oder -1
      */
@@ -4685,7 +4444,7 @@ var GooglePort = /** @class */ (function (_super) {
      * startet die TTS
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      * @param {string} aText - auszusprechender Text
      *
      * @return {number} Fehlercode 0 oder -1
@@ -4729,7 +4488,7 @@ var GooglePort = /** @class */ (function (_super) {
      * stoppt die TTS
      *
      * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
+     * @param {PortTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
      *
      * @return {number} Fehlercode 0 oder -1
      */
@@ -4750,644 +4509,91 @@ var GooglePort = /** @class */ (function (_super) {
     return GooglePort;
 }(Port));
 
-/**
- * GoogleMock zum Testen des Google Cloud-Service mit dem Framework
+/** @packageDocumentation
+ * Globale Fabrik zur Erzeugung eines GooglePorts
  *
- * Letzte Aenderung: 02.10.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/google
  * @author SB
  */
-// Konstanten
-// Asynchrones senden von Events nach 100 millisekunden
-var GOOGLEMOCK_CALLBACK_TIMEOUT = 100;
-/**
- * Definiert die GoogleMock-Klasse
- */
-var GoogleMock = /** @class */ (function (_super) {
-    __extends(GoogleMock, _super);
-    /**
-     * Erzeugt eine Instanz von Port.
-     *
-     * @param {string} aPortName - Name des Ports
-     * @param {boolean} aRegisterFlag - true, wenn Port in PortManager eingetragen werden soll
-     */
-    function GoogleMock(aPortName, aRegisterFlag) {
-        if (aRegisterFlag === void 0) { aRegisterFlag = true; }
-        var _this = _super.call(this, aPortName || GOOGLE_MOCK_NAME, aRegisterFlag) || this;
-        _this.webSocketFlag = true;
-        _this.audioContextFlag = true;
-        _this.getUserMediaFlag = true;
-        _this.googleNLUFlag = true;
-        _this.googleASRFlag = true;
-        _this.googleTTSFlag = true;
-        // weitere Attribute
-        _this.disconnectFlag = true;
-        _this.defaultOptions = null;
-        _this.codec = '';
-        _this.intentName = 'TestIntent';
-        _this.intentConfidence = 1.0;
-        _this.intentSpeech = 'TestSpeech';
-        _this.mDynamicCredentialsFlag = false;
-        _this.mTransaction = null;
-        _this.mRunningFlag = false;
-        // Credentials
-        _this.googleAppId = '';
-        _this.googleAppKey = '';
-        _this.googleNluTag = '';
-        _this.googleServerUrl = '';
-        _this.dialogflowTokenServerUrl = '';
-        _this.dialogflowProjectId = '';
-        return _this;
+// Global API
+var GoogleFactory = /** @class */ (function (_super) {
+    __extends(GoogleFactory, _super);
+    // Konstruktor
+    function GoogleFactory() {
+        return _super.call(this, 'GoogleFactory') || this;
     }
-    // Port-Funktionen
     /**
-     * pruefen auf Mock-Port zum Testen
+     * Typ der erzeugten Objekte der Fabrik zurueckgeben
      *
-     * @return {boolean} mockFlag - true, wenn Port ein Mock zum Testen ist
+     * @return {string} gibt den Typ der Fabrik zurueck
      */
-    GoogleMock.prototype.isMock = function () {
-        return true;
-    };
-    /**
-     * Rueckgabe eines logischen Port-Typs
-     *
-     * @return {string} logischer Typ des Ports fuer unterschiedliche Anwendungsschnittstellen
-     */
-    GoogleMock.prototype.getType = function () {
+    GoogleFactory.prototype.getType = function () {
         return GOOGLE_TYPE_NAME;
     };
     /**
-     * Rueckgabe der Port-Klasse
+     * Name der Fabrik
      *
-     * @return {string} konkrete Klasse des Ports
+     * @return {string} gibt den Namen der Fabrik zurueck
      */
-    GoogleMock.prototype.getClass = function () {
-        return 'GoogleMock';
+    GoogleFactory.prototype.getName = function () {
+        return GOOGLE_FACTORY_NAME;
     };
     /**
-     * Optionen eintragen
-     * @param aOption - optionale Parameter
-     */
-    GoogleMock.prototype._checkCredentials = function (aOption) {
-        if (!aOption) {
-            return false;
-        }
-        if (typeof aOption.googleAppKey === 'string') {
-            this.googleAppKey = aOption.googleAppKey;
-        }
-        // App-Parameter pruefen
-        // TODO: jetzt erst mal nur ACCESS-TOKEN (AppKey) von Dialogflow V1 bis Oktober 2019
-        if (typeof aOption.googleAppKey !== 'string') {
-            return false;
-        }
-        if (!aOption.googleAppKey) {
-            return false;
-        }
-        // App-Parameter sind vorhanden
-        return true;
-    };
-    /**
-     * initialisert den Port
-     *
-     * erlaubte optionale Parameter:
-     *
-     *      activeFlag      - legt fest, ob der Port zum Start aktiviert ist oder nicht
-     *      errorOutputFlag - legt fest, ob die Fehlerausgabe auf der Konsole erfolgt
-     *
-     *
-     * @param {any} aOption - optionale Parameter fuer die Konfiguration des Plugins
-     *
-     * @return {number} errorCode (0,-1) - Fehlercode
-     */
-    GoogleMock.prototype.init = function (aOption) {
-        // console.log('NuanceMock: init start', aOption);
-        if (this.mInitFlag) {
-            this._error('init', 'Init bereits aufgerufen');
-            return 0;
-        }
-        // pruefen auf dynamische Credentials
-        if (aOption && typeof aOption.googleDynamicCredentialsFlag === 'boolean' && aOption.googleDynamicCredentialsFlag) {
-            // dynamische Credentials koennen gesetzt werden
-            this.mDynamicCredentialsFlag = true;
-            this._checkCredentials(aOption);
-        }
-        else {
-            // pruefen auf Nuance App-Credientials Uebergabe
-            if (!this._checkCredentials(aOption)) {
-                if (this.isErrorOutput() || (aOption && aOption.errorOutputFlag)) {
-                    this._error('init', 'keine AppId und/oder AppKey als Parameter uebergeben');
-                }
-                return -1;
-            }
-        }
-        // WebSocket
-        if (!this.webSocketFlag) {
-            // WEnn die WebSocket nicht vorhanden ist, geht gar nichts !
-            this._error('init', 'keine WebSocket vorhanden');
-            this._onInit(-1);
-            return -1;
-        }
-        // TODO: soll spaeter in die Audio-Komponente
-        // AudioContext
-        if (!this.audioContextFlag) {
-            // wenn der Audiokontext nicht vorhanden ist, gehen TTS und ASR nicht
-            this._error('init', 'kein Audiokontext vorhanden, TTS und ASR werden abgeschaltet');
-            this._onInit(-1);
-        }
-        this.googleNLUFlag = true;
-        if (this.audioContextFlag) {
-            this.googleASRFlag = true;
-            if (this.getUserMediaFlag) {
-                this.googleTTSFlag = true;
-            }
-        }
-        if (this.isErrorOutput()) {
-            if (this.googleNLUFlag) {
-                console.log('GoogleMock: NLU ist vorhanden');
-            }
-            else {
-                console.log('GoogleMock: NLU ist nicht vorhanden');
-            }
-            if (this.googleTTSFlag) {
-                console.log('GoogleMock: TTS ist vorhanden');
-            }
-            else {
-                console.log('GoogleMock: TTS ist nicht vorhanden');
-            }
-            if (this.googleASRFlag) {
-                console.log('GoogleMock: ASR ist vorhanden');
-            }
-            else {
-                console.log('GoogleMock: ASR ist nicht vorhanden');
-            }
-        }
-        this._onInit(0);
-        // console.log('NuanceMock.init: ende');
-        return _super.prototype.init.call(this, aOption);
-    };
-    /**
-     * gibt den Port frei
-     *
-     * @return {number} errorCode (0,-1) - Fehlercode
-     */
-    GoogleMock.prototype.done = function (aFreeFlag) {
-        _super.prototype.done.call(this);
-        this.webSocketFlag = true;
-        this.audioContextFlag = true;
-        this.getUserMediaFlag = true;
-        this.googleNLUFlag = false;
-        this.googleASRFlag = false;
-        this.googleTTSFlag = false;
-        // weitere Attribute
-        this.disconnectFlag = true;
-        this.defaultOptions = null;
-        this.codec = '';
-        this.mTransaction = null;
-        this.mRunningFlag = false;
-        return 0;
-    };
-    /**
-     * setzt den Port wieder auf Defaultwerte und uebergebene optionale Parameter.
-     * Die Fehlerausgabe wird nicht zurueckgesetzt.
-     *
-     * @param {any} aOption - optionale Parameter
-     *
-     * @return {number} errorCode (0,-1) - Fehlercode
-     */
-    GoogleMock.prototype.reset = function (aOption) {
-        this.mTransaction = null;
-        this.mRunningFlag = false;
-        return _super.prototype.reset.call(this, aOption);
-    };
-    // Event-Funktionen
-    /**
-     * Ereignisfunktion fuer Stop aufrufen
+     * Erzeugt einen Port zum vorgegebenen Port-Namen. Wird ein falscher Port-Name uebergeben,
+     * wird null zurueckgegeben
      *
      * @private
-     * @param {string} aDest - Ziel der Operation
-     * @param {string} aType - Typ der Operation
+     * @param aPortName - Name des zu erzeugenden Ports
+     * @param aRegisterFlag - bestimmt, ob Port im PortManager registriert wird
      *
-     * @return {number} errorCode(0,-1)
+     * @return {PortInterface} gibt Port Instanz oder null zurueck
      */
-    GoogleMock.prototype._onStop = function (aDest, aType) {
-        // console.log('NuancePort._onStop: Transaktion wird beendet', aDest, aType);
-        // hier muss die Transaktion geloescht werden, da sie beendet ist
-        this.mTransaction = null;
-        this.mRunningFlag = false;
-        return _super.prototype._onStop.call(this, aDest, aType);
-    };
-    // Port-Funktionen
-    /**
-     * Dynamische Konfiguration des Ports
-     *
-     * @param {GoogleConfigDataInterface} aConfigData - Konfigurationsdaten { nuanceAppKey: '', nuanceAppId: '', nuanceNluTag: ''}
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype.setConfig = function (aConfigData) {
-        if (this.mDynamicCredentialsFlag) {
-            // Uebertragen der neuen Credentials
-            try {
-                // this.googleAppId = aConfigData.googleAppId;
-                this.googleAppKey = aConfigData.googleAppKey;
-                this.googleServerUrl = aConfigData.googleServerUrl;
-                this.dialogflowTokenServerUrl = aConfigData.dialogflowTokenServerUrl;
-                this.dialogflowProjectId = aConfigData.dialogflowProjectId;
-                /****
-                if ( typeof aConfigData.googleNluTag === 'string' ) {
-                    this.googleNluTag = aConfigData.googleNluTag;
-                }
-                ****/
-                return 0;
-            }
-            catch (aException) {
-                this._exception('setConfig', aException);
-                return -1;
-            }
-        }
-        else {
-            this._error('setConfig', 'Keine dynamischen Credentials erlaubt');
-            return -1;
-        }
-    };
-    /**
-     * Rueckgabe der aktuellen Port-Konfiguration
-     *
-     * @return {GoogleConfigDataInterface} aktuelle Portkonfigurationsdaten
-     */
-    GoogleMock.prototype.getConfig = function () {
-        var configData = {
-            // googleAppId: this.googleAppId,
-            googleAppKey: this.googleAppKey,
-            googleServerUrl: this.googleServerUrl,
-            dialogflowTokenServerUrl: this.dialogflowTokenServerUrl,
-            dialogflowProjectId: this.dialogflowProjectId
-            // googleNluTag: this.googleNluTag
-        };
-        return configData;
-    };
-    /**
-     * Pruefen auf geoeffneten Port
-     *
-     * @return {boolean} True, wenn Port offen ist, False sonst
-     */
-    GoogleMock.prototype.isOpen = function () {
-        return !this.disconnectFlag;
-    };
-    /**
-     * Port oeffnen
-     *
-     * @param {*} aOption - optionale Parameter
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype.open = function (aOption) {
-        // console.log('NuanceMock._connect:', this.disconnectFlag);
-        if (!this.disconnectFlag) {
-            // Kein Fehler, Verbindung ist bereits vorhanden
-            return 0;
-        }
-        this.disconnectFlag = false;
-        // console.log('WebSocket Verbindung aufgebaut');
-        this._onOpen();
-        return 0;
-    };
-    /**
-     * Port schliessen
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype.close = function () {
-        this.disconnectFlag = true;
-        return 0;
-    };
-    /**
-     * Pruefen auf beschaeftigten Port.
-     *
-     * @return {boolean} True, Port ist beschaeftigt, False sonst
-     */
-    GoogleMock.prototype.isRunning = function () {
-        return this.mRunningFlag;
-    };
-    GoogleMock.prototype._isCredentials = function () {
-        if (this.googleAppKey) {
-            return true;
-        }
-        return false;
-    };
-    /**
-     * Pruefen, welche Nuance-Aktionen ausfuehrbar sind.
-     *
-     * @param {string} aAction - Name der zu pruefenden Aktion
-     *
-     * @return {boolean} True, wenn Aktion ausfuehrbar ist, False sonst
-     */
-    GoogleMock.prototype.isAction = function (aAction) {
-        var result = false;
-        switch (aAction) {
-            case GOOGLE_NLU_ACTION:
-                result = this.googleNLUFlag;
+    GoogleFactory.prototype._newPort = function (aPortName, aRegisterFlag) {
+        var port = null;
+        switch (aPortName) {
+            case GOOGLE_DEFAULT_NAME:
+            case GOOGLE_PORT_NAME:
+                port = new GooglePort(aPortName, aRegisterFlag);
                 break;
-            case GOOGLE_ASRNLU_ACTION:
-            case GOOGLE_ASR_ACTION:
-                result = this.googleASRFlag;
+            // Mock-Port
+            case GOOGLE_MOCK_NAME:
+                port = new GoogleMock(GOOGLE_MOCK_NAME, aRegisterFlag);
                 break;
-            case GOOGLE_TTS_ACTION:
-                result = this.googleTTSFlag;
-                break;
-        }
-        return result;
-    };
-    /**
-     * Portaktion starten
-     *
-     * @param {string} aAction - optional auszufuehrende Aktion
-     * @param {*} aOption - optionale Parameter
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype.start = function (aPluginName, aAction, aOption) {
-        // pruefen, ob eine Aktion bereits laeuft
-        if (this.isRunning()) {
-            this._error('start', 'Aktion laeuft bereits');
-            return -1;
-        }
-        // pruefen, ob der Port geoeffnet ist
-        if (!this.isOpen()) {
-            this._error('start', 'Port ist nicht geoeffnet');
-            return -1;
-        }
-        // pruefen auf Credentials
-        if (!this._isCredentials()) {
-            this._error('start', 'Port hat keine Credentials');
-            return -1;
-        }
-        // pruefen auf laufende Transaktion
-        if (this.mTransaction) {
-            this._error('start', 'andere Transaktion laeuft noch');
-            return -1;
-        }
-        var option = aOption || {};
-        // Aktion ausfuehren
-        this.mRunningFlag = true;
-        var result = 0;
-        switch (aAction) {
-            case GOOGLE_NLU_ACTION:
-                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_NLU_ACTION);
-                result = this._startNLU(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE);
-                break;
-            case GOOGLE_ASRNLU_ACTION:
-                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASRNLU_ACTION);
-                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', true, option.useProgressive || false);
-                break;
-            case GOOGLE_ASR_ACTION:
-                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_ASR_ACTION);
-                result = this._startASR(this.mTransaction, option.language || GOOGLE_DEFAULT_LANGUAGE, option.audioURL || '', false, option.useProgressive || false);
-                break;
-            case GOOGLE_TTS_ACTION:
-                this.mTransaction = new GoogleTransaction(aPluginName, GOOGLE_TTS_ACTION);
-                result = this._startTTS(this.mTransaction, option.text, option.language || GOOGLE_DEFAULT_LANGUAGE, option.voice || GOOGLE_DEFAULT_VOICE);
-                break;
+            // keinen Port erkannt
             default:
-                this._error('start', 'Keine gueltige Aktion uebergeben ' + aAction);
-                result = -1;
+                this._error('_newPort', 'kein Port vorhanden');
                 break;
         }
-        return result;
+        return port;
     };
     /**
-     * Portaktion beenden
+     * Kann verschiedene Versionen des Ports
+     * zurueckgeben, einschließlich eines Port-Mocks.
      *
-     * @param {string} aAction - optional zu beendende Aktion
-     * @param {*} aOption - optionale Parameter
+     * @param {string} aName - Name des zu erzeugenden Ports
+     * @param {boolean} aRegisterFlag - wenn true, wird Port in PortManager eingetragen
      *
-     * @return {number} Fehlercode 0 oder -1
+     * @return {PortInterface} Port Instanz wird zurueckgegeben
      */
-    GoogleMock.prototype.stop = function (aPluginName, aAction, aOption) {
-        // console.log('NuancePort.stop:', aPluginName, aAction, aOption);
-        // pruefen, ob eine Aktion bereits laeuft
-        if (!this.isRunning()) {
-            // console.log('NuancePort.stop: kein isRunning');
-            return 0;
-        }
-        // pruefen, ob der Port geoeffnet ist
-        if (!this.isOpen()) {
-            this._error('stop', 'Port ist nicht geoeffnet');
-            return -1;
-        }
-        // pruefen auf Credentials
-        if (!this._isCredentials()) {
-            this._error('stop', 'Port hat keine Credentials');
-            return -1;
-        }
-        // pruefen auf laufende Transaktion
-        if (!this.mTransaction) {
-            this._error('stop', 'keine Transaktion vorhanden');
-            return -1;
-        }
-        // pruefen auf uebereinstimmende Transaktion
-        if (aPluginName !== this.mTransaction.plugin) {
-            this._error('stop', 'PluginName der Transaktion stimmt nicht ueberein ' + aPluginName + ' != ' + this.mTransaction.plugin);
-            return -1;
-        }
-        if (aAction) {
-            if (aAction !== this.mTransaction.type) {
-                this._error('stop', 'Typ der Transaktion stimmt nicht ueberein ' + aAction + ' != ' + this.mTransaction.type);
-                return -1;
-            }
-        }
-        else {
-            aAction = this.mTransaction.type;
-        }
-        var result = 0;
-        // console.log('NuancePort.stop: Action = ', aAction);
-        switch (aAction) {
-            case GOOGLE_NLU_ACTION:
-                result = this._stopNLU(this.mTransaction);
-                break;
-            case GOOGLE_ASRNLU_ACTION:
-            case GOOGLE_ASR_ACTION:
-                result = this._stopASR(this.mTransaction);
-                break;
-            case GOOGLE_TTS_ACTION:
-                result = this._stopTTS(this.mTransaction);
-                break;
-            default:
-                this._error('stop', 'Keine gueltige Aktion uebergeben ' + aAction);
-                result = -1;
-                break;
-        }
-        this.mTransaction = null;
-        this.mRunningFlag = false;
-        return result;
-    };
-    // Nuance-Funktionen
-    // Text-Funktionen
-    /**
-     * Intent zu einem Text holen
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     * @param {string} aText - Text der interpretiert werden soll
-     * @param {string} aLanguage - Sprache des Textes der interpretiert werden soll
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._startNLU = function (aTransaction, aText, aLanguage) {
-        if (!aText) {
-            this._error('_startNLU', 'keinen Text uebergeben');
-            return -1;
-        }
-        if (!this.googleNLUFlag) {
-            this._error('_startNLU', 'keine Nuance NLU-Anbindung vorhanden');
-            return -1;
-        }
+    GoogleFactory.prototype.create = function (aName, aRegisterFlag) {
+        if (aRegisterFlag === void 0) { aRegisterFlag = true; }
+        var portName = aName || GOOGLE_DEFAULT_NAME;
+        // Port erzeugen
         try {
-            // Nachrichten senden
-            this._onStart(aTransaction.plugin, aTransaction.type);
-            var event_1 = {
-                metadata: {
-                    intentName: this.intentName
-                },
-                fulfillment: {
-                    speech: this.intentSpeech
-                },
-                resolvedQuery: aText,
-                score: this.intentConfidence
-            };
-            aTransaction.result = event_1;
-            console.log('GoogleMock._startNLU: _onResult wird aufgerufen');
-            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
-            this._onStop(aTransaction.plugin, aTransaction.type);
-            return 0;
+            return this._newPort(portName, aRegisterFlag);
         }
         catch (aException) {
-            this._exception('_startNLU', aException);
-            return -1;
+            this._exception('create', aException);
+            return null;
         }
     };
-    /**
-     * stoppt die Analyse
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._stopNLU = function (aTransaction) {
-        this._onStop(aTransaction.plugin, aTransaction.type);
-        // kein Stop der NLU notwendig
-        return 0;
-    };
-    // ASR-Funktionen
-    /**
-     * startet die Recognition
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     *
-     * @returns {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._startASR = function (aTransaction, aLanguage, aAudioUrl, aUseNLUFlag, aProgressiveFlag) {
-        // console.log('NuancePort._startASR');
-        if (!this.googleASRFlag) {
-            this._error('_startASR', 'keine Nuance ASR-Anbindung vorhanden');
-            return -1;
-        }
-        try {
-            // Nachrichten senden
-            this._onStart(aTransaction.plugin, aTransaction.type);
-            aTransaction.result = "Testtext";
-            this._onResult(aTransaction.result, aTransaction.plugin, aTransaction.type);
-            this._onStop(aTransaction.plugin, aTransaction.type);
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_startASR', aException);
-            return -1;
-        }
-    };
-    /**
-     * stoppt die Recognition
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._stopASR = function (aTransaction) {
-        if (!this.googleASRFlag) {
-            this._error('_stopASR', 'keine Nuance ASR-Anbindung vorhanden');
-            return -1;
-        }
-        try {
-            this._onStop(aTransaction.plugin, aTransaction.type);
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_stopASR', aException);
-            return -1;
-        }
-    };
-    // TTS-Funktionen
-    /**
-     * startet die TTS
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     * @param {string} aText - auszusprechender Text
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._startTTS = function (aTransaction, aText, aLanguage, aVoice) {
-        var _this = this;
-        if (!aText) {
-            this._error('_startTTS', 'keinen Text uebergeben');
-            return -1;
-        }
-        if (!this.googleTTSFlag) {
-            this._error('_startTTS', 'keine Nuance TTS-Anbindung vorhanden');
-            return -1;
-        }
-        try {
-            // Nachrichten senden
-            this._onStart(aTransaction.plugin, aTransaction.type);
-            // asynchron TTS-Stop Event senden
-            setTimeout(function () { return _this._onStop(aTransaction.plugin, aTransaction.type); }, GOOGLEMOCK_CALLBACK_TIMEOUT);
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_startTTS', aException);
-            return -1;
-        }
-    };
-    /**
-     * stoppt die TTS
-     *
-     * @private
-     * @param {GoogleTransaction} aTransaction - Transaktions-Objekt fuer diese Funktion
-     *
-     * @return {number} Fehlercode 0 oder -1
-     */
-    GoogleMock.prototype._stopTTS = function (aTransaction) {
-        if (!this.googleTTSFlag) {
-            this._error('_stopTTS', 'keine Nuance TTS-Anbindung vorhanden');
-            return -1;
-        }
-        try {
-            this._onStop(aTransaction.plugin, aTransaction.type);
-            return 0;
-        }
-        catch (aException) {
-            this._exception('_stopTTS', aException);
-            return -1;
-        }
-    };
-    return GoogleMock;
-}(Port));
+    return GoogleFactory;
+}(PortFactory));
 
-/**
+/** @packageDocumentation
  * Google-Manager zur Verwaltung des GooglePort
  *
  * Hier wird die Manager-Schnittstelle von Google definiert, um Google zu
@@ -5396,7 +4602,7 @@ var GoogleMock = /** @class */ (function (_super) {
  * API-Version: 1.0
  * Datum:       08.05.2019
  *
- * Letzte Aenderung: 08.05.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/google
@@ -5648,7 +4854,7 @@ var Google = /** @class */ (function () {
         if (Google.mCurrentPort) {
             return Google.mCurrentPort.getConfig();
         }
-        return { googleAppKey: '', googleServerUrl: '', dialogflowTokenServerUrl: '', dialogflowProjectId: '' };
+        return { googleAppKey: '', googleServerUrl: '', dialogflowTokenServerUrl: '', dialogflowProjectId: '', dialogflowSessionId: '', dialogflowEnvironmentName: '' };
     };
     Google.mInitFlag = false;
     Google.mErrorOutputFlag = false;
@@ -5656,4 +4862,4 @@ var Google = /** @class */ (function () {
     return Google;
 }());
 
-export { GOOGLE_ASRNLU_ACTION, GOOGLE_ASR_ACTION, GOOGLE_NLU_ACTION, GOOGLE_TTS_ACTION, GOOGLE_TYPE_NAME, Google };
+export { GOOGLE_API_VERSION, GOOGLE_ASRNLU_ACTION, GOOGLE_ASR_ACTION, GOOGLE_ASR_LANGUAGE, GOOGLE_ASR_LANGUAGE1, GOOGLE_ASR_LANGUAGE2, GOOGLE_AUDIOBUFFER_SIZE, GOOGLE_AUDIOSAMPLE_RATE, GOOGLE_AUDIOTTS_ID, GOOGLE_CONFIG_FILE, GOOGLE_CONFIG_LOAD, GOOGLE_CONFIG_PATH, GOOGLE_DEFAULT_CODEC, GOOGLE_DEFAULT_LANGUAGE, GOOGLE_DEFAULT_NAME, GOOGLE_DEFAULT_URL, GOOGLE_DEFAULT_VOICE, GOOGLE_DE_LANGUAGE, GOOGLE_EN_LANGUAGE, GOOGLE_FACTORY_NAME, GOOGLE_MOCK_NAME, GOOGLE_NLU2_FLAG, GOOGLE_NLU_ACTION, GOOGLE_PCM_CODEC, GOOGLE_PORT_NAME, GOOGLE_SERVER_URL, GOOGLE_SERVER_VERSION, GOOGLE_TTS_ACTION, GOOGLE_TTS_LANGUAGE, GOOGLE_TTS_LANGUAGE1, GOOGLE_TTS_LANGUAGE2, GOOGLE_TTS_VOICE, GOOGLE_TTS_VOICE1, GOOGLE_TTS_VOICE2, GOOGLE_TTS_VOICE3, GOOGLE_TTS_VOICE4, GOOGLE_TYPE_NAME, GOOGLE_VERSION_BUILD, GOOGLE_VERSION_DATE, GOOGLE_VERSION_NUMBER, GOOGLE_VERSION_STRING, GOOGLE_VERSION_TYPE, GOOGLE_WORKER_VERSION, Google, GoogleFactory };

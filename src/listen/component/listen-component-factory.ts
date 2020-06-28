@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer ListenComponent
  * ListenComponent wird als Singleton verwaltet
  *
- * Letzte Aenderung: 08.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module listen/component
@@ -12,7 +12,7 @@
 
 // plugin
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // listen

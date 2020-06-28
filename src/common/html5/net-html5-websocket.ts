@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient zum Aufbau und zur Verwaltung einer HTML5-WebSocket-Verbindung
  * mit dem SpeechServer.
  *
- * Letzte Aenderung: 20.03.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module common/html5
@@ -12,8 +12,7 @@
 
 // core
 
-import { ErrorBase } from './../../core/error/error-base';
-import { FactoryManager } from './../../core/factory/factory-manager';
+import { FactoryManager, ErrorBase } from '@speech/core';
 
 
 // common

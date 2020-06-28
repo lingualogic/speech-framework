@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer ActionFunction
  *
  * Letzte Aenderung: 10.09.2018

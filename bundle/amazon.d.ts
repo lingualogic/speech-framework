@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Amazon zur Verwaltung des AmazonPort
  *
  * Hier wird die Manager-Schnittstelle von Amazon definiert, um Amazon zu
@@ -7,13 +7,16 @@
  * API-Version: 1.0
  * Datum:       01.04.2019
  *
- * Letzte Aenderung: 01.04.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module cloud/amazon
  * @author SB
  */
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+
+import { SpeechErrorFunc } from './../../core/interface/speech-function.type';
+
+// import { SpeechErrorFunc } from '@speech/core';
 import { AmazonConfigDataInterface } from './amazon-config-data.interface';
 import { AmazonOptionInterface } from './amazon-option.interface';
 /**

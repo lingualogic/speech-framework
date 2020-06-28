@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer JSON Plugin
  *
  * Letzte Aenderung: 07.09.2019

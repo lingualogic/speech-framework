@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Base API Wrapper fuer alle Komponenten.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module base
@@ -9,14 +9,9 @@
  */
 
 
-// global
-
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../interface/speech-function.type';
-
-
 // core
 
-import { BuilderManager } from '../core/builder/builder-manager';
+import { BuilderManager, OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';
 
 
 // base

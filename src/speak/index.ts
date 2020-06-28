@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Speak
  *
  * Version: 1.0
@@ -14,9 +14,13 @@
 // Global API
 
 
-export { SPEAK_TYPE_NAME, SPEAK_COMPONENT_NAME } from './speak-const';
+export * from './speak-version';
+export * from './speak-const';
 export { SpeakComponentBuilder } from './component/speak-component-builder';
+export { SpeakComponentFactory } from './component/speak-component-factory';
 export { SpeakComponentInterface } from './component/speak-component.interface';
+export { SpeakComponent } from './component/speak-component';
 export { SpeakOptionInterface } from './speak-option.interface';
 export { SpeakInterface } from './speak.interface';
 export { SpeakFactory } from './speak-factory';
+export { Speak } from './speak';

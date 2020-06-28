@@ -1,9 +1,9 @@
-/**
+/** @packageDocumentation
  * Diese Komponente dient der Spracherkennung mit Hilfe von SpeechRecognition aus HTML5
  * Funktioniert zur Zeit nur in Chrome. Ist Speech-Recognition nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 31.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module listen/asr
@@ -21,12 +21,12 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
+import { FactoryManager } from '@speech/core';
 
 
 // common
 
-import { SPEECHRECOGNITION_FACTORY_NAME, SpeechRecognitionFactory } from './../../common/html5/speechrecognition-factory';
+import { SPEECHRECOGNITION_FACTORY_NAME, SpeechRecognitionFactory } from '@speech/common';
 
 
 // asr

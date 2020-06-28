@@ -283,6 +283,7 @@ function IntentApp() {
             googleAppKey: GOOGLE_APP_KEY,
             dialogflowTokenServerUrl: DIALOGFLOW_TOKENSERVER_URL,
             dialogflowProjectId: DIALOGFLOW_PROJECT_ID,
+            dialogflowEnvironmentName: '',
             nuanceAppId: APP_ID,
             nuanceAppKey: APP_KEY,
             nuanceNluTag: NLU_TAG

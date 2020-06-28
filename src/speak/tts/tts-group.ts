@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * TTSGroup definiert die Verwaltungsklasse aller TTS.
  * Hier werden die vorhandenen TTS verwaltet und es kann
  * zwischen ihnen gewechselt werden.
@@ -11,7 +11,7 @@
  *      TTSMicrosoft - Microsoft-Service TTS (sollte nur mit Speech-Server verwendet werden)
  *      TTSNuance    - Nuance-Service TTS (deprecated)
  *
- * Letzte Aenderung: 04.07.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -19,14 +19,9 @@
  */
 
 
-// global
+// core
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from './../../interface/speech-function.type';
-
-
-// plugin
-
-import { PluginGroup } from '../../core/plugin/plugin-group';
+import { OnSpeechInitFunc, OnSpeechErrorFunc, PluginGroup } from '@speech/core';
 
 
 // tts

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer ASR
  *
  * Letzte Aenderung: 17.06.2019

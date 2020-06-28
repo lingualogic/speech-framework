@@ -1,17 +1,17 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung eines FileReader Plugins
  *
  * Version: 1.1
- * Datum:   23.07.2018
+ * Datum:   01.06.2020
  *
  * @module file/reader
  * @author SB
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // file

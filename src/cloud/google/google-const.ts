@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Google
  *
  * Letzte Aenderung: 02.10.2019

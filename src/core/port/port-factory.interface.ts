@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * PortFactory-Interface fuer die Erzeugung von Port-Komponenten
  *
  * Letzte Aenderung: 15.12.2018

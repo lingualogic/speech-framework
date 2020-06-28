@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Builder fuer die Erzeugung von Komponenten
  *
  * Letzte Aenderung: 03.09.2018

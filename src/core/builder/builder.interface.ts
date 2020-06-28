@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Builder Schnittstelle
  *
  * Letzte Aenderung: 24.08.2018

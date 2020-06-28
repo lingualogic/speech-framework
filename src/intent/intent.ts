@@ -1,11 +1,11 @@
-/**
+/** @packageDocumentation
  * Intent API Wrapper fuer IntentComponent, einmalige Initialisierung, alle anderen Initialisierungen
  * laufen auf der gleichen IntentComponent.
  * INtent API Wrapper erbt vom Base API Wrapper.
  * SpeechMain muss vorher aufgerufen worden sein, um den IntentBuilder
  * zu erzeugen.
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent
@@ -15,7 +15,7 @@
 
 // base
 
-import { Base } from './../base/base';
+import { Base } from '@speech/base';
 
 
 // intent

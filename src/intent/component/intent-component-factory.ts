@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer IntentComponent
  *
- * Letzte Aenderung: 28.11.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/component
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginFactory } from '../../core/plugin/plugin-factory';
+import { PluginFactory } from '@speech/core';
 
 
 // intent

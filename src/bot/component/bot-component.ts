@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Bot Komponente zur Verwaltung von allen anderen Komponenten Dialog, Listen, Speak, Audio
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module bot/component
@@ -9,7 +9,7 @@
  */
 
 
-// global
+// core
 
 import {
     SPEECH_ERROR_EVENT,
@@ -23,48 +23,40 @@ import {
     SPEECH_DIALOGACTIONSTOP_EVENT,
     SPEECH_DIALOGSPEAK_EVENT,
     SPEECH_DIALOGSPEAKSTART_EVENT,
-    SPEECH_DIALOGSPEAKSTOP_EVENT
-} from '../../const/speech-event-const';
-import { OnSpeechErrorFunc } from '../../interface/speech-function.type';
+    SPEECH_DIALOGSPEAKSTOP_EVENT,
+    OnSpeechErrorFunc
+} from '@speech/core';
 
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // audio
 
-import { AUDIOPLAYER_PLUGIN_NAME } from '../../audio/audio-const';
-import { AudioPlayerInterface } from '../../audio/player/audio-player.interface';
+import { AUDIOPLAYER_PLUGIN_NAME, AudioPlayerInterface } from '@speech/audio';
 
 
 // speak
 
-import { SPEAK_COMPONENT_NAME } from '../../speak/speak-const';
-import { SpeakInterface } from '../../speak/speak.interface';
-import { SpeakComponentInterface } from '../../speak/component/speak-component.interface';
+import { SPEAK_COMPONENT_NAME, SpeakInterface, SpeakComponentInterface } from '@speech/speak';
 
 
 // listen
 
-import { LISTEN_PLUGIN_NAME } from '../../listen/listen-const';
-import { ListenInterface } from '../../listen/listen.interface';
-import { ListenComponentInterface } from '../../listen/component/listen-component.interface';
+import { LISTEN_COMPONENT_NAME, ListenInterface, ListenComponentInterface } from '@speech/listen';
 
 
 // action
 
-import { ACTION_PLUGIN_NAME } from '../../action/action-const';
-import { ActionDataInterface } from '../../action/action-data.interface';
-import { ActionInterface } from '../../action/action.interface';
-import { ActionComponentInterface } from '../../action/component/action-component.interface';
+import { ACTION_COMPONENT_NAME, ActionDataInterface, ActionInterface, ActionComponentInterface } from '@speech/action';
 
 
 // dialog
 
-import { DIALOG_COMPONENT_NAME } from '../../dialog/dialog-const';
 import {
+    DIALOG_COMPONENT_NAME,
     OnDialogSetFunc,
     OnDialogJsonFunc,
     OnDialogParseFunc,
@@ -75,12 +67,12 @@ import {
     OnDialogActionStopFunc,
     OnDialogSpeakFunc,
     OnDialogSpeakStartFunc,
-    OnDialogSpeakStopFunc
-} from '../../dialog/dialog-function.type';
-import { DialogActionInterface } from '../../dialog/dialog-action.interface';
-import { DialogSpeakInterface } from '../../dialog/dialog-speak.interface';
-import { DialogComponentInterface } from '../../dialog/component/dialog-component.interface';
-import { DialogDataInterface } from '../../dialog/dialog-data.interface';
+    OnDialogSpeakStopFunc,
+    DialogActionInterface,
+    DialogSpeakInterface,
+    DialogComponentInterface,
+    DialogDataInterface
+} from '@speech/dialog';
 
 
 // bot
@@ -161,10 +153,10 @@ export class BotComponent extends BaseComponent implements BotComponentInterface
         this.mSpeak = this.findPlugin( SPEAK_COMPONENT_NAME ) as SpeakComponentInterface;
 
         // Listen kann auch fehlen, deshalb keine Fehlerpruefung
-        this.mListen = this.findPlugin( LISTEN_PLUGIN_NAME ) as ListenComponentInterface;
+        this.mListen = this.findPlugin( LISTEN_COMPONENT_NAME ) as ListenComponentInterface;
 
         // Action kann auch fehlen, deshalb keine Fehlerpruefung
-        this.mAction = this.findPlugin( ACTION_PLUGIN_NAME ) as ActionComponentInterface;
+        this.mAction = this.findPlugin( ACTION_COMPONENT_NAME ) as ActionComponentInterface;
 
         // Dialog muss vorhanden sein, ist die Kernfunktionalitaet von Bot
         this.mDialog = this.findPlugin( DIALOG_COMPONENT_NAME ) as DialogComponentInterface;

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * DialogNode speichert einen Knoten eines Dialog-Zustands
  *
  * Letzte Aenderung: 07.09.2018

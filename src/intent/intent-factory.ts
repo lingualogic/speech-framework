@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer Intent API Instanz
  *
  * API-Version: 1.0

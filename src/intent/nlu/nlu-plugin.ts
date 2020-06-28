@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  *  NLUPlugin definiert die Basisklasse aller NLUs
  *
- * Letzte Aenderung: 13.02.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module intent/nlu
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { Plugin } from '../../core/plugin/plugin';
+import { Plugin } from '@speech/core';
 
 
 // nlu

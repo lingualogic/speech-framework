@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Funktionstypen fuer Dialog
  *
  * API-Version: 1.0
@@ -10,11 +10,6 @@
  * @module dialog
  * @author SB
  */
-
-
-// global
-
-import { SpeechMessageInterface } from '../interface/speech-message.interface';
 
 
 // dialog

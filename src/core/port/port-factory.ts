@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * PortFactory zur Erzeugung von Ports
  *
  * Letzte Aenderung: 15.12.2018

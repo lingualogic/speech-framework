@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Speak API fuer SpeakComponent, einmalige Initialisierung, alle anderen Initialisierungen
  * laufen auf der gleichen SpeakComponent.
  *

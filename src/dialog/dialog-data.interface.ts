@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * globale Dialog-Daten Interfaces fuer den Json-Transformer
  *
  * API-Version: 1.0

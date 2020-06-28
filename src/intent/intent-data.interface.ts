@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Public Intent Data Schnittstelle
  *
  * API-Version: 1.1

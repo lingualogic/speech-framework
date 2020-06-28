@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * DialogObjekt als Hauptobjekt eines Dialogs
  *
  * Letzte Aenderung: 07.09.2018

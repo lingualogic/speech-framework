@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Fabrik zur Erzeugung einer Dialog API Instanz.
  *
  * API-Version: 1.0

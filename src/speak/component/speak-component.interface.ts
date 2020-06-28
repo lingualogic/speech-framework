@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Interne SpeakComponent Schnittstelle fuer alle Speak-Komponenten. Wird von der globalen Speak Schnittstelle abgeleitet
  *
- * Letzte Aenderung: 17.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module speak/component
@@ -11,9 +11,7 @@
 
 // base
 
-import { BaseComponentInterface } from '../../base/component/base-component.interface';
-
-
+import { BaseComponentInterface } from '@speech/base';
 
 
 // speak

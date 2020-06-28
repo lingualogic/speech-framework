@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer ActionElement
  *
  * Letzte Aenderung: 10.09.2018

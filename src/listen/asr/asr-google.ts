@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Google-Spracherkennung implementiert. Ist GooglePort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 16.05.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module listen/asr
@@ -10,20 +10,14 @@
  */
 
 
-// event
+// core
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
-
-
-// port
-
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// google
+// cloud
 
-import { GOOGLE_TYPE_NAME, GOOGLE_ASR_ACTION } from './../../cloud/google/google-const';
+import { CLOUD_GOOGLE_PORT, CLOUD_ASR_ACTION, CloudManager } from '@speech/cloud';
 
 
 // asr
@@ -116,7 +110,7 @@ export class ASRGoogle extends ASRPlugin {
      */
 
     _detectRecognition(): boolean {
-        this.mGooglePort = PortManager.find( GOOGLE_TYPE_NAME );
+        this.mGooglePort = CloudManager.findPort( CLOUD_GOOGLE_PORT );
         if ( !this.mGooglePort ) {
             this._error( '_detectRecognition', 'kein Google-Port vorhanden' );
             return false;
@@ -184,7 +178,7 @@ export class ASRGoogle extends ASRPlugin {
 
     _isRecognition(): boolean {
         if ( this.mGooglePort ) {
-            return this.mGooglePort.isAction( GOOGLE_ASR_ACTION );
+            return this.mGooglePort.isAction( CLOUD_ASR_ACTION );
         }
         return false;
     }
@@ -215,7 +209,7 @@ export class ASRGoogle extends ASRPlugin {
         // console.log('ASRGoogle._startRecognition');
         if ( this.mGooglePort ) {
             // console.log('ASRGoogle._startRecognition:', this._getASRLanguage());
-            return this.mGooglePort.start( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION, { language: this._getASRLanguage() });
+            return this.mGooglePort.start( ASR_GOOGLE_NAME, CLOUD_ASR_ACTION, { language: this._getASRLanguage() });
         }
         return -1;
     }
@@ -231,7 +225,7 @@ export class ASRGoogle extends ASRPlugin {
     _stopRecognition(): number {
         // console.log('ASRGoogle._stopRecognition');
         if ( this.mGooglePort ) {
-            return this.mGooglePort.stop( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION );
+            return this.mGooglePort.stop( ASR_GOOGLE_NAME, CLOUD_ASR_ACTION );
         }
         return -1;
     }
@@ -261,7 +255,7 @@ export class ASRGoogle extends ASRPlugin {
         // console.log('TTSGoogle._isRecognitionRunning');
         if ( this.mGooglePort ) {
             // console.log('ASRGoogle._isRecognitionRunning: ', this.mGooglePort.isRunning( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION ));
-            return this.mGooglePort.isRunning( ASR_GOOGLE_NAME, GOOGLE_ASR_ACTION );
+            return this.mGooglePort.isRunning( ASR_GOOGLE_NAME, CLOUD_ASR_ACTION );
         }
         return false;
     }

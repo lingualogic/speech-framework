@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Dialog API Wrapper fuer AudioComponent (erst mal AudioPlayer)
  *
- * Letzte Aenderung: 30.01.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module audio
@@ -9,19 +9,9 @@
  */
 
 
-// global
+// core
 
-import { OnSpeechInitFunc, OnSpeechErrorFunc } from '../interface/speech-function.type';
-
-
-// factory
-
-import { FactoryManager } from './../core/factory/factory-manager';
-
-
-// plugin
-
-import { PluginManager } from './../core/plugin/plugin-manager';
+import { FactoryManager, PluginManager, OnSpeechInitFunc, OnSpeechErrorFunc } from '@speech/core';
 
 
 // Audio

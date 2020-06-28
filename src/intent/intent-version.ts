@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Intent Version und Build Konstanten
  *
  * API-Version: 1.0
  * Datum: 28.11.2018
  *
- * Letzte Aenderung: 28.11.2018
+ * Letzte Aenderung: 16.06.2020
  * Status: rot
  *
  * @module intent
@@ -14,7 +14,7 @@
 
 // global
 
-import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../const/speech-version';
+import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '@speech/core';
 
 
 // Versions-Konstanten

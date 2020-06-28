@@ -1,11 +1,11 @@
-/**
+/** @packageDocumentation
  * Listen API Wrapper fuer ListenComponent, einmalige Initialisierung, alle anderen Initialisierungen
  * laufen auf der gleichen ListenComponent.
  * Listen API Wrapper erbt vom Base API Wrapper.
  * SpeechMain muss vorher aufgerufen worden sein, um den ListenBuilder
  * zu erzeugen.
  *
- * Letzte Aenderung: 31.03.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module listen
@@ -15,7 +15,7 @@
 
 // base
 
-import { Base } from './../base/base';
+import { Base } from '@speech/base';
 
 
 // listen

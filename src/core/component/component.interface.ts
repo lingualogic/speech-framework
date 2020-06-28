@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Komponenten Schnittstelle
  *
  * Letzte Aenderung: 04.10.2018
@@ -11,7 +11,7 @@
 
 // global
 
-import { SpeechMessageInterface, SpeechSendMessageFunc } from '../../interface/speech-message.interface';
+import { SpeechMessageInterface, SpeechSendMessageFunc } from '../interface/speech-message.interface';
 
 
 // event

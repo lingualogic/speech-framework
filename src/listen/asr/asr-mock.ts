@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * ASRMock definiert eine Mock-Klasse fuer die ASR, um sie in Unit-Tests verwenden zu koennen
  *
  * Letzte Aenderung: 31.03.2020

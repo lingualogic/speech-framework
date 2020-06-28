@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Listen Interface
  *
  * API-Version: 1.5
  * Datum: 09.04.2020
  *
- * Letzte Aenderung: 09.04.2020
+ * Letzte Aenderung: 21.06.2020
  * Status: gelb
  *
  * @module listen
@@ -14,7 +14,11 @@
 
 // base
 
-import { BaseInterface } from './../base/base.interface';
+/****
+ * import { BaseInterface } from './../base/base.interface';
+ ****/
+
+import { BaseInterface } from '@speech/base';
 
 
 // listen

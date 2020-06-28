@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * ActionComponent Schnittstelle
  *
  * Letzte Aenderung: 18.10.2018
@@ -11,7 +11,7 @@
 
 // base
 
-import { BaseComponentInterface } from '../../base/component/base-component.interface';
+import { BaseComponentInterface } from '@speech/base';
 
 
 // action

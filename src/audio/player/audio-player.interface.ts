@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * AudioPlayer Schnittstelle
  *
  * API-Version: 1.1
  * Datum:       24.03.2020
  *
- * Letzte Aenderung: 24.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module audio/player
@@ -12,9 +12,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // Funktionen

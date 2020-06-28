@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * globale Dialog Konstanten
  *
  * API-Version: 1.1

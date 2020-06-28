@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ListenComponent zur Verwaltung von ASR-Plugins. Sie erbt von der BaseComponent.
  *
- * Letzte Aenderung: 31.03.2020
+ * Letzte Aenderung: 01.06.2020
  * Status: gruen
  *
  * @module listen/component
@@ -9,7 +9,7 @@
  */
 
 
-// global
+// core
 
 import { 
     SPEECH_LISTENRESULT_EVENT,
@@ -22,18 +22,15 @@ import {
     SPEECH_LISTENSOUNDSTART_EVENT,
     SPEECH_LISTENSOUNDSTOP_EVENT,
     SPEECH_LISTENSPEECHSTART_EVENT,
-    SPEECH_LISTENSPEECHSTOP_EVENT
-} from '../../const/speech-event-const';
-
-
-// event
-
-import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
+    SPEECH_LISTENSPEECHSTOP_EVENT,
+    EventFunc,
+    EventFunctionList, 
+} from '@speech/core';
 
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // asr

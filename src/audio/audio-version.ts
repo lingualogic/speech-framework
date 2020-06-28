@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Audio Version und Build Konstanten
  *
- * Letzte Aenderung: 30.01.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module audio
@@ -9,9 +9,9 @@
  */
 
 
-// global
+// core
 
-import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '../const/speech-version';
+import { SPEECH_VERSION_NUMBER, SPEECH_VERSION_BUILD, SPEECH_VERSION_TYPE, SPEECH_VERSION_DATE } from '@speech/core';
 
 
 // Versions-Konstanten

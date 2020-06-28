@@ -16,7 +16,7 @@ Für die Google Cloud-Dienste wird zusätzlich der Speech-Tokenserver benötigt.
 
 ## Letzte Version
 
-* 0.5.20.0064 Release vom 17.05.2020 [Release Notizen](./CHANGELOG.md)
+* 0.5.21.0065 Release vom 26.06.2020 [Release Notizen](./CHANGELOG.md)
 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API. Für React-Projekte gibt es Speech-React als Wrapper und für Vue gibt es Speech-Vue als Wrapper.
 

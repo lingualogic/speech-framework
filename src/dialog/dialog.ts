@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Dialog API Wrapper fuer DialogComponent
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog
@@ -9,14 +9,14 @@
  */
 
 
-// global
+//core
 
-import { OnSpeechErrorFunc } from '../interface/speech-function.type';
+import { OnSpeechErrorFunc } from '@speech/core';
 
 
 // base
 
-import { Base } from './../base/base';
+import { Base } from '@speech/base';
 
 
 // dialog

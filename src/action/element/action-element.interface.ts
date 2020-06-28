@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * ActionElement Schnittstelle fuer die Steuerung einer App ueber Aktionen
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/element
@@ -9,9 +9,9 @@
  */
 
 
-// plugin
+// core
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // action

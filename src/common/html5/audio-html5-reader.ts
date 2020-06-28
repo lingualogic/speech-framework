@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Diese Komponente laed eine Audiodatei und stellt die Audiodaten zur Verfuegung
  *
- * Letzte Aenderung: 12.12.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module common/html5
@@ -11,7 +11,7 @@
 
 // core
 
-import { FactoryManager } from './../../core/factory/factory-manager';
+import { FactoryManager } from '@speech/core';
 
 
 // common

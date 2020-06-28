@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Export-Datei fuer Plugin
  *
  * Version: 1.0
@@ -25,5 +25,5 @@ export { PluginFactoryInterface } from './plugin-factory.interface';
 export { PluginGroup } from './plugin-group';
 export { PluginGroupInterface } from './plugin-group.interface';
 export { Plugin } from './plugin';
-export { PluginInterface } from './plugin.interface';
+export { PluginInterface, PluginHandleMessageFunc } from './plugin.interface';
 

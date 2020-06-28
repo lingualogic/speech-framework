@@ -1,10 +1,10 @@
-/**
+/** @packageDocumentation
  * Oeffentliche Dialog Schnittstelle
  *
  * API-Version: 1.3
  * Datum:   07.09.2019
  *
- * Letzte Aenderung: 07.09.2019
+ * Letzte Aenderung: 21.06.2020
  * Status: rot
  *
  * @module dialog
@@ -12,14 +12,13 @@
  */
 
 
-// global
-
-import { OnSpeechErrorFunc } from '../interface/speech-function.type';
-
-
 // base
 
-import { BaseInterface } from './../base/base.interface';
+/****
+ * import { BaseInterface } from './../base/base.interface';
+ ****/
+
+import { BaseInterface } from '@speech/base';
 
 
 // dialog

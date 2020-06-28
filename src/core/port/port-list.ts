@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Port-Liste zur Speicherung von Port-Komponenten
  *
  * Letzte Aenderung: 14.02.2019

@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * PluginManager zur Verwaltung aller Plugins
  *
  * Letzte Aenderung: 08.11.2018
@@ -11,7 +11,7 @@
 
 // global
 
-import { SpeechErrorFunc } from './../../interface/speech-function.type';
+import { SpeechErrorFunc } from '../interface/speech-function.type';
 
 
 // error

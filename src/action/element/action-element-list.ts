@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Verwaltet alle angemeldeten Elemente fuer die Action-Events
  * Ermoeglicht die direkte Verbindung von App-Elementen mit den Action-Events.
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/element
@@ -12,7 +12,7 @@
 
 // core
 
-import { ErrorBase } from '../../core/error/error-base';
+import { ErrorBase } from '@speech/core';
 
 
 // action

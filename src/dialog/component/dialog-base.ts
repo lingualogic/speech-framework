@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * DialogBase definiert die Basisfunktionalitaet fuer eine Dialog-Komponente.
  * Von dieser Klasse koennen weitere Varianten der Dialog-Komponente abgeleitet werden.
  *
- * Letzte Aenderung: 08.09.2019
+ * Letzte Aenderung: 01.06.2020
  * Status: rot
  *
  * @module dialog/component
@@ -24,24 +24,21 @@ import {
     SPEECH_DIALOGSPEAK_EVENT,
     SPEECH_DIALOGSPEAKSTART_EVENT,
     SPEECH_DIALOGSPEAKSTOP_EVENT,
-    SPEECH_ERROR_EVENT
-} from '../../const/speech-event-const';
-import { OnSpeechErrorFunc } from '../../interface/speech-function.type';
-
-
-// event
-
-import { EventFunctionList, EventFunc } from '../../core/event/event-function-list';
+    SPEECH_ERROR_EVENT,
+    OnSpeechErrorFunc,
+    EventFunc,
+    EventFunctionList
+} from '@speech/core';
 
 
 // base
 
-import { BaseComponent } from '../../base/component/base-component';
+import { BaseComponent } from '@speech/base';
 
 
 // file
 
-import { OnFileReaderReadFunc } from '../../file/reader/file-reader.interface';
+import { OnFileReaderReadFunc } from '@speech/file';
 
 
 // json

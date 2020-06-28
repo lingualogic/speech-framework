@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Verwaltet alle angemeldeten Action-Funktionen der App
  *
- * Letzte Aenderung: 10.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action/function
@@ -11,7 +11,7 @@
 
 // core
 
-import { ErrorBase } from './../../core/error/error-base';
+import { ErrorBase } from '@speech/core';
 
 
 // action

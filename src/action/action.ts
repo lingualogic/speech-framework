@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Action API Wrapper fuer ActionComponent.
  *
- * Letzte Aenderung: 18.10.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module action
@@ -11,7 +11,7 @@
 
 // base
 
-import { Base } from './../base/base';
+import { Base } from '@speech/base';
 
 
 // action

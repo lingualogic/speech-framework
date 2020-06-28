@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * TTS Schnittstelle
  *
- * Letzte Aenderung: 27.01.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -11,7 +11,7 @@
 
 // plugin
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // Funktionen

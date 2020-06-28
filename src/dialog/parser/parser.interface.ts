@@ -1,7 +1,7 @@
-/**
+/** @packageDocumentation
  * Parser Interface
  *
- * Letzte Aenderung: 07.09.2018
+ * Letzte Aenderung: 01.06.2020
  * Status: gelb
  *
  * @module dialog/parser
@@ -11,7 +11,7 @@
 
 // plugin
 
-import { PluginInterface } from '../../core/plugin/plugin.interface';
+import { PluginInterface } from '@speech/core';
 
 
 // store

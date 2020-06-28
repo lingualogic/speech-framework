@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * NuanceConfigData-Schnittstelle
  *
  * API-Version: 1.0

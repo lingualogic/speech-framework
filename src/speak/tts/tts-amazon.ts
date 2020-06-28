@@ -1,8 +1,8 @@
-/**
+/** @packageDocumentation
  * Hier wird die Amazon-Sprachausgabe implementiert. Ist AmazonPort nicht vorhanden, wird
  * die Komponente auf deaktiviert versetzt.
  *
- * Letzte Aenderung: 03.04.2019
+ * Letzte Aenderung: 09.06.2020
  * Status: rot
  *
  * @module speak/tts
@@ -12,18 +12,12 @@
 
 // event
 
-import { EventDataInterface } from './../../core/event/event-data.interface';
+import { EventDataInterface, PortInterface } from '@speech/core';
 
 
-// port
+// cloud
 
-import { PortManager } from './../../core/port/port-manager';
-import { PortInterface } from './../../core/port/port.interface';
-
-
-// amazon
-
-import { AMAZON_TYPE_NAME, AMAZON_TTS_ACTION } from './../../cloud/amazon/amazon-const';
+import { CLOUD_AMAZON_PORT, CLOUD_TTS_ACTION, CloudManager } from '@speech/cloud';
 
 
 // tts
@@ -138,7 +132,7 @@ export class TTSAmazon extends TTSPlugin {
      */
 
     _detectSynthesis(): boolean {
-        this.mPort = PortManager.find( AMAZON_TYPE_NAME );
+        this.mPort = CloudManager.findPort( CLOUD_AMAZON_PORT );
         if ( !this.mPort ) {
             this._error( '_detectSynthesis', 'kein Amazon-Port vorhanden' );
             return false;
@@ -197,7 +191,7 @@ export class TTSAmazon extends TTSPlugin {
 
     _isSynthesis(): boolean {
         if ( this.mPort ) {
-            return this.mPort.isAction( AMAZON_TTS_ACTION );
+            return this.mPort.isAction( CLOUD_TTS_ACTION );
         }
         return false;
     }
@@ -227,7 +221,7 @@ export class TTSAmazon extends TTSPlugin {
     _startSynthesis( aText: string ): number {
         if ( this.mPort ) {
             // console.log('TTSAmazon._startSynthesis:', aText, this._getTTSLanguage(), this.getVoice());
-            return this.mPort.start( TTS_AMAZON_NAME, AMAZON_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
+            return this.mPort.start( TTS_AMAZON_NAME, CLOUD_TTS_ACTION, { text: aText, language: this._getTTSLanguage(), voice: this.getVoice()});
         }
         return -1;
     }
@@ -243,7 +237,7 @@ export class TTSAmazon extends TTSPlugin {
     _stopSynthesis(): number {
         if ( this.mPort ) {
             // console.log('TTSAmazon._stopSynthesis:', this._getTTSLanguage(), this.getVoice());
-            return this.mPort.stop( TTS_AMAZON_NAME, AMAZON_TTS_ACTION );
+            return this.mPort.stop( TTS_AMAZON_NAME, CLOUD_TTS_ACTION );
         }
         return -1;
     }
@@ -256,7 +250,7 @@ export class TTSAmazon extends TTSPlugin {
     _isSynthesisRunning(): boolean {
         // console.log('TTSAmazon._isSynthesisRunning');
         if ( this.mPort ) {
-            return this.mPort.isRunning( TTS_AMAZON_NAME, AMAZON_TTS_ACTION );
+            return this.mPort.isRunning( TTS_AMAZON_NAME, CLOUD_TTS_ACTION );
         }
         return false;
     }

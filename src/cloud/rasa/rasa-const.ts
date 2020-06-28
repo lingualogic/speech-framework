@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Rasa
  *
  * Letzte Aenderung: 09.07.2019

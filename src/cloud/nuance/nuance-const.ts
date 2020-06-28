@@ -1,4 +1,4 @@
-/**
+/** @packageDocumentation
  * Globale Konstanten fuer Nuance
  *
  * Letzte Aenderung: 18.01.2019
