@@ -1,7 +1,7 @@
 /** @packageDocumentation
  * Diese Komponente spielt die Audio-Dateien ab
  *
- * Letzte Aenderung: 01.06.2020
+ * Letzte Aenderung: 20.08.2020
  * Status: rot
  *
  * @module audio/player
@@ -18,7 +18,7 @@ import { FactoryManager, Plugin } from '@speech/core';
 
 // common
 
-import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME, XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from '@speech/common/html5';
+import { AudioContextManager, AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME, XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME } from '@speech/common/html5';
 
 
 // audio
@@ -270,7 +270,13 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
                     super._clearInit();
                     return -1;
                 }
-                this.mAudioContext = new this.mAudioContextClass();
+                // TODO: Einbau des neuen AudioContextManagers, um AudioContext-Singleton zurueckzugeben
+                // this.mAudioContext = new this.mAudioContextClass();
+                this.mAudioContext = AudioContextManager.getAudioContext();
+                if ( !this.mAudioContext ) {
+                    super._clearInit();
+                    return -1;
+                }
                 this.mAudioContext.onstatechange = () => {
                     if ( this.mAudioContext ) {
                         // console.log('AudioPlayer.init: onstatechange', this.mAudioContext.state);
@@ -300,8 +306,9 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             
                 const events = ['touchstart','touchend', 'mousedown','keydown'];
                 const body = document.body;
-                const unlock = () => { 
-                    if ( this.mAudioContext.state === 'suspended' ) {
+                const unlock = () => {
+                    // TODO: interrupted nur fuer iOS-Safari eingebaut
+                    if ( this.mAudioContext.state === 'suspended' || (this.mAudioContext as any).state === 'interrupted' ) {
                         this.mAudioContext.resume().then( clean ); 
                     } else {
                         clean();
@@ -402,7 +409,8 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
             // Audio-Kontext muss freigegeben werden
             if ( this.mAudioContext ) {
                 try {
-                    this.mAudioContext.close();
+                    // TODO: Problem mit Wiederverwendung des AudioContext und Close untersuchen
+                    // this.mAudioContext.close();
                 } catch ( aException ) {
                     this._exception( '_closeAudioContext', aException );
                 }
@@ -508,7 +516,8 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
                 aCallbackFunc( true );
                 return;
             }
-            if ( this.mAudioContext.state === 'suspended' ) {
+            // TODO: interrupted nur fuer iOS-Safari eingebaut
+            if ( this.mAudioContext.state === 'suspended' || (this.mAudioContext as any).state === 'interrupted' ) {
                 // console.log('AudioPlayer._unlockAudio: suspended state = ', this.mAudioContext.state);
                 let timeoutId = setTimeout( () => { console.log('AudioPlayer._unlockAudio: timeout'); aCallbackFunc( false ); }, AUDIO_UNLOCK_TIMEOUT );
                 // Resume aufrufen
@@ -541,28 +550,6 @@ export class AudioPlayer extends Plugin implements AudioPlayerInterface {
         this._unlockAudio((aUnlockFlag: boolean) => {
             this._onAudioUnlock();
         })
-        /**** alte Version, wird ersetzt
-        // console.log('AudioPlayer.unlockAudio: start');
-        // Timeout einstellen, um garantiert ein UnlockEvent zu erhalten
-        if ( this.mAudioContext ) {
-            if ( this.mAudioContext.state === 'suspended' ) {
-                let timeoutId = setTimeout( () => this._onAudioUnlock(), AUDIO_UNLOCK_TIMEOUT );
-                this.mAudioContext.resume().then(() => {
-                    // console.log('AudioPlayer.unlockAudio: end');
-                    clearTimeout( timeoutId );
-                    this._onAudioUnlock();
-                }, (aError: any) => {
-                    console.log('AudioPlayer.unlockAudioContext:', aError)
-                    clearTimeout( timeoutId );
-                    this._onAudioUnlock();
-                });
-            } else {
-                this._onAudioUnlock();
-            }
-        } else {
-            this._onAudioUnlock();
-        }
-        *****/
     }
 
 

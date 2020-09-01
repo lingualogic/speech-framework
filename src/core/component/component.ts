@@ -1,7 +1,7 @@
 /** @packageDocumentation
  * Komponente als semantische Einheit fuer Plugins und Klassen.
  *
- * Letzte Aenderung: 15.12.2018
+ * Letzte Aenderung: 07.08.2020
  * Status: gruen
  *
  * @module core/component
@@ -124,7 +124,6 @@ export class Component extends PluginGroup implements ComponentInterface {
         super._setErrorOutput( aErrorOutputFlag );
         this.mInitEvent._setErrorOutput( aErrorOutputFlag );
         this.mErrorEvent._setErrorOutput( aErrorOutputFlag );
-        this._setErrorOutputAllPlugin( aErrorOutputFlag );
     }
 
 

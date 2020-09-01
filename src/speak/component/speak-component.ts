@@ -2,7 +2,7 @@
  * Speak Komponente, dient zur Sprachausgabe von Texten oder Audiodateien
  * ueber ein TTS-Plugin oder ein AudioPlayer-Plugin.
  *
- * Letzte Aenderung: 01.06.2020
+ * Letzte Aenderung: 14.08.2020
  * Status: gelb
  *
  * @module speak/component
@@ -908,10 +908,14 @@ export class SpeakComponent extends BaseComponent implements SpeakComponentInter
             this._error( '_startSpeakTTS', 'kein TTSPlugin vorhanden' );
             return -1;
         }
+
+        /* TODO: wird nicht mehr benoetigt, da leerer Text jetzt eine Pruefsynthese aufruft
         if ( !this.mSpeakText ) {
             this._error( '_startSpeakTTS', 'kein Text fuer die Sprachausgabe vorhanden' );
             return -1;
         }
+        */
+
         // Text wird im Client ausgegeben
         this.mSpeakStopSelector = SPEAK_TTS_STOPSELECTOR;
         return this.mTTSPlugin.startSpeak( this.mSpeakText );

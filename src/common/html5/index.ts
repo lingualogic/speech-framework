@@ -1,8 +1,8 @@
 /** @packageDocumentation
  * Globale Export-Datei fuer Html5
  *
- * Version: 1.0
- * Datum:   11.12.2018
+ * Version: 1.1
+ * Datum:   14.08.2020
  *
  * Definiert das gesamte Html5-API:
  *
@@ -32,3 +32,7 @@ export { WebSocketFactory, WEBSOCKET_FACTORY_NAME, WEBSOCKET_TYPE_NAME } from '.
 export { WebWorkerFactory, WEBWORKER_FACTORY_NAME, WEBWORKER_TYPE_NAME } from './webworker-factory';
 export { UserMediaFactory, USERMEDIA_FACTORY_NAME, USERMEDIA_TYPE_NAME } from './usermedia-factory';
 export { XMLHttpRequestFactory, XMLHTTPREQUEST_FACTORY_NAME, XMLHTTPREQUEST_TYPE_NAME } from './xmlhttprequest-factory';
+
+// Manager fuer Html5-Klassen
+
+export { AudioContextManager } from './audiocontext-manager';

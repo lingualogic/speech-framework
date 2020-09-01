@@ -123,7 +123,7 @@ gulp.task('test', shell.task('karma start karma.conf.js'));
  * Installationstext des veroeffentlichten NPM-Packages
  */
 
-gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.21.tgz'));
+gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.22.tgz'));
 
 
 // Kopiert Quellcode

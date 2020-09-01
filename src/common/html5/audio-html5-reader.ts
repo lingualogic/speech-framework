@@ -1,7 +1,7 @@
 /** @packageDocumentation
  * Diese Komponente laed eine Audiodatei und stellt die Audiodaten zur Verfuegung
  *
- * Letzte Aenderung: 01.06.2020
+ * Letzte Aenderung: 14.08.2020
  * Status: rot
  *
  * @module common/html5
@@ -19,6 +19,7 @@ import { FactoryManager } from '@speech/core';
 import { OnFileHtml5ReaderReadFunc, XMLHTTPREQUEST_ARRAYBUFFER_RESPONSETYPE } from './file-html5-reader.interface';
 import { FileHtml5Reader } from './file-html5-reader';
 import { AudioHtml5ReaderInterface, AUDIO_DEFAULT_FORMAT, AUDIO_MP3_FORMAT, AUDIO_WAV_FORMAT } from './audio-html5-reader.interface';
+import { AudioContextManager } from './audiocontext-manager';
 import { AudioContextFactory, AUDIOCONTEXT_FACTORY_NAME } from './audiocontext-factory';
 
 
@@ -144,7 +145,12 @@ export class AudioHtml5Reader extends FileHtml5Reader implements AudioHtml5Reade
                 if ( !this.mAudioContextClass ) {
                     return -1;
                 }
-                this.mAudioContext = new this.mAudioContextClass();
+                // TODO: Einbau des AudioContextManagers
+                // this.mAudioContext = new this.mAudioContextClass();
+                this.mAudioContext = AudioContextManager.getAudioContext();
+                if ( !this.mAudioContext ) {
+                    return -1;
+                }
                 this.mAudioContext.onstatechange = () => {
                     if ( this.mAudioContext ) {
                         // console.log('AudioPlayer.init: onstatechange', this.mAudioContext.state);
@@ -194,7 +200,8 @@ export class AudioHtml5Reader extends FileHtml5Reader implements AudioHtml5Reade
             // Audio-Kontext muss freigegeben werden
             if ( this.mAudioContext ) {
                 try {
-                    this.mAudioContext.close();
+                    // TODO: globalen AudioContext nicht mehr schliessen
+                    // this.mAudioContext.close();
                 } catch ( aException ) {
                     this._exception( '_closeAudioContext', aException );
                 }

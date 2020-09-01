@@ -12,4 +12,4 @@ Die Dokumentation des Speech-Frameworks:
 
 ## [API-Referenz](https://lingualogic.de/speech-framework/docs/latest/api)
 
-## [Roadmap](./roadmap/Roadmap-2019.md)
+## [Roadmap](./roadmap/Roadmap-2020.md)

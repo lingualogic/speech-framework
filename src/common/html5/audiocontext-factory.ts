@@ -26,6 +26,7 @@ export const AUDIOCONTEXT_TYPE_NAME = 'AudioContext';
 
 export class AudioContextFactory extends Factory {
 
+    count = 0;
 
     constructor( aFactoryName?: string, aRegisterFlag = true ) {
         super( aFactoryName || AUDIOCONTEXT_FACTORY_NAME, aRegisterFlag );
@@ -64,7 +65,8 @@ export class AudioContextFactory extends Factory {
 
     create( aObjectName?: string, aRegisterFlag = true ): any {
         const name = aObjectName || AUDIOCONTEXT_TYPE_NAME;
-        // console.log('AudioContextFactory.create:', (window as any).AudioContext);
+        this.count++;
+        // console.log('AudioContextFactory.create: count = ', this.count, "  AudioContext = ", (window as any).AudioContext || (window as any).webkitAudioContext || null);
         try {
             return (window as any).AudioContext || (window as any).webkitAudioContext || null;
         } catch (aException) {

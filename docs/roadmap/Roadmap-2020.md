@@ -5,6 +5,12 @@ Die Roadmap zeigt die Reihenfolge der Veröffentlichung von Speech-Framework Ver
 
 ## Veröffentlichte Versionen
 
+### August: Version 0.5.22
+
+beinhaltet:
+
+Fehlerbeseitigungen im Google Cloud-Dienst, in Listen und Speak.
+
 
 ### Juni: Version 0.5.21
 

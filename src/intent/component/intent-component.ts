@@ -607,7 +607,7 @@ export class IntentComponent extends BaseComponent implements IntentComponentInt
 
         if ( !this.mIntentText ) {
             if ( this.mNLUPlugin.isListen()) {
-                // TODO: pruefen auf ASRFEatureFlag, um ASR vom Server aufzurufen
+                // TODO: pruefen auf ASRFeatureFlag, um ASR vom Server aufzurufen
                 // interne NLU mit ASR verwenden
                 return this.mNLUPlugin.startListen();
             } else {

@@ -1037,7 +1037,7 @@ export class NLUPlugin extends Plugin implements NLUInterface {
      */
 
     startListen(): number {
-        // console.log('ASRPlugin.startListen');
+        // console.log('NLUPlugin.startListen: start');
 
         // pruefen auf aktive Komponente
 
@@ -1068,6 +1068,7 @@ export class NLUPlugin extends Plugin implements NLUInterface {
         let result = 0;
         try {
             result = this._startRecognition();
+            // console.log('NLUPlugin.startListen: result = ', result);
             if ( result !== 0 ) {
                 return -1;
             }

@@ -1,7 +1,7 @@
 /** @packageDocumentation
  * TTSPlugin definiert die Basisklasse aller TTS
  *
- * Letzte Aenderung: 09.06.2020
+ * Letzte Aenderung: 14.08.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -426,6 +426,20 @@ export class TTSPlugin extends Plugin implements TTSInterface {
     }
 
 
+    /**
+     * startet die Synthese zur Pruefung und Aktivierung
+     * iOS Safari benoetigt eine User-Aktion, um die Sprachsynthese auszufuehren
+     *
+     * @protected
+     * @returns {number} Fehlercode 0 oder -1
+     */
+
+    _probeSynthesis(): number {
+        // kann von erbenden Klassen ueberschrieben werden
+        return 0;
+    }
+
+
     _isSynthesisRunning(): boolean {
         // muss von erbenden Klassen ueberschrieben werden
         return true;
@@ -623,13 +637,6 @@ export class TTSPlugin extends Plugin implements TTSInterface {
             return 0;
         }
 
-        // pruefen auf vorhandenen Text
-
-        if ( !aText ) {
-            this._error( 'startSpeak', 'kein text uebergeben' );
-            return -1;
-        }
-
         // pruefen auf laufende Sprachausgabe
 
         // console.log('TTSPlugin.startSpeak: speakRunning = ', this.isSpeakRunning(), ' synthesisRunning = ', this._isSynthesisRunning());
@@ -637,6 +644,14 @@ export class TTSPlugin extends Plugin implements TTSInterface {
             // console.log('TTSPlugin.startSpeak: isSpeakRunning == true');
             this._error( 'startSpeak', 'Sprachausgabe laeuft bereits' );
             return -1;
+        }
+
+        // pruefen auf vorhandenen Text
+
+        if ( !aText ) {
+            // TODO: leerer Text ruft jetzt immer _probeSynthesis auf
+            // this._error( 'startSpeak', 'kein text uebergeben' );
+            return this._probeSynthesis();
         }
 
         // Sprachausgabe starten

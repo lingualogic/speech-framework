@@ -5,8 +5,6 @@ import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import { uglify } from 'rollup-plugin-uglify';
-// import uglify from 'rollup-plugin-uglify';
-// import { minify } from 'uglify-es';
 
 
 // SpeechFramework
@@ -73,15 +71,7 @@ export default {
 
         json(),
 
-        /* Uglify-ES
-        uglify({ output: {
-            beautify: readableSourceCode,
-            preamble: preambleText,
-            quote_style: 3
-        }}, minify),
-        */
-
-       uglify({ 
+        uglify({ 
             output: {
                 beautify: readableSourceCode,
                 preamble: preambleText,
@@ -97,22 +87,7 @@ export default {
             // non-CommonJS modules will be ignored, but you can also
             // specifically include/exclude files
             include: [
-                './src/action/**',
-                './src/audio/**',
-                './src/base/**',
-                './src/bot/**',
                 './src/cloud/**',
-                './src/common/**', 
-                './src/const/**', 
-                './src/core/**', 
-                './src/dialog/**',
-                './src/file/**',
-                './src/inference/**',
-                './src/interface/**',
-                './src/intent/**',
-                './src/listen/**',
-                './src/net/**',
-                './src/speak/**',
                 './node_modules/**'], 
             // Default: undefined
             // exclude: ['node_modules/**'], // Default: undefined

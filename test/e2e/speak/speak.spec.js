@@ -552,7 +552,7 @@ describe('Speak', () => {
             // console.log('Test 4 Ende');
         });
 
-        it('should return -1, if no text', () => {
+        it('should return 0, if no text', () => {
             // console.log('Test 5 Start');
             expect(speak.addStartEvent( TEST_SPEAK_NAME, () => {
                 fail('Test 5 should not call');
@@ -569,10 +569,10 @@ describe('Speak', () => {
                 // console.log('Test 5 Done');
                 return 0;
             })).toBe(0);
-            expect( speak.start()).toBe( -1 );
+            expect( speak.start()).toBe( 0 );
             expect( speak.isRunning()).toBe( false );
             if ( speak.isTTS()) {
-                expect( errorText ).toEqual('SpeakComponent._startSpeakTTS: kein Text fuer die Sprachausgabe vorhanden');
+                // expect( errorText ).toEqual('SpeakComponent._startSpeakTTS: kein Text fuer die Sprachausgabe vorhanden');
             } else {
                 expect( errorText ).toBe( 'SpeakComponent.start: keine TTS vorhanden' );
             }

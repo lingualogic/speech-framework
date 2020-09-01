@@ -1,7 +1,7 @@
 /** @packageDocumentation
  * Diese Komponente dient als Fabrik zur Erzeugung der Html5 UserMeda-Klasse und -Instanz
  *
- * Letzte Aenderung: 01.06.2020
+ * Letzte Aenderung: 04.08.2020
  * Status: rot
  *
  * @module common/html5
@@ -63,19 +63,21 @@ export class UserMediaFactory extends Factory {
      */
 
     create( aObjectName?: string, aRegisterFlag = true ): any {
+        // console.log( 'UserMediaFactory.create: navigator.mediaDevices = ', navigator.mediaDevices);
         try {
             // pruefen auf MediaDevice
             if ( navigator.mediaDevices === undefined ) {
-                console.log('UserMediaFactory: no mediaDevices');
+                // console.log( 'UserMediaFactory.create: no mediaDevices' );
                 (navigator as any).mediaDevices = {};
             }
 
             // pruefen auf nicht vorhandenes getUserMedia
             if ( navigator.mediaDevices.getUserMedia === undefined ) {
-                console.log('UserMediaFactory: no getUserMedia');
+                // console.log( 'UserMediaFactory.create: no getUserMedia' );
                 // deprecated Funktion holen
                 const getUserMedia = (navigator as any).getUserMedia || (navigator as any).webkitGetUserMedia || (navigator as any).mozGetUserMedia || (navigator as any).msGetUserMedia || null;
                 if ( getUserMedia ) {
+                    // console.log( 'UserMediaFactory.create: alte getUserMedia gefunden' );
                     // alte getUserMedia-Funktion
                     navigator.mediaDevices.getUserMedia = (constraints: any) => {
                         return new Promise((resolve: any, reject: any) => {
@@ -84,6 +86,7 @@ export class UserMediaFactory extends Factory {
                     };
                 } else {
                     // es gibt keine getUserMedia-Funktion
+                    // console.log( 'UserMediaFactory.create: getUserMedia = null' );
                     return null;
                 }
             }

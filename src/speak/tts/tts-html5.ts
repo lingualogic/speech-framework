@@ -2,7 +2,7 @@
  * Hier wird die HTML5-Sprachausgabe implementiert. Ist Speech-Synthesis nicht vorhanden, wird
  * die Komponente in Active Off versetzt.
  *
- * Letzte Aenderung: 09.06.2020
+ * Letzte Aenderung: 21.08.2020
  * Status: gelb
  *
  * @module speak/tts
@@ -354,7 +354,7 @@ export class TTSHtml5 extends TTSPlugin {
      * Erzeugen der Synthese
      *
      * @protected
-     * @param {string} aText - zu synthethisiernder Text
+     * @param {string} aText - zu synthetisiernder Text
      *
      * @return {number} Fehlercode 0 oder -1
      */
@@ -366,29 +366,37 @@ export class TTSHtml5 extends TTSPlugin {
             // console.log('TTSHtml5._createSynthesis: Utterance = ', this.mUtterance);
             this.mUtterance.lang = this._getTTSLanguage();
             this.mUtterance.voice = this._getTTSVoice();
+
+            // Synthese-Ereignisfunktionen eintragen
+
+            this.mUtterance.onstart = () => { 
+                // console.log('TTSHtml5.onstart');
+                this._clearBreakTimeout();
+                this._onSynthesisStart();
+            }
+
+            this.mUtterance.onend = () => { 
+                // console.log('TTSHtml5.onend');
+                this._onSynthesisEnd();
+            }
+
+            this.mUtterance.onerror = (aEvent: any) => {
+                // console.log('TTSHtml5.onerror:', aEvent);
+                this._clearBreakTimeout();
+                // TODO: besimmte Fehler ausfiltern fuer macOS-Safari
+                if ( aEvent.type && aEvent.type === 'error' && ( !aEvent.error || aEvent.error === 'canceled' || aEvent.error === 'interrupted' )) {
+                    // keine Fehlerausgabe
+                    return;
+                } 
+                this._onSynthesisError( aEvent );
+            }
+            
+            return 0;
         } catch ( aException ) {
+            // console.log('TTSHtml5._createSynthesis: Exception ', aException);
             this._exception( '_createSynthesis', aException );
             return -1;
         }
-
-        // Synthese-Ereignisfunktionen eintragen
-
-        this.mUtterance.onstart = () => { 
-            // console.log('TTSHtml5.onstart');
-            this._clearBreakTimeout();
-            this._onSynthesisStart();
-        }
-        this.mUtterance.onend = () => { 
-            // console.log('TTSHtml5.onend');
-            this._onSynthesisEnd();
-        }
-        this.mUtterance.onerror = (aEvent: any) => {
-            // console.log('TTSHtml5.onerror:', aEvent);
-            this._clearBreakTimeout();
-            this._onSynthesisError( aEvent );
-        }
-
-        return 0;
     }
 
 
@@ -414,10 +422,16 @@ export class TTSHtml5 extends TTSPlugin {
      */
 
     _startSynthesis( aText: string ): number {
+        // console.log('TTSHtml5._startSynthesis: Synthesis = ', this.mSynthesis, this.mUtterance);
         if ( this.mSynthesis && this.mUtterance ) {
             this._setBreakTimeout();
-            this.mSynthesis.cancel();
-            this.mSynthesis.speak( this.mUtterance );
+            try {
+                this.mSynthesis.cancel();
+                // console.log('TTSHtml5._startSynthesis: speak');
+                this.mSynthesis.speak( this.mUtterance );
+            } catch ( aException ) {
+                // nichts zu tun
+            }
             return 0;
         }
         return -1;
@@ -432,12 +446,82 @@ export class TTSHtml5 extends TTSPlugin {
      */
 
     _stopSynthesis(): number {
+        // console.log('TTSHtml5._stopSynthesis');
         if ( this.mSynthesis ) {
             this._clearBreakTimeout();
-            this.mSynthesis.cancel();
+            try {
+                this.mSynthesis.cancel();
+            } catch ( aException ) {
+                // nichts zu tun
+            }
             return 0;
         }
         return -1;
+    }
+
+
+    /**
+     * Leere Sprachausgabe zum Testen und Aktivieren
+     * Wird fuer iOS Safari benoetigt, um die Sprachausgabe zu aktivieren.
+     */
+
+    _probeSynthesis(): number {
+        // console.log('TTSHtml5._probeSynthesis: start', this.mUtteranceClass, this.mSynthesis);
+        try {
+            if ( !this.mUtteranceClass ) {
+                this._error( '_probeSynthesis', 'Kein HTML5 SpeechSynthesisUtterance API vorhanden' );
+                return -1;
+            }
+
+            const utterance = new this.mUtteranceClass( '' );
+            if ( !utterance ) {
+                this._error( '_probeSynthesis', 'Kein Utterance erzeugt' );
+                return -1;
+            }
+
+            utterance.lang = this._getTTSLanguage();
+            utterance.voice = this._getTTSVoice();
+
+            // Synthese-Ereignisfunktionen eintragen
+
+            utterance.onstart = () => { 
+                // console.log('TTSHtml5._probeSynthesis: onstart');
+                this._clearBreakTimeout();
+            }
+
+            utterance.onend = () => { 
+                // console.log('TTSHtml5._probeSynthesis: onend');
+                this._clearBreakTimeout();
+            }
+
+            utterance.onerror = (aEvent: any) => {
+                // console.log('TTSHtml5._probeSynthesis: onerror:', aEvent);
+                this._clearBreakTimeout();
+                if ( aEvent.error === 'synthesis-failed') {
+                    // keine Fehlermeldung, tritt in Chrome auf, wegen leerem String
+                    return;
+                }
+                // TODO: die Frage ist, ob der Fehler generell nicht zurueckgegeben wird
+                // this._onSynthesisError( aEvent );
+            }
+
+            if ( this.mSynthesis ) {
+                this._setBreakTimeout();
+                try {
+                    this.mSynthesis.cancel();
+                    // console.log('TTSHtml5._probeSynthesis: start Synthesis');
+                    this.mSynthesis.speak( utterance );
+                } catch ( aException ) {
+                    // nichts zu tun
+                }
+            }
+
+            return 0;
+        } catch ( aException ) {
+            // console.log('TTSHtml5._probeSynthesis: Exception ', aException);
+            this._exception( '_probeSynthesis', aException );
+            return -1;
+        }
     }
 
 }
