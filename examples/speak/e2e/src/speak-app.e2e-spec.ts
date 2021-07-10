@@ -24,11 +24,11 @@ describe('Speak-App', () => {
     beforeEach(() => {
     });
 
-    it('sollte errorClick druecken und Fehlerausgabe abschalten', () => {
+    it('sollte errorClick druecken und Fehlerausgabe abschalten', async () => {
         let errorButton = element( by.id('errorClick'));
-        expect( errorButton.getText()).toBe( 'Fehler aus' );
+        expect( await errorButton.getText()).toBe( 'Fehler aus' );
         errorButton.click();
-        expect( errorButton.getText()).toBe( 'Fehler ein' );
+        expect( await errorButton.getText()).toBe( 'Fehler ein' );
     });
 
     it('sollte startClick druecken und Sprachausgabe mit erster Stimme starten', (done) => {

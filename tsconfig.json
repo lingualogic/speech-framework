@@ -57,18 +57,20 @@
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */  
     // "noLib": false
+    /* TODO: automatische Entfernung von Alias-Importpfaden
     "plugins": [
+      { "transform": "typescript-transform-paths" },
       {
         "transform": "typescript-transform-paths",
         "afterDeclarations": true
       }
     ]
+    */
   },
   "include": [
     "index.ts",
-    "src/framework.ts",
     "src/**/*.ts",
-    "credentials/*.ts", "src/cloud/google/device/base64-binary.js"
+    "credentials/*.ts"
   ],
   "exclude": [
     "lib",

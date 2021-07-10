@@ -73,23 +73,24 @@ import '../../common/html5/websocket-factory.ts';
 
 import '../../common/html5/webworker-factory.ts';
 
-import { USERMEDIA_FACTORY_NAME as c, UserMediaFactory as h } from '../../common/html5/usermedia-factory.ts';
+import { USERMEDIA_FACTORY_NAME as c, UserMediaFactory as l } from '../../common/html5/usermedia-factory.ts';
 
 import '../../common/html5/xmlhttprequest-factory.ts';
 
-import { AudioContextManager as l } from '../../common/html5/audiocontext-manager.ts';
+import { AudioContextManager as h } from '../../common/html5/audiocontext-manager.ts';
 
-var p = '0.1.1', f = '0002', g = 'ALPHA', d = '30.05.2020', A = "0.1.1.0002 vom 30.05.2020 (ALPHA)", y = "0.1.1.0002 vom 30.05.2020 (ALPHA)", _ = "0.1.1.0002 vom 30.05.2020 (ALPHA)", T = "0.1.1.0002 vom 30.05.2020 (ALPHA)", z = 'Amazon', C = 'AmazonFactory', S = 'AmazonPort', R = 'AmazonMock', k = "AmazonPort", P = '', I = "", v = 'NLU', F = 'ASR', b = 'ASRNLU', O = 'TTS', E = 'assets/', N = 'amazon.json', U = !1, w = 'de-DE', x = 'en-US', L = "de-DE", D = 'deu-DEU', M = 'eng-USA', j = "deu-DEU", G = 'de-DE', K = 'en-US', W = "de-DE", V = 'Vicki', H = 'Markus', q = 'Anna-ML', Y = 'Petra-ML', J = "Vicki", X = "Vicki", B = 789, Q = 'audio/L16;rate=16000', Z = "audio/L16;rate=16000", $ = 2048, tt = 16e3, nt = 'pcm', ot = function(t, n) {
+var p = '0.1.1', f = '0002', g = 'ALPHA', d = '30.05.2020', A = "0.1.1.0002 vom 30.05.2020 (ALPHA)", y = "0.1.1.0002 vom 30.05.2020 (ALPHA)", _ = "0.1.1.0002 vom 30.05.2020 (ALPHA)", T = "0.1.1.0002 vom 30.05.2020 (ALPHA)", z = 'Amazon', C = 'AmazonFactory', S = 'AmazonPort', R = 'AmazonMock', k = "AmazonPort", P = '', I = "", v = 'NLU', F = 'ASR', b = 'ASRNLU', O = 'TTS', E = 'assets/', N = 'amazon.json', w = !1, U = 'de-DE', x = 'en-US', L = "de-DE", D = 'deu-DEU', M = 'eng-USA', j = "deu-DEU", G = 'de-DE', K = 'en-US', W = "de-DE", V = 'Vicki', H = 'Markus', q = 'Anna-ML', Y = 'Petra-ML', J = "Vicki", X = "Vicki", B = 789, Q = 'audio/L16;rate=16000', Z = "audio/L16;rate=16000", $ = 2048, tt = 16e3, nt = 'pcm', ot = function(t, n) {
     return (ot = Object.setPrototypeOf || {
         __proto__: []
     } instanceof Array && function(t, n) {
         t.__proto__ = n;
     } || function(t, n) {
-        for (var o in n) n.hasOwnProperty(o) && (t[o] = n[o]);
+        for (var o in n) Object.prototype.hasOwnProperty.call(n, o) && (t[o] = n[o]);
     })(t, n);
 };
 
 function et(t, n) {
+    if ("function" != typeof n && null !== n) throw new TypeError("Class extends value " + String(n) + " is not a constructor or null");
     function o() {
         this.constructor = t;
     }
@@ -304,7 +305,7 @@ var rt = function(t) {
     function n(n) {
         var o = t.call(this, 'AmazonConfig') || this;
         return o.mInitFlag = !1, o.mConfigPath = "assets/", o.mConfigFile = "amazon.json", 
-        o.mConfigLoadFlag = !1, o.mConfigServerUrl = "", o.mConfigRegion = '', o.mConfigIdentityPoolId = '', 
+        o.mConfigLoadFlag = false, o.mConfigServerUrl = "", o.mConfigRegion = '', o.mConfigIdentityPoolId = '', 
         o.mConfigUserId = '', o.mConfigNluTag = '', o.mFileReader = null, o.mOnInitFunc = null, 
         o.mOnErrorFunc = null, o.mFileReader = n, o._setErrorOutputFunc((function(t) {
             return o._onError(new Error(t));
@@ -321,7 +322,7 @@ var rt = function(t) {
         return this._setOption(t), this.mInitFlag = !0, 0;
     }, n.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = "assets/", this.mConfigFile = "amazon.json", 
-        this.mConfigLoadFlag = !1, this.mConfigServerUrl = "", this.mConfigRegion = '', 
+        this.mConfigLoadFlag = false, this.mConfigServerUrl = "", this.mConfigRegion = '', 
         this.mConfigIdentityPoolId = '', this.mConfigUserId = '', this.mConfigNluTag = '', 
         this.mFileReader = null, this.mOnInitFunc = null, 0;
     }, n.prototype.isInit = function() {
@@ -340,13 +341,13 @@ var rt = function(t) {
         set: function(t) {
             this.mOnInitFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "onError", {
         set: function(t) {
             this.mOnErrorFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype._readConfigData = function(t) {
         if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
@@ -372,7 +373,7 @@ var rt = function(t) {
         set: function(t) {
             this.mConfigServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "region", {
         get: function() {
@@ -381,7 +382,7 @@ var rt = function(t) {
         set: function(t) {
             this.mConfigRegion = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "identityPoolId", {
         get: function() {
@@ -390,7 +391,7 @@ var rt = function(t) {
         set: function(t) {
             this.mConfigIdentityPoolId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "userId", {
         get: function() {
@@ -399,7 +400,7 @@ var rt = function(t) {
         set: function(t) {
             this.mConfigUserId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "nluTag", {
         get: function() {
@@ -408,7 +409,7 @@ var rt = function(t) {
         set: function(t) {
             this.mConfigNluTag = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype.isCredentials = function() {
         return !(!this.mConfigIdentityPoolId || !this.mConfigRegion);
@@ -546,7 +547,7 @@ var rt = function(t) {
         return this.mAudioPlayer && (this.mAudioPlayer.stop(), this.mAudioPlayer = null), 
         0;
     }, n;
-}(ut), ht = function(t) {
+}(ut), lt = function(t) {
     function o(n, o) {
         void 0 === o && (o = !0);
         var e = t.call(this, n || "AmazonPort", o) || this;
@@ -618,8 +619,8 @@ var rt = function(t) {
         if (!window.AWS) return this._error('init', 'AWS-SDK ist nicht vorhanden'), -1;
         if (o && 'boolean' == typeof o.amazonDynamicCredentialsFlag && o.amazonDynamicCredentialsFlag) this.mDynamicCredentialsFlag = !0; else if (!this._checkCredentials(o)) return this._error('init', 'keine Region und/oder IdentityPoolId als Parameter uebergeben'), 
         -1;
-        this.mAudioContext = l.getAudioContext();
-        var e = n.get(c, h);
+        this.mAudioContext = h.getAudioContext();
+        var e = n.get(c, l);
         return e && (this.mGetUserMedia = e.create()), 0 !== this._initAllObject(o) || 0 !== t.prototype.init.call(this, o) ? -1 : (this.isErrorOutput() && (this.mAmazonTTS ? console.log('AmazonPort: TTS ist vorhanden') : console.log('AmazonPort: TTS ist nicht vorhanden'), 
         this.mAmazonASR ? console.log('AmazonPort: ASR ist vorhanden') : console.log('AmazonPort: ASR ist nicht vorhanden')), 
         0);
@@ -855,7 +856,7 @@ var rt = function(t) {
             return this._exception('_stopTTS', t), -1;
         }
     }, o;
-}(i), lt = function(t) {
+}(i), ht = function(t) {
     function n() {
         return t.call(this, 'AmazonFactory') || this;
     }
@@ -868,7 +869,7 @@ var rt = function(t) {
         switch (t) {
           case "AmazonPort":
           case "AmazonPort":
-            o = new ht(t, n);
+            o = new lt(t, n);
             break;
 
           case "AmazonMock":
@@ -897,7 +898,7 @@ var rt = function(t) {
     }, t.setErrorOutputFunc = function(t) {
         o._setErrorOutputFunc(t);
     }, t._initAmazonPort = function(n) {
-        var e = o.get("Amazon", ht);
+        var e = o.get("Amazon", lt);
         return e ? 0 !== e.init(n) ? (o.remove("Amazon"), -1) : (t.mCurrentPort = e, 0) : -1;
     }, t._initAmazonMock = function(n) {
         var e = o.get("Amazon", rt);
@@ -960,4 +961,4 @@ var rt = function(t) {
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
-export { T as AMAZON_API_VERSION, b as AMAZON_ASRNLU_ACTION, F as AMAZON_ASR_ACTION, j as AMAZON_ASR_LANGUAGE, D as AMAZON_ASR_LANGUAGE1, M as AMAZON_ASR_LANGUAGE2, $ as AMAZON_AUDIOBUFFER_SIZE, tt as AMAZON_AUDIOSAMPLE_RATE, B as AMAZON_AUDIOTTS_ID, nt as AMAZON_AUDIO_FORMAT, N as AMAZON_CONFIG_FILE, U as AMAZON_CONFIG_LOAD, E as AMAZON_CONFIG_PATH, Z as AMAZON_DEFAULT_CODEC, L as AMAZON_DEFAULT_LANGUAGE, k as AMAZON_DEFAULT_NAME, I as AMAZON_DEFAULT_URL, X as AMAZON_DEFAULT_VOICE, w as AMAZON_DE_LANGUAGE, x as AMAZON_EN_LANGUAGE, C as AMAZON_FACTORY_NAME, R as AMAZON_MOCK_NAME, v as AMAZON_NLU_ACTION, Q as AMAZON_PCM_CODEC, S as AMAZON_PORT_NAME, P as AMAZON_SERVER_URL, y as AMAZON_SERVER_VERSION, O as AMAZON_TTS_ACTION, W as AMAZON_TTS_LANGUAGE, G as AMAZON_TTS_LANGUAGE1, K as AMAZON_TTS_LANGUAGE2, J as AMAZON_TTS_VOICE, V as AMAZON_TTS_VOICE1, H as AMAZON_TTS_VOICE2, q as AMAZON_TTS_VOICE3, Y as AMAZON_TTS_VOICE4, z as AMAZON_TYPE_NAME, f as AMAZON_VERSION_BUILD, d as AMAZON_VERSION_DATE, p as AMAZON_VERSION_NUMBER, A as AMAZON_VERSION_STRING, g as AMAZON_VERSION_TYPE, _ as AMAZON_WORKER_VERSION, pt as Amazon, lt as AmazonFactory };
+export { T as AMAZON_API_VERSION, b as AMAZON_ASRNLU_ACTION, F as AMAZON_ASR_ACTION, j as AMAZON_ASR_LANGUAGE, D as AMAZON_ASR_LANGUAGE1, M as AMAZON_ASR_LANGUAGE2, $ as AMAZON_AUDIOBUFFER_SIZE, tt as AMAZON_AUDIOSAMPLE_RATE, B as AMAZON_AUDIOTTS_ID, nt as AMAZON_AUDIO_FORMAT, N as AMAZON_CONFIG_FILE, w as AMAZON_CONFIG_LOAD, E as AMAZON_CONFIG_PATH, Z as AMAZON_DEFAULT_CODEC, L as AMAZON_DEFAULT_LANGUAGE, k as AMAZON_DEFAULT_NAME, I as AMAZON_DEFAULT_URL, X as AMAZON_DEFAULT_VOICE, U as AMAZON_DE_LANGUAGE, x as AMAZON_EN_LANGUAGE, C as AMAZON_FACTORY_NAME, R as AMAZON_MOCK_NAME, v as AMAZON_NLU_ACTION, Q as AMAZON_PCM_CODEC, S as AMAZON_PORT_NAME, P as AMAZON_SERVER_URL, y as AMAZON_SERVER_VERSION, O as AMAZON_TTS_ACTION, W as AMAZON_TTS_LANGUAGE, G as AMAZON_TTS_LANGUAGE1, K as AMAZON_TTS_LANGUAGE2, J as AMAZON_TTS_VOICE, V as AMAZON_TTS_VOICE1, H as AMAZON_TTS_VOICE2, q as AMAZON_TTS_VOICE3, Y as AMAZON_TTS_VOICE4, z as AMAZON_TYPE_NAME, f as AMAZON_VERSION_BUILD, d as AMAZON_VERSION_DATE, p as AMAZON_VERSION_NUMBER, A as AMAZON_VERSION_STRING, g as AMAZON_VERSION_TYPE, _ as AMAZON_WORKER_VERSION, pt as Amazon, ht as AmazonFactory };

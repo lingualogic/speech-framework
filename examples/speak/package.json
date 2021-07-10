@@ -1,6 +1,6 @@
 {
     "name": "speakapp",
-    "version": "0.5.22",
+    "version": "0.5.23",
     "productName": "SpeakApp",
     "description": "SpeakApp",
     "author": "LinguaLogic Team",
@@ -14,7 +14,7 @@
         "build": "gulp dist-build",
         "build:electron": "gulp electron-build",
         "build:android": "gulp cordova-build-android",
-        "e2e": "gulp e2e",
+        "e2e": "./../../node_modules/.bin/protractor e2e/protractor.conf.js",
         "start": "gulp dist-run",
         "electron": "gulp electron-run",
         "cordova": "gulp cordova-browser",

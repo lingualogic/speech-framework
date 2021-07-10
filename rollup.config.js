@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 // rollup.config.js fuer SpeechService
 
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import { uglify } from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
 
 
 // SpeechFramework
@@ -71,7 +72,7 @@ export default {
 
         json(),
 
-        uglify({ 
+        terser({ 
             output: {
                 beautify: readableSourceCode,
                 preamble: preambleText,

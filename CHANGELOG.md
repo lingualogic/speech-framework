@@ -1,6 +1,13 @@
 # Speech-Framework Release Notizen
 
 
+## 0.5.23.0067 Release (10.07.2021)
+
+### Fix
+
+Aktualisierung aller NPM-Packages.
+
+
 ## 0.5.22.0066 Release (31.08.2020)
 
 ### Fix

@@ -79,17 +79,18 @@ import '../../common/html5/xmlhttprequest-factory.ts';
 
 import '../../common/html5/audiocontext-manager.ts';
 
-var a = '0.1.2', u = '0003', c = 'ALPHA', p = '30.05.2020', h = "0.1.2.0003 vom 30.05.2020 (ALPHA)", l = h, m = h, f = h, g = 'Rasa', y = 'RasaFactory', _ = 'RasaPort', d = 'RasaMock', R = "RasaPort", C = 'http://localhost:5005', T = "http://localhost:5005", N = 'NLU', F = 'assets/', v = 'rasa.json', O = !1, U = 'de-DE', k = 'en-US', A = "de-DE", b = function(t, n) {
+var a = '0.1.2', u = '0003', c = 'ALPHA', p = '30.05.2020', l = "0.1.2.0003 vom 30.05.2020 (ALPHA)", h = l, m = l, f = l, g = 'Rasa', y = 'RasaFactory', _ = 'RasaPort', d = 'RasaMock', R = "RasaPort", C = 'http://localhost:5005', T = "http://localhost:5005", N = 'NLU', F = 'assets/', v = 'rasa.json', O = !1, U = 'de-DE', k = 'en-US', A = "de-DE", b = function(t, n) {
     return (b = Object.setPrototypeOf || {
         __proto__: []
     } instanceof Array && function(t, n) {
         t.__proto__ = n;
     } || function(t, n) {
-        for (var r in n) n.hasOwnProperty(r) && (t[r] = n[r]);
+        for (var r in n) Object.prototype.hasOwnProperty.call(n, r) && (t[r] = n[r]);
     })(t, n);
 };
 
 function L(t, n) {
+    if ("function" != typeof n && null !== n) throw new TypeError("Class extends value " + String(n) + " is not a constructor or null");
     function r() {
         this.constructor = t;
     }
@@ -227,7 +228,7 @@ var P = function(t) {
     function n(n) {
         var r = t.call(this, 'RasaConfig') || this;
         return r.mInitFlag = !1, r.mConfigPath = "assets/", r.mConfigFile = "rasa.json", 
-        r.mConfigLoadFlag = !1, r.mConfigServerUrl = "http://localhost:5005", r.mConfigAppId = '', 
+        r.mConfigLoadFlag = false, r.mConfigServerUrl = "http://localhost:5005", r.mConfigAppId = '', 
         r.mConfigAppKey = '', r.mConfigUserId = '', r.mConfigNluTag = '', r.mFileReader = null, 
         r.mOnInitFunc = null, r.mOnErrorFunc = null, r.mFileReader = n, r._setErrorOutputFunc((function(t) {
             return r._onError(new Error(t));
@@ -244,7 +245,7 @@ var P = function(t) {
         return this._setOption(t), this.mInitFlag = !0, 0;
     }, n.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = "assets/", this.mConfigFile = "rasa.json", 
-        this.mConfigLoadFlag = !1, this.mConfigServerUrl = "http://localhost:5005", this.mConfigAppId = '', 
+        this.mConfigLoadFlag = false, this.mConfigServerUrl = "http://localhost:5005", this.mConfigAppId = '', 
         this.mConfigAppKey = '', this.mConfigUserId = '', this.mConfigNluTag = '', this.mFileReader = null, 
         this.mOnInitFunc = null, 0;
     }, n.prototype.isInit = function() {
@@ -263,13 +264,13 @@ var P = function(t) {
         set: function(t) {
             this.mOnInitFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "onError", {
         set: function(t) {
             this.mOnErrorFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype._readConfigData = function(t) {
         if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
@@ -295,7 +296,7 @@ var P = function(t) {
         set: function(t) {
             this.mConfigServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "appId", {
         get: function() {
@@ -304,7 +305,7 @@ var P = function(t) {
         set: function(t) {
             this.mConfigAppId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "appKey", {
         get: function() {
@@ -313,7 +314,7 @@ var P = function(t) {
         set: function(t) {
             this.mConfigAppKey = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "userId", {
         get: function() {
@@ -322,7 +323,7 @@ var P = function(t) {
         set: function(t) {
             this.mConfigUserId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "nluTag", {
         get: function() {
@@ -331,7 +332,7 @@ var P = function(t) {
         set: function(t) {
             this.mConfigNluTag = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype.isCredentials = function() {
         return !!this.mConfigAppKey;
@@ -640,7 +641,7 @@ var P = function(t) {
         }
         return -1;
     }, n;
-}(o), D = function(t) {
+}(o), x = function(t) {
     function n() {
         return t.call(this, 'RasaFactory') || this;
     }
@@ -673,7 +674,7 @@ var P = function(t) {
             return this._exception('create', t), null;
         }
     }, n;
-}(r), x = function() {
+}(r), D = function() {
     function t() {}
     return t.setErrorOutputOn = function() {
         t.mErrorOutputFlag = !0, n.setErrorOutputOn();
@@ -744,4 +745,4 @@ var P = function(t) {
     }, t.mInitFlag = !1, t.mErrorOutputFlag = !1, t.mCurrentPort = null, t;
 }();
 
-export { f as RASA_API_VERSION, v as RASA_CONFIG_FILE, O as RASA_CONFIG_LOAD, F as RASA_CONFIG_PATH, A as RASA_DEFAULT_LANGUAGE, R as RASA_DEFAULT_NAME, T as RASA_DEFAULT_URL, U as RASA_DE_LANGUAGE, k as RASA_EN_LANGUAGE, y as RASA_FACTORY_NAME, d as RASA_MOCK_NAME, N as RASA_NLU_ACTION, _ as RASA_PORT_NAME, C as RASA_SERVER_URL, l as RASA_SERVER_VERSION, g as RASA_TYPE_NAME, u as RASA_VERSION_BUILD, p as RASA_VERSION_DATE, a as RASA_VERSION_NUMBER, h as RASA_VERSION_STRING, c as RASA_VERSION_TYPE, m as RASA_WORKER_VERSION, x as Rasa, D as RasaFactory };
+export { f as RASA_API_VERSION, v as RASA_CONFIG_FILE, O as RASA_CONFIG_LOAD, F as RASA_CONFIG_PATH, A as RASA_DEFAULT_LANGUAGE, R as RASA_DEFAULT_NAME, T as RASA_DEFAULT_URL, U as RASA_DE_LANGUAGE, k as RASA_EN_LANGUAGE, y as RASA_FACTORY_NAME, d as RASA_MOCK_NAME, N as RASA_NLU_ACTION, _ as RASA_PORT_NAME, C as RASA_SERVER_URL, h as RASA_SERVER_VERSION, g as RASA_TYPE_NAME, u as RASA_VERSION_BUILD, p as RASA_VERSION_DATE, a as RASA_VERSION_NUMBER, l as RASA_VERSION_STRING, c as RASA_VERSION_TYPE, m as RASA_WORKER_VERSION, D as Rasa, x as RasaFactory };

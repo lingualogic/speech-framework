@@ -12,15 +12,23 @@
  * @module cloud/rasa
  * @author SB
  */
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Rasa = exports.RasaFactory = void 0;
 // Global API
-__export(require("./rasa.bundle"));
-__export(require("./rasa.bundle"));
+__exportStar(require("./rasa.bundle"), exports);
+__exportStar(require("./rasa.bundle"), exports);
 var rasa_factory_1 = require("./rasa.bundle");
-exports.RasaFactory = rasa_factory_1.RasaFactory;
+Object.defineProperty(exports, "RasaFactory", { enumerable: true, get: function () { return rasa_factory_1.RasaFactory; } });
 var rasa_1 = require("./rasa.bundle");
-exports.Rasa = rasa_1.Rasa;
+Object.defineProperty(exports, "Rasa", { enumerable: true, get: function () { return rasa_1.Rasa; } });
 //# sourceMappingURL=index.js.map

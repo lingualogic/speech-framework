@@ -1,0 +1,12 @@
+{
+    "name": "dictateapp",
+    "displayName": "DictateApp",
+    "version": "0.5.23",
+    "description": "Beispiel-App fuer Listen-API fuer den Diktiermodus in Cordova",
+    "author": "LinguaLogic Team",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

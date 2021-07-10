@@ -17,6 +17,7 @@ exports.config = {
     },
     directConnect: true,
     baseUrl: 'file://' + __dirname + '/../dist/index.html',
+    // seleniumAddress: 'http://localhost:4444/wd/hub/',
     framework: 'jasmine',
     jasmineNodeOpts: {
         showColors: true,

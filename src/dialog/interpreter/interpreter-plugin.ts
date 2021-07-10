@@ -834,10 +834,10 @@ export class InterpreterPlugin extends Plugin implements InterpreterInterface {
      * @return {Promise} dialogPromise - Promise fuer Knoten zurueckgeben
      */
 
-    _runAsyncNode( aNode: DialogNodeInterface, aTimeout: number ): Promise<any> {
+    _runAsyncNode( aNode: DialogNodeInterface, aTimeout: number ): Promise<void> {
         // debug('_runAsyncNode:', aNode.getNodeId(), aTimeout);
         let promiseCancel = null;
-        const promise = new Promise(( resolve, reject ) => {
+        const promise = new Promise<void>(( resolve, reject ) => {
             // debug('DialogInterpreter._runAsyncNode: promise.start');
             if ( !this.isDialogRunning()) {
                 this._clearNodePromise();

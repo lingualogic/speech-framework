@@ -16,7 +16,6 @@ const runSequence = require('gulp4-run-sequence');
 const typedoc = require('gulp-typedoc');
 const del = require('del');
 const fs = require('fs');
-// const rename = require('gulp-rename');
 const file = require('gulp-file');
 const inject = require('gulp-inject-string');
 
@@ -54,24 +53,21 @@ gulp.task('dist-typedoc', (cb) => {
             readme: 'src/README.md',
             types: [],
             exclude: [
-                '**/action/action.ts',
-                '**/audio/audio.ts',
-                '**/base/base.ts',
-                '**/bot/bot.ts',
-                '**/dialog/dialog.ts',
-                '**/intent/intent.ts',
-                '**/listen/listen.ts',
-                '**/speak/speak.ts',
+                'src/action/action.ts',
+                'src/audio/audio.ts',
+                'src/base/base.ts',
+                'src/bot/bot.ts',
+                'src/dialog/dialog.ts',
+                'src/intent/intent.ts',
+                'src/listen/listen.ts',
                 '**/*mock.ts'
             ],
-            externalPattern: './node_modules/**',
+            externalPattern: ['./node_modules/**'],
+            excludePrivate: true,
+            excludeProtected: true,
             excludeExternals: true,
             ignoreCompilerErrors: true,
-            plugins: ['typedoc-plugin-external-module-name'],
-            version: true,
-            verbose: true,
-            hideGenerator: true,
-            logger: typedoc.Logger
+            plugins: ['typedoc-plugin-external-module-name']
         }), cb);
 });
 
@@ -97,14 +93,11 @@ gulp.task('typedoc', (cb) => {
             exclude: [
                 '**/*mock.ts'
             ],
-            externalPattern: './node_modules/**',
+            externalPattern: ['./node_modules/**'],
             excludeExternals: true,
             ignoreCompilerErrors: true,
             plugins: ['typedoc-plugin-external-module-name'],
-            version: true,
-            verbose: true,
-            hideGenerator: true,
-            logger: typedoc.Logger
+            version: true
         }), cb);
 });
 
@@ -123,7 +116,7 @@ gulp.task('test', shell.task('karma start karma.conf.js'));
  * Installationstext des veroeffentlichten NPM-Packages
  */
 
-gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.22.tgz'));
+gulp.task('test-install', shell.task('npm install ./dist/speech-framework-0.5.23.tgz'));
 
 
 // Kopiert Quellcode
@@ -976,8 +969,8 @@ gulp.task('install', (callback) => {
         'install-rasa-credentials-ts',
         'install-rasa-credentials-js',
         'install-webdriver',
-        'install-electron',
-        'install-cordova',
+        // 'install-electron',
+        // 'install-cordova',
         callback
     );
 });
@@ -1033,6 +1026,65 @@ gulp.task('dist-pack', shell.task('cd dist && npm pack'));
 gulp.task('dist-publish', shell.task('cd dist && npm publish'));
 
 
+// Dictate-Beispiel erzeugen
+
+
+/**
+ * Installiert das Dictate Web-Beispiel
+ */
+
+gulp.task('install-dictate', shell.task('cd examples/dictate && npm install'));
+
+
+/**
+ * Erzeugt das Dictate Web-Beispiel
+ */
+
+gulp.task('build-dictate', shell.task('cd examples/dictate && npm run build'));
+ 
+ 
+/**
+ * Erzeugt das Dictate-Electron Beispiel
+ */
+
+gulp.task('build-dictate-electron', shell.task('cd examples/dictate && npm run build:electron'));
+ 
+ 
+/**
+ * Erzeugt das Dictate-Android Beispiel
+ */
+
+gulp.task('build-dictate-android', shell.task('cd examples/dictate && npm run build:android'));
+ 
+ 
+/**
+ * Testet das Dictate Web-Beispiel
+ */
+
+gulp.task('test-dictate', shell.task('cd examples/dictate && npm run e2e'));
+ 
+ 
+/** 
+ * Erzeugt das Dictate-Example
+ */
+
+gulp.task('build-dictate-example', function(callback) {
+    try {
+        // pruefen auf vorhandenes Intent-Beispiel
+        fs.accessSync( 'examples/dictate/package.json' );
+        runSequence(
+            // 'install-dictate',
+            'build-dictate',
+            // 'build-dictate-electron',
+            // 'build-dictate-android',
+            'test-dictate',
+            callback
+        );
+    } catch (e) {
+        callback();
+    }
+});
+ 
 
 // Intent-Beispiel erzeugen
 
@@ -1223,6 +1275,7 @@ gulp.task('build-speak-example', function(callback) {
 
 gulp.task('build-examples', function(callback) {
     runSequence(
+        'build-dictate-example',
         'build-intent-example',
         'build-listen-example',
         'build-speak-example',

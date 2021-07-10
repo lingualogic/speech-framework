@@ -85,11 +85,12 @@ var m = '0.1.2', l = '0003', g = 'ALPHA', d = '30.05.2020', _ = "0.1.2.0003 vom 
     } instanceof Array && function(t, o) {
         t.__proto__ = o;
     } || function(t, o) {
-        for (var r in o) o.hasOwnProperty(r) && (t[r] = o[r]);
+        for (var r in o) Object.prototype.hasOwnProperty.call(o, r) && (t[r] = o[r]);
     })(t, o);
 };
 
 function rt(t, o) {
+    if ("function" != typeof o && null !== o) throw new TypeError("Class extends value " + String(o) + " is not a constructor or null");
     function r() {
         this.constructor = t;
     }
@@ -305,7 +306,7 @@ var nt = function(t) {
     function o(o) {
         var r = t.call(this, 'MicrosoftConfig') || this;
         return r.mInitFlag = !1, r.mConfigPath = "assets/", r.mConfigFile = "microsoft.json", 
-        r.mConfigLoadFlag = !1, r.mConfigServerUrl = "", r.mConfigRegion = '', r.mConfigSubscriptionKey = '', 
+        r.mConfigLoadFlag = false, r.mConfigServerUrl = "", r.mConfigRegion = '', r.mConfigSubscriptionKey = '', 
         r.mConfigLuisEndpoint = '', r.mConfigUserId = '', r.mConfigNluTag = '', r.mFileReader = null, 
         r.mOnInitFunc = null, r.mOnErrorFunc = null, r.mFileReader = o, r._setErrorOutputFunc((function(t) {
             return r._onError(new Error(t));
@@ -325,7 +326,7 @@ var nt = function(t) {
         return this._setOption(t), this.mInitFlag = !0, 0;
     }, o.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = "assets/", this.mConfigFile = "microsoft.json", 
-        this.mConfigLoadFlag = !1, this.mConfigServerUrl = "", this.mConfigRegion = '', 
+        this.mConfigLoadFlag = false, this.mConfigServerUrl = "", this.mConfigRegion = '', 
         this.mConfigSubscriptionKey = '', this.mConfigLuisEndpoint = '', this.mConfigUserId = '', 
         this.mConfigNluTag = '', this.mFileReader = null, this.mOnInitFunc = null, 0;
     }, o.prototype.isInit = function() {
@@ -344,13 +345,13 @@ var nt = function(t) {
         set: function(t) {
             this.mOnInitFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "onError", {
         set: function(t) {
             this.mOnErrorFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), o.prototype._readConfigData = function(t) {
         if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
@@ -377,7 +378,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "region", {
         get: function() {
@@ -386,7 +387,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigRegion = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "subscriptionKey", {
         get: function() {
@@ -395,7 +396,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigSubscriptionKey = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "luisEndpoint", {
         get: function() {
@@ -404,7 +405,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigLuisEndpoint = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "userId", {
         get: function() {
@@ -413,7 +414,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigUserId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(o.prototype, "nluTag", {
         get: function() {
@@ -422,7 +423,7 @@ var nt = function(t) {
         set: function(t) {
             this.mConfigNluTag = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), o.prototype.isCredentials = function() {
         return !(!this.mConfigSubscriptionKey || !this.mConfigRegion);
@@ -442,7 +443,7 @@ var nt = function(t) {
         get: function() {
             return this.mSpeechConfig;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), o.prototype.isConnect = function() {
         return this.mConnectFlag;

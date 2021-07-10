@@ -1,0 +1,9 @@
+{
+  "name": "dictateapp",
+  "productName": "SpeechDictateApp",
+  "displayName": "Speech-DictageApp",
+  "version": "0.5.23",
+  "author": "LinguaLogic Team",
+  "license": "MIT",
+  "main": "main.js"
+}

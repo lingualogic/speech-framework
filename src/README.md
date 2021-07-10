@@ -1,6 +1,6 @@
 # Speech-Framework Quellcode
 
-**Version:** **0.5.22**
+**Version:** **0.5.23**
 
 Der Quellcode von Speech-Framework ist vollständig im Verzeichnis src untergebracht, und besteht aus drei großen Teilen. Der erste Teil ist das Core-Framework im Verzeichnis core, welches den gesamten Code für alle Basisklassen des Speech-Frameworks beinhaltet. Der zweite Teil sind die Komponenten des Speech-Frameworks, die einzeln verwendet werden können. Der dritte Teil sind die Cloud-Dienste im Verzeichnis cloud, die die Verbindung zu externen Dienstanbietern aufbauen.
 
@@ -25,8 +25,6 @@ Der Quellcode von Speech-Framework ist vollständig im Verzeichnis src untergebr
 * **dialog:** Dialog Speech-Komponente zur Ausführung von Dialogskripten (NLG) als Sprach- und Aktionsausgaben
 
 * **file:** File Basiskomponente zum Laden von Dateien
-
-* **inference:** Inference Speech-Komponente zur Ausführung von Inference-Skripten (NLP) zur Interpretation von Intents
 
 * **intent:** Intent Speech-Komponente zur Sprachanalyse (NLU) von einzenen Sätzen und Rückgabe eines Intents
 

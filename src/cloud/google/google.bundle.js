@@ -87,11 +87,12 @@ var f = '0.1.7', d = '0008', _ = 'ALPHA', T = '18.08.2020', S = "0.1.7.0008 vom 
     } instanceof Array && function(t, e) {
         t.__proto__ = e;
     } || function(t, e) {
-        for (var o in e) e.hasOwnProperty(o) && (t[o] = e[o]);
+        for (var o in e) Object.prototype.hasOwnProperty.call(e, o) && (t[o] = e[o]);
     })(t, e);
 };
 
 function it(t, e) {
+    if ("function" != typeof e && null !== e) throw new TypeError("Class extends value " + String(e) + " is not a constructor or null");
     function o() {
         this.constructor = t;
     }
@@ -423,7 +424,7 @@ var ut, lt = function(t) {
     function e(e) {
         var o = t.call(this, 'GoogleConfig') || this;
         return o.mInitFlag = !1, o.mConfigPath = "assets/", o.mConfigFile = "google.json", 
-        o.mConfigLoadFlag = !1, o.mConfigServerUrl = "ws://localhost:7050", o.mConfigDialogflowTokenServerUrl = '', 
+        o.mConfigLoadFlag = false, o.mConfigServerUrl = "ws://localhost:7050", o.mConfigDialogflowTokenServerUrl = '', 
         o.mConfigDialogflowProjectId = '', o.mConfigDialogflowSessionId = '', o.mConfigDialogflowEnvironmentName = '', 
         o.mConfigAppId = '', o.mConfigAppKey = '', o.mConfigUserId = '', o.mConfigNluTag = '', 
         o.mFileReader = null, o.mOnInitFunc = null, o.mOnErrorFunc = null, o.mFileReader = e, 
@@ -447,7 +448,7 @@ var ut, lt = function(t) {
         return this._setOption(t), this.mInitFlag = !0, 0;
     }, e.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = "assets/", this.mConfigFile = "google.json", 
-        this.mConfigLoadFlag = !1, this.mConfigServerUrl = "ws://localhost:7050", this.mConfigDialogflowTokenServerUrl = '', 
+        this.mConfigLoadFlag = false, this.mConfigServerUrl = "ws://localhost:7050", this.mConfigDialogflowTokenServerUrl = '', 
         this.mConfigDialogflowProjectId = '', this.mConfigDialogflowSessionId = '', this.mConfigDialogflowEnvironmentName = '', 
         this.mConfigAppId = '', this.mConfigAppKey = '', this.mConfigUserId = '', this.mConfigNluTag = '', 
         this.mFileReader = null, this.mOnInitFunc = null, 0;
@@ -467,13 +468,13 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mOnInitFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "onError", {
         set: function(t) {
             this.mOnErrorFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), e.prototype._readConfigData = function(t) {
         if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
@@ -499,7 +500,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "dialogflowTokenServerUrl", {
         get: function() {
@@ -508,7 +509,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigDialogflowTokenServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "dialogflowProjectId", {
         get: function() {
@@ -517,7 +518,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigDialogflowProjectId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "dialogflowSessionId", {
         get: function() {
@@ -526,7 +527,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigDialogflowSessionId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "dialogflowEnvironmentName", {
         get: function() {
@@ -535,7 +536,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigDialogflowEnvironmentName = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "appId", {
         get: function() {
@@ -544,7 +545,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigAppId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "appKey", {
         get: function() {
@@ -553,7 +554,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigAppKey = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "userId", {
         get: function() {
@@ -562,7 +563,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigUserId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(e.prototype, "nluTag", {
         get: function() {
@@ -571,7 +572,7 @@ var ut, lt = function(t) {
         set: function(t) {
             this.mConfigNluTag = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), e.prototype.isCredentials = function() {
         return !!(this.mConfigAppKey || this.mConfigDialogflowTokenServerUrl && this.mConfigDialogflowProjectId);
@@ -631,7 +632,7 @@ var ut, lt = function(t) {
         get: function() {
             return this.mWebSocket ? this.mWebSocket.webSocket : null;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), e;
 }(t);
@@ -724,10 +725,9 @@ var mt = function(t) {
 }();
 
 !function(t) {
-    !function(t) {
-        t[t.GET = "GET"] = "GET", t[t.POST = "POST"] = "POST", t[t.PUT = "PUT"] = "PUT", 
-        t[t.DELETE = "DELETE"] = "DELETE";
-    }(t.Method || (t.Method = {}));
+    var e;
+    (e = t.Method || (t.Method = {}))[e.GET = "GET"] = "GET", e[e.POST = "POST"] = "POST", 
+    e[e.PUT = "PUT"] = "PUT", e[e.DELETE = "DELETE"] = "DELETE";
 }(_t || (_t = {}));
 
 var Tt, St = _t, yt = function() {
@@ -766,17 +766,14 @@ var Tt, St = _t, yt = function() {
 }(yt);
 
 !function(t) {
-    !function(t) {
-        t[t.ERR_NETWORK = 0] = "ERR_NETWORK", t[t.ERR_AUDIO = 1] = "ERR_AUDIO", t[t.ERR_SERVER = 2] = "ERR_SERVER", 
-        t[t.ERR_CLIENT = 3] = "ERR_CLIENT";
-    }(t.ERROR || (t.ERROR = {})), function(t) {
-        t[t.MSG_WAITING_MICROPHONE = 0] = "MSG_WAITING_MICROPHONE", t[t.MSG_MEDIA_STREAM_CREATED = 1] = "MSG_MEDIA_STREAM_CREATED", 
-        t[t.MSG_INIT_RECORDER = 2] = "MSG_INIT_RECORDER", t[t.MSG_RECORDING = 3] = "MSG_RECORDING", 
-        t[t.MSG_SEND = 4] = "MSG_SEND", t[t.MSG_SEND_EMPTY = 5] = "MSG_SEND_EMPTY", t[t.MSG_SEND_EOS_OR_JSON = 6] = "MSG_SEND_EOS_OR_JSON", 
-        t[t.MSG_WEB_SOCKET = 7] = "MSG_WEB_SOCKET", t[t.MSG_WEB_SOCKET_OPEN = 8] = "MSG_WEB_SOCKET_OPEN", 
-        t[t.MSG_WEB_SOCKET_CLOSE = 9] = "MSG_WEB_SOCKET_CLOSE", t[t.MSG_STOP = 10] = "MSG_STOP", 
-        t[t.MSG_CONFIG_CHANGED = 11] = "MSG_CONFIG_CHANGED";
-    }(t.EVENT || (t.EVENT = {}));
+    var e, o;
+    (e = t.ERROR || (t.ERROR = {}))[e.ERR_NETWORK = 0] = "ERR_NETWORK", e[e.ERR_AUDIO = 1] = "ERR_AUDIO", 
+    e[e.ERR_SERVER = 2] = "ERR_SERVER", e[e.ERR_CLIENT = 3] = "ERR_CLIENT", (o = t.EVENT || (t.EVENT = {}))[o.MSG_WAITING_MICROPHONE = 0] = "MSG_WAITING_MICROPHONE", 
+    o[o.MSG_MEDIA_STREAM_CREATED = 1] = "MSG_MEDIA_STREAM_CREATED", o[o.MSG_INIT_RECORDER = 2] = "MSG_INIT_RECORDER", 
+    o[o.MSG_RECORDING = 3] = "MSG_RECORDING", o[o.MSG_SEND = 4] = "MSG_SEND", o[o.MSG_SEND_EMPTY = 5] = "MSG_SEND_EMPTY", 
+    o[o.MSG_SEND_EOS_OR_JSON = 6] = "MSG_SEND_EOS_OR_JSON", o[o.MSG_WEB_SOCKET = 7] = "MSG_WEB_SOCKET", 
+    o[o.MSG_WEB_SOCKET_OPEN = 8] = "MSG_WEB_SOCKET_OPEN", o[o.MSG_WEB_SOCKET_CLOSE = 9] = "MSG_WEB_SOCKET_CLOSE", 
+    o[o.MSG_STOP = 10] = "MSG_STOP", o[o.MSG_CONFIG_CHANGED = 11] = "MSG_CONFIG_CHANGED";
 }(Tt || (Tt = {}));
 
 var Ct = function() {
@@ -1302,10 +1299,7 @@ var Ct = function() {
         }
         return '';
     }, e.prototype._onSpeechResult = function(t) {
-        if (t && t.length > 0) {
-            t[0].transcript, t[0].confidence;
-            this._onResult(t);
-        }
+        t && t.length > 0 && (t[0].transcript, t[0].confidence, this._onResult(t));
     }, e.prototype._onSpeechEnd = function() {}, e.prototype._onOptionMessage = function(t) {
         t.results && t.results.length > 0 && this._onSpeechResult(t.results[0].alternatives);
     }, e.prototype.isVolume = function(t) {
@@ -1514,8 +1508,9 @@ var Ct = function() {
         return n.mAudioContext = null, n.mGetUserMedia = null, n.mGoogleServerFlag = !1, 
         n.mGoogleConfig = null, n.mGoogleNetwork = null, n.mGoogleWebSocket = null, n.mGoogleConnect = null, 
         n.mGoogleTTS = null, n.mGoogleASR = null, n.mGoogleNLU = null, n.mGoogleNLU2 = null, 
-        n.mGoogleNLU2Flag = !0, n.mDynamicCredentialsFlag = !1, n.mTransaction = null, n.mRunningFlag = !1, 
-        n.mDefaultOptions = null, n.mActionTimeoutId = 0, n.mActionTimeout = 6e4, n;
+        n.mGoogleNLU2Flag = true, n.mDynamicCredentialsFlag = !1, n.mTransaction = null, 
+        n.mRunningFlag = !1, n.mDefaultOptions = null, n.mActionTimeoutId = 0, n.mActionTimeout = 6e4, 
+        n;
     }
     return it(o, t), o.prototype.isServer = function() {
         return this.mGoogleServerFlag;

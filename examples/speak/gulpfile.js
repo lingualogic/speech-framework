@@ -1,7 +1,6 @@
 const gulp = require('gulp');
 const path = require('path');
 const childProcess = require('child_process');
-const protractor = require('gulp-protractor').protractor;
 
 
 // Verzeichnis-Konstanten
@@ -64,11 +63,3 @@ require('./gulp/gulp-dist')(settings);
 
 
 // Gulp-Tasks
-
-gulp.task( 'e2e', () =>
-    gulp.src([ './e2e/src/*.ts' ])
-        .pipe( protractor({
-            configFile: 'e2e/protractor.conf.js'
-        }))
-        .on( 'error', function(e) { throw e; })
-);

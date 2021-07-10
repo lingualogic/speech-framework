@@ -12,15 +12,23 @@
  * @module cloud/google
  * @author SB
  */
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Google = exports.GoogleFactory = void 0;
 // Global API
-__export(require("./google.bundle"));
-__export(require("./google.bundle"));
+__exportStar(require("./google.bundle"), exports);
+__exportStar(require("./google.bundle"), exports);
 var google_factory_1 = require("./google.bundle");
-exports.GoogleFactory = google_factory_1.GoogleFactory;
+Object.defineProperty(exports, "GoogleFactory", { enumerable: true, get: function () { return google_factory_1.GoogleFactory; } });
 var google_1 = require("./google.bundle");
-exports.Google = google_1.Google;
+Object.defineProperty(exports, "Google", { enumerable: true, get: function () { return google_1.Google; } });
 //# sourceMappingURL=index.js.map

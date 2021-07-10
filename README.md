@@ -16,7 +16,7 @@ Für die Google Cloud-Dienste wird zusätzlich der Speech-Tokenserver benötigt.
 
 ## Letzte Version
 
-* 0.5.22.0066 Release vom 31.08.2020 [Release Notizen](./CHANGELOG.md)
+* 0.5.23.0067 Release vom 10.07.2021 [Release Notizen](./CHANGELOG.md)
 
 Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framework mit einer stabilen API. Für React-Projekte gibt es Speech-React als Wrapper und für Vue gibt es Speech-Vue als Wrapper.
 
@@ -25,25 +25,25 @@ Für Angular-Projekte gibt es Speech-Angular als Wrapper für das Speech-Framewo
 
 Wir haben das Speech-Framework auf Mac OS X 10.14, Win 10 und Ubuntu 18.04 getestet. Als Plattformen können eingesetzt werden:
 
-* Mac OS X >= 10.11
+* Mac OS X >= 10.14
 * Windows 10
-* aktuelles Linux (z.B. Ubuntu 18.04)
+* aktuelles Linux (z.B. Ubuntu 20.04)
 
 Grundsätzlich ist das Speech-Framework in Chrome, Firefox, Opera, Safari und Edge nutzbar, allerdings hängt die Sprachausgabe unter diesen Browsern von der zugrunde liegenden Text-to-Speech Engine der jeweiligen Plattformen ab. Die Spracheingabe funktioniert bisher nur in Chrome ohne die Nutzung von Cloud-Diensten. Mit der Einbindung von Cloud-Diensten kann die Spracheingabe in allen hier aufgeführten Browsern verwendet werden.
 
-* Chrome >= 71   Windows/Linux/MacOS (Html5: TTS, ASR)(Nuance: TTS, ASR, NLU)
-* Firefox >= 64  Windows/Linux/MacOS (Html5: TTS)(Nuance: TTS, ASR, NLU) 
-* Opera >= 58    Windows/MacOS (Html5: TTS)(Nuance: TTS, ASR, NLU) Linux (kein Html5)
-* Safari >= 12   MacOS/iOS (Html5: TTS)(Nuance: ASR, NLU) 
-* Edge >= 42     Windows (Html5: TTS)(Nuance: TTS, ASR, NLU)
+* Chrome >= 80   Windows/Linux/MacOS (Html5: TTS, ASR)(Nuance: TTS, ASR, NLU)
+* Firefox >= 80  Windows/Linux/MacOS (Html5: TTS)(Nuance: TTS, ASR, NLU) 
+* Opera >= 70    Windows/MacOS (Html5: TTS)(Nuance: TTS, ASR, NLU) Linux (kein Html5)
+* Safari >= 14   MacOS/iOS (Html5: TTS)(Nuance: ASR, NLU) 
+* Edge >= 80     Windows (Html5: TTS)(Nuance: TTS, ASR, NLU)
 
 NodeJS muss installiert sein.
 
-* NodeJS >= 10.X und <= 12.x
+* NodeJS >= 12.X und <= 14.x (NodeJS LTS  14.x empfohlen)
 
 Als weitere Plattformen können Android und iOS mit Cordova verwendet werden:
 
-* Cordova >= 8 für Android ab 5.1 und iOS ab 10
+* Cordova >= 10 für Android ab 5.1 und iOS ab 10
 
 Für Cordova müssen weitere Programme zur Entwicklung von Android- und iOS-Apps installiert werden.
 
@@ -84,10 +84,10 @@ Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
     $ npm run docs
 
 
-Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.20.tgz' kann in den eigenen Web-Projektordner kopiert werden.
+Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.x.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
-    $ npm install speech-framework-0.5.20.tgz
+    $ npm install speech-framework-0.5.x.tgz
 
 Danach kann das Speech-Framework in Web-Projekt mit Javascript oder Typescript verwendet werden. Es sind keine weiteren Bibliotheken einzubinden.
 
@@ -152,15 +152,6 @@ Für das Intent-Beispiel ist folgender Befehl einzugeben:
 Projektorganisation:  **Leo Füchsel** (leo@lingualogic.de)
 
 Technische Umsetzung: **Stefan Brauer** (stefan@lingualogic.de)
-
-
-## Mitwirkende
-
-
-## In Projekten verwendet
-
-* [**Nepos-App**](https://nepos.app) - Beispiel für den SpeakService und Dialog von [nepos.de](https://nepos.de)
-* [**whoelse-Prototyp**](https://app.whoelse.ai) - Beispiel für den IntentService von [uns.ai](https://uns.ai)
 
 
 ## Danksagung

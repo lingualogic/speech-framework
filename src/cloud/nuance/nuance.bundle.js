@@ -85,11 +85,12 @@ var f = '0.1.8', d = '0009', _ = 'ALPHA', y = '30.05.2020', N = "0.1.8.0009 vom 
     } instanceof Array && function(t, n) {
         t.__proto__ = n;
     } || function(t, n) {
-        for (var e in n) n.hasOwnProperty(e) && (t[e] = n[e]);
+        for (var e in n) Object.prototype.hasOwnProperty.call(n, e) && (t[e] = n[e]);
     })(t, n);
 };
 
 function ot(t, n) {
+    if ("function" != typeof n && null !== n) throw new TypeError("Class extends value " + String(n) + " is not a constructor or null");
     function e() {
         this.constructor = t;
     }
@@ -307,7 +308,7 @@ var it = function(t) {
     function n(n) {
         var e = t.call(this, 'NuanceConfig') || this;
         return e.mInitFlag = !1, e.mConfigPath = "assets/", e.mConfigFile = "nuance.json", 
-        e.mConfigLoadFlag = !1, e.mConfigServerUrl = "wss://ws.dev.nuance.com/v2", e.mConfigAppId = '', 
+        e.mConfigLoadFlag = false, e.mConfigServerUrl = "wss://ws.dev.nuance.com/v2", e.mConfigAppId = '', 
         e.mConfigAppKey = '', e.mConfigUserId = '', e.mConfigNluTag = '', e.mFileReader = null, 
         e.mOnInitFunc = null, e.mOnErrorFunc = null, e.mFileReader = n, e._setErrorOutputFunc((function(t) {
             return e._onError(new Error(t));
@@ -324,7 +325,7 @@ var it = function(t) {
         return this._setOption(t), this.mInitFlag = !0, 0;
     }, n.prototype.done = function() {
         return this.mInitFlag = !1, this.mConfigPath = "assets/", this.mConfigFile = "nuance.json", 
-        this.mConfigLoadFlag = !1, this.mConfigServerUrl = "wss://ws.dev.nuance.com/v2", 
+        this.mConfigLoadFlag = false, this.mConfigServerUrl = "wss://ws.dev.nuance.com/v2", 
         this.mConfigAppId = '', this.mConfigAppKey = '', this.mConfigUserId = '', this.mConfigNluTag = '', 
         this.mFileReader = null, this.mOnInitFunc = null, 0;
     }, n.prototype.isInit = function() {
@@ -343,13 +344,13 @@ var it = function(t) {
         set: function(t) {
             this.mOnInitFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "onError", {
         set: function(t) {
             this.mOnErrorFunc = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype._readConfigData = function(t) {
         if (!t) return this._error('_readConfigData', 'keine Daten uebergeben'), -1;
@@ -375,7 +376,7 @@ var it = function(t) {
         set: function(t) {
             this.mConfigServerUrl = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "appId", {
         get: function() {
@@ -384,7 +385,7 @@ var it = function(t) {
         set: function(t) {
             this.mConfigAppId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "appKey", {
         get: function() {
@@ -393,7 +394,7 @@ var it = function(t) {
         set: function(t) {
             this.mConfigAppKey = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "userId", {
         get: function() {
@@ -402,7 +403,7 @@ var it = function(t) {
         set: function(t) {
             this.mConfigUserId = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), Object.defineProperty(n.prototype, "nluTag", {
         get: function() {
@@ -411,7 +412,7 @@ var it = function(t) {
         set: function(t) {
             this.mConfigNluTag = t;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n.prototype.isCredentials = function() {
         return !(!this.mConfigAppKey || !this.mConfigAppId);
@@ -480,7 +481,7 @@ var it = function(t) {
         get: function() {
             return this.mWebSocket.webSocket;
         },
-        enumerable: !0,
+        enumerable: !1,
         configurable: !0
     }), n;
 }(t), pt = function(t) {

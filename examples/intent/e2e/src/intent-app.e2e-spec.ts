@@ -30,11 +30,11 @@ describe('Intent-App', () => {
         setTimeout( done, 4000);
     });
 
-    it('sollte errorClick druecken und Fehlerausgabe abschalten', () => {
+    it('sollte errorClick druecken und Fehlerausgabe abschalten', async () => {
         let errorButton = element( by.id('errorClick'));
-        expect( errorButton.getText()).toBe( 'Fehler aus' );
+        expect( await errorButton.getText()).toBe( 'Fehler aus' );
         errorButton.click();
-        expect( errorButton.getText()).toBe( 'Fehler ein' );
+        expect( await errorButton.getText()).toBe( 'Fehler ein' );
     });
 
 });

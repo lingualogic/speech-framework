@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html  lang="de">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Required meta tags -->
+    <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+    <!--  STYLES DEPS -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+    <!--  LIBRARY DEPS -->
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap.bundle.min.js"></script>
+
+    <!-- CORDOVA JS -->
+    <title>Dictate-APP</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <h2>DictateApp-Version <span id="versionName">0.5.18</span></h2>
+        </div>
+        <div class="row justify-content-md-center">
+            <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" id="errorClick">Fehler aus</button>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class='col'>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active" id="asr1Click">
+                        <input type="radio" name="asr" id="asr1" autocomplete="off" checked><span id="asr1Name"> ASR1 </span>
+                    </label>
+                    <label class="btn btn-secondary" id="asr2Click">
+                        <input type="radio" name="asr" id="asr2" autocomplete="off"><span id="asr2Name"> ASR2 </span>
+                    </label>
+                    <label class="btn btn-secondary" id="asr3Click">
+                        <input type="radio" name="asr" id="asr3" autocomplete="off"><span id="asr3Name"> ASR3 </span>
+                    </label>
+                    <label class="btn btn-secondary" id="asr4Click">
+                        <input type="radio" name="asr" id="asr4" autocomplete="off"><span id="asr4Name"> ASR4 </span>
+                    </label>
+                </div>            
+            </div>
+            <div class='col'>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active" id="language1Click">
+                        <input type="radio" name="language" id="language1" autocomplete="off" checked><span id="language1Name"> DEUTSCH </span>
+                    </label>
+                    <label class="btn btn-secondary" id="language2Click">
+                        <input type="radio" name="language" id="language2" autocomplete="off"><span id="language2Name"> ENGLISCH </span>
+                    </label>
+                </div>            
+            </div>
+            <div class='col'>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active" id="mode1Click">
+                        <input type="radio" name="mode" id="mode1" autocomplete="off" checked><span id="mode1Name"> COMMAND </span>
+                    </label>
+                    <label class="btn btn-secondary" id="mode2Click">
+                        <input type="radio" name="mode" id="mode2" autocomplete="off"><span id="mode2Name"> DICTATE </span>
+                    </label>
+                </div>            
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <label>Sprachanalyse</label>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="sprechen Sie nach dem Drücken von Start..." aria-label="Recipient's username with two button addons" aria-describedby="button-addon4">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary" type="button" id="startClick">Start</button>
+                    <button class="btn btn-outline-secondary" type="button" id="stopClick">Stop</button>
+                </div>
+            </div>            
+        </div>
+        <div class="row justify-content-md-center">
+            <label>Listen-Ausgabe</label>
+            <textarea  class="form-control" type="text" id="listenResult" readonly></textarea>
+        </div>
+        <div class="row justify-content-md-center">
+            <label>Fehlermeldung</label>
+            <input class="form-control" type="text" id="errorText" readonly>
+        </div>
+    </div>
+
+    <!-- eigene Dateien -->
+    <script type="text/javascript" src="./../../../lib/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>
+    <script type="text/javascript" src="./../../../dist/speech-framework.js"></script>
+    <script type="text/javascript" src="./../../../credentials/google-credentials.js"></script>
+    <script type="text/javascript" src="./../../../credentials/microsoft-credentials.js"></script>
+    <script type="text/javascript" src="./../../../credentials/nuance-credentials.js"></script>
+    <script type="text/javascript" src="js/dictate-app.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>
