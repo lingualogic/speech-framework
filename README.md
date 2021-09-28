@@ -77,13 +77,6 @@ in den Browser aufheben und die Tests inklusive Audio- und Sprachausgabe ausfüh
 Alle E2E-Tests sind unter test/e2e zu finden.
 
 
-### API-Dokumentation
-
-Die API-Dokumentation kann mit folgenden Befehl in docs/api erzeugt werden:
-
-    $ npm run docs
-
-
 Das im dist Ordner erzeugte npm-Paket 'speech-framework-0.5.x.tgz' kann in den eigenen Web-Projektordner kopiert werden.
 Die Installation des Speech-Framework npm-Paketes erfolgt im eigenen Web-Projektordner mit folgendem Befehl:
 
@@ -114,7 +107,7 @@ Das Speech-Framework kann mit folgendem Befehl wieder deinstalliert werden:
 
 [**Plattformen**](./docs/platform/README.md)
 
-[**API-Referenz**](https://lingualogic.de/speech-framework/docs/latest/api)
+[**API-Referenz**](https://lingualogic.github.io/speech-framework/api)
 
 [**Roadmap**](./docs/roadmap/README.md)
 

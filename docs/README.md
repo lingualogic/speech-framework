@@ -10,6 +10,6 @@ Die Dokumentation des Speech-Frameworks:
 
 ## [Plattformen](./platform/README.md)
 
-## [API-Referenz](https://lingualogic.de/speech-framework/docs/latest/api)
+## [API-Referenz](./api/index.html)
 
 ## [Roadmap](./roadmap/Roadmap-2020.md)

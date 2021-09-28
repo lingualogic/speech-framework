@@ -13,93 +13,10 @@ const gulp = require('gulp');
 const shell = require('gulp-shell');
 const replace = require('gulp-replace');
 const runSequence = require('gulp4-run-sequence');
-const typedoc = require('gulp-typedoc');
 const del = require('del');
 const fs = require('fs');
 const file = require('gulp-file');
 const inject = require('gulp-inject-string');
-
-
-// Dokumentations-Funktionen
-
-
-/**  
- * Erzeugt eine TypeDoc Nutzer Ausgabe fuer SpeechFramework (stable)
- */
-
-gulp.task('dist-typedoc', (cb) => {
-    return gulp
-        .src([
-            'src/action/*.ts',
-            'src/audio/*.ts',
-            'src/base/*.ts',
-            'src/bot/*.ts',
-            'src/dialog/*.ts',
-            'src/intent/*.ts',
-            'src/listen/*.ts',
-            'src/speak/*.ts'
-        ])
-        .pipe(typedoc({
-            // TypeScript options (see typescript docs)
-            module: 'umd',
-            target: 'es6',
-            includeDeclarations: false,
-            // Output options (see typedoc docs)
-            out: 'dist/docs/api',
-            // json: './typedoc.json',
-            // TypeDoc options (see typedoc docs)
-            name: 'Speech-Framework',
-            mode: 'modules',
-            readme: 'src/README.md',
-            types: [],
-            exclude: [
-                'src/action/action.ts',
-                'src/audio/audio.ts',
-                'src/base/base.ts',
-                'src/bot/bot.ts',
-                'src/dialog/dialog.ts',
-                'src/intent/intent.ts',
-                'src/listen/listen.ts',
-                '**/*mock.ts'
-            ],
-            externalPattern: ['./node_modules/**'],
-            excludePrivate: true,
-            excludeProtected: true,
-            excludeExternals: true,
-            ignoreCompilerErrors: true,
-            plugins: ['typedoc-plugin-external-module-name']
-        }), cb);
-});
-
-
-gulp.task('typedoc', (cb) => {
-    return gulp
-        .src([
-            'src/**/*.ts'
-        ])
-        .pipe(typedoc({
-            // TypeScript options (see typescript docs)
-            module: 'umd',
-            target: 'es6',
-            includeDeclarations: false,
-            // Output options (see typedoc docs)
-            out: 'docs/api',
-            // json: './typedoc.json',
-            // TypeDoc options (see typedoc docs)
-            name: 'Speech-Framework',
-            mode: 'modules',
-            readme: 'src/README.md',
-            types: [],
-            exclude: [
-                '**/*mock.ts'
-            ],
-            externalPattern: ['./node_modules/**'],
-            excludeExternals: true,
-            ignoreCompilerErrors: true,
-            plugins: ['typedoc-plugin-external-module-name'],
-            version: true
-        }), cb);
-});
 
 
 // Test Funktionen
@@ -941,7 +858,7 @@ gulp.task('install-rasa-credentials-js', function() {
  * Installiert die WebDriver-Treiber fuer die  Protractor-Tests
  */
 
-gulp.task('install-webdriver', shell.task('node node_modules/protractor/bin/webdriver-manager update'));
+gulp.task('install-webdriver', shell.task('npx webdriver-manager update'));
 
 
 // Gulp-Task
@@ -968,7 +885,7 @@ gulp.task('install', (callback) => {
         'install-microsoft-credentials-js',
         'install-rasa-credentials-ts',
         'install-rasa-credentials-js',
-        'install-webdriver',
+        // 'install-webdriver',
         // 'install-electron',
         // 'install-cordova',
         callback
@@ -1077,7 +994,7 @@ gulp.task('build-dictate-example', function(callback) {
             'build-dictate',
             // 'build-dictate-electron',
             // 'build-dictate-android',
-            'test-dictate',
+            // 'test-dictate',
             callback
         );
     } catch (e) {
@@ -1137,7 +1054,7 @@ gulp.task('build-intent-example', function(callback) {
             'build-intent',
             // 'build-intent-electron',
             // 'build-intent-android',
-            'test-intent',
+            // 'test-intent',
             callback
         );
     } catch (e) {
@@ -1197,7 +1114,7 @@ gulp.task('build-listen-example', function(callback) {
             'build-listen',
             // 'build-listen-electron',
             // 'build-listen-android',
-            'test-listen',
+            // 'test-listen',
             callback
         );
     } catch (e) {
@@ -1257,7 +1174,7 @@ gulp.task('build-speak-example', function(callback) {
             'build-speak',
             // 'build-speak-electron',
             // 'build-speak-android',
-            'test-speak',
+            // 'test-speak',
             callback
         );
     } catch (e) {

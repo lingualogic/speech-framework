@@ -38,8 +38,6 @@ libpeerconnection.log/
 npm-debug.log
 testem.log
 typings/
-documentation/
-docs/api/
 old/
 jest/
 
